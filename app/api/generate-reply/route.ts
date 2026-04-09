@@ -47,13 +47,13 @@ export async function POST(request: NextRequest) {
     })
 
     // Best-effort save to replies log — don't fail the request if this errors
-    supabase.from('replies').insert({
+    void supabase.from('replies').insert({
       user_id: user.id,
       review_text: reviewText,
       platform,
       star_rating: starRating,
       generated_reply: reply,
-    }).then(() => {}).catch(() => {})
+    })
 
     return NextResponse.json({ reply })
   } catch (error) {

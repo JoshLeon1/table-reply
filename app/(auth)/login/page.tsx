@@ -3,6 +3,10 @@
 // IMPORTANT: In Supabase dashboard go to:
 // Authentication → Settings → turn OFF "Enable email confirmations"
 // This allows users to sign in immediately after signup without email verification
+//
+// IMPORTANT: While Google OAuth app is in testing mode, only test users can sign in.
+// Go to console.cloud.google.com → OAuth consent screen → Test users → Add your email
+// To allow all users, publish the app (Audience → Publish App)
 
 import { useState } from 'react'
 import Link from 'next/link'
@@ -101,11 +105,11 @@ export default function LoginPage() {
           <path d="M18 10v20" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           <path d="M22 10c0 0 4 2 4 6s-4 6-4 6v8" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
-        <span className="text-[22px] font-bold text-stone-900 tracking-tight">TableReply</span>
+        <span className="text-[22px] font-bold text-stone-900" style={{ fontFamily: '"Playfair Display", Georgia, serif', letterSpacing: '-0.01em' }}>TableReply</span>
       </div>
 
       {/* Card */}
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-xl p-8">
+      <div className="w-full bg-white rounded-2xl shadow-xl p-8" style={{ maxWidth: '420px' }}>
         <h2 className="text-xl font-bold text-stone-900 mb-1 text-center">Welcome back</h2>
         <p className="text-sm text-stone-500 mb-6 text-center">Sign in to your account</p>
 
@@ -194,7 +198,7 @@ export default function LoginPage() {
         <p className="mt-6 text-sm text-center text-stone-600">
           Don&apos;t have an account?{' '}
           <Link href="/signup" className="text-amber-600 hover:text-amber-700 font-medium">
-            Start free
+            Start free →
           </Link>
         </p>
       </div>

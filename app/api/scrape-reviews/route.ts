@@ -6,15 +6,6 @@ import { createClient as createServerClient } from '@/lib/supabase/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { Resend } from 'resend'
 
-// Service role client — bypasses RLS, used for all DB writes
-const supabaseAdmin = createServiceClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
-
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
-const resend = new Resend(process.env.RESEND_API_KEY!)
-
 interface OutscraperReview {
   review_id: string
   author_title: string
@@ -25,6 +16,12 @@ interface OutscraperReview {
 
 export async function POST(request: NextRequest) {
   try {
+  const supabaseAdmin = createServiceClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
+  const resend = new Resend(process.env.RESEND_API_KEY!)
   // ── Parse body once (readable stream can only be consumed once) ─────────
   const body = await request.json().catch(() => ({}))
 

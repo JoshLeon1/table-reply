@@ -5,12 +5,6 @@ import Anthropic from '@anthropic-ai/sdk'
 import { createClient as createServerClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
-
-const supabaseAdmin = createServiceClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
 
 /** Extract the first complete JSON object from a string, regardless of code fences or surrounding text */
 function extractJSON(raw: string): string {
@@ -31,6 +25,11 @@ function extractJSON(raw: string): string {
 }
 
 export async function POST(request: NextRequest) {
+  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
+  const supabaseAdmin = createServiceClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
   // ── Auth ─────────────────────────────────────────────────────────────────────
   const supabase = createServerClient()
   const { data: { user } } = await supabase.auth.getUser()

@@ -6,12 +6,11 @@ import { createClient as createServiceClient } from '@supabase/supabase-js'
 import CompetitorsClient from './CompetitorsClient'
 import type { RestaurantProfile, CompetitorProfile } from '@/types'
 
-const supabaseAdmin = createServiceClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
-
 export default async function CompetitorsPage() {
+  const supabaseAdmin = createServiceClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')

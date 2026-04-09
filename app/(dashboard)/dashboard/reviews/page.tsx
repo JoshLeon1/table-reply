@@ -6,12 +6,11 @@ import { createClient as createServiceClient } from '@supabase/supabase-js'
 import ReviewsClient from './ReviewsClient'
 import type { RestaurantProfile, ScrapedReview } from '@/types'
 
-const supabaseAdmin = createServiceClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
-
 export default async function ReviewsPage() {
+  const supabaseAdmin = createServiceClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
   const supabase = createClient()
   const {
     data: { user },

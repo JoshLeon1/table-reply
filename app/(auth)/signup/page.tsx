@@ -8,6 +8,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 import Input from '@/components/ui/Input'
 
 export default function SignupPage() {
@@ -25,33 +26,49 @@ export default function SignupPage() {
     setError('')
     setSuccessMessage('')
 
-    const { createClient } = await import('@/lib/supabase/client')
-    const supabase = createClient()
-    const { data, error: signUpError } = await supabase.auth.signUp({ email, password })
+    try {
+      const supabase = createClient()
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+      })
 
-    if (signUpError) {
-      setError(signUpError.message)
-      setLoading(false)
-      return
-    }
+      if (signUpError) {
+        console.error('[TableReply] Signup error:', signUpError.message)
+        // User-friendly messages
+        if (signUpError.message.includes('already registered')) {
+          setError('This email is already registered. Try signing in instead.')
+        } else if (signUpError.message.includes('password')) {
+          setError('Password must be at least 8 characters.')
+        } else {
+          setError(signUpError.message)
+        }
+        setLoading(false)
+        return
+      }
 
-    // Set trial_started_at immediately at signup so the 7-day clock starts now
-    if (data.user) {
-      await supabase
-        .from('profiles')
-        .update({ trial_started_at: new Date().toISOString() })
-        .eq('id', data.user.id)
-    }
+      // Set trial_started_at immediately at signup so the 7-day clock starts now
+      if (data.user) {
+        await supabase
+          .from('profiles')
+          .update({ trial_started_at: new Date().toISOString() })
+          .eq('id', data.user.id)
+      }
 
-    if (data.session) {
-      // Email confirmation is OFF — session exists, proceed to onboarding
-      router.push('/onboarding')
-      router.refresh()
-    } else {
-      // Email confirmation is ON — show inline success message
-      setSuccessMessage(
-        `Check your inbox — we sent a confirmation link to ${email}. Click it to activate your account.`
-      )
+      if (data.session) {
+        // Email confirmation is OFF — session exists, proceed to onboarding
+        router.push('/onboarding')
+        router.refresh()
+      } else {
+        // Email confirmation is ON — show inline success message
+        setSuccessMessage(
+          `Check your inbox — we sent a confirmation link to ${email}. Click it to activate your account.`
+        )
+        setLoading(false)
+      }
+    } catch (err) {
+      console.error('[TableReply] Unexpected signup error:', err)
+      setError('Something went wrong. Please try again.')
       setLoading(false)
     }
   }
@@ -59,16 +76,22 @@ export default function SignupPage() {
   const handleGoogleSignup = async () => {
     setGoogleLoading(true)
     setError('')
-    const { createClient } = await import('@/lib/supabase/client')
-    const supabase = createClient()
-    const { error: oauthError } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: window.location.origin + '/auth/callback',
-      },
-    })
-    if (oauthError) {
-      setError(oauthError.message)
+    try {
+      const supabase = createClient()
+      const { error: oauthError } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin + '/auth/callback',
+        },
+      })
+      if (oauthError) {
+        console.error('[TableReply] Google OAuth error:', oauthError.message)
+        setError(oauthError.message)
+        setGoogleLoading(false)
+      }
+    } catch (err) {
+      console.error('[TableReply] Unexpected Google OAuth error:', err)
+      setError('Something went wrong. Please try again.')
       setGoogleLoading(false)
     }
   }

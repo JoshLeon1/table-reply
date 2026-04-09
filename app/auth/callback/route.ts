@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 
@@ -8,7 +10,11 @@ export async function GET(request: Request) {
 
   if (code) {
     const supabase = createClient()
-    await supabase.auth.exchangeCodeForSession(code)
+    const { error } = await supabase.auth.exchangeCodeForSession(code)
+    if (error) {
+      console.error('[TableReply] Auth callback error:', error.message)
+      return NextResponse.redirect(`${origin}/login?error=Could+not+verify+session`)
+    }
   }
 
   return NextResponse.redirect(`${origin}${next}`)

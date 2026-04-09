@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 import Input from '@/components/ui/Input'
 
 const CUISINE_OPTIONS = [
@@ -67,7 +68,6 @@ export default function OnboardingPage() {
     setLoading(true)
     setError('')
 
-    const { createClient } = await import('@/lib/supabase/client')
     const supabase = createClient()
 
     const { data: { user } } = await supabase.auth.getUser()

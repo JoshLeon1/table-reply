@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { createClient } from '@/lib/supabase/client'
 import Input from '@/components/ui/Input'
 
 export default function ForgotPasswordPage() {
@@ -15,7 +16,6 @@ export default function ForgotPasswordPage() {
     setLoading(true)
     setError('')
 
-    const { createClient } = await import('@/lib/supabase/client')
     const supabase = createClient()
     const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: 'https://table-reply.vercel.app/reset-password',

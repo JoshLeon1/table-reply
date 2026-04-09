@@ -1,8 +1,13 @@
 'use client'
 
+// IMPORTANT: In Supabase dashboard go to:
+// Authentication → Settings → turn OFF "Enable email confirmations"
+// This allows users to sign in immediately after signup without email verification
+
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 import Input from '@/components/ui/Input'
 
 export default function LoginPage() {
@@ -18,49 +23,70 @@ export default function LoginPage() {
     setLoading(true)
     setError('')
 
-    const { createClient } = await import('@/lib/supabase/client')
-    const supabase = createClient()
-    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
+    try {
+      const supabase = createClient()
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
 
-    if (signInError) {
-      setError(signInError.message)
-      setLoading(false)
-      return
-    }
-
-    // Check if user has a restaurant profile
-    const { data: { user } } = await supabase.auth.getUser()
-    if (user) {
-      const { data: profile } = await supabase
-        .from('restaurant_profiles')
-        .select('id')
-        .eq('user_id', user.id)
-        .single()
-
-      if (!profile) {
-        router.push('/onboarding')
-        router.refresh()
+      if (signInError) {
+        console.error('[TableReply] Login error:', signInError.message)
+        // Provide user-friendly messages for common errors
+        if (signInError.message === 'Email not confirmed') {
+          setError('Please confirm your email before signing in. Check your inbox for a confirmation link.')
+        } else if (signInError.message === 'Invalid login credentials') {
+          setError('Invalid email or password. Please try again.')
+        } else {
+          setError(signInError.message)
+        }
+        setLoading(false)
         return
       }
-    }
 
-    router.push('/dashboard')
-    router.refresh()
+      // Use the user from the signInWithPassword response directly — no extra getUser() call
+      if (data.user) {
+        const { data: profile } = await supabase
+          .from('restaurant_profiles')
+          .select('id')
+          .eq('user_id', data.user.id)
+          .single()
+
+        if (!profile) {
+          router.push('/onboarding')
+          router.refresh()
+          return
+        }
+      }
+
+      router.push('/dashboard')
+      router.refresh()
+    } catch (err) {
+      console.error('[TableReply] Unexpected login error:', err)
+      setError('Something went wrong. Please try again.')
+      setLoading(false)
+    }
   }
 
   const handleGoogleLogin = async () => {
     setGoogleLoading(true)
     setError('')
-    const { createClient } = await import('@/lib/supabase/client')
-    const supabase = createClient()
-    const { error: oauthError } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: window.location.origin + '/auth/callback',
-      },
-    })
-    if (oauthError) {
-      setError(oauthError.message)
+    try {
+      const supabase = createClient()
+      const { error: oauthError } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin + '/auth/callback',
+        },
+      })
+      if (oauthError) {
+        console.error('[TableReply] Google OAuth error:', oauthError.message)
+        setError(oauthError.message)
+        setGoogleLoading(false)
+      }
+    } catch (err) {
+      console.error('[TableReply] Unexpected Google OAuth error:', err)
+      setError('Something went wrong. Please try again.')
       setGoogleLoading(false)
     }
   }

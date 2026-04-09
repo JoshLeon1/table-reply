@@ -1,9 +1,3 @@
-import Anthropic from '@anthropic-ai/sdk'
-
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-})
-
 interface ReplyPreferences {
   endWithOwnerName?: boolean
   includeRestaurantName?: boolean
@@ -69,21 +63,38 @@ export async function generateReviewReply(params: GenerateReviewReplyParams): Pr
 
   const systemPrompt = `You are a reply assistant for ${restaurantName}, a ${vibe} ${cuisineType} restaurant. The owner's name is ${ownerName}. Write this review response in this voice: ${voiceStyle}.${toneInstruction} About the restaurant: ${description}. Rules: (1) NEVER start with "Thank you for your feedback" or "We appreciate your review." (2) Reference specific details from the review. (3) For 4-5 star: warm and specific. (4) For 3 star: acknowledge what went right, address the issue honestly. (5) For 1-2 star: lead with sincere empathy, never argue, offer to make it right, include "please reach out to us directly at [email]." (6) 75-150 words. (7) Sound like a real human owner. (8) Max one exclamation mark. Preferences: ${prefInstructions}`
 
-  const message = await client.messages.create({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 400,
-    system: systemPrompt,
-    messages: [
-      {
-        role: 'user',
-        content: `Write a response to this ${starRating}-star review from ${platform}:\n\n"${reviewText}"`,
-      },
-    ],
+  const apiKey = process.env.ANTHROPIC_API_KEY
+  if (!apiKey) throw new Error('ANTHROPIC_API_KEY is not set')
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify({
+      model: 'claude-3-5-sonnet-20241022',
+      max_tokens: 400,
+      system: systemPrompt,
+      messages: [
+        {
+          role: 'user',
+          content: `Write a response to this ${starRating}-star review from ${platform}:\n\n"${reviewText}"`,
+        },
+      ],
+    }),
   })
 
-  const content = message.content[0]
-  if (content.type !== 'text') {
-    throw new Error('Unexpected response type from Anthropic')
+  if (!res.ok) {
+    const errText = await res.text()
+    throw new Error(`Anthropic API error ${res.status}: ${errText}`)
+  }
+
+  const data = await res.json()
+  const content = data.content?.[0]
+  if (!content || content.type !== 'text') {
+    throw new Error('Unexpected response from Anthropic')
   }
 
   return content.text

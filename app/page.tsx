@@ -168,7 +168,6 @@ export default function LandingPage() {
 
   return (
     <div className="text-[#111111]" style={{ fontFamily: 'Inter, sans-serif', background: '#fafaf8' }}>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&display=swap');`}</style>
 
       {/* ── NOTIFICATION BANNER ─────────────────────────────────────────── */}
       {bannerVisible && (
@@ -364,7 +363,7 @@ export default function LandingPage() {
             <h2
               className="font-bold text-[#111111]"
               style={{
-                fontFamily: '"Playfair Display", Georgia, "Times New Roman", serif',
+                fontFamily: 'var(--font-playfair), Georgia, serif',
                 fontSize: 'clamp(32px, 4vw, 48px)',
                 lineHeight: 1.1,
                 letterSpacing: '-0.01em',
@@ -456,7 +455,7 @@ export default function LandingPage() {
                 <p
                   className="text-white mb-6"
                   style={{
-                    fontFamily: '"Playfair Display", Georgia, "Times New Roman", serif',
+                    fontFamily: 'var(--font-playfair), Georgia, serif',
                     fontStyle: 'italic',
                     fontSize: '16px',
                     lineHeight: '1.7',

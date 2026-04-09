@@ -79,6 +79,7 @@ export default async function DashboardPage() {
       restaurantName={restaurantProfile?.restaurant_name ?? ''}
       lastScrapedAt={restaurantProfile?.last_scraped_at ?? null}
       userId={user.id}
+      googleMapsUrl={restaurantProfile?.google_maps_url ?? null}
       isPaid={profile?.is_paid ?? false}
       reviewsThisMonth={reviewsThisMonth ?? 0}
       reviewsLastMonth={reviewsLastMonth ?? 0}

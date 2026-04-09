@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { ScrapedReview } from '@/types'
+import ConnectRestaurantModal from '@/components/ConnectRestaurantModal'
 
 interface Props {
   ownerName: string
@@ -12,6 +13,7 @@ interface Props {
   lastScrapedAt: string | null
   userId: string
   isPaid: boolean
+  googleMapsUrl: string | null
   reviewsThisMonth: number
   reviewsLastMonth: number
   avgRating: number
@@ -202,6 +204,8 @@ export default function HomeClient({
   ownerName,
   restaurantName,
   lastScrapedAt,
+  userId,
+  googleMapsUrl,
   reviewsThisMonth,
   reviewsLastMonth,
   avgRating,
@@ -217,6 +221,7 @@ export default function HomeClient({
 }: Props) {
   const hour = new Date().getHours()
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
+  const [showConnectModal, setShowConnectModal] = useState(!googleMapsUrl)
   const [pendingList, setPendingList] = useState<ScrapedReview[]>(initialPendingReviews)
   const [quickReview, setQuickReview] = useState('')
   const [quickReply, setQuickReply] = useState('')
@@ -279,6 +284,14 @@ export default function HomeClient({
   }
 
   return (
+    <>
+    {showConnectModal && (
+      <ConnectRestaurantModal
+        userId={userId}
+        restaurantName={restaurantName}
+        onClose={() => setShowConnectModal(false)}
+      />
+    )}
     <div className="space-y-8 pb-10">
 
       {/* ── Header ───────────────────────────────────────────────────── */}
@@ -549,5 +562,6 @@ export default function HomeClient({
         )}
       </div>
     </div>
+    </>
   )
 }

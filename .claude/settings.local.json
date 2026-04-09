@@ -5,7 +5,8 @@
       "Bash(npx tsc:*)",
       "Bash(npm install:*)",
       "Bash(node -e ':*)",
-      "Bash(curl -s -X POST http://localhost:3000/api/generate-graphic -H 'Content-Type: application/json' -d '{\"reviewText\":\"Amazing food\",\"reviewerName\":\"Sarah\",\"starRating\":5,\"restaurantName\":\"Test\",\"style\":\"Dark & moody\"}')"
+      "Bash(curl -s -X POST http://localhost:3000/api/generate-graphic -H 'Content-Type: application/json' -d '{\"reviewText\":\"Amazing food\",\"reviewerName\":\"Sarah\",\"starRating\":5,\"restaurantName\":\"Test\",\"style\":\"Dark & moody\"}')",
+      "Bash(npx next:*)"
     ]
   }
 }

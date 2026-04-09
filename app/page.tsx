@@ -79,7 +79,7 @@ export default function LandingPage() {
 
       {/* ── NOTIFICATION BAR ────────────────────────────────────────────── */}
       {!notifDismissed && (
-        <div className="relative z-[60] flex items-center justify-center gap-3 px-10 py-2.5 bg-amber-400 text-[#111]">
+        <div className="fixed top-0 left-0 right-0 z-[60] flex items-center justify-center gap-3 px-10 py-2.5 bg-amber-400 text-[#111]">
           <span className="text-[13px] font-medium">
             🍴 First week free — no credit card required.{' '}
             <Link href="/signup" className="font-bold underline underline-offset-2 hover:text-amber-900 transition-colors">
@@ -100,7 +100,9 @@ export default function LandingPage() {
 
       {/* ── NAV ─────────────────────────────────────────────────────────── */}
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        className={`fixed left-0 right-0 z-50 transition-all duration-300 ${
+          notifDismissed ? 'top-0' : 'top-[40px]'
+        } ${
           scrolled
             ? 'bg-white/95 backdrop-blur-md border-b border-stone-100'
             : 'bg-transparent'
@@ -146,7 +148,7 @@ export default function LandingPage() {
       </nav>
 
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
-      <section className="bg-[#111111] relative overflow-hidden min-h-screen flex flex-col justify-center px-6 pt-24 pb-0">
+      <section className={`bg-[#111111] relative overflow-hidden min-h-screen flex flex-col justify-center px-6 pb-0 transition-all duration-300 ${notifDismissed ? 'pt-24' : 'pt-36'}`}>
 
         {/* Grain texture overlay */}
         <div

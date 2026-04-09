@@ -4,18 +4,33 @@ import { updateSession } from '@/lib/supabase/middleware'
 const protectedRoutes = ['/dashboard', '/templates', '/settings']
 
 export async function middleware(request: NextRequest) {
-  const { supabaseResponse, user } = await updateSession(request)
-
-  const pathname = request.nextUrl.pathname
-  const isProtected = protectedRoutes.some((route) => pathname.startsWith(route))
-
-  if (isProtected && !user) {
-    const loginUrl = new URL('/login', request.url)
-    loginUrl.searchParams.set('redirectTo', pathname)
-    return NextResponse.redirect(loginUrl)
+  // If Supabase env vars are missing (e.g. misconfigured deployment), fail open
+  // rather than returning a 500 for every request
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    const pathname = request.nextUrl.pathname
+    const isProtected = protectedRoutes.some((route) => pathname.startsWith(route))
+    if (isProtected) {
+      return NextResponse.redirect(new URL('/login', request.url))
+    }
+    return NextResponse.next()
   }
 
-  return supabaseResponse
+  try {
+    const { supabaseResponse, user } = await updateSession(request)
+
+    const pathname = request.nextUrl.pathname
+    const isProtected = protectedRoutes.some((route) => pathname.startsWith(route))
+
+    if (isProtected && !user) {
+      const loginUrl = new URL('/login', request.url)
+      loginUrl.searchParams.set('redirectTo', pathname)
+      return NextResponse.redirect(loginUrl)
+    }
+
+    return supabaseResponse
+  } catch {
+    return NextResponse.next()
+  }
 }
 
 export const config = {

@@ -20,11 +20,16 @@ export async function middleware(request: NextRequest) {
 
     const pathname = request.nextUrl.pathname
     const isProtected = protectedRoutes.some((route) => pathname.startsWith(route))
+    const isAuthRoute = ['/login', '/signup'].includes(pathname)
 
     if (isProtected && !user) {
       const loginUrl = new URL('/login', request.url)
       loginUrl.searchParams.set('redirectTo', pathname)
       return NextResponse.redirect(loginUrl)
+    }
+
+    if (isAuthRoute && user) {
+      return NextResponse.redirect(new URL('/dashboard', request.url))
     }
 
     return supabaseResponse

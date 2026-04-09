@@ -80,7 +80,7 @@ export default function LoginPage() {
       const { data, error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `https://table-reply.vercel.app/auth/callback`,
         },
       })
       if (oauthError) {

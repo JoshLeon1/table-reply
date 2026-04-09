@@ -59,7 +59,7 @@ function wordCount(text: string) {
 function getPersonalizationScore(review: string, reply: string): 'highly-personalized' | 'personalized' | 'generic' {
   const reviewWords = review.toLowerCase().match(/\b[a-z]{5,}\b/g)?.filter(w => !STOP_WORDS.has(w)) ?? []
   const replyLower = reply.toLowerCase()
-  const specificMatches = [...new Set(reviewWords)].filter(w => replyLower.includes(w)).length
+  const specificMatches = Array.from(new Set(reviewWords)).filter(w => replyLower.includes(w)).length
   const hasSig = /—\s*\w+/.test(reply) || /-{1,2}\s*\w+\s*$/.test(reply.trim())
   if (specificMatches >= 2 && hasSig) return 'highly-personalized'
   if (specificMatches >= 1 || hasSig) return 'personalized'

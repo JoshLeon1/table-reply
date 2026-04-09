@@ -31,6 +31,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Restaurant profile not found' }, { status: 400 })
   }
 
+  const anthropicKey = process.env.ANTHROPIC_API_KEY
+  if (!anthropicKey) {
+    console.error('[generate-reply] ANTHROPIC_API_KEY is not set')
+    return NextResponse.json({ error: 'ANTHROPIC_API_KEY is not configured' }, { status: 500 })
+  }
+
   try {
     const reply = await generateReviewReply({
       restaurantName: restaurantProfile.restaurant_name ?? '',
@@ -57,7 +63,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ reply })
   } catch (error) {
-    console.error('Error generating reply:', error)
-    return NextResponse.json({ error: 'Failed to generate reply' }, { status: 500 })
+    const msg = error instanceof Error ? error.message : String(error)
+    console.error('[generate-reply] Error:', msg)
+    return NextResponse.json({ error: `Failed to generate reply: ${msg}` }, { status: 500 })
   }
 }

@@ -420,26 +420,25 @@ export default function LandingPage() {
       </section>
 
       {/* ── PRICING ──────────────────────────────────────────────────────── */}
-      <section className="py-20 px-6 bg-[#fafaf8] border-t border-[#e5e5e0]">
-        <div className="max-w-6xl mx-auto">
-          <div className="mb-10">
-            <p className="text-amber-600 text-xs font-semibold uppercase tracking-wider mb-3">
-              Pricing
-            </p>
-            <h2
-              className="font-bold text-[#111111] mb-2"
-              style={{ fontSize: 'clamp(28px, 3.5vw, 36px)', lineHeight: 1.2, letterSpacing: '-0.02em' }}
-            >
-              Simple, transparent pricing
-            </h2>
-            <p style={{ fontSize: '15px', color: '#6b6b6b' }}>No caps, no contracts, no surprises.</p>
-          </div>
+      <section className="py-24 px-6 bg-[#fafaf8] border-t border-[#e5e5e0]">
+        <div className="max-w-6xl mx-auto flex flex-col items-center">
+
+          {/* Header */}
+          <h2
+            className="font-bold text-[#111111] mb-3 text-center"
+            style={{ fontSize: 'clamp(28px, 3.5vw, 40px)', lineHeight: 1.15, letterSpacing: '-0.02em' }}
+          >
+            One plan. Everything included.
+          </h2>
+          <p className="text-center mb-10" style={{ fontSize: '16px', color: '#6b6b6b' }}>
+            No caps. No tiers. No surprises.
+          </p>
 
           {/* Toggle */}
-          <div className="inline-flex items-center gap-1 p-1 rounded-lg bg-[#ebebeb] mb-10">
+          <div className="flex items-center gap-1 p-1 rounded-full bg-[#e8e8e3] mb-10">
             <button
               onClick={() => setAnnual(false)}
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors duration-200 ${
+              className={`px-5 py-2 rounded-full text-[13px] font-medium transition-all duration-200 ${
                 !annual ? 'bg-white text-[#111111] shadow-sm' : 'text-[#6b6b6b] hover:text-[#111111]'
               }`}
             >
@@ -447,77 +446,87 @@ export default function LandingPage() {
             </button>
             <button
               onClick={() => setAnnual(true)}
-              className={`flex items-center gap-2 px-4 py-1.5 rounded-md text-sm font-medium transition-colors duration-200 ${
+              className={`flex items-center gap-2 px-5 py-2 rounded-full text-[13px] font-medium transition-all duration-200 ${
                 annual ? 'bg-white text-[#111111] shadow-sm' : 'text-[#6b6b6b] hover:text-[#111111]'
               }`}
             >
               Annual
-              <span className="px-1.5 py-0.5 rounded bg-amber-600 text-white text-[10px] font-semibold leading-none">
-                Save 33%
+              <span className="px-1.5 py-0.5 rounded-full bg-amber-600 text-white text-[10px] font-bold leading-none tracking-wide">
+                SAVE 33%
               </span>
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
-
-            {/* Starter */}
-            <div className="p-6 bg-white border border-[#e5e5e0] rounded-lg shadow-sm">
-              <p className="font-semibold text-[#111111] text-sm mb-1">Starter</p>
-              <p style={{ fontSize: '13px', color: '#6b6b6b', marginBottom: '20px' }}>Try it free, no card needed</p>
-              <div className="mb-6">
-                <span className="font-bold text-[#111111]" style={{ fontSize: '36px', letterSpacing: '-0.02em' }}>$0</span>
-                <span className="text-[#6b6b6b] text-sm ml-1">/ 7 days</span>
-              </div>
-              <ul className="space-y-3 mb-6">
-                {starterFeatures.map((f) => (
-                  <li key={f} className="flex items-start gap-2.5">
-                    <svg className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span style={{ fontSize: '14px', color: '#555' }}>{f}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href="/signup"
-                className="block w-full text-center py-2.5 bg-white border border-[#e5e5e0] hover:border-[#111111] text-[#111111] text-sm font-semibold rounded-lg transition-colors duration-200"
-              >
-                Start free trial
-              </Link>
+          {/* Single card */}
+          <div
+            className="w-full rounded-2xl overflow-hidden transition-all duration-300"
+            style={{
+              maxWidth: '480px',
+              background: '#111111',
+              border: '1px solid rgba(217,119,6,0.35)',
+              boxShadow: '0 0 0 0 rgba(217,119,6,0)',
+            }}
+            onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 0 40px rgba(217,119,6,0.15)')}
+            onMouseLeave={e => (e.currentTarget.style.boxShadow = '0 0 0 0 rgba(217,119,6,0)')}
+          >
+            {/* Badge */}
+            <div className="flex justify-center pt-7 pb-0">
+              <span className="px-3 py-1 rounded-full bg-amber-600/20 text-amber-400 text-[10px] font-bold uppercase tracking-[0.12em]">
+                First week free
+              </span>
             </div>
 
-            {/* Pro */}
-            <div className="p-6 bg-[#111111] border border-[#111111] rounded-lg shadow-sm">
-              <p className="font-semibold text-white text-sm mb-1">Pro</p>
-              <p style={{ fontSize: '13px', color: '#9a9a9a', marginBottom: '20px' }}>For restaurants serious about reputation</p>
-              <div className="mb-6">
-                <span className="font-bold text-white" style={{ fontSize: '36px', letterSpacing: '-0.02em' }}>
-                  {annual ? '$19' : '$29'}
+            <div className="px-8 pt-5 pb-8">
+              {/* Plan name */}
+              <p className="text-center text-white font-bold text-lg mb-5 tracking-tight">
+                TableReply Pro
+              </p>
+
+              {/* Price */}
+              <div className="flex items-end justify-center gap-1 mb-2">
+                <span
+                  className="font-bold text-white leading-none transition-all duration-300"
+                  style={{ fontSize: '80px', letterSpacing: '-0.04em' }}
+                >
+                  ${annual ? '19' : '29'}
                 </span>
-                <span className="text-[#9a9a9a] text-sm ml-1">/ mo</span>
-                {annual && (
-                  <span className="ml-2 text-[#9a9a9a] text-xs line-through">$29</span>
-                )}
+                <div className="pb-3 flex flex-col">
+                  <span className="text-[#9a9a9a] text-lg">/mo</span>
+                </div>
               </div>
-              {annual && (
-                <p className="text-amber-400 text-xs mb-4 -mt-3">Billed as $228/yr — save $120</p>
+
+              {annual ? (
+                <p className="text-center text-amber-400 text-[13px] mb-4">Billed $228/yr — save $120</p>
+              ) : (
+                <p className="text-center text-[#9a9a9a] text-[13px] mb-4">Start free — first 7 days on us. No credit card required.</p>
               )}
-              <ul className="space-y-3 mb-6">
+
+              {/* Divider */}
+              <div className="h-px bg-amber-600/25 mb-6" />
+
+              {/* Features */}
+              <ul className="space-y-3.5 mb-8">
                 {proFeatures.map((f) => (
-                  <li key={f} className="flex items-start gap-2.5">
-                    <svg className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <li key={f} className="flex items-center gap-3">
+                    <svg className="w-4 h-4 text-amber-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                     <span style={{ fontSize: '14px', color: '#d4d4d4' }}>{f}</span>
                   </li>
                 ))}
               </ul>
+
+              {/* CTA */}
               <Link
                 href={annual ? '/signup?plan=annual' : '/signup'}
-                className="block w-full text-center py-2.5 bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold rounded-lg transition-colors duration-200"
+                className="block w-full text-center font-semibold text-white bg-amber-600 hover:bg-amber-500 rounded-full transition-colors duration-200"
+                style={{ fontSize: '15px', height: '56px', lineHeight: '56px' }}
               >
-                Start free trial
+                Start your free week →
               </Link>
+              <p className="text-center mt-3 text-[#6b6b6b] text-[12px]">
+                Then ${annual ? '19' : '29'}/mo. Cancel anytime. No contracts.
+              </p>
             </div>
           </div>
         </div>

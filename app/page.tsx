@@ -42,15 +42,26 @@ function useCountUp(target: number, active: boolean, duration = 1600) {
 
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false)
+  const [scrollY, setScrollY] = useState(0)
   const [annual, setAnnual] = useState(false)
   const [notifDismissed, setNotifDismissed] = useState(false)
   const [openFaq, setOpenFaq] = useState<number | null>(null)
 
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 72)
+    const fn = () => {
+      const y = window.scrollY
+      setScrollY(y)
+      setScrolled(y > 72)
+    }
     window.addEventListener('scroll', fn, { passive: true })
     return () => window.removeEventListener('scroll', fn)
   }, [])
+
+  // Banner fades out over the first 60px of scroll
+  const bannerOpacity = notifDismissed ? 0 : Math.max(0, 1 - scrollY / 60)
+  const bannerVisible = !notifDismissed && bannerOpacity > 0
+  // Nav slides down to top-0 as banner fades (40px banner height)
+  const navTop = notifDismissed ? 0 : Math.max(0, 40 - scrollY)
 
   // Fade-in refs for section headings
   const problemFade   = useFadeIn()
@@ -78,8 +89,11 @@ export default function LandingPage() {
     <div className="text-[#1C1917]">
 
       {/* ── NOTIFICATION BAR ────────────────────────────────────────────── */}
-      {!notifDismissed && (
-        <div className="fixed top-0 left-0 right-0 z-[60] flex items-center justify-center gap-3 px-10 py-2.5 bg-amber-400 text-[#111]">
+      {bannerVisible && (
+        <div
+          className="fixed top-0 left-0 right-0 z-[60] flex items-center justify-center gap-3 px-10 py-2.5 bg-amber-400 text-[#111]"
+          style={{ opacity: bannerOpacity, pointerEvents: bannerOpacity < 0.1 ? 'none' : 'auto' }}
+        >
           <span className="text-[13px] font-medium">
             🍴 First week free — no credit card required.{' '}
             <Link href="/signup" className="font-bold underline underline-offset-2 hover:text-amber-900 transition-colors">
@@ -100,13 +114,12 @@ export default function LandingPage() {
 
       {/* ── NAV ─────────────────────────────────────────────────────────── */}
       <nav
-        className={`fixed left-0 right-0 z-50 transition-all duration-300 ${
-          notifDismissed ? 'top-0' : 'top-[40px]'
-        } ${
+        className={`fixed left-0 right-0 z-50 ${
           scrolled
             ? 'bg-white/95 backdrop-blur-md border-b border-stone-100'
             : 'bg-transparent'
         }`}
+        style={{ top: `${navTop}px`, transition: 'background-color 0.3s, border-color 0.3s' }}
       >
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
@@ -148,7 +161,7 @@ export default function LandingPage() {
       </nav>
 
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
-      <section className={`bg-[#111111] relative overflow-hidden min-h-screen flex flex-col justify-center px-6 pb-0 transition-all duration-300 ${notifDismissed ? 'pt-24' : 'pt-36'}`}>
+      <section className="bg-[#111111] relative overflow-hidden min-h-screen flex flex-col justify-center px-6 pt-36 pb-0">
 
         {/* Grain texture overlay */}
         <div

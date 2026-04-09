@@ -82,20 +82,24 @@ export default function SignupPage() {
     setError('')
     try {
       const supabase = createClient()
-      const { error: oauthError } = await supabase.auth.signInWithOAuth({
+      const { data, error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin + '/auth/callback',
+          redirectTo: `${window.location.origin}/auth/callback`,
         },
       })
       if (oauthError) {
-        console.error('[TableReply] Google OAuth error:', oauthError.message)
-        setError(oauthError.message)
+        console.error('[TableReply] Google OAuth error:', oauthError.message, oauthError)
+        setError(`Google sign up failed: ${oauthError.message}`)
         setGoogleLoading(false)
       }
-    } catch (err) {
-      console.error('[TableReply] Unexpected Google OAuth error:', err)
-      setError('Something went wrong. Please try again.')
+      if (data?.url) {
+        window.location.href = data.url
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err)
+      console.error('[TableReply] Unexpected Google OAuth error:', msg, err)
+      setError(`Google sign up error: ${msg}`)
       setGoogleLoading(false)
     }
   }

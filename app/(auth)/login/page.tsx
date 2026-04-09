@@ -77,20 +77,26 @@ export default function LoginPage() {
     setError('')
     try {
       const supabase = createClient()
-      const { error: oauthError } = await supabase.auth.signInWithOAuth({
+      const { data, error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin + '/auth/callback',
+          redirectTo: `${window.location.origin}/auth/callback`,
         },
       })
       if (oauthError) {
-        console.error('[TableReply] Google OAuth error:', oauthError.message)
-        setError(oauthError.message)
+        console.error('[TableReply] Google OAuth error:', oauthError.message, oauthError)
+        setError(`Google sign in failed: ${oauthError.message}`)
         setGoogleLoading(false)
       }
-    } catch (err) {
-      console.error('[TableReply] Unexpected Google OAuth error:', err)
-      setError('Something went wrong. Please try again.')
+      // signInWithOAuth returns a URL — the browser should redirect automatically.
+      // If we're still here and no error, redirect manually:
+      if (data?.url) {
+        window.location.href = data.url
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err)
+      console.error('[TableReply] Unexpected Google OAuth error:', msg, err)
+      setError(`Google sign in error: ${msg}`)
       setGoogleLoading(false)
     }
   }

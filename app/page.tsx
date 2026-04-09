@@ -48,16 +48,7 @@ export default function LandingPage() {
         </svg>
       ),
       title: 'AI-generated replies',
-      desc: 'Every reply is tailored to your restaurant voice, the reviewer\'s tone, and the star rating.',
-    },
-    {
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
-      title: 'One-click approve',
-      desc: 'Review the draft and post it in one click. Edit if you want, or send it straight through.',
+      desc: "Every reply is tailored to your restaurant voice, the reviewer's tone, and the star rating.",
     },
     {
       icon: (
@@ -74,7 +65,7 @@ export default function LandingPage() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
         </svg>
       ),
-      title: 'Staff mentions',
+      title: 'Staff mention tracking',
       desc: 'Surface every review that praises or criticizes a team member — so you can act on it.',
     },
     {
@@ -83,26 +74,53 @@ export default function LandingPage() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
         </svg>
       ),
-      title: 'Multi-language',
+      title: 'Multi-language replies',
       desc: 'Replies are written in the same language as the review — no configuration needed.',
+    },
+    {
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+      ),
+      title: 'Analytics & insights',
+      desc: 'Track your reply rate, average rating trends, and which review topics come up most.',
+    },
+    {
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+        </svg>
+      ),
+      title: 'Social post generator',
+      desc: 'Turn 5-star reviews into ready-to-post Instagram and Facebook content with one click.',
+    },
+    {
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+        </svg>
+      ),
+      title: 'Competitor tracking',
+      desc: "Monitor your competitors' ratings and review trends — see how you stack up in your market.",
     },
   ]
 
   const steps = [
     {
       num: '1',
-      title: 'Connect your accounts',
-      desc: 'Link your Google Business Profile and Yelp in under two minutes. TableReply pulls in all your existing reviews.',
+      title: 'Set up your voice once',
+      desc: 'Tell us your restaurant name, cuisine, vibe, and tone. Takes 2 minutes. TableReply learns how you speak.',
     },
     {
       num: '2',
-      title: 'Reviews sync automatically',
-      desc: 'Every new review appears in your dashboard as it comes in. You\'ll never miss one again.',
+      title: 'Paste any review',
+      desc: 'Copy a review from Google, Yelp, or anywhere else and paste it in. Or let TableReply auto-sync your Google reviews daily.',
     },
     {
       num: '3',
-      title: 'Reply sent in seconds',
-      desc: 'Approve the AI draft or tweak it. One click posts it directly to the platform.',
+      title: 'Copy your reply in seconds',
+      desc: 'Get a personalized, on-brand reply instantly. Copy it and paste it back into Google or Yelp. Done.',
     },
   ]
 
@@ -150,6 +168,7 @@ export default function LandingPage() {
 
   return (
     <div className="text-[#111111]" style={{ fontFamily: 'Inter, sans-serif', background: '#fafaf8' }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&display=swap');`}</style>
 
       {/* ── NOTIFICATION BANNER ─────────────────────────────────────────── */}
       {bannerVisible && (
@@ -256,28 +275,34 @@ export default function LandingPage() {
 
       {/* ── TRUST BAR ────────────────────────────────────────────────────── */}
       <section className="bg-white border-b border-[#e5e5e0] py-8 px-6">
-        <div className="max-w-6xl mx-auto">
-          <p className="text-[#6b6b6b] text-sm mb-4">
-            Trusted by restaurants across the US
-          </p>
-          <p className="text-[#9a9a9a] text-sm">
-            {restaurantNames.join(' · ')}
-          </p>
+        <div className="max-w-6xl mx-auto text-center">
+          <p className="text-[#6b6b6b] text-sm mb-4">Trusted by restaurants across the US</p>
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
+            {restaurantNames.map((name, i) => (
+              <span key={name} className="flex items-center gap-3">
+                <span style={{ color: '#78716C', fontSize: '14px', fontWeight: 500 }}>{name}</span>
+                <span className="text-amber-500 text-[9px]">◆</span>
+              </span>
+            ))}
+            <Link href="/signup" className="text-amber-600 hover:text-amber-500 text-sm font-medium transition-colors duration-200">
+              Join them →
+            </Link>
+          </div>
         </div>
       </section>
 
       {/* ── PROBLEM / SOLUTION ───────────────────────────────────────────── */}
       <section className="py-20 px-6 bg-[#fafaf8]">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_110px_1fr] items-start">
 
           {/* Left — The problem */}
-          <div>
+          <div className="lg:pr-10">
             <p className="text-amber-600 text-xs font-semibold uppercase tracking-wider mb-4">
               The problem
             </p>
             <h2
-              className="font-bold text-[#111111] mb-5"
-              style={{ fontSize: 'clamp(24px, 3vw, 32px)', lineHeight: 1.25, letterSpacing: '-0.02em' }}
+              className="font-bold text-[#111111] mb-5 text-4xl"
+              style={{ lineHeight: 1.15, letterSpacing: '-0.02em' }}
             >
               You know you should reply to reviews. You never have time.
             </h2>
@@ -289,19 +314,38 @@ export default function LandingPage() {
             </p>
           </div>
 
+          {/* Center — Stats divider */}
+          <div className="hidden lg:flex flex-col items-center self-stretch py-2">
+            <div className="flex-1 w-px bg-[#e5e5e0]" />
+            {[
+              { stat: '63%', label: 'reviews unanswered' },
+              { stat: '45%', label: 'guests read replies' },
+              { stat: '97%', label: 'time saved' },
+            ].map(({ stat, label }, i) => (
+              <div key={stat} className="flex flex-col items-center">
+                {i > 0 && <div className="w-px h-5 bg-[#e5e5e0]" />}
+                <div className="flex flex-col items-center py-4 px-1">
+                  <p className="font-bold text-amber-600 text-xl leading-none" style={{ letterSpacing: '-0.03em' }}>{stat}</p>
+                  <p className="text-[#aaa] text-[10px] text-center mt-1 leading-tight" style={{ maxWidth: '65px' }}>{label}</p>
+                </div>
+              </div>
+            ))}
+            <div className="flex-1 w-px bg-[#e5e5e0]" />
+          </div>
+
           {/* Right — The solution */}
-          <div>
-            <p className="text-amber-600 text-xs font-semibold uppercase tracking-wider mb-4">
+          <div className="lg:pl-10 mt-12 lg:mt-0">
+            <p className="text-xs font-semibold uppercase tracking-wider mb-4" style={{ color: '#16a34a' }}>
               The solution
             </p>
             <h2
-              className="font-bold text-[#111111] mb-5"
-              style={{ fontSize: 'clamp(24px, 3vw, 32px)', lineHeight: 1.25, letterSpacing: '-0.02em' }}
+              className="font-bold text-[#111111] mb-5 text-4xl"
+              style={{ lineHeight: 1.15, letterSpacing: '-0.02em' }}
             >
               Thoughtful replies, in seconds, without lifting a finger.
             </h2>
             <p style={{ fontSize: '15px', lineHeight: '1.6', color: '#555' }}>
-              TableReply connects to your review platforms, drafts personalized responses that sound exactly like you, and lets you approve or post them in one click.
+              TableReply drafts personalized responses that sound exactly like you — matched to your tone, your cuisine, and the reviewer's sentiment.
             </p>
             <p className="mt-4" style={{ fontSize: '15px', lineHeight: '1.6', color: '#555' }}>
               Restaurants that respond to every review consistently earn more reviews, higher ratings, and more repeat visits.
@@ -311,32 +355,34 @@ export default function LandingPage() {
       </section>
 
       {/* ── FEATURES ─────────────────────────────────────────────────────── */}
-      <section className="py-20 px-6 bg-white border-t border-[#e5e5e0]">
-        <div className="max-w-6xl mx-auto">
-          <div className="mb-12">
-            <p className="text-amber-600 text-xs font-semibold uppercase tracking-wider mb-3">
-              Features
-            </p>
+      <section className="py-20 px-6 bg-white">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+
+          {/* Left — headline */}
+          <div className="lg:sticky lg:top-32">
+            <p className="text-amber-600 text-xs font-semibold uppercase tracking-wider mb-4">Features</p>
             <h2
               className="font-bold text-[#111111]"
-              style={{ fontSize: 'clamp(28px, 3.5vw, 36px)', lineHeight: 1.2, letterSpacing: '-0.02em' }}
+              style={{
+                fontFamily: '"Playfair Display", Georgia, "Times New Roman", serif',
+                fontSize: 'clamp(32px, 4vw, 48px)',
+                lineHeight: 1.1,
+                letterSpacing: '-0.01em',
+              }}
             >
               Everything you need to manage your reputation
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {/* Right — feature rows */}
+          <div style={{ borderLeft: '2px solid rgba(217,119,6,0.25)', paddingLeft: '2rem' }}>
             {features.map(({ icon, title, desc }) => (
-              <div key={title} className="p-6 bg-white border border-[#e5e5e0] rounded-lg shadow-sm">
-                <div className="w-9 h-9 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center mb-4">
-                  {icon}
+              <div key={title} className="flex gap-4 mb-8 last:mb-0">
+                <div className="text-amber-500 mt-0.5 flex-shrink-0">{icon}</div>
+                <div>
+                  <p className="font-semibold text-[#111111] text-sm mb-1" style={{ letterSpacing: '-0.01em' }}>{title}</p>
+                  <p style={{ fontSize: '14px', lineHeight: '1.6', color: '#6b6b6b' }}>{desc}</p>
                 </div>
-                <h3 className="font-semibold text-[#111111] text-sm mb-2" style={{ letterSpacing: '-0.01em' }}>
-                  {title}
-                </h3>
-                <p style={{ fontSize: '14px', lineHeight: '1.6', color: '#6b6b6b' }}>
-                  {desc}
-                </p>
               </div>
             ))}
           </div>
@@ -382,37 +428,44 @@ export default function LandingPage() {
       </section>
 
       {/* ── SOCIAL PROOF ─────────────────────────────────────────────────── */}
-      <section className="py-20 px-6 bg-white border-t border-[#e5e5e0]">
+      <section className="py-24 px-6" style={{ background: '#111111' }}>
         <div className="max-w-6xl mx-auto">
-          <div className="mb-12">
-            <p className="text-amber-600 text-xs font-semibold uppercase tracking-wider mb-3">
-              What owners say
-            </p>
+          <div className="mb-14 text-center">
+            <p className="text-amber-500 text-xs font-semibold uppercase tracking-wider mb-3">What owners say</p>
             <h2
-              className="font-bold text-[#111111]"
+              className="font-bold text-white"
               style={{ fontSize: 'clamp(28px, 3.5vw, 36px)', lineHeight: 1.2, letterSpacing: '-0.02em' }}
             >
               Restaurant owners love it
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {testimonials.map(({ initials, name, role, restaurant, quote }) => (
-              <div key={name} className="p-6 bg-white border border-[#e5e5e0] rounded-lg shadow-sm">
-                <div className="flex items-center gap-3 mb-4">
-                  <div
-                    className="w-9 h-9 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-semibold text-xs flex-shrink-0"
-                  >
-                    {initials}
-                  </div>
-                  <div>
-                    <p className="font-semibold text-[#111111] text-sm">{name}</p>
-                    <p className="text-xs" style={{ color: '#6b6b6b' }}>{role} · {restaurant}</p>
-                  </div>
-                </div>
-                <p style={{ fontSize: '14px', lineHeight: '1.6', color: '#555' }}>
+          <div className="grid grid-cols-1 md:grid-cols-3">
+            {testimonials.map(({ name, role, restaurant, quote }, i) => (
+              <div
+                key={name}
+                className="px-8 py-6"
+                style={{ borderLeft: i > 0 ? '1px solid rgba(255,255,255,0.08)' : 'none' }}
+              >
+                <p
+                  className="text-amber-500 leading-none mb-3 select-none"
+                  style={{ fontSize: '72px', lineHeight: 1, opacity: 0.25, fontFamily: 'Georgia, serif' }}
+                >
+                  &ldquo;
+                </p>
+                <p
+                  className="text-white mb-6"
+                  style={{
+                    fontFamily: '"Playfair Display", Georgia, "Times New Roman", serif',
+                    fontStyle: 'italic',
+                    fontSize: '16px',
+                    lineHeight: '1.7',
+                  }}
+                >
                   {quote}
                 </p>
+                <p className="font-semibold text-[#9a9a9a] text-sm">{name}</p>
+                <p className="text-xs mt-0.5" style={{ color: '#555' }}>{role} · {restaurant}</p>
               </div>
             ))}
           </div>

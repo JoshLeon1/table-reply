@@ -18,27 +18,44 @@ interface Props {
   onClose: () => void
 }
 
+function isValidMapsUrl(url: string) {
+  return url.includes('google.com/maps') || url.includes('maps.google') || url.includes('goo.gl/maps')
+}
+
 export default function ConnectRestaurantModal({ userId, restaurantName, onClose }: Props) {
   const router = useRouter()
   const [query, setQuery] = useState(restaurantName || '')
   const [results, setResults] = useState<PlaceResult[]>([])
   const [searching, setSearching] = useState(false)
+  const [searchError, setSearchError] = useState('')
   const [selected, setSelected] = useState<PlaceResult | null>(null)
   const [connecting, setConnecting] = useState(false)
   const [syncStatus, setSyncStatus] = useState<'idle' | 'saving' | 'syncing' | 'done' | 'error'>('idle')
   const [syncCount, setSyncCount] = useState(0)
-  const [error, setError] = useState('')
+  const [connectError, setConnectError] = useState('')
+  const [showManual, setShowManual] = useState(false)
+  const [manualUrl, setManualUrl] = useState('')
+  const [manualUrlError, setManualUrlError] = useState('')
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const manualRef = useRef<HTMLInputElement>(null)
 
   const doSearch = useCallback(async (q: string) => {
-    if (!q.trim()) { setResults([]); return }
+    if (!q.trim()) { setResults([]); setSearchError(''); return }
     setSearching(true)
+    setSearchError('')
     try {
       const res = await fetch(`/api/places-search?query=${encodeURIComponent(q)}`)
       const data = await res.json()
-      setResults(data.results ?? [])
+      if (data.apiError) {
+        setSearchError(data.apiError)
+        setResults([])
+      } else {
+        setResults(data.results ?? [])
+        setSearchError('')
+      }
     } catch {
+      setSearchError('Search unavailable. Use the manual URL option below.')
       setResults([])
     } finally {
       setSearching(false)
@@ -51,24 +68,28 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  useEffect(() => {
+    if (showManual && manualRef.current) manualRef.current.focus()
+  }, [showManual])
+
   const handleQueryChange = (val: string) => {
     setQuery(val)
     setSelected(null)
+    setSearchError('')
     if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(() => doSearch(val), 400)
   }
 
-  const handleConnect = async () => {
-    if (!selected) return
+  const triggerConnect = async (mapsUrl: string) => {
     setConnecting(true)
-    setError('')
+    setConnectError('')
 
     try {
       setSyncStatus('saving')
       const supabase = createClient()
       const { error: saveError } = await supabase
         .from('restaurant_profiles')
-        .update({ google_maps_url: selected.mapsUrl })
+        .update({ google_maps_url: mapsUrl })
         .eq('user_id', userId)
 
       if (saveError) throw new Error(saveError.message)
@@ -85,11 +106,23 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
       setSyncCount(data.newReviews ?? 0)
       setSyncStatus('done')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong')
+      setConnectError(err instanceof Error ? err.message : 'Something went wrong')
       setSyncStatus('error')
     } finally {
       setConnecting(false)
     }
+  }
+
+  const handleConnect = () => {
+    if (!selected) return
+    triggerConnect(selected.mapsUrl)
+  }
+
+  const handleManualConnect = () => {
+    setManualUrlError('')
+    if (!manualUrl.trim()) { setManualUrlError('Please paste your Google Maps URL.'); return }
+    if (!isValidMapsUrl(manualUrl)) { setManualUrlError('That doesn\'t look like a Google Maps URL. Copy the URL from your browser while viewing your restaurant on Google Maps.'); return }
+    triggerConnect(manualUrl.trim())
   }
 
   const handleDone = () => {
@@ -97,6 +130,8 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
     router.refresh()
     onClose()
   }
+
+  const isBusy = connecting || syncStatus === 'saving' || syncStatus === 'syncing'
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
@@ -115,7 +150,7 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
               <div>
                 <h2 className="text-[17px] font-bold text-[#111] leading-tight">Connect your Google listing</h2>
                 <p className="text-[13px] text-[#888] mt-0.5 leading-snug">
-                  Find your restaurant on Google Maps so we can pull in your latest reviews automatically.
+                  Find your restaurant so we can pull in your latest reviews automatically.
                 </p>
               </div>
             </div>
@@ -133,7 +168,7 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
 
         <div className="px-6 pb-6">
           {syncStatus === 'done' ? (
-            /* ── Success state ─────────────────────────────────────────── */
+            /* ── Success ── */
             <div className="text-center py-2">
               <div className="w-14 h-14 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center mx-auto mb-3">
                 <svg className="w-7 h-7 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -145,7 +180,7 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
               </h3>
               <p className="text-[13px] text-[#888] mb-5 leading-relaxed">
                 {syncCount > 0
-                  ? 'Replies have been generated for each review. Head to your reviews page to approve them.'
+                  ? 'Replies have been generated for each review. Head to your reviews to approve them.'
                   : "You're all set. New reviews will sync automatically every day."}
               </p>
               <button
@@ -155,10 +190,74 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
                 View my reviews →
               </button>
             </div>
+          ) : showManual ? (
+            /* ── Manual URL input ── */
+            <div className="space-y-4">
+              <div className="bg-[#F7F6F3] rounded-xl border border-[#EDEAE5] px-4 py-3 text-[12px] text-[#666] leading-relaxed">
+                <p className="font-semibold text-[#444] mb-1">How to find your Google Maps URL:</p>
+                <ol className="space-y-0.5 list-decimal list-inside">
+                  <li>Open <span className="font-medium">maps.google.com</span> in your browser</li>
+                  <li>Search for your restaurant name and city</li>
+                  <li>Click your restaurant listing</li>
+                  <li>Copy the full URL from your browser's address bar</li>
+                </ol>
+              </div>
+
+              <div>
+                <input
+                  ref={manualRef}
+                  type="url"
+                  value={manualUrl}
+                  onChange={e => { setManualUrl(e.target.value); setManualUrlError('') }}
+                  placeholder="https://www.google.com/maps/place/Your+Restaurant/..."
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#E8E4DC] text-sm text-[#111] placeholder:text-[#BBB] focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400 transition-all duration-150"
+                  disabled={isBusy}
+                />
+                {manualUrlError && (
+                  <p className="text-[12px] text-red-500 mt-1.5">{manualUrlError}</p>
+                )}
+              </div>
+
+              {isBusy && (
+                <div className="flex items-center gap-3 px-4 py-3 bg-amber-50 border border-amber-100 rounded-xl">
+                  <svg className="w-4 h-4 text-amber-500 animate-spin flex-shrink-0" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  <span className="text-[13px] text-amber-700 font-medium">
+                    {syncStatus === 'saving' ? 'Saving…' : 'Importing reviews from Google Maps…'}
+                  </span>
+                </div>
+              )}
+
+              {connectError && (
+                <div className="px-4 py-3 bg-red-50 border border-red-200 rounded-xl">
+                  <p className="text-[13px] text-red-600">{connectError}</p>
+                </div>
+              )}
+
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => { setShowManual(false); setManualUrlError(''); setConnectError('') }}
+                  disabled={isBusy}
+                  className="flex-1 h-[44px] rounded-full border border-[#E8E4DC] bg-white hover:bg-[#FAFAF8] text-[#666] text-sm font-medium disabled:opacity-40 transition-all"
+                >
+                  ← Back to search
+                </button>
+                <button
+                  type="button"
+                  onClick={handleManualConnect}
+                  disabled={isBusy || !manualUrl.trim()}
+                  className="flex-1 h-[44px] rounded-full bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                >
+                  {isBusy ? 'Connecting…' : 'Connect & sync →'}
+                </button>
+              </div>
+            </div>
           ) : (
-            /* ── Search + select state ─────────────────────────────────── */
+            /* ── Search ── */
             <>
-              {/* Search input */}
               <div className="relative mb-3">
                 <div className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
                   {searching ? (
@@ -178,13 +277,24 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
                   value={query}
                   onChange={e => handleQueryChange(e.target.value)}
                   placeholder="Search restaurant name and city…"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#E8E4DC] text-sm text-[#111] placeholder:text-[#BBB] focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400 transition-all duration-150"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#E8E4DC] text-sm text-[#111] placeholder:text-[#BBB] focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400 transition-all"
                 />
               </div>
 
+              {/* API error */}
+              {searchError && (
+                <div className="px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl mb-3">
+                  <p className="text-[12px] text-amber-800 font-medium mb-0.5">Search unavailable</p>
+                  <p className="text-[12px] text-amber-700">{searchError}</p>
+                  <p className="text-[12px] text-amber-700 mt-1">
+                    If your API key has HTTP referrer restrictions set, remove them — server-side calls don&apos;t send a Referer header.
+                  </p>
+                </div>
+              )}
+
               {/* Results */}
               {results.length > 0 && (
-                <div className="space-y-1.5 mb-4 max-h-[240px] overflow-y-auto">
+                <div className="space-y-1.5 mb-4 max-h-[220px] overflow-y-auto">
                   {results.map(place => (
                     <button
                       key={place.placeId}
@@ -217,15 +327,15 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
                 </div>
               )}
 
-              {results.length === 0 && query.trim() && !searching && (
-                <p className="text-[13px] text-[#AAA] text-center py-4 mb-2">
-                  No results found. Try a different search.
+              {results.length === 0 && query.trim() && !searching && !searchError && (
+                <p className="text-[13px] text-[#AAA] text-center py-3 mb-2">
+                  No results found. Try adding your city name.
                 </p>
               )}
 
               {/* Syncing progress */}
-              {(syncStatus === 'saving' || syncStatus === 'syncing') && (
-                <div className="flex items-center gap-3 px-4 py-3 bg-amber-50 border border-amber-100 rounded-xl mb-4">
+              {isBusy && (
+                <div className="flex items-center gap-3 px-4 py-3 bg-amber-50 border border-amber-100 rounded-xl mb-3">
                   <svg className="w-4 h-4 text-amber-500 animate-spin flex-shrink-0" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
@@ -236,32 +346,41 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
                 </div>
               )}
 
-              {/* Error */}
-              {error && (
-                <div className="px-4 py-3 bg-red-50 border border-red-200 rounded-xl mb-4">
-                  <p className="text-[13px] text-red-600">{error}</p>
+              {connectError && (
+                <div className="px-4 py-3 bg-red-50 border border-red-200 rounded-xl mb-3">
+                  <p className="text-[13px] text-red-600">{connectError}</p>
                 </div>
               )}
 
-              {/* Actions */}
               <div className="flex gap-3 mt-1">
                 <button
                   type="button"
                   onClick={onClose}
-                  disabled={connecting}
-                  className="flex-1 h-[44px] rounded-full border border-[#E8E4DC] bg-white hover:bg-[#FAFAF8] text-[#666] text-sm font-medium disabled:opacity-40 transition-all duration-150"
+                  disabled={isBusy}
+                  className="flex-1 h-[44px] rounded-full border border-[#E8E4DC] bg-white hover:bg-[#FAFAF8] text-[#666] text-sm font-medium disabled:opacity-40 transition-all"
                 >
                   Skip for now
                 </button>
                 <button
                   type="button"
                   onClick={handleConnect}
-                  disabled={!selected || connecting}
-                  className="flex-1 h-[44px] rounded-full bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
+                  disabled={!selected || isBusy}
+                  className="flex-1 h-[44px] rounded-full bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                 >
-                  {connecting ? 'Connecting…' : 'Connect & sync →'}
+                  {isBusy ? 'Connecting…' : 'Connect & sync →'}
                 </button>
               </div>
+
+              {/* Manual URL fallback */}
+              <p className="text-center mt-3">
+                <button
+                  type="button"
+                  onClick={() => setShowManual(true)}
+                  className="text-[12px] text-[#AAA] hover:text-amber-600 underline underline-offset-2 transition-colors"
+                >
+                  Can&apos;t find it? Paste your Google Maps URL instead
+                </button>
+              </p>
             </>
           )}
         </div>

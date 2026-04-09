@@ -231,13 +231,16 @@ export async function POST(request: NextRequest) {
     `You are a reply assistant for ${profile.restaurant_name}, ` +
     `a ${profile.vibe} ${profile.cuisine_type} restaurant. ` +
     `Owner name: ${profile.owner_name}. ` +
-    `Voice: ${profile.voice_style}. ` +
-    `About: ${profile.description}. ` +
-    `Rules: Never start with 'Thank you for your feedback'. ` +
+    `Voice: ${profile.voice_style ?? profile.reply_tone ?? 'warm and professional'}. ` +
+    `Rules: Never start with "Thank you for your feedback". ` +
     `Reference specific details from the review. ` +
-    `For 4-5 stars: warm, specific, invite them back, sign off with owner name. ` +
-    `For 1-2 stars: lead with sincere empathy, never defensive, offer to make it right. ` +
-    `75-150 words max. End with — ${profile.owner_name}`
+    `For 4-5 stars: warm, specific, invite them back. ` +
+    `For 1-2 stars: sincere empathy, never defensive, offer to make it right. ` +
+    `IMPORTANT — match reply length to review length: ` +
+    `short review (1-2 sentences) → reply in 1-2 sentences only; ` +
+    `medium review (3-5 sentences) → reply in 2-3 sentences; ` +
+    `long review (6+ sentences or 100+ words) → reply in 3-4 sentences max. ` +
+    `Never pad with filler. Always end with — ${profile.owner_name}`
 
   let skippedExisting = 0
 
@@ -333,7 +336,7 @@ export async function POST(request: NextRequest) {
           messages: [
             {
               role: 'user',
-              content: `Write a response to this ${review_rating}-star review:\n\n"${review_text}"`,
+              content: `Write a response to this ${review_rating}-star review (${review_text.trim().split(/\s+/).length} words):\n\n"${review_text}"`,
             },
           ],
         })

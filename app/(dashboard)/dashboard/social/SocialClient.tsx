@@ -1,8 +1,7 @@
 'use client'
 
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
-import html2canvas from 'html2canvas'
 
 type ScrapedReview = {
   id: string
@@ -10,8 +9,6 @@ type ScrapedReview = {
   star_rating: number
   review_text: string
   review_datetime_utc: string
-  generated_reply: string | null
-  reply_status: string | null
 }
 
 type RestaurantProfile = {
@@ -26,23 +23,24 @@ type RestaurantProfile = {
 type Platform = 'Instagram' | 'Facebook' | 'Twitter/X' | 'TikTok'
 type CaptionStyle = 'Grateful & warm' | 'Bold & confident' | 'Fun & casual'
 type GraphicStyle = 'Dark & moody' | 'Warm & bright' | 'Clean & minimal' | 'Bold & colorful'
+type Tab = 'caption' | 'graphic'
 
 interface Props {
   reviews: ScrapedReview[]
   restaurantProfile: RestaurantProfile
 }
 
-function StarRating({ rating }: { rating: number }) {
+function Stars({ rating }: { rating: number }) {
   return (
-    <span className="text-amber-400 text-sm">
+    <span className="text-amber-400 text-[13px] tracking-tight">
       {'★'.repeat(rating)}{'☆'.repeat(5 - rating)}
     </span>
   )
 }
 
-// ─── Caption Modal ────────────────────────────────────────────────────────────
+// ─── Create Post Modal ────────────────────────────────────────────────────────
 
-function CaptionModal({
+function CreatePostModal({
   review,
   restaurantProfile,
   onClose,
@@ -51,20 +49,38 @@ function CaptionModal({
   restaurantProfile: RestaurantProfile
   onClose: () => void
 }) {
+  const [tab, setTab] = useState<Tab>('caption')
+
+  // Caption state
   const [platform, setPlatform] = useState<Platform>('Instagram')
   const [captionStyle, setCaptionStyle] = useState<CaptionStyle>('Grateful & warm')
   const [caption, setCaption] = useState('')
   const [hashtags, setHashtags] = useState<string[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [captionLoading, setCaptionLoading] = useState(false)
+  const [captionError, setCaptionError] = useState('')
   const [copied, setCopied] = useState(false)
 
-  const platforms: Platform[] = ['Instagram', 'Facebook', 'Twitter/X', 'TikTok']
-  const styles: CaptionStyle[] = ['Grateful & warm', 'Bold & confident', 'Fun & casual']
+  // Graphic state
+  const [graphicStyle, setGraphicStyle] = useState<GraphicStyle>('Dark & moody')
+  const [graphicHtml, setGraphicHtml] = useState('')
+  const [graphicLoading, setGraphicLoading] = useState(false)
+  const [graphicError, setGraphicError] = useState('')
+  const [downloading, setDownloading] = useState(false)
+  const iframeRef = useRef<HTMLIFrameElement>(null)
 
-  const generate = async () => {
-    setLoading(true)
-    setError('')
+  const platforms: Platform[] = ['Instagram', 'Facebook', 'Twitter/X', 'TikTok']
+  const captionStyles: CaptionStyle[] = ['Grateful & warm', 'Bold & confident', 'Fun & casual']
+  const graphicStyles: GraphicStyle[] = ['Dark & moody', 'Warm & bright', 'Clean & minimal', 'Bold & colorful']
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [onClose])
+
+  const generateCaption = async () => {
+    setCaptionLoading(true)
+    setCaptionError('')
     try {
       const res = await fetch('/api/generate-social', {
         method: 'POST',
@@ -83,194 +99,15 @@ function CaptionModal({
       setCaption(data.caption ?? '')
       setHashtags(data.hashtags ?? [])
     } catch {
-      setError('Failed to generate. Please try again.')
+      setCaptionError('Failed to generate. Please try again.')
     } finally {
-      setLoading(false)
+      setCaptionLoading(false)
     }
   }
 
-  const copy = async () => {
-    await navigator.clipboard.writeText(caption).catch(() => {})
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
-
-  const appendHashtag = (tag: string) => {
-    setCaption((prev) => (prev.endsWith(' ') || prev === '' ? prev + tag : prev + ' ' + tag))
-  }
-
-  // Close on Escape
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
-    window.addEventListener('keydown', handler)
-    return () => window.removeEventListener('keydown', handler)
-  }, [onClose])
-
-  // Portal to document.body so CSS transform on <main> doesn't offset fixed positioning
-  return createPortal(
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ background: 'rgba(0,0,0,0.55)' }}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
-    >
-      <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-[#F0EDE8]">
-          <h2 className="text-[15px] font-semibold text-[#111]">Create Social Post</h2>
-          <button
-            onClick={onClose}
-            className="w-7 h-7 rounded-full flex items-center justify-center text-[#AAA] hover:text-[#111] hover:bg-[#F5F4F0] transition-all"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        {/* Scrollable body */}
-        <div className="overflow-y-auto px-6 py-5 space-y-5 flex-1">
-          {/* Review text */}
-          <div className="bg-[#F7F6F3] rounded-xl p-4 border border-[#E8E4DC]">
-            <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#AAA] mb-1.5">
-              Review by {review.reviewer_name}
-            </p>
-            <p className="text-[13px] text-[#444] leading-relaxed">{review.review_text}</p>
-          </div>
-
-          {/* Platform */}
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#888] mb-2">Platform</p>
-            <div className="flex flex-wrap gap-2">
-              {platforms.map((p) => (
-                <button
-                  key={p}
-                  onClick={() => setPlatform(p)}
-                  className={`px-3.5 py-1.5 rounded-xl text-[13px] font-medium border transition-all ${
-                    platform === p
-                      ? 'bg-[#111] text-white border-[#111]'
-                      : 'bg-white text-[#555] border-[#E8E4DC] hover:border-[#D4CFC6]'
-                  }`}
-                >
-                  {p}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Style */}
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#888] mb-2">Style</p>
-            <div className="flex flex-wrap gap-2">
-              {styles.map((s) => (
-                <button
-                  key={s}
-                  onClick={() => setCaptionStyle(s)}
-                  className={`px-3.5 py-1.5 rounded-xl text-[13px] font-medium border transition-all ${
-                    captionStyle === s
-                      ? 'bg-amber-400 text-[#111] border-amber-400'
-                      : 'bg-white text-[#555] border-[#E8E4DC] hover:border-[#D4CFC6]'
-                  }`}
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Generate button */}
-          <button
-            onClick={generate}
-            disabled={loading}
-            className="w-full py-2.5 rounded-xl bg-[#111] hover:bg-[#2a2a2a] text-white text-[13px] font-semibold disabled:opacity-50 transition-all flex items-center justify-center gap-2"
-          >
-            {loading ? (
-              <>
-                <svg className="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                </svg>
-                Generating…
-              </>
-            ) : caption ? 'Regenerate' : 'Generate Caption'}
-          </button>
-
-          {error && <p className="text-[12px] text-red-500">{error}</p>}
-
-          {/* Caption output */}
-          {caption && (
-            <>
-              <div>
-                <label className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#888] block mb-2">
-                  Your Caption
-                </label>
-                <textarea
-                  value={caption}
-                  onChange={(e) => setCaption(e.target.value)}
-                  rows={5}
-                  className="w-full rounded-xl border border-[#E8E4DC] p-3 text-[13px] text-[#333] resize-none focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400"
-                />
-              </div>
-
-              <button
-                onClick={copy}
-                className={`w-full py-2.5 rounded-xl text-[13px] font-semibold border transition-all ${
-                  copied
-                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                    : 'bg-white text-[#555] border-[#E8E4DC] hover:border-[#D4CFC6] hover:text-[#111]'
-                }`}
-              >
-                {copied ? '✓ Copied!' : 'Copy to Clipboard'}
-              </button>
-
-              {hashtags.length > 0 && (
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#888] mb-2">
-                    Suggested Hashtags
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {hashtags.map((tag) => (
-                      <button
-                        key={tag}
-                        onClick={() => appendHashtag(tag)}
-                        className="px-2.5 py-1 rounded-full text-[11px] font-medium border border-amber-200 text-amber-700 bg-amber-50 hover:bg-amber-100 transition-colors"
-                      >
-                        {tag}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </>
-          )}
-        </div>
-      </div>
-    </div>,
-    document.body
-  )
-}
-
-// ─── Graphic Generator Panel ─────────────────────────────────────────────────
-
-function GraphicPanel({
-  review,
-  restaurantProfile,
-}: {
-  review: ScrapedReview
-  restaurantProfile: RestaurantProfile
-}) {
-  const [graphicStyle, setGraphicStyle] = useState<GraphicStyle>('Dark & moody')
-  const [graphicHtml, setGraphicHtml] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [downloading, setDownloading] = useState(false)
-  const iframeRef = useRef<HTMLIFrameElement>(null)
-  const hiddenRef = useRef<HTMLDivElement>(null)
-
-  const graphicStyles: GraphicStyle[] = ['Dark & moody', 'Warm & bright', 'Clean & minimal', 'Bold & colorful']
-
-  const generate = async () => {
-    setLoading(true)
-    setError('')
+  const generateGraphic = async () => {
+    setGraphicLoading(true)
+    setGraphicError('')
     setGraphicHtml('')
     try {
       const res = await fetch('/api/generate-graphic', {
@@ -284,286 +121,354 @@ function GraphicPanel({
           style: graphicStyle,
         }),
       })
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}))
-        throw new Error(err.error ?? 'Generation failed')
-      }
+      if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? 'Generation failed')
       const data = await res.json()
       setGraphicHtml(data.html ?? '')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+      setGraphicError(err instanceof Error ? err.message : 'Something went wrong')
     } finally {
-      setLoading(false)
+      setGraphicLoading(false)
     }
   }
 
-  // Download: render HTML in a hidden div and use html2canvas on it
+  const copyCaption = async () => {
+    const full = hashtags.length > 0 ? `${caption}\n\n${hashtags.join(' ')}` : caption
+    await navigator.clipboard.writeText(full).catch(() => {})
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
   const downloadPng = useCallback(async () => {
-    if (!graphicHtml || !hiddenRef.current) return
+    if (!iframeRef.current) return
     setDownloading(true)
     try {
-      // Parse the generated HTML and inject body content + styles into a hidden container
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(graphicHtml, 'text/html')
+      const canvas = document.createElement('canvas')
+      canvas.width = 800
+      canvas.height = 800
+      const ctx = canvas.getContext('2d')
+      if (!ctx) throw new Error('Canvas not supported')
 
-      // Inject any <style> tags into the container
-      const styles = Array.from(doc.querySelectorAll('style'))
-      const styleSheet = styles.map((s) => s.textContent ?? '').join('\n')
+      const svgData = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800">
+        <foreignObject width="100%" height="100%">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="width:800px;height:800px;transform:scale(2);transform-origin:0 0">
+            ${graphicHtml}
+          </div>
+        </foreignObject>
+      </svg>`
 
-      // Set container content to body innerHTML
-      const styleEl = document.createElement('style')
-      styleEl.textContent = styleSheet
-      hiddenRef.current.innerHTML = ''
-      hiddenRef.current.appendChild(styleEl)
-      hiddenRef.current.insertAdjacentHTML('beforeend', doc.body.innerHTML)
-
-      // Wait a tick for layout
-      await new Promise((r) => setTimeout(r, 100))
-
-      const canvas = await html2canvas(hiddenRef.current, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        width: 400,
-        height: 400,
-        backgroundColor: null,
-      })
-
-      const link = document.createElement('a')
-      link.download = `${restaurantProfile.restaurant_name.replace(/[^a-z0-9]/gi, '-')}-review-graphic.png`
-      link.href = canvas.toDataURL('image/png')
-      link.click()
-    } catch (err) {
-      console.error('Download failed:', err)
-      alert('Download failed. Try right-clicking the preview and saving the image instead.')
-    } finally {
+      const img = new Image()
+      img.onload = () => {
+        ctx.drawImage(img, 0, 0)
+        const link = document.createElement('a')
+        link.download = `${restaurantProfile.restaurant_name.replace(/[^a-z0-9]/gi, '-')}-review.png`
+        link.href = canvas.toDataURL('image/png')
+        link.click()
+        setDownloading(false)
+      }
+      img.onerror = () => {
+        // Fallback: open in new tab
+        const blob = new Blob([graphicHtml], { type: 'text/html' })
+        window.open(URL.createObjectURL(blob))
+        setDownloading(false)
+      }
+      img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgData)
+    } catch {
       setDownloading(false)
     }
   }, [graphicHtml, restaurantProfile.restaurant_name])
 
-  return (
-    <div className="mt-5 bg-white rounded-2xl border border-[#E8E4DC] overflow-hidden">
-      <div className="px-6 py-5 border-b border-[#F0EDE8]">
-        <p className="text-[13px] font-semibold text-[#111]">{review.reviewer_name} · {'★'.repeat(review.star_rating)}</p>
-        <p className="text-[12px] text-[#888] mt-0.5 line-clamp-2">"{review.review_text}"</p>
-      </div>
+  return createPortal(
+    <div
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
+      style={{ background: 'rgba(0,0,0,0.6)' }}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
+    >
+      <div className="w-full sm:max-w-[560px] bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col max-h-[92vh] sm:max-h-[88vh] overflow-hidden">
 
-      <div className="px-6 py-5 space-y-5">
-        {/* Style presets */}
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#888] mb-2">Style</p>
-          <div className="flex flex-wrap gap-2">
-            {graphicStyles.map((s) => (
+        {/* Header */}
+        <div className="px-5 pt-5 pb-4 flex-shrink-0">
+          {/* Review pill */}
+          <div className="flex items-center gap-2 mb-4">
+            <div className="flex-1 min-w-0 flex items-center gap-2 px-3 py-2 bg-[#F7F6F3] rounded-xl border border-[#EDEAE5]">
+              <Stars rating={review.star_rating} />
+              <span className="text-[12px] font-semibold text-[#444] truncate">{review.reviewer_name}</span>
+              <span className="text-[12px] text-[#999] truncate flex-1">
+                — {review.review_text.length > 60 ? review.review_text.slice(0, 60) + '…' : review.review_text}
+              </span>
+            </div>
+            <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center text-[#AAA] hover:text-[#111] hover:bg-[#F5F4F0] transition-all flex-shrink-0">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Tabs */}
+          <div className="flex gap-1 p-1 bg-[#F5F4F0] rounded-xl">
+            {(['caption', 'graphic'] as Tab[]).map(t => (
               <button
-                key={s}
-                onClick={() => setGraphicStyle(s)}
-                className={`px-3.5 py-1.5 rounded-xl text-[13px] font-medium border transition-all ${
-                  graphicStyle === s
-                    ? 'bg-[#111] text-white border-[#111]'
-                    : 'bg-white text-[#555] border-[#E8E4DC] hover:border-[#D4CFC6]'
+                key={t}
+                onClick={() => setTab(t)}
+                className={`flex-1 py-2 rounded-lg text-[13px] font-semibold transition-all duration-150 ${
+                  tab === t ? 'bg-white text-[#111] shadow-sm' : 'text-[#888] hover:text-[#555]'
                 }`}
               >
-                {s}
+                {t === 'caption' ? '✦ Caption' : '◈ Graphic'}
               </button>
             ))}
           </div>
         </div>
 
-        <button
-          onClick={generate}
-          disabled={loading}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#111] hover:bg-[#2a2a2a] text-white text-[13px] font-semibold disabled:opacity-50 transition-all"
-        >
-          {loading ? (
-            <>
-              <svg className="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-              </svg>
-              Generating graphic…
-            </>
-          ) : graphicHtml ? 'Regenerate' : 'Generate Graphic'}
-        </button>
+        {/* Body */}
+        <div className="overflow-y-auto flex-1 px-5 pb-5">
 
-        {error && (
-          <p className="text-[12px] text-red-500 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</p>
-        )}
+          {/* ── Caption tab ─────────────────────────────────────────── */}
+          {tab === 'caption' && (
+            <div className="space-y-4">
+              {/* Platform */}
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#AAA] mb-2">Platform</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {platforms.map(p => (
+                    <button
+                      key={p}
+                      onClick={() => { setPlatform(p); setCaption(''); setHashtags([]) }}
+                      className={`px-3 py-1.5 rounded-lg text-[12px] font-semibold border transition-all ${
+                        platform === p
+                          ? 'bg-[#111] text-white border-[#111]'
+                          : 'bg-white text-[#666] border-[#E8E4DC] hover:border-[#C0BCB5]'
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-        {/* Preview */}
-        {graphicHtml && (
-          <div className="flex flex-col items-center gap-4">
-            {/* Visible iframe preview — no sandbox so fonts/styles render correctly */}
-            <div className="rounded-2xl overflow-hidden border border-[#E8E4DC] shadow-md" style={{ width: 400, height: 400 }}>
-              <iframe
-                ref={iframeRef}
-                srcDoc={graphicHtml}
-                width={400}
-                height={400}
-                scrolling="no"
-                title="Review Graphic Preview"
-                style={{ display: 'block', border: 'none', width: 400, height: 400 }}
-              />
-            </div>
+              {/* Style */}
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#AAA] mb-2">Tone</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {captionStyles.map(s => (
+                    <button
+                      key={s}
+                      onClick={() => { setCaptionStyle(s); setCaption(''); setHashtags([]) }}
+                      className={`px-3 py-1.5 rounded-lg text-[12px] font-semibold border transition-all ${
+                        captionStyle === s
+                          ? 'bg-amber-500 text-white border-amber-500'
+                          : 'bg-white text-[#666] border-[#E8E4DC] hover:border-[#C0BCB5]'
+                      }`}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-            {/* Hidden div used by html2canvas for download */}
-            <div
-              ref={hiddenRef}
-              style={{
-                position: 'fixed',
-                top: '-9999px',
-                left: '-9999px',
-                width: 400,
-                height: 400,
-                overflow: 'hidden',
-                pointerEvents: 'none',
-              }}
-            />
+              <button
+                onClick={generateCaption}
+                disabled={captionLoading}
+                className="w-full h-[44px] rounded-xl bg-[#111] hover:bg-[#2a2a2a] text-white text-[13px] font-semibold disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+              >
+                {captionLoading ? (
+                  <><svg className="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/></svg>Writing…</>
+                ) : caption ? 'Regenerate' : 'Generate Caption'}
+              </button>
 
-            <button
-              onClick={downloadPng}
-              disabled={downloading}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-[#111] text-[13px] font-semibold disabled:opacity-50 transition-all"
-            >
-              {downloading ? (
+              {captionError && (
+                <p className="text-[12px] text-red-500 bg-red-50 border border-red-100 rounded-lg px-3 py-2">{captionError}</p>
+              )}
+
+              {caption && (
                 <>
-                  <svg className="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                  </svg>
-                  Downloading…
-                </>
-              ) : (
-                <>
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                  </svg>
-                  Download as PNG
+                  {/* Caption text */}
+                  <div className="bg-[#F7F6F3] rounded-xl border border-[#EDEAE5] p-4">
+                    <p className="text-[14px] text-[#222] leading-relaxed font-medium">{caption}</p>
+                    {hashtags.length > 0 && (
+                      <p className="text-[13px] text-amber-600 mt-2 leading-relaxed">{hashtags.join(' ')}</p>
+                    )}
+                  </div>
+
+                  {/* Copy button */}
+                  <button
+                    onClick={copyCaption}
+                    className={`w-full h-[44px] rounded-xl text-[13px] font-semibold border transition-all flex items-center justify-center gap-2 ${
+                      copied
+                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                        : 'bg-white text-[#555] border-[#E8E4DC] hover:border-[#C0BCB5] hover:text-[#111]'
+                    }`}
+                  >
+                    {copied ? (
+                      <><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied!</>
+                    ) : (
+                      <><svg className="w-3.5 h-3.5 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Copy caption + hashtags</>
+                    )}
+                  </button>
                 </>
               )}
-            </button>
-          </div>
-        )}
+            </div>
+          )}
+
+          {/* ── Graphic tab ─────────────────────────────────────────── */}
+          {tab === 'graphic' && (
+            <div className="space-y-4">
+              {/* Style */}
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#AAA] mb-2">Style</p>
+                <div className="grid grid-cols-2 gap-1.5">
+                  {graphicStyles.map(s => {
+                    const preview: Record<string, string> = {
+                      'Dark & moody': '#0F0D0B',
+                      'Warm & bright': '#FDF4E7',
+                      'Clean & minimal': '#FFFFFF',
+                      'Bold & colorful': '#1A0533',
+                    }
+                    return (
+                      <button
+                        key={s}
+                        onClick={() => { setGraphicStyle(s); setGraphicHtml('') }}
+                        className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-left transition-all ${
+                          graphicStyle === s
+                            ? 'border-amber-400 ring-2 ring-amber-400/20 bg-amber-50'
+                            : 'border-[#E8E4DC] bg-white hover:border-[#C0BCB5]'
+                        }`}
+                      >
+                        <div
+                          className="w-5 h-5 rounded-md flex-shrink-0 border border-black/10"
+                          style={{ background: preview[s] }}
+                        />
+                        <span className="text-[12px] font-semibold text-[#333]">{s}</span>
+                        {graphicStyle === s && (
+                          <svg className="w-3.5 h-3.5 text-amber-500 ml-auto flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              <button
+                onClick={generateGraphic}
+                disabled={graphicLoading}
+                className="w-full h-[44px] rounded-xl bg-[#111] hover:bg-[#2a2a2a] text-white text-[13px] font-semibold disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+              >
+                {graphicLoading ? (
+                  <><svg className="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/></svg>Building graphic…</>
+                ) : graphicHtml ? 'Regenerate' : 'Generate Graphic'}
+              </button>
+
+              {graphicError && (
+                <p className="text-[12px] text-red-500 bg-red-50 border border-red-100 rounded-lg px-3 py-2">{graphicError}</p>
+              )}
+
+              {graphicHtml && (
+                <div className="flex flex-col items-center gap-4">
+                  {/* Preview */}
+                  <div className="rounded-2xl overflow-hidden shadow-lg border border-[#E8E4DC]" style={{ width: 320, height: 320 }}>
+                    <iframe
+                      ref={iframeRef}
+                      srcDoc={graphicHtml}
+                      width={400}
+                      height={400}
+                      scrolling="no"
+                      title="Graphic preview"
+                      style={{ display: 'block', border: 'none', width: 400, height: 400, transform: 'scale(0.8)', transformOrigin: '0 0', pointerEvents: 'none' }}
+                    />
+                  </div>
+
+                  {/* Download */}
+                  <button
+                    onClick={downloadPng}
+                    disabled={downloading}
+                    className="flex items-center gap-2 px-5 h-[44px] rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-[13px] font-semibold disabled:opacity-50 transition-all"
+                  >
+                    {downloading ? (
+                      <><svg className="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/></svg>Downloading…</>
+                    ) : (
+                      <><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>Download PNG</>
+                    )}
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 export default function SocialClient({ reviews, restaurantProfile }: Props) {
-  const [modalReview, setModalReview] = useState<ScrapedReview | null>(null)
-  const [selectedGraphicReview, setSelectedGraphicReview] = useState<ScrapedReview | null>(null)
+  const [activeReview, setActiveReview] = useState<ScrapedReview | null>(null)
 
-  const fiveStarReviews = reviews.filter((r) => r.star_rating === 5 && r.review_text?.trim())
+  const goodReviews = reviews.filter((r) => r.star_rating >= 4 && r.review_text?.trim())
 
   return (
-    <div className="space-y-12">
-      {/* ── Section 1: Caption Generator ─────────────────────────────── */}
+    <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold text-[#111]">Turn reviews into social content</h1>
-        <p className="text-[13px] text-[#888] mt-0.5">Transform your best reviews into ready-to-post captions.</p>
+        <h1 className="text-xl font-semibold text-[#111]">Social posts</h1>
+        <p className="text-[13px] text-[#888] mt-0.5">
+          Turn your best reviews into captions and shareable graphics.
+        </p>
+      </div>
 
-        {reviews.length === 0 ? (
-          <div className="mt-6 bg-white rounded-2xl border border-[#E8E4DC] p-10 text-center">
-            <p className="text-[13px] text-[#888]">No 4★ or 5★ reviews yet — sync your reviews to get started.</p>
+      {goodReviews.length === 0 ? (
+        <div className="bg-white rounded-2xl border border-[#E8E4DC] p-12 text-center">
+          <div className="w-12 h-12 rounded-full bg-[#F5F4F0] border border-[#E8E4DC] flex items-center justify-center mx-auto mb-3">
+            <svg className="w-5 h-5 text-[#BBB]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-            {reviews.map((review) => (
-              <div
-                key={review.id}
-                className="bg-white rounded-2xl border border-[#E8E4DC] p-5 flex flex-col gap-3 hover:border-[#D4CFC6] transition-all"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-[#111] text-[13px] truncate max-w-[65%]">
-                    {review.reviewer_name}
-                  </span>
-                  <StarRating rating={review.star_rating} />
-                </div>
-                <p className="text-[13px] text-[#555] leading-relaxed flex-1">
-                  {review.review_text.length > 120
-                    ? review.review_text.slice(0, 120) + '…'
-                    : review.review_text}
-                </p>
-                <button
-                  onClick={() => setModalReview(review)}
-                  className="mt-1 w-full py-2 rounded-xl text-[13px] font-semibold bg-[#111] hover:bg-[#2a2a2a] text-white transition-all"
-                >
-                  Create Post
-                </button>
+          <p className="text-[14px] font-medium text-[#555]">No 4★ or 5★ reviews yet</p>
+          <p className="text-[13px] text-[#AAA] mt-1">Sync your reviews to unlock social post creation.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {goodReviews.map((review) => (
+            <div
+              key={review.id}
+              className="bg-white rounded-2xl border border-[#E8E4DC] p-5 flex flex-col gap-3 hover:border-[#D4CFC6] hover:shadow-[0_2px_12px_rgba(0,0,0,0.05)] transition-all duration-150"
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-[#111] text-[13px] truncate max-w-[65%]">
+                  {review.reviewer_name}
+                </span>
+                <Stars rating={review.star_rating} />
               </div>
-            ))}
-          </div>
-        )}
-      </div>
 
-      {/* ── Divider ───────────────────────────────────────────────────── */}
-      <div className="border-t border-[#E8E4DC]" />
+              {/* Review snippet */}
+              <p className="text-[13px] text-[#666] leading-relaxed flex-1">
+                {review.review_text.length > 110
+                  ? review.review_text.slice(0, 110) + '…'
+                  : review.review_text}
+              </p>
 
-      {/* ── Section 2: Graphic Generator ─────────────────────────────── */}
-      <div>
-        <h2 className="text-xl font-semibold text-[#111]">Create a shareable graphic</h2>
-        <p className="text-[13px] text-[#888] mt-0.5">Turn your best review into a stunning social media image.</p>
-
-        {fiveStarReviews.length === 0 ? (
-          <div className="mt-6 bg-white rounded-2xl border border-[#E8E4DC] p-10 text-center">
-            <p className="text-[13px] text-[#888]">No 5★ reviews yet — sync more reviews to unlock this.</p>
-          </div>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-              {fiveStarReviews.map((review) => (
-                <div
-                  key={review.id}
-                  className={`bg-white rounded-2xl border p-5 flex flex-col gap-3 cursor-pointer transition-all ${
-                    selectedGraphicReview?.id === review.id
-                      ? 'border-amber-400 ring-2 ring-amber-400/20'
-                      : 'border-[#E8E4DC] hover:border-[#D4CFC6]'
-                  }`}
-                  onClick={() =>
-                    setSelectedGraphicReview((prev) => (prev?.id === review.id ? null : review))
-                  }
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-[#111] text-[13px] truncate max-w-[65%]">
-                      {review.reviewer_name}
-                    </span>
-                    <StarRating rating={5} />
-                  </div>
-                  <p className="text-[13px] text-[#555] leading-relaxed flex-1">
-                    {review.review_text.length > 120
-                      ? review.review_text.slice(0, 120) + '…'
-                      : review.review_text}
-                  </p>
-                  <div
-                    className={`w-full py-2 rounded-xl text-[13px] font-semibold text-center border transition-all ${
-                      selectedGraphicReview?.id === review.id
-                        ? 'bg-amber-400 text-[#111] border-amber-400'
-                        : 'bg-white text-[#555] border-[#E8E4DC]'
-                    }`}
-                  >
-                    {selectedGraphicReview?.id === review.id ? 'Selected ✓' : 'Create Graphic'}
-                  </div>
-                </div>
-              ))}
+              {/* CTA */}
+              <button
+                onClick={() => setActiveReview(review)}
+                className="mt-auto w-full h-[38px] rounded-xl bg-[#111] hover:bg-[#2a2a2a] text-white text-[12px] font-semibold transition-all duration-150 flex items-center justify-center gap-1.5"
+              >
+                <svg className="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                Create Post
+              </button>
             </div>
+          ))}
+        </div>
+      )}
 
-            {selectedGraphicReview && (
-              <GraphicPanel
-                review={selectedGraphicReview}
-                restaurantProfile={restaurantProfile}
-              />
-            )}
-          </>
-        )}
-      </div>
-
-      {/* ── Caption Modal ─────────────────────────────────────────────── */}
-      {modalReview && (
-        <CaptionModal
-          review={modalReview}
+      {activeReview && (
+        <CreatePostModal
+          review={activeReview}
           restaurantProfile={restaurantProfile}
-          onClose={() => setModalReview(null)}
+          onClose={() => setActiveReview(null)}
         />
       )}
     </div>

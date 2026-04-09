@@ -22,6 +22,116 @@ function isValidMapsUrl(url: string) {
   return url.includes('google.com/maps') || url.includes('maps.google') || url.includes('goo.gl/maps')
 }
 
+const SYNC_MESSAGES = [
+  'Connecting to Google Maps…',
+  'Fetching your latest reviews…',
+  'Reading what your guests said…',
+  'Detecting review languages…',
+  'Generating personalised replies…',
+  'Matching your restaurant\'s voice…',
+  'Polishing each response…',
+  'Almost there — adding final touches…',
+]
+
+// ─── Sync Loading Screen ──────────────────────────────────────────────────────
+
+function SyncLoadingScreen({ restaurantName }: { restaurantName: string }) {
+  const [progress, setProgress] = useState(0)
+  const [msgIndex, setMsgIndex] = useState(0)
+
+  // Fake progress: slow, eases towards ~92%, never hits 100 until done
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 92) return prev
+        // Faster at the start, slower near the end
+        const increment = prev < 30 ? 1.2 : prev < 60 ? 0.7 : prev < 80 ? 0.4 : 0.15
+        return Math.min(prev + increment, 92)
+      })
+    }, 400)
+    return () => clearInterval(interval)
+  }, [])
+
+  // Cycle through messages
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMsgIndex(prev => (prev + 1) % SYNC_MESSAGES.length)
+    }, 4500)
+    return () => clearInterval(interval)
+  }, [])
+
+  return (
+    <div className="flex flex-col items-center justify-center px-8 py-10 text-center">
+      {/* Pulsing ring animation */}
+      <div className="relative w-24 h-24 mb-8">
+        {/* Outer rings */}
+        <div className="absolute inset-0 rounded-full border-2 border-amber-200 animate-ping opacity-40" />
+        <div className="absolute inset-2 rounded-full border-2 border-amber-300 animate-ping opacity-30" style={{ animationDelay: '0.4s' }} />
+        {/* Inner circle */}
+        <div className="absolute inset-4 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center">
+          <svg className="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
+              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+            />
+          </svg>
+        </div>
+      </div>
+
+      {/* Restaurant name */}
+      <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-amber-500 mb-1">
+        {restaurantName}
+      </p>
+
+      {/* Headline */}
+      <h3 className="text-[20px] font-bold text-[#111] leading-tight mb-1">
+        Setting up your account
+      </h3>
+      <p className="text-[13px] text-[#888] mb-8 leading-relaxed">
+        We&apos;re importing your reviews and crafting<br />personalised replies for each one.
+      </p>
+
+      {/* Progress bar */}
+      <div className="w-full mb-3">
+        <div className="w-full h-2 bg-[#F0EDE8] rounded-full overflow-hidden">
+          <div
+            className="h-full bg-amber-400 rounded-full transition-all duration-500 ease-out"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Status message */}
+      <div className="h-5 overflow-hidden">
+        <p
+          key={msgIndex}
+          className="text-[12px] text-[#AAA] animate-pulse"
+        >
+          {SYNC_MESSAGES[msgIndex]}
+        </p>
+      </div>
+
+      {/* Floating review chips — decorative */}
+      <div className="flex flex-wrap justify-center gap-2 mt-8 opacity-40">
+        {['★★★★★', '★★★★★', '★★★★★'].map((stars, i) => (
+          <div
+            key={i}
+            className="px-3 py-1.5 rounded-full border border-[#E8E4DC] bg-[#F7F6F3] text-[11px] text-[#AAA]"
+            style={{ animationDelay: `${i * 0.3}s` }}
+          >
+            {stars}
+          </div>
+        ))}
+      </div>
+
+      <p className="text-[11px] text-[#CCC] mt-6">
+        This usually takes 1–2 minutes. Don&apos;t close this window.
+      </p>
+    </div>
+  )
+}
+
+// ─── Main Modal ───────────────────────────────────────────────────────────────
+
 export default function ConnectRestaurantModal({ userId, restaurantName, onClose }: Props) {
   const router = useRouter()
   const [query, setQuery] = useState(restaurantName || '')
@@ -121,7 +231,7 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
   const handleManualConnect = () => {
     setManualUrlError('')
     if (!manualUrl.trim()) { setManualUrlError('Please paste your Google Maps URL.'); return }
-    if (!isValidMapsUrl(manualUrl)) { setManualUrlError('That doesn\'t look like a Google Maps URL. Copy the URL from your browser while viewing your restaurant on Google Maps.'); return }
+    if (!isValidMapsUrl(manualUrl)) { setManualUrlError("That doesn't look like a Google Maps URL. Copy the URL from your browser while viewing your restaurant on Google Maps."); return }
     triggerConnect(manualUrl.trim())
   }
 
@@ -132,6 +242,17 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
   }
 
   const isBusy = connecting || syncStatus === 'saving' || syncStatus === 'syncing'
+
+  // Full-screen loading state
+  if (syncStatus === 'saving' || syncStatus === 'syncing') {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div className="w-full max-w-sm bg-white rounded-2xl shadow-2xl overflow-hidden">
+          <SyncLoadingScreen restaurantName={restaurantName} />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
@@ -191,7 +312,7 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
               </button>
             </div>
           ) : showManual ? (
-            /* ── Manual URL input ── */
+            /* ── Manual URL ── */
             <div className="space-y-4">
               <div className="bg-[#F7F6F3] rounded-xl border border-[#EDEAE5] px-4 py-3 text-[12px] text-[#666] leading-relaxed">
                 <p className="font-semibold text-[#444] mb-1">How to find your Google Maps URL:</p>
@@ -199,10 +320,9 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
                   <li>Open <span className="font-medium">maps.google.com</span> in your browser</li>
                   <li>Search for your restaurant name and city</li>
                   <li>Click your restaurant listing</li>
-                  <li>Copy the full URL from your browser's address bar</li>
+                  <li>Copy the full URL from your browser&apos;s address bar</li>
                 </ol>
               </div>
-
               <div>
                 <input
                   ref={manualRef}
@@ -210,48 +330,26 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
                   value={manualUrl}
                   onChange={e => { setManualUrl(e.target.value); setManualUrlError('') }}
                   placeholder="https://www.google.com/maps/place/Your+Restaurant/..."
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#E8E4DC] text-sm text-[#111] placeholder:text-[#BBB] focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400 transition-all duration-150"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#E8E4DC] text-sm text-[#111] placeholder:text-[#BBB] focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400 transition-all"
                   disabled={isBusy}
                 />
-                {manualUrlError && (
-                  <p className="text-[12px] text-red-500 mt-1.5">{manualUrlError}</p>
-                )}
+                {manualUrlError && <p className="text-[12px] text-red-500 mt-1.5">{manualUrlError}</p>}
               </div>
-
-              {isBusy && (
-                <div className="flex items-center gap-3 px-4 py-3 bg-amber-50 border border-amber-100 rounded-xl">
-                  <svg className="w-4 h-4 text-amber-500 animate-spin flex-shrink-0" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
-                  <span className="text-[13px] text-amber-700 font-medium">
-                    {syncStatus === 'saving' ? 'Saving…' : 'Importing reviews from Google Maps…'}
-                  </span>
-                </div>
-              )}
-
               {connectError && (
                 <div className="px-4 py-3 bg-red-50 border border-red-200 rounded-xl">
                   <p className="text-[13px] text-red-600">{connectError}</p>
                 </div>
               )}
-
               <div className="flex gap-3">
-                <button
-                  type="button"
-                  onClick={() => { setShowManual(false); setManualUrlError(''); setConnectError('') }}
+                <button type="button" onClick={() => { setShowManual(false); setManualUrlError(''); setConnectError('') }}
                   disabled={isBusy}
-                  className="flex-1 h-[44px] rounded-full border border-[#E8E4DC] bg-white hover:bg-[#FAFAF8] text-[#666] text-sm font-medium disabled:opacity-40 transition-all"
-                >
+                  className="flex-1 h-[44px] rounded-full border border-[#E8E4DC] bg-white hover:bg-[#FAFAF8] text-[#666] text-sm font-medium disabled:opacity-40 transition-all">
                   ← Back to search
                 </button>
-                <button
-                  type="button"
-                  onClick={handleManualConnect}
+                <button type="button" onClick={handleManualConnect}
                   disabled={isBusy || !manualUrl.trim()}
-                  className="flex-1 h-[44px] rounded-full bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all"
-                >
-                  {isBusy ? 'Connecting…' : 'Connect & sync →'}
+                  className="flex-1 h-[44px] rounded-full bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all">
+                  Connect & sync →
                 </button>
               </div>
             </div>
@@ -281,31 +379,22 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
                 />
               </div>
 
-              {/* API error */}
               {searchError && (
                 <div className="px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl mb-3">
                   <p className="text-[12px] text-amber-800 font-medium mb-0.5">Search unavailable</p>
                   <p className="text-[12px] text-amber-700">{searchError}</p>
-                  <p className="text-[12px] text-amber-700 mt-1">
-                    If your API key has HTTP referrer restrictions set, remove them — server-side calls don&apos;t send a Referer header.
-                  </p>
                 </div>
               )}
 
-              {/* Results */}
               {results.length > 0 && (
                 <div className="space-y-1.5 mb-4 max-h-[220px] overflow-y-auto">
                   {results.map(place => (
-                    <button
-                      key={place.placeId}
-                      type="button"
-                      onClick={() => setSelected(place)}
+                    <button key={place.placeId} type="button" onClick={() => setSelected(place)}
                       className={`w-full text-left px-4 py-3 rounded-xl border transition-all duration-150 ${
                         selected?.placeId === place.placeId
                           ? 'bg-amber-50 border-amber-400'
                           : 'bg-white border-[#E8E4DC] hover:border-stone-300 hover:bg-[#FAFAF8]'
-                      }`}
-                    >
+                      }`}>
                       <div className="flex items-center justify-between gap-3">
                         <div className="flex-1 min-w-0">
                           <p className="text-[13px] font-semibold text-[#111] leading-tight truncate">{place.name}</p>
@@ -333,19 +422,6 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
                 </p>
               )}
 
-              {/* Syncing progress */}
-              {isBusy && (
-                <div className="flex items-center gap-3 px-4 py-3 bg-amber-50 border border-amber-100 rounded-xl mb-3">
-                  <svg className="w-4 h-4 text-amber-500 animate-spin flex-shrink-0" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
-                  <span className="text-[13px] text-amber-700 font-medium">
-                    {syncStatus === 'saving' ? 'Saving your restaurant…' : 'Importing reviews from Google Maps…'}
-                  </span>
-                </div>
-              )}
-
               {connectError && (
                 <div className="px-4 py-3 bg-red-50 border border-red-200 rounded-xl mb-3">
                   <p className="text-[13px] text-red-600">{connectError}</p>
@@ -353,31 +429,20 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
               )}
 
               <div className="flex gap-3 mt-1">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  disabled={isBusy}
-                  className="flex-1 h-[44px] rounded-full border border-[#E8E4DC] bg-white hover:bg-[#FAFAF8] text-[#666] text-sm font-medium disabled:opacity-40 transition-all"
-                >
+                <button type="button" onClick={onClose}
+                  className="flex-1 h-[44px] rounded-full border border-[#E8E4DC] bg-white hover:bg-[#FAFAF8] text-[#666] text-sm font-medium transition-all">
                   Skip for now
                 </button>
-                <button
-                  type="button"
-                  onClick={handleConnect}
+                <button type="button" onClick={handleConnect}
                   disabled={!selected || isBusy}
-                  className="flex-1 h-[44px] rounded-full bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all"
-                >
-                  {isBusy ? 'Connecting…' : 'Connect & sync →'}
+                  className="flex-1 h-[44px] rounded-full bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all">
+                  Connect & sync →
                 </button>
               </div>
 
-              {/* Manual URL fallback */}
               <p className="text-center mt-3">
-                <button
-                  type="button"
-                  onClick={() => setShowManual(true)}
-                  className="text-[12px] text-[#AAA] hover:text-amber-600 underline underline-offset-2 transition-colors"
-                >
+                <button type="button" onClick={() => setShowManual(true)}
+                  className="text-[12px] text-[#AAA] hover:text-amber-600 underline underline-offset-2 transition-colors">
                   Can&apos;t find it? Paste your Google Maps URL instead
                 </button>
               </p>

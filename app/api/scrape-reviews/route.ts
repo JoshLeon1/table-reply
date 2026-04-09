@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
   const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
-  const resend = new Resend(process.env.RESEND_API_KEY!)
+  const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
   // ── Parse body once (readable stream can only be consumed once) ─────────
   const body = await request.json().catch(() => ({}))
 
@@ -372,7 +372,7 @@ export async function POST(request: NextRequest) {
       } catch { /* silent fail */ }
 
       // ── Feature 2: Send alert email if triggered ─────────────────────────
-      if (alertTriggered && userEmail) {
+      if (alertTriggered && userEmail && resend) {
         await resend.emails.send({
           from: 'TableReply Alerts <alerts@tablereply.com>',
           to: userEmail,

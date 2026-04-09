@@ -22,23 +22,40 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const url = new URL('https://maps.googleapis.com/maps/api/place/textsearch/json')
-    url.searchParams.set('query', query)
-    url.searchParams.set('type', 'restaurant|food|bar|cafe')
-    url.searchParams.set('key', apiKey)
+    // Uses Places API (New) — https://places.googleapis.com/v1/places:searchText
+    const res = await fetch('https://places.googleapis.com/v1/places:searchText', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Goog-Api-Key': apiKey,
+        'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.rating',
+      },
+      body: JSON.stringify({
+        textQuery: query,
+        includedType: 'restaurant',
+        maxResultCount: 6,
+      }),
+    })
 
-    const res = await fetch(url.toString())
     const data = await res.json()
 
-    const results = (data.results ?? [])
-      .slice(0, 6)
-      .map((p: { place_id: string; name: string; formatted_address: string; rating?: number }) => ({
-        placeId: p.place_id,
-        name: p.name,
-        address: p.formatted_address,
-        rating: p.rating,
-        mapsUrl: `https://www.google.com/maps/place/?q=place_id:${p.place_id}`,
-      }))
+    if (!res.ok) {
+      console.error('[TableReply] Places API error:', data)
+      return NextResponse.json({ results: [], error: data?.error?.message ?? 'Search failed' }, { status: 500 })
+    }
+
+    const results = (data.places ?? []).map((p: {
+      id: string
+      displayName?: { text: string }
+      formattedAddress?: string
+      rating?: number
+    }) => ({
+      placeId: p.id,
+      name: p.displayName?.text ?? '',
+      address: p.formattedAddress ?? '',
+      rating: p.rating,
+      mapsUrl: `https://www.google.com/maps/place/?q=place_id:${p.id}`,
+    }))
 
     return NextResponse.json({ results })
   } catch (err) {

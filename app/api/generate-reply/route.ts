@@ -33,12 +33,12 @@ export async function POST(request: NextRequest) {
 
   try {
     const reply = await generateReviewReply({
-      restaurantName: restaurantProfile.restaurant_name,
-      cuisineType: restaurantProfile.cuisine_type,
-      vibe: restaurantProfile.vibe,
-      voiceStyle: restaurantProfile.voice_style,
-      description: restaurantProfile.description,
-      ownerName: restaurantProfile.owner_name,
+      restaurantName: restaurantProfile.restaurant_name ?? '',
+      cuisineType: restaurantProfile.cuisine_type ?? '',
+      vibe: restaurantProfile.vibe ?? '',
+      voiceStyle: restaurantProfile.voice_style ?? restaurantProfile.reply_tone ?? '',
+      description: restaurantProfile.description ?? '',
+      ownerName: restaurantProfile.owner_name ?? '',
       reviewText,
       platform,
       starRating,
@@ -46,13 +46,14 @@ export async function POST(request: NextRequest) {
       replyPreferences: restaurantProfile.reply_preferences ?? undefined,
     })
 
-    await supabase.from('replies').insert({
+    // Best-effort save to replies log — don't fail the request if this errors
+    supabase.from('replies').insert({
       user_id: user.id,
       review_text: reviewText,
       platform,
       star_rating: starRating,
       generated_reply: reply,
-    })
+    }).catch(() => {})
 
     return NextResponse.json({ reply })
   } catch (error) {

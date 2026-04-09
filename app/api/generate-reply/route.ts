@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
       platform,
       star_rating: starRating,
       generated_reply: reply,
-    }).catch(() => {})
+    }).then(() => {}).catch(() => {})
 
     return NextResponse.json({ reply })
   } catch (error) {

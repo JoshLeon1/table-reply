@@ -295,9 +295,9 @@ export default function HomeClient({
     <div className="space-y-8 pb-10">
 
       {/* ── Header ───────────────────────────────────────────────────── */}
-      <div className="flex items-start justify-between gap-6">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-6">
         <div>
-          <h1 className="text-[24px] font-bold text-[#111] tracking-tight leading-tight">
+          <h1 className="text-[22px] sm:text-[24px] font-bold text-[#111] tracking-tight leading-tight">
             {greeting}, {ownerName} 👋
           </h1>
           <div className="flex items-center gap-2 mt-1.5">
@@ -309,7 +309,7 @@ export default function HomeClient({
           </div>
         </div>
 
-        <div className="flex-shrink-0 flex flex-col items-end gap-1.5">
+        <div className="flex-shrink-0 flex flex-col items-start sm:items-end gap-1.5">
           <button
             onClick={handleSync}
             disabled={syncing}
@@ -332,26 +332,26 @@ export default function HomeClient({
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
 
         {/* Reviews this month */}
-        <div className="bg-white rounded-2xl border border-[#E8E4DC] p-5 shadow-[0_1px_4px_rgba(0,0,0,0.04)] relative overflow-hidden">
+        <div className="bg-white rounded-2xl border border-[#E8E4DC] p-4 sm:p-5 shadow-[0_1px_4px_rgba(0,0,0,0.04)] relative overflow-hidden">
           <div className="absolute top-4 right-4 opacity-[0.07]">
             <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
               <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
             </svg>
           </div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#999] mb-3">Reviews</p>
-          <p className="text-[32px] font-bold text-[#111] leading-none tracking-tight mb-3">{reviewsThisMonth}</p>
+          <p className="text-[26px] sm:text-[32px] font-bold text-[#111] leading-none tracking-tight mb-3">{reviewsThisMonth}</p>
           <TrendBadge current={reviewsThisMonth} prev={reviewsLastMonth} />
         </div>
 
         {/* Average rating */}
-        <div className="bg-white rounded-2xl border border-[#E8E4DC] p-5 shadow-[0_1px_4px_rgba(0,0,0,0.04)] relative overflow-hidden">
+        <div className="bg-white rounded-2xl border border-[#E8E4DC] p-4 sm:p-5 shadow-[0_1px_4px_rgba(0,0,0,0.04)] relative overflow-hidden">
           <div className="absolute top-4 right-4 opacity-[0.08] text-amber-400">
             <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
               <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
             </svg>
           </div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#999] mb-3">Avg rating</p>
-          <p className="text-[32px] font-bold text-[#F59E0B] leading-none tracking-tight mb-3">
+          <p className="text-[26px] sm:text-[32px] font-bold text-[#F59E0B] leading-none tracking-tight mb-3">
             {avgRating.toFixed(1)}<span className="text-[20px] ml-0.5">★</span>
           </p>
           <div className="flex gap-0.5">
@@ -364,26 +364,26 @@ export default function HomeClient({
         </div>
 
         {/* Replies approved */}
-        <div className="bg-white rounded-2xl border border-[#E8E4DC] p-5 shadow-[0_1px_4px_rgba(0,0,0,0.04)] relative overflow-hidden">
+        <div className="bg-white rounded-2xl border border-[#E8E4DC] p-4 sm:p-5 shadow-[0_1px_4px_rgba(0,0,0,0.04)] relative overflow-hidden">
           <div className="absolute top-4 right-4 opacity-[0.07]">
             <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#999] mb-3">Approved</p>
-          <p className="text-[32px] font-bold text-[#111] leading-none tracking-tight mb-3">{approvedThisMonth}</p>
+          <p className="text-[26px] sm:text-[32px] font-bold text-[#111] leading-none tracking-tight mb-3">{approvedThisMonth}</p>
           <TrendBadge current={approvedThisMonth} prev={approvedLastMonth} />
         </div>
 
         {/* Response rate */}
-        <div className="bg-white rounded-2xl border border-[#E8E4DC] p-5 shadow-[0_1px_4px_rgba(0,0,0,0.04)] relative overflow-hidden">
+        <div className="bg-white rounded-2xl border border-[#E8E4DC] p-4 sm:p-5 shadow-[0_1px_4px_rgba(0,0,0,0.04)] relative overflow-hidden">
           <div className="absolute top-4 right-4 opacity-[0.07]">
             <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
             </svg>
           </div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#999] mb-3">Response rate</p>
-          <p className={`text-[32px] font-bold leading-none tracking-tight mb-3 ${rateColor}`}>{responseRate}<span className="text-[20px]">%</span></p>
+          <p className={`text-[26px] sm:text-[32px] font-bold leading-none tracking-tight mb-3 ${rateColor}`}>{responseRate}<span className="text-[18px] sm:text-[20px]">%</span></p>
           <span className="text-[11px] text-[#C0BDB8]">all time · {totalReviews} reviews</span>
         </div>
       </div>

@@ -5,7 +5,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className="min-h-screen bg-[#F5F4F0] flex flex-col">
       <Nav />
-      <main className="flex-1 max-w-5xl mx-auto w-full px-5 py-10 animate-fade-in">
+      <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-5 py-6 sm:py-10 animate-fade-in">
         <ErrorBoundary>
           {children}
         </ErrorBoundary>

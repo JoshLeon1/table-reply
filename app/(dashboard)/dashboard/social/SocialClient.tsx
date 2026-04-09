@@ -366,12 +366,10 @@ function CreatePostModal({
               {graphicHtml && (
                 <div className="flex flex-col items-center gap-4">
                   {/* Preview */}
-                  <div className="rounded-2xl overflow-hidden shadow-lg border border-[#E8E4DC]" style={{ width: 320, height: 320 }}>
+                  <div className="rounded-2xl overflow-hidden shadow-lg border border-[#E8E4DC] w-full" style={{ maxWidth: 320, aspectRatio: '1 / 1' }}>
                     <iframe
                       ref={iframeRef}
                       srcDoc={graphicHtml}
-                      width={400}
-                      height={400}
                       scrolling="no"
                       title="Graphic preview"
                       style={{ display: 'block', border: 'none', width: 400, height: 400, transform: 'scale(0.8)', transformOrigin: '0 0', pointerEvents: 'none' }}

@@ -95,10 +95,10 @@ function SetupPanel({ profile, onSaved }: { profile: RestaurantProfile; onSaved:
         </svg>
       </div>
       <h1 className="text-xl font-semibold text-[#111] mb-2">Put your review replies on autopilot</h1>
-      <p className="text-[13px] text-[#888] max-w-sm mb-8 leading-relaxed">
+      <p className="text-[13px] text-[#888] max-w-[280px] sm:max-w-sm mb-8 leading-relaxed">
         Connect your Google Maps listing and TableReply will scrape new reviews every morning, generate personalised replies, and queue them for your approval.
       </p>
-      <div className="w-full max-w-md text-left space-y-3">
+      <div className="w-full sm:max-w-md text-left space-y-3">
         <label className="block text-[13px] font-medium text-[#111]">Google Maps URL</label>
         <input
           type="url"
@@ -117,7 +117,7 @@ function SetupPanel({ profile, onSaved }: { profile: RestaurantProfile; onSaved:
           {saving ? 'Saving…' : 'Connect & Start Syncing'}
         </button>
       </div>
-      <details className="mt-8 text-left max-w-md w-full group">
+      <details className="mt-8 text-left w-full sm:max-w-md group">
         <summary className="text-[12px] text-[#AAA] cursor-pointer hover:text-[#666] select-none list-none flex items-center gap-1.5 transition-colors">
           <svg className="w-3 h-3 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>
@@ -276,7 +276,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss }: {
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-2 px-5 py-3.5 bg-[#FAFAF8] border-t border-[#F0EDE8]">
+      <div className="flex flex-wrap items-center gap-2 px-4 sm:px-5 py-3.5 bg-[#FAFAF8] border-t border-[#F0EDE8]">
         {noText ? (
           <span className="text-[12px] text-[#CCC] italic flex-1">No reply needed</span>
         ) : (

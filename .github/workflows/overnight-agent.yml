@@ -1,0 +1,84 @@
+name: Overnight Agent
+
+on:
+  schedule:
+    # Runs at 11:00 PM EST (04:00 UTC) every night Mon–Fri
+    - cron: '0 4 * * 2-6'
+  workflow_dispatch:
+    inputs:
+      task:
+        description: 'Custom task for the agent (leave blank for default nightly run)'
+        required: false
+        type: string
+
+jobs:
+  agent:
+    name: Claude Code Agent
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Claude Code Agent
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          model: 'claude-opus-4-5'
+          timeout_minutes: '90'
+          prompt: |
+            ${{ github.event.inputs.task || 'You are working on TableReply — a Next.js 14 App Router SaaS that helps restaurant owners manage and reply to Google reviews. The stack is: Next.js 14, TypeScript, Tailwind CSS, Supabase (Postgres + Auth), Anthropic API, Resend (email), Outscraper (review scraping).
+
+            Tonight your job is to improve code quality, robustness, and UX polish. Work through the list below in order. After completing each item, commit with a clear message before moving on. Create a new branch called "agent/nightly-$(date +%Y-%m-%d)" for all your changes.
+
+            RULES:
+            - Never break existing functionality
+            - Never change database schema (no migrations)
+            - Never modify environment variable names
+            - Keep all UI changes consistent with the existing dark/warm design system (#111111 dark, amber-400 accent, white/warm-gray light pages)
+            - Each commit should be self-contained and deployable
+            - If unsure about a change, skip it and move on
+
+            TASKS (work through as many as you can in order):
+
+            1. TYPESCRIPT — Fix any `any` types in these files:
+               - app/(dashboard)/dashboard/analytics/AnalyticsClient.tsx
+               - app/(dashboard)/dashboard/competitors/CompetitorsClient.tsx
+               - app/(dashboard)/dashboard/social/SocialClient.tsx
+               - components/KeywordAlertsManager.tsx
+               Replace with proper types. Do not change logic.
+
+            2. ERROR BOUNDARIES — Add a simple error boundary wrapper to the main dashboard layout at app/(dashboard)/layout.tsx so a crash in one page does not break the whole app.
+
+            3. LOADING STATES — Check app/(dashboard)/dashboard/reviews/ReviewsClient.tsx and app/(dashboard)/dashboard/analytics/AnalyticsClient.tsx. Any button that triggers an async action should show a loading spinner and be disabled while in-flight. Add any that are missing.
+
+            4. EMPTY STATES — For any list or table in the app that can be empty, make sure there is a helpful empty state with an icon, a short message, and ideally a call-to-action link. Check: competitors page, get-more-reviews page, social page.
+
+            5. MOBILE POLISH — Review the following pages on a 375px viewport (simulate with CSS). Fix any overflow, truncation, or layout issues:
+               - app/(dashboard)/dashboard/HomeClient.tsx
+               - app/(dashboard)/dashboard/reviews/ReviewsClient.tsx
+
+            6. ACCESSIBILITY — Add missing `aria-label` attributes to icon-only buttons across the app. Search for `<button` tags that contain only an SVG with no text.
+
+            7. CONSISTENCY — The generate-reply page (app/(dashboard)/dashboard/DashboardClient.tsx) and the home page quick-reply panel both call /api/generate-reply. Extract the shared fetch logic into a utility function at lib/generateReply.ts and use it in both places.
+
+            8. API HARDENING — In app/api/generate-reply/route.ts and app/api/analyze-themes/route.ts, add a check that the user has not exceeded a reasonable rate limit (max 20 calls per hour per user). Use Supabase to store a simple counter in the profiles table with a timestamp. If the limit is hit, return 429 with a clear message. Skip this task if the profiles table would need schema changes beyond adding columns.
+
+            When done, open a pull request with a summary of everything you changed.
+            ' }}

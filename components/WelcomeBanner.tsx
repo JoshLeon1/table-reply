@@ -1,0 +1,111 @@
+'use client'
+
+import { useState, useEffect, useCallback } from 'react'
+import Link from 'next/link'
+
+const LS_REPLY  = 'tr_step_reply'
+const LS_SYNC   = 'tr_step_sync'
+const LS_DONE   = 'tr_welcome_done'
+
+interface Props {
+  hasGeneratedReply: boolean
+  hasAutoSync: boolean
+  onReplyGenerated?: (cb: () => void) => void
+}
+
+export default function WelcomeBanner({ hasGeneratedReply, hasAutoSync }: Props) {
+  const [steps, setSteps] = useState({ voice: true, reply: false, sync: false })
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (localStorage.getItem(LS_DONE)) return
+
+    const replyDone = hasGeneratedReply || localStorage.getItem(LS_REPLY) === '1'
+    const syncDone  = hasAutoSync  || localStorage.getItem(LS_SYNC)  === '1'
+
+    if (replyDone) localStorage.setItem(LS_REPLY, '1')
+    if (syncDone)  localStorage.setItem(LS_SYNC,  '1')
+
+    const allDone = replyDone && syncDone
+    if (allDone) { localStorage.setItem(LS_DONE, '1'); return }
+
+    setSteps({ voice: true, reply: replyDone, sync: syncDone })
+    setVisible(true)
+  }, [hasGeneratedReply, hasAutoSync])
+
+  const dismiss = () => {
+    localStorage.setItem(LS_DONE, '1')
+    setVisible(false)
+  }
+
+  if (!visible) return null
+
+  const stepList = [
+    {
+      done: steps.voice,
+      label: 'Set your restaurant voice',
+      href: '/settings',
+      hint: 'Settings',
+    },
+    {
+      done: steps.reply,
+      label: 'Generate your first reply',
+      href: '/dashboard',
+      hint: 'Generate',
+    },
+    {
+      done: steps.sync,
+      label: 'Connect Google for auto-sync',
+      href: '/dashboard/reviews',
+      hint: 'Auto Reviews',
+    },
+  ]
+
+  const doneCount = stepList.filter((s) => s.done).length
+
+  return (
+    <div className="bg-white rounded-2xl border border-[#E8E4DC] p-5 mb-2">
+      <div className="flex items-start justify-between gap-4 mb-4">
+        <div>
+          <p className="text-[13px] font-semibold text-[#111]">
+            Welcome to TableReply! Here's how to get the most out of it:
+          </p>
+          <p className="text-[12px] text-[#AAA] mt-0.5">{doneCount} of 3 steps complete</p>
+        </div>
+        <button onClick={dismiss} className="text-[#CCC] hover:text-[#888] transition-colors flex-shrink-0 mt-0.5">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-2">
+        {stepList.map((step, i) => (
+          <Link
+            key={i}
+            href={step.href}
+            className={`flex-1 flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl border transition-all duration-150 ${
+              step.done
+                ? 'bg-[#F5F4F0] border-[#E8E4DC] opacity-60 pointer-events-none'
+                : 'bg-white border-amber-200 hover:border-amber-400 hover:bg-amber-50'
+            }`}
+          >
+            <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${
+              step.done ? 'bg-emerald-100 text-emerald-600' : 'border-2 border-amber-300'
+            }`}>
+              {step.done && (
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/>
+                </svg>
+              )}
+            </div>
+            <span className={`text-[12px] font-medium leading-snug ${step.done ? 'text-[#AAA] line-through' : 'text-[#333]'}`}>
+              {step.label}
+            </span>
+          </Link>
+        ))}
+      </div>
+    </div>
+  )
+}

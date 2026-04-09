@@ -1,0 +1,62 @@
+name: Agent On-Demand
+
+on:
+  workflow_dispatch:
+    inputs:
+      task:
+        description: 'What should the agent do? Be specific.'
+        required: true
+        type: string
+      branch:
+        description: 'Branch name for the changes (e.g. agent/fix-mobile)'
+        required: false
+        default: 'agent/on-demand'
+        type: string
+
+jobs:
+  agent:
+    name: Claude Code Agent
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Claude Code Agent
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          model: 'claude-opus-4-5'
+          timeout_minutes: '50'
+          prompt: |
+            You are working on TableReply — a Next.js 14 SaaS for restaurant review management.
+            Stack: Next.js 14 App Router, TypeScript, Tailwind CSS, Supabase, Anthropic API.
+            Design system: dark nav (#111111), amber-400 accent, white/warm-gray content areas.
+
+            Create a branch called "${{ github.event.inputs.branch }}" for your changes.
+            Commit as you go. Open a pull request when done.
+
+            TASK:
+            ${{ github.event.inputs.task }}
+
+            RULES:
+            - Never break existing functionality
+            - Never change database schema
+            - Keep UI consistent with the existing design system
+            - Each commit should be self-contained

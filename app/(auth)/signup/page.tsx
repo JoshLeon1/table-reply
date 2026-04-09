@@ -10,7 +10,6 @@ import { Card } from '@/components/ui/Card'
 
 export default function SignupPage() {
   const router = useRouter()
-  const supabase = createClient()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -20,7 +19,7 @@ export default function SignupPage() {
     e.preventDefault()
     setLoading(true)
     setError('')
-
+    const supabase = createClient()
     const { data: authData, error } = await supabase.auth.signUp({ email, password })
 
     if (error) {

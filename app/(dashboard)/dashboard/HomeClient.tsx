@@ -242,7 +242,7 @@ export default function HomeClient({
     setTimeout(() => setQuickCopied(false), 2000)
   }
 
-  const rateColor = responseRate >= 70 ? 'text-emerald-600' : responseRate >= 40 ? 'text-amber-500' : 'text-red-500'
+  const rateColor = responseRate >= 70 ? 'text-emerald-600' : responseRate >= 40 ? 'text-[#E05A28]' : 'text-red-500'
 
   const router = useRouter()
   const [syncing, setSyncing] = useState(false)
@@ -323,7 +323,7 @@ export default function HomeClient({
             },
             {
               label: 'Average rating',
-              value: <span className="text-amber-500">{avgRating.toFixed(1)}<span className="text-[16px] sm:text-[18px] ml-0.5">★</span></span>,
+              value: <span className="text-amber-400">{avgRating.toFixed(1)}<span className="text-[16px] sm:text-[18px] ml-0.5">★</span></span>,
               sub: <StarRow rating={Math.round(avgRating)} />,
               delay: 'stagger-2',
             },

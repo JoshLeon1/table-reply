@@ -68,7 +68,7 @@ export default function GoogleConnectModal({
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 text-stone-400 hover:text-stone-700 hover:bg-stone-100 rounded-md transition-colors"
+          className="absolute top-4 right-4 p-1.5 text-[#A8A29E] hover:text-[#111] hover:bg-[#F3F0EC] rounded-md transition-colors"
           aria-label="Close"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -90,13 +90,13 @@ export default function GoogleConnectModal({
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h3 className="text-xl font-bold text-stone-900 mb-2">
+            <h3 className="text-xl font-bold text-[#111] mb-2">
               You&apos;re on the list!
             </h3>
-            <p className="text-stone-500 text-sm mb-8">We&apos;ll be in touch soon.</p>
+            <p className="text-[#7C7672] text-sm mb-8">We&apos;ll be in touch soon.</p>
             <button
               onClick={onClose}
-              className="w-full px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-lg transition-colors text-sm"
+              className="w-full px-6 py-3 bg-[#C94E21] hover:bg-[#B34419] text-white font-semibold rounded-lg transition-colors text-sm"
             >
               Close
             </button>
@@ -106,16 +106,16 @@ export default function GoogleConnectModal({
           <>
             {/* Google logo */}
             <div className="flex justify-center mb-5">
-              <div className="w-14 h-14 rounded-full border border-stone-100 shadow-sm flex items-center justify-center bg-white">
+              <div className="w-14 h-14 rounded-full border border-[#EDE9E4] shadow-sm flex items-center justify-center bg-white">
                 <GoogleLogo className="w-7 h-7" />
               </div>
             </div>
 
             {/* Headline */}
-            <h2 className="text-xl font-bold text-stone-900 text-center mb-2">
+            <h2 className="text-xl font-bold text-[#111] text-center mb-2">
               Auto-sync your Google reviews
             </h2>
-            <p className="text-stone-500 text-sm text-center leading-relaxed mb-7">
+            <p className="text-[#7C7672] text-sm text-center leading-relaxed mb-7">
               We&apos;re building direct Google Business Profile integration. Connect once
               and TableReply will automatically pull new reviews and generate replies —
               no copy-paste needed.
@@ -128,7 +128,7 @@ export default function GoogleConnectModal({
                 'One-click post replies directly to Google',
                 'Get notified when new reviews arrive',
               ].map((feature) => (
-                <li key={feature} className="flex items-center gap-2.5 text-sm text-stone-700">
+                <li key={feature} className="flex items-center gap-2.5 text-sm text-[#444]">
                   <svg
                     className="w-4 h-4 text-green-500 flex-shrink-0"
                     fill="none"
@@ -145,8 +145,8 @@ export default function GoogleConnectModal({
 
             {/* Status messages */}
             {status === 'exists' && (
-              <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 mb-4 text-sm text-amber-800">
-                <svg className="w-4 h-4 text-amber-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <div className="flex items-center gap-2 bg-[#FEF0E8] border border-[#F5C9AD] rounded-lg px-4 py-3 mb-4 text-sm text-[#B34419]">
+                <svg className="w-4 h-4 text-[#E05A28] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 You&apos;re already on the list!
@@ -170,12 +170,12 @@ export default function GoogleConnectModal({
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
                 required
-                className="w-full px-3 py-2.5 border border-stone-200 rounded-lg text-stone-900 placeholder:text-stone-400 bg-white focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm"
+                className="w-full px-3 py-2.5 border border-[#E4DED8] rounded-lg text-[#111] placeholder:text-[#C4BEB8] bg-white focus:outline-none focus:ring-2 focus:ring-[#E05A28] focus:border-transparent text-sm"
               />
               <button
                 type="submit"
                 disabled={status === 'loading' || status === 'exists'}
-                className="w-full px-6 py-3 bg-amber-600 hover:bg-amber-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors text-sm flex items-center justify-center gap-2"
+                className="w-full px-6 py-3 bg-[#C94E21] hover:bg-[#B34419] disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors text-sm flex items-center justify-center gap-2"
               >
                 {status === 'loading' ? (
                   <>
@@ -191,7 +191,7 @@ export default function GoogleConnectModal({
               </button>
             </form>
 
-            <p className="text-xs text-stone-400 text-center mt-3">
+            <p className="text-xs text-[#A8A29E] text-center mt-3">
               We&apos;ll email you the moment it launches. No spam.
             </p>
           </>

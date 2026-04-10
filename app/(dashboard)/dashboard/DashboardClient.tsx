@@ -77,7 +77,7 @@ export default function DashboardClient({
             <h1 className="text-xl font-semibold text-[#111]">Generate a reply</h1>
             <p className="text-[13px] text-[#888] mt-0.5">
               Paste any review and get a personalised response in seconds.{' '}
-              <kbd className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded border border-[#E8E4DC] text-[10px] font-mono text-[#AAA] bg-[#F9F8F6]">
+              <kbd className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded border border-[#E4DED8] text-[10px] font-mono text-[#AAA] bg-[#F9F8F6]">
                 ⌘ Enter
               </kbd>
             </p>
@@ -85,11 +85,11 @@ export default function DashboardClient({
 
           <button
             onClick={() => setShowGoogleModal(true)}
-            className="flex items-center gap-2 px-3.5 py-2 bg-white border border-[#E8E4DC] hover:border-[#D4CFC6] rounded-xl text-[13px] font-medium text-[#555] hover:text-[#111] transition-all duration-150 flex-shrink-0"
+            className="flex items-center gap-2 px-3.5 py-2 bg-white border border-[#E4DED8] hover:border-[#D4CFC6] rounded-xl text-[13px] font-medium text-[#555] hover:text-[#111] transition-all duration-150 flex-shrink-0"
           >
             <GoogleLogo className="w-4 h-4 flex-shrink-0" />
             Auto-sync
-            <span className="px-1.5 py-0.5 bg-amber-50 text-amber-600 text-[10px] font-bold rounded-md border border-amber-200 uppercase tracking-wide leading-none">
+            <span className="px-1.5 py-0.5 bg-[#FEF0E8] text-[#C94E21] text-[10px] font-bold rounded-md border border-[#F5C9AD] uppercase tracking-wide leading-none">
               Soon
             </span>
           </button>

@@ -111,7 +111,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
   const showCards = !generating && (messages !== null || generateError !== null)
 
   return (
-    <div className="min-h-screen bg-[#F5F4F0] p-6 md:p-8">
+    <div className="min-h-screen bg-[#F3F0EC] p-6 md:p-8">
       <div className="max-w-4xl mx-auto space-y-8">
 
         {/* Page Header */}
@@ -121,7 +121,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
         </div>
 
         {/* Section 1: Review Request Messages */}
-        <div className="bg-white rounded-2xl border border-[#E8E4DC] p-6 space-y-5">
+        <div className="bg-white rounded-2xl border border-[#E4DED8] p-6 space-y-5">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-base font-semibold text-[#111]">Review Request Messages</h2>
@@ -132,7 +132,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
             <button
               onClick={handleGenerateMessages}
               disabled={generating}
-              className="flex items-center gap-2 bg-amber-400 hover:bg-amber-500 disabled:opacity-60 text-[#111] font-medium text-sm px-4 py-2.5 rounded-xl transition-colors"
+              className="flex items-center gap-2 bg-[#E05A28] hover:bg-[#E05A28] disabled:opacity-60 text-[#111] font-medium text-sm px-4 py-2.5 rounded-xl transition-colors"
             >
               {generating ? (
                 <>
@@ -156,17 +156,17 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
           {showSkeletons && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {CHANNELS.map((ch) => (
-                <div key={ch.key} className="rounded-xl border border-[#E8E4DC] p-4 space-y-3 animate-pulse">
+                <div key={ch.key} className="rounded-xl border border-[#E4DED8] p-4 space-y-3 animate-pulse">
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 bg-[#E8E4DC] rounded-md" />
-                    <div className="w-20 h-4 bg-[#E8E4DC] rounded" />
+                    <div className="w-6 h-6 bg-[#E4DED8] rounded-md" />
+                    <div className="w-20 h-4 bg-[#E4DED8] rounded" />
                   </div>
                   <div className="space-y-2">
-                    <div className="w-full h-3 bg-[#E8E4DC] rounded" />
-                    <div className="w-4/5 h-3 bg-[#E8E4DC] rounded" />
-                    <div className="w-3/5 h-3 bg-[#E8E4DC] rounded" />
+                    <div className="w-full h-3 bg-[#E4DED8] rounded" />
+                    <div className="w-4/5 h-3 bg-[#E4DED8] rounded" />
+                    <div className="w-3/5 h-3 bg-[#E4DED8] rounded" />
                   </div>
-                  <div className="w-20 h-8 bg-[#E8E4DC] rounded-lg ml-auto" />
+                  <div className="w-20 h-8 bg-[#E4DED8] rounded-lg ml-auto" />
                 </div>
               ))}
             </div>
@@ -176,13 +176,13 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
           {showCards && messages && editedMessages && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {CHANNELS.map((ch) => (
-                <div key={ch.key} className="rounded-xl border border-[#E8E4DC] p-4 space-y-3">
+                <div key={ch.key} className="rounded-xl border border-[#E4DED8] p-4 space-y-3">
                   <div className="flex items-center gap-2">
                     <span className="text-lg">{ch.icon}</span>
                     <span className="text-sm font-medium text-[#111]">{ch.label}</span>
                   </div>
                   <textarea
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E8E4DC] text-[13px] text-[#111] focus:ring-2 focus:ring-amber-400/40 focus:outline-none resize-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] text-[13px] text-[#111] focus:ring-2 focus:ring-[#E05A28]/40 focus:outline-none resize-none"
                     rows={ch.key === 'email' ? 5 : 3}
                     value={editedMessages[ch.key]}
                     onChange={(e) =>
@@ -194,7 +194,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
                   <div className="flex justify-end">
                     <button
                       onClick={() => handleCopy(ch.key)}
-                      className="text-xs font-medium px-3 py-1.5 rounded-lg border border-[#E8E4DC] hover:bg-[#F5F4F0] text-[#111] transition-colors"
+                      className="text-xs font-medium px-3 py-1.5 rounded-lg border border-[#E4DED8] hover:bg-[#F3F0EC] text-[#111] transition-colors"
                     >
                       {copiedChannel === ch.key ? 'Copied!' : 'Copy'}
                     </button>
@@ -214,7 +214,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
         </div>
 
         {/* Section 2: QR Code Generator */}
-        <div className="bg-white rounded-2xl border border-[#E8E4DC] p-6 space-y-4">
+        <div className="bg-white rounded-2xl border border-[#E4DED8] p-6 space-y-4">
           <div>
             <h2 className="text-base font-semibold text-[#111]">QR Code for your Google review page</h2>
             <p className="text-[#888] text-xs mt-0.5">Add this to your menu, receipt, or table card</p>
@@ -244,7 +244,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
 
               {qrDataUrl && (
                 <div className="flex flex-col items-center gap-4">
-                  <div className="p-4 bg-white rounded-2xl border border-[#E8E4DC] inline-block">
+                  <div className="p-4 bg-white rounded-2xl border border-[#E4DED8] inline-block">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={qrDataUrl}
@@ -274,7 +274,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
               )}
             </div>
           ) : (
-            <div className="rounded-xl border border-[#E8E4DC] bg-[#F5F4F0] px-4 py-5 text-sm text-[#888]">
+            <div className="rounded-xl border border-[#E4DED8] bg-[#F3F0EC] px-4 py-5 text-sm text-[#888]">
               Connect your Google Maps listing in{' '}
               <span className="text-[#111] font-medium">Auto Reviews</span> to generate a QR code.
             </div>
@@ -301,7 +301,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
             ].map((tip) => (
               <div
                 key={tip.title}
-                className="bg-white rounded-2xl border border-[#E8E4DC] border-l-4 border-l-amber-400 p-5"
+                className="bg-white rounded-2xl border border-[#E4DED8] border-l-4 border-l-[#E05A28] p-5"
               >
                 <h3 className="text-sm font-semibold text-[#111] mb-1.5">{tip.title}</h3>
                 <p className="text-[#888] text-xs leading-relaxed">{tip.body}</p>

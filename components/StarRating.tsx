@@ -18,8 +18,8 @@ export default function StarRating({ value, onChange }: StarRatingProps) {
         >
           <svg
             className={`w-8 h-8 transition-colors ${
-              star <= value ? 'text-amber-400' : 'text-stone-200'
-            } hover:text-amber-400`}
+              star <= value ? 'text-[#E05A28]' : 'text-stone-200'
+            } hover:text-[#E05A28]`}
             fill="currentColor"
             viewBox="0 0 20 20"
           >

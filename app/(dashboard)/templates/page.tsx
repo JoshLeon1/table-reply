@@ -58,7 +58,7 @@ export default async function TemplatesPage() {
   const categoryMeta: Record<string, { bg: string; text: string; dot: string }> = {
     SMS:        { bg: 'bg-blue-50',   text: 'text-blue-600',   dot: 'bg-blue-400' },
     Email:      { bg: 'bg-violet-50', text: 'text-violet-600', dot: 'bg-violet-400' },
-    'In-Person':{ bg: 'bg-amber-50',  text: 'text-amber-600',  dot: 'bg-amber-400' },
+    'In-Person':{ bg: 'bg-[#FEF0E8]',  text: 'text-[#C94E21]',  dot: 'bg-[#E05A28]' },
   }
 
   const grouped = templates.reduce<Record<string, typeof templates>>((acc, t) => {
@@ -98,10 +98,10 @@ export default async function TemplatesPage() {
               {items.map((template, i) => (
                 <div
                   key={i}
-                  className="bg-white rounded-2xl border border-[#E8E4DC] overflow-hidden"
+                  className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden"
                 >
                   {/* Card header */}
-                  <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#F0EDE8]">
+                  <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#EDE9E4]">
                     <div className="flex items-center gap-2.5">
                       <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${meta.bg} ${meta.text}`}>
                         {category}

@@ -32,7 +32,7 @@ interface Props {
 
 function Stars({ rating }: { rating: number }) {
   return (
-    <span className="text-amber-400 text-[13px] tracking-tight">
+    <span className="text-[#E05A28] text-[13px] tracking-tight">
       {'★'.repeat(rating)}{'☆'.repeat(5 - rating)}
     </span>
   )
@@ -189,7 +189,7 @@ function CreatePostModal({
         <div className="px-5 pt-5 pb-4 flex-shrink-0">
           {/* Review pill */}
           <div className="flex items-center gap-2 mb-4">
-            <div className="flex-1 min-w-0 flex items-center gap-2 px-3 py-2 bg-[#F5F4F1] rounded-xl border border-[#E3E1DC]">
+            <div className="flex-1 min-w-0 flex items-center gap-2 px-3 py-2 bg-[#F3F0EC] rounded-xl border border-[#E3E1DC]">
               <Stars rating={review.star_rating} />
               <span className="text-[12px] font-semibold text-[#444] truncate">{review.reviewer_name}</span>
               <span className="text-[12px] text-[#9E9E9E] truncate flex-1">
@@ -255,7 +255,7 @@ function CreatePostModal({
                       onClick={() => { setCaptionStyle(s); setCaption(''); setHashtags([]) }}
                       className={`px-3 py-1.5 rounded-lg text-[12px] font-semibold border transition-all ${
                         captionStyle === s
-                          ? 'bg-amber-500 text-white border-amber-500'
+                          ? 'bg-[#E05A28] text-white border-[#E05A28]'
                           : 'bg-white text-[#666] border-[#E3E1DC] hover:border-[#C0BCB5]'
                       }`}
                     >
@@ -282,10 +282,10 @@ function CreatePostModal({
               {caption && (
                 <>
                   {/* Caption text */}
-                  <div className="bg-[#F5F4F1] rounded-xl border border-[#E3E1DC] p-4">
+                  <div className="bg-[#F3F0EC] rounded-xl border border-[#E3E1DC] p-4">
                     <p className="text-[14px] text-[#222] leading-relaxed font-medium">{caption}</p>
                     {hashtags.length > 0 && (
-                      <p className="text-[13px] text-amber-600 mt-2 leading-relaxed">{hashtags.join(' ')}</p>
+                      <p className="text-[13px] text-[#C94E21] mt-2 leading-relaxed">{hashtags.join(' ')}</p>
                     )}
                   </div>
 
@@ -329,7 +329,7 @@ function CreatePostModal({
                         onClick={() => { setGraphicStyle(s); setGraphicHtml('') }}
                         className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-left transition-all ${
                           graphicStyle === s
-                            ? 'border-amber-400 ring-2 ring-amber-400/20 bg-amber-50'
+                            ? 'border-[#E05A28] ring-2 ring-[#E05A28]/20 bg-[#FEF0E8]'
                             : 'border-[#E3E1DC] bg-white hover:border-[#C0BCB5]'
                         }`}
                       >
@@ -339,7 +339,7 @@ function CreatePostModal({
                         />
                         <span className="text-[12px] font-semibold text-[#333]">{s}</span>
                         {graphicStyle === s && (
-                          <svg className="w-3.5 h-3.5 text-amber-500 ml-auto flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <svg className="w-3.5 h-3.5 text-[#E05A28] ml-auto flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                           </svg>
                         )}
@@ -380,7 +380,7 @@ function CreatePostModal({
                   <button
                     onClick={downloadPng}
                     disabled={downloading}
-                    className="flex items-center gap-2 px-5 h-[44px] rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-[13px] font-semibold disabled:opacity-50 transition-all"
+                    className="flex items-center gap-2 px-5 h-[44px] rounded-xl bg-[#E05A28] hover:bg-[#C94E21] text-white text-[13px] font-semibold disabled:opacity-50 transition-all"
                   >
                     {downloading ? (
                       <><svg className="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/></svg>Downloading…</>

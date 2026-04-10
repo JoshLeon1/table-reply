@@ -223,12 +223,6 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
 
   const hasEnoughTrend = trendData.filter((d) => d.rating !== null).length >= 2
 
-  // Detect trend direction for tint
-  const trendValues = trendData.filter((d) => d.rating !== null).map((d) => d.rating as number)
-  const trendUp = trendValues.length >= 2 && trendValues[trendValues.length - 1] > trendValues[0]
-  const trendDown = trendValues.length >= 2 && trendValues[trendValues.length - 1] < trendValues[0]
-  const sparkColor = trendUp ? '#34D399' : trendDown ? '#F87171' : '#FBBF24'
-
   // Rolling-average sparkline — smooths noise so the line tells a real story
   const sparkData = useMemo(() => {
     const sorted = [...reviews]
@@ -336,7 +330,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
 
       // Page 2 — Executive summary
       doc.addPage()
-      doc.setFillColor(245, 244, 240) // #F5F4F0
+      doc.setFillColor(243, 240, 236) // #F3F0EC
       doc.rect(0, 0, 210, 297, 'F')
       doc.setTextColor(17, 17, 17)
       doc.setFontSize(20)
@@ -569,7 +563,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                     <Line
                       type="monotone"
                       dataKey="rating"
-                      stroke={sparkTrend === 'up' ? '#34D399' : sparkTrend === 'down' ? '#F87171' : '#D97706'}
+                      stroke={sparkTrend === 'up' ? '#34D399' : sparkTrend === 'down' ? '#F87171' : '#E05A28'}
                       strokeWidth={2.5}
                       dot={false}
                       isAnimationActive={false}
@@ -620,7 +614,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                   fontFamily: 'var(--font-playfair)',
                   fontSize: 'clamp(40px,6vw,60px)',
                   fontWeight: 700,
-                  color: responseRate >= 80 ? '#22c55e' : responseRate >= 50 ? '#111' : '#D97706',
+                  color: responseRate >= 80 ? '#22c55e' : responseRate >= 50 ? '#111' : '#E05A28',
                 }}
               >
                 {responseRate}%
@@ -657,7 +651,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                     className={`h-full rounded-full transition-all duration-700 ${
                       highlight
                         ? responseRate >= 50 ? 'bg-emerald-400' : 'bg-[#E05A28]'
-                        : 'bg-[#E0DDD8]'
+                        : 'bg-[#E4DED8]'
                     }`}
                     style={{ width: `${pct}%` }}
                   />
@@ -786,17 +780,17 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
             <AreaChart data={trendData} margin={{ top: 8, right: 0, bottom: 0, left: 0 }}>
               <defs>
                 <linearGradient id="trendGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#FBBF24" stopOpacity={0.15} />
-                  <stop offset="95%" stopColor="#FBBF24" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#E05A28" stopOpacity={0.15} />
+                  <stop offset="95%" stopColor="#E05A28" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <Area
                 type="monotone"
                 dataKey="rating"
-                stroke="#FBBF24"
+                stroke="#E05A28"
                 strokeWidth={2.5}
                 fill="url(#trendGrad)"
-                dot={{ fill: '#FBBF24', strokeWidth: 0, r: 3.5 }}
+                dot={{ fill: '#E05A28', strokeWidth: 0, r: 3.5 }}
                 activeDot={{ r: 5, fill: '#E05A28', strokeWidth: 0 }}
                 connectNulls
               />

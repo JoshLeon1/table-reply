@@ -111,7 +111,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
   const showCards = !generating && (messages !== null || generateError !== null)
 
   return (
-    <div className="min-h-screen bg-[#F3F0EC] p-6 md:p-8">
+    <div className="space-y-8 pb-12">
       <div className="max-w-4xl mx-auto space-y-8">
 
         {/* Page Header */}
@@ -132,7 +132,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
             <button
               onClick={handleGenerateMessages}
               disabled={generating}
-              className="flex items-center gap-2 bg-[#E05A28] hover:bg-[#E05A28] disabled:opacity-60 text-[#111] font-medium text-sm px-4 py-2.5 rounded-xl transition-colors"
+              className="flex items-center gap-2 bg-[#E05A28] hover:bg-[#C94E21] disabled:opacity-60 text-white font-medium text-sm px-4 py-2.5 rounded-xl transition-colors"
             >
               {generating ? (
                 <>

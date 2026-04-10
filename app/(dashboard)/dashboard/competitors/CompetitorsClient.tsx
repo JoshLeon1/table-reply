@@ -72,7 +72,7 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#F3F0EC] flex items-center justify-center px-4">
+    <div className="flex items-center justify-center py-16">
       <div className="w-full max-w-lg bg-white rounded-2xl border border-[#E4DED8] p-8">
         <div className="mb-6 text-center">
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#FEF0E8] mb-4">
@@ -425,7 +425,7 @@ function RatingChart({
               fontSize: 12,
               color: '#111',
             }}
-            cursor={{ fill: '#F5F4F0' }}
+            cursor={{ fill: '#F3F0EC' }}
             formatter={(value: unknown) => [`${Number(value).toFixed(1)} ★`, 'Rating']}
           />
           <Bar dataKey="rating" radius={[6, 6, 0, 0]}>
@@ -438,7 +438,7 @@ function RatingChart({
             {data.map((entry, index) => (
               <Cell
                 key={`cell-${index}`}
-                fill={entry.isYou ? '#FBBF24' : '#E0DDD8'}
+                fill={entry.isYou ? '#E05A28' : '#E4DED8'}
               />
             ))}
           </Bar>
@@ -467,10 +467,6 @@ function InsightCallout({
 
   const diff = Math.abs(userAvgRating - competitorAvg)
   const diffStr = diff.toFixed(1)
-
-  const reviewBigger = competitors.find(
-    (c) => c.review_count !== null && userAvgRating > 0 && c.review_count > 2 * (competitors[0]?.review_count ?? 1)
-  )
 
   // Find competitor with notably more reviews than user (rough heuristic)
   const userReviewProxy = competitors[0]?.review_count ?? null
@@ -604,7 +600,7 @@ export default function CompetitorsClient({
   }
 
   return (
-    <div className="min-h-screen bg-[#F3F0EC] px-4 py-8">
+    <div className="pb-12">
       <div className="max-w-3xl mx-auto">
 
         {/* Header */}

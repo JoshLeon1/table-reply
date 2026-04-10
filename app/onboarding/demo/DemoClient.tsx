@@ -200,7 +200,7 @@ export default function DemoClient({ restaurantProfile }: Props) {
 
           {state === 'done' && (
             <>
-              <div className="flex items-center justify-between px-6 py-4 border-b border-[#F0EDE8]">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-[#EDE9E4]">
                 <div className="flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-[#E05A28]" />
                   <span className="text-[13px] font-semibold text-[#111]">Generated reply</span>

@@ -602,7 +602,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
               <p className="text-[11px] text-[#CCC]">respond to reviews</p>
             </div>
 
-            <div className="w-px bg-[#F0EDE8] self-stretch hidden sm:block" />
+            <div className="w-px bg-[#EDE9E4] self-stretch hidden sm:block" />
 
             <div className="flex-1">
               <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#E05A28] mb-1">

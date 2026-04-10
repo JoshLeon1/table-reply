@@ -74,7 +74,7 @@ export default async function TemplatesPage() {
         <h1 className="text-xl font-semibold text-[#111]">Review request templates</h1>
         <p className="text-[13px] text-[#888] mt-0.5">
           Ready-to-send messages to get more Google reviews from happy guests. Replace{' '}
-          <code className="font-mono text-[12px] bg-[#F0EDE8] text-[#555] px-1.5 py-0.5 rounded">
+          <code className="font-mono text-[12px] bg-[#EDE9E4] text-[#57534E] px-1.5 py-0.5 rounded">
             [YOUR GOOGLE REVIEW LINK]
           </code>{' '}
           with your actual link.

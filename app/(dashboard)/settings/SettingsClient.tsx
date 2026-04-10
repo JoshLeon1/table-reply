@@ -173,7 +173,7 @@ export default function SettingsClient({
           )}
         </div>
 
-        <div className="divide-y divide-[#F0EDE8]">
+        <div className="divide-y divide-[#EDE9E4]">
           <div className="px-6 py-4 flex items-center justify-between gap-4">
             <div>
               <p className="text-[13px] font-medium text-[#111]">End reply with owner name</p>
@@ -252,7 +252,7 @@ export default function SettingsClient({
           <p className="text-[12px] text-[#888] mt-0.5">These actions are permanent and cannot be undone.</p>
         </div>
 
-        <div className="divide-y divide-[#F0EDE8]">
+        <div className="divide-y divide-[#EDE9E4]">
           {/* Export */}
           <div className="px-6 py-5 flex items-center justify-between gap-4">
             <div>

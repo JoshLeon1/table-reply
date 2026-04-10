@@ -2,10 +2,9 @@ export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import Anthropic from '@anthropic-ai/sdk'
+import { callClaude } from '@/lib/anthropic'
 
 export async function POST(request: NextRequest) {
-  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
   const supabase = createClient()
   const {
     data: { user },
@@ -44,24 +43,16 @@ export async function POST(request: NextRequest) {
   const rule = platformRules[platform] ?? platformRules['Instagram']
 
   try {
-    const message = await anthropic.messages.create({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 300,
+    const rawText = await callClaude({
+      maxTokens: 300,
       system: `You are a social media manager for ${restaurantName}, a ${cuisineType ?? 'restaurant'} with a ${vibe ?? 'welcoming'} vibe. Transform a customer review into a social post caption. Never quote the review verbatim. Celebrate the restaurant authentically. Style: ${style}.`,
-      messages: [
-        {
-          role: 'user',
-          content: `Review: "${reviewText}"
+      userMessage: `Review: "${reviewText}"
 Platform: ${platform}
 Rule: ${rule}
 
 Return ONLY valid JSON: { "caption": "short caption here", "hashtags": ["#tag1", "#tag2", "#tag3", "#tag4", "#tag5"] }
 Hashtags: 4-5 relevant tags. No markdown, no explanation — just the JSON object.`,
-        },
-      ],
     })
-
-    const rawText = message.content[0].type === 'text' ? message.content[0].text : ''
     const jsonMatch = rawText.match(/\{[\s\S]*\}/)
     const jsonStr = jsonMatch ? jsonMatch[0] : rawText
 

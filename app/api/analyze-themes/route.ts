@@ -1,7 +1,6 @@
 export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
-import Anthropic from '@anthropic-ai/sdk'
 import { createClient as createServerClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 
@@ -25,7 +24,6 @@ function extractJSON(raw: string): string {
 }
 
 export async function POST(request: NextRequest) {
-  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
   const supabaseAdmin = createServiceClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -76,14 +74,24 @@ export async function POST(request: NextRequest) {
 
   // ── Call Claude ───────────────────────────────────────────────────────────────
   try {
-    const message = await anthropic.messages.create({
-      model: 'claude-opus-4-6',
-      max_tokens: 1024,
-      system: 'You are a data extraction assistant. You respond ONLY with valid JSON. No markdown, no code fences, no explanation — just the raw JSON object.',
-      messages: [
-        {
-          role: 'user',
-          content: `Analyze these ${reviews.length} restaurant reviews. Return a JSON object with exactly this structure:
+    const apiKey = process.env.ANTHROPIC_API_KEY
+    if (!apiKey) throw new Error('ANTHROPIC_API_KEY not set')
+
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 1024,
+        system: 'You are a data extraction assistant. You respond ONLY with valid JSON. No markdown, no code fences, no explanation — just the raw JSON object.',
+        messages: [
+          {
+            role: 'user',
+            content: `Analyze these ${reviews.length} restaurant reviews. Return a JSON object with exactly this structure:
 {"praised":["item1","item2","item3"],"complaints":["item1","item2"],"opportunities":["item1","item2","item3"]}
 
 Rules:
@@ -95,11 +103,18 @@ Rules:
 
 Reviews:
 ${reviews.slice(0, 60).join('\n---\n')}`,
-        },
-      ],
+          },
+        ],
+      }),
     })
 
-    const raw = message.content[0].type === 'text' ? message.content[0].text : ''
+    if (!res.ok) {
+      const errText = await res.text()
+      throw new Error(`Anthropic API error ${res.status}: ${errText}`)
+    }
+
+    const data = await res.json()
+    const raw = data.content?.[0]?.type === 'text' ? data.content[0].text : ''
     console.log('[analyze-themes] Raw (first 400):', raw.slice(0, 400))
 
     const parsed = JSON.parse(extractJSON(raw))

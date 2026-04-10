@@ -99,3 +99,44 @@ export async function generateReviewReply(params: GenerateReviewReplyParams): Pr
 
   return content.text
 }
+
+// ── Generic helper used by all API routes ─────────────────────────────────────
+export async function callClaude({
+  model = 'claude-haiku-4-5-20251001',
+  system,
+  userMessage,
+  maxTokens = 400,
+}: {
+  model?: string
+  system: string
+  userMessage: string
+  maxTokens?: number
+}): Promise<string> {
+  const apiKey = process.env.ANTHROPIC_API_KEY
+  if (!apiKey) throw new Error('ANTHROPIC_API_KEY is not set')
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify({
+      model,
+      max_tokens: maxTokens,
+      system,
+      messages: [{ role: 'user', content: userMessage }],
+    }),
+  })
+
+  if (!res.ok) {
+    const errText = await res.text()
+    throw new Error(`Anthropic API error ${res.status}: ${errText}`)
+  }
+
+  const data = await res.json()
+  const content = data.content?.[0]
+  if (!content || content.type !== 'text') throw new Error('Unexpected response from Anthropic')
+  return content.text
+}

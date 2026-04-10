@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { createClient as createServerClient } from '@/lib/supabase/server'
-import Anthropic from '@anthropic-ai/sdk'
+import { callClaude } from '@/lib/anthropic'
 import { Resend } from 'resend'
 
 interface OutscraperReview {
@@ -20,7 +20,6 @@ export async function POST(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
-  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
   const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
   // ── Parse body once (readable stream can only be consumed once) ─────────
   const body = await request.json().catch(() => ({}))
@@ -285,16 +284,11 @@ export async function POST(request: NextRequest) {
     } else {
       // ── Feature 9: Detect language ──────────────────────────────────────
       try {
-        const langMsg = await anthropic.messages.create({
-          model: 'claude-haiku-3-5',
-          max_tokens: 20,
-          messages: [{
-            role: 'user',
-            content: `What language is this text written in? Reply with ONLY the language name in English, nothing else.\n\n"${review_text.slice(0, 200)}"`
-          }]
-        })
-        const langContent = langMsg.content[0]
-        if (langContent.type === 'text') detectedLanguage = langContent.text.trim()
+        detectedLanguage = (await callClaude({
+          maxTokens: 20,
+          system: 'You detect languages. Reply with ONLY the language name in English, nothing else.',
+          userMessage: `What language is this text written in?\n\n"${review_text.slice(0, 200)}"`,
+        })).trim()
         console.log(`[scrape-reviews] ↳ Detected language: ${detectedLanguage}`)
       } catch { /* silent fail */ }
 
@@ -329,23 +323,12 @@ export async function POST(request: NextRequest) {
 
       // ── Generate reply via Anthropic ────────────────────────────────────
       try {
-        const message = await anthropic.messages.create({
-          model: 'claude-opus-4-6',
-          max_tokens: 400,
+        generatedReply = await callClaude({
+          maxTokens: 400,
           system: systemPrompt + languageInstruction,
-          messages: [
-            {
-              role: 'user',
-              content: `Write a response to this ${review_rating}-star review (${review_text.trim().split(/\s+/).length} words):\n\n"${review_text}"`,
-            },
-          ],
+          userMessage: `Write a response to this ${review_rating}-star review (${review_text.trim().split(/\s+/).length} words):\n\n"${review_text}"`,
         })
-
-        const content = message.content[0]
-        if (content.type === 'text') {
-          generatedReply = content.text
-          console.log(`[scrape-reviews] ↳ Reply generated (${generatedReply.length} chars)`)
-        }
+        console.log(`[scrape-reviews] ↳ Reply generated (${generatedReply.length} chars)`)
       } catch (err) {
         console.error(`[scrape-reviews] Anthropic error for review ${review_id}:`, err)
         // Still insert the review, just with a null reply
@@ -353,22 +336,14 @@ export async function POST(request: NextRequest) {
 
       // ── Feature 3: Extract staff mentions ───────────────────────────────
       try {
-        const staffMsg = await anthropic.messages.create({
-          model: 'claude-haiku-3-5',
-          max_tokens: 100,
-          messages: [{
-            role: 'user',
-            content: `Extract any staff member first names mentioned in this restaurant review. Return ONLY a JSON array of first names, or empty array [] if none mentioned. Example: ["Karen", "Mike"]\n\nReview: "${review_text.slice(0, 500)}"`
-          }]
+        const staffRaw = await callClaude({
+          maxTokens: 100,
+          system: 'You extract names. Return ONLY a JSON array of first names, or [] if none.',
+          userMessage: `Extract any staff member first names mentioned in this restaurant review. Example output: ["Karen", "Mike"]\n\nReview: "${review_text.slice(0, 500)}"`,
         })
-        const staffContent = staffMsg.content[0]
-        if (staffContent.type === 'text') {
-          const parsed = JSON.parse(staffContent.text.trim())
-          if (Array.isArray(parsed)) staffMentions = parsed
-          if (staffMentions.length > 0) {
-            console.log(`[scrape-reviews] ↳ Staff mentions: ${staffMentions.join(', ')}`)
-          }
-        }
+        const parsed = JSON.parse(staffRaw.trim())
+        if (Array.isArray(parsed)) staffMentions = parsed
+        if (staffMentions.length > 0) console.log(`[scrape-reviews] ↳ Staff mentions: ${staffMentions.join(', ')}`)
       } catch { /* silent fail */ }
 
       // ── Feature 2: Send alert email if triggered ─────────────────────────

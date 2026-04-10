@@ -148,14 +148,14 @@ function PendingCard({ review, onAction }: { review: ScrapedReview; onAction: (i
         </div>
 
         {/* Review snippet */}
-        <p className="text-[13px] text-[#555] leading-relaxed mt-3 pl-12">
+        <p className="text-[13px] text-[#555] leading-relaxed mt-3 pl-0 sm:pl-12">
           {review.review_text.length > 110 ? review.review_text.slice(0, 110) + '…' : review.review_text}
         </p>
       </div>
 
       {/* Reply section */}
       {review.generated_reply && (
-        <div className="px-5 pb-3.5 pl-[68px]">
+        <div className="px-5 pb-3.5 pl-5">
           <button
             onClick={() => setExpanded(v => !v)}
             className="flex items-center gap-1.5 text-[12px] text-[#999] hover:text-[#555] font-medium transition-colors group"
@@ -174,7 +174,7 @@ function PendingCard({ review, onAction }: { review: ScrapedReview; onAction: (i
       )}
 
       {/* Actions */}
-      <div className="flex items-center gap-2 px-5 pb-4 pl-[68px]">
+      <div className="flex items-center gap-2 px-5 pb-4 pl-5">
         <button
           onClick={handleApprove}
           disabled={actioning || !review.generated_reply}
@@ -292,36 +292,36 @@ export default function HomeClient({
         onClose={() => setShowConnectModal(false)}
       />
     )}
-    <div className="space-y-10 pb-12">
+    <div className="space-y-8 pb-12">
 
       {/* ── Header ───────────────────────────────────────────────────── */}
-      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-6">
+      <div className="bg-[#0D0D0D] rounded-2xl px-5 py-6 sm:px-7 sm:py-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-[22px] sm:text-[26px] font-bold text-[#0D0D0D] tracking-[-0.02em] leading-tight">
+          <h1 className="text-[22px] sm:text-[26px] font-bold text-white tracking-[-0.02em] leading-tight">
             {greeting}, {ownerName} 👋
           </h1>
           <div className="flex items-center gap-2 mt-1.5">
-            <span className="text-[13px] font-medium text-[#555]">{restaurantName}</span>
-            <span className="text-[#DDD]">·</span>
-            <span className="text-[12px] text-[#999]">
+            <span className="text-[13px] font-medium text-white/60">{restaurantName}</span>
+            <span className="text-white/20">·</span>
+            <span className="text-[12px] text-white/40">
               {lastScrapedAt ? `Synced ${formatTimeAgo(lastScrapedAt)}` : 'Not yet synced'}
             </span>
           </div>
         </div>
 
-        <div className="flex-shrink-0 flex flex-col items-start sm:items-end gap-1.5">
+        <div className="flex flex-col items-start sm:items-end gap-1.5 flex-shrink-0">
           <button
             onClick={handleSync}
             disabled={syncing}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white text-[13px] font-medium text-[#555] hover:text-[#111] disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.1)]"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-[13px] font-medium text-white/80 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 border border-white/10"
           >
-            <svg className={`w-3.5 h-3.5 opacity-60 ${syncing ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className={`w-3.5 h-3.5 opacity-70 ${syncing ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
             {syncing ? 'Syncing…' : 'Sync now'}
           </button>
           {syncMsg && (
-            <span className={`text-[11px] font-medium ${syncMsg.type === 'success' ? 'text-emerald-600' : 'text-red-500'}`}>
+            <span className={`text-[11px] font-medium ${syncMsg.type === 'success' ? 'text-emerald-400' : 'text-red-400'}`}>
               {syncMsg.type === 'success' ? '✓ ' : '✕ '}{syncMsg.text}
             </span>
           )}

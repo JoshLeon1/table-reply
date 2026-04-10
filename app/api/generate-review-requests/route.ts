@@ -2,10 +2,9 @@ export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import Anthropic from '@anthropic-ai/sdk'
+import { callClaude } from '@/lib/anthropic'
 
 export async function POST(request: NextRequest) {
-  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
   const supabase = createClient()
   const {
     data: { user },
@@ -33,20 +32,11 @@ export async function POST(request: NextRequest) {
 JSON only, no explanation.`
 
   try {
-    const message = await anthropic.messages.create({
-      model: 'claude-opus-4-6',
-      max_tokens: 800,
+    const raw = (await callClaude({
+      maxTokens: 800,
       system: systemPrompt,
-      messages: [{ role: 'user', content: userPrompt }],
-    })
-
-    const content = message.content[0]
-    if (content.type !== 'text') {
-      throw new Error('Unexpected response type from Anthropic')
-    }
-
-    // Strip markdown code fences if present
-    const raw = content.text.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '')
+      userMessage: userPrompt,
+    })).trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '')
 
     const parsed = JSON.parse(raw)
 

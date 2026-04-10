@@ -486,21 +486,21 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
         <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
 
           {/* Center — big number (first on mobile via order-1) */}
-          <div className="order-1 md:order-2 flex flex-col items-center justify-center px-8 py-12 text-center border-b md:border-b-0 border-white/[0.07]">
+          <div className="order-1 md:order-2 flex flex-col items-center justify-center px-6 sm:px-8 py-8 sm:py-12 text-center border-b md:border-b-0 border-white/[0.07]">
             <p
-              className="text-white leading-none mb-5"
-              style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(80px, 10vw, 120px)', fontWeight: 700, letterSpacing: '-0.02em' }}
+              className="text-white leading-none mb-4 sm:mb-5"
+              style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(64px, 10vw, 120px)', fontWeight: 700, letterSpacing: '-0.02em' }}
             >
               {avgRating.toFixed(1)}
             </p>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1 sm:gap-1.5">
               {[1,2,3,4,5].map((i) => (
-                <svg key={i} className={`w-7 h-7 ${i <= Math.round(avgRating) ? 'text-[#E05A28]' : 'text-white/15'}`} fill="currentColor" viewBox="0 0 20 20">
+                <svg key={i} className={`w-5 h-5 sm:w-7 sm:h-7 ${i <= Math.round(avgRating) ? 'text-[#E05A28]' : 'text-white/15'}`} fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                 </svg>
               ))}
             </div>
-            <p className="text-white/40 text-[12px] mt-4 leading-relaxed">
+            <p className="text-white/40 text-[12px] mt-3 sm:mt-4 leading-relaxed">
               {totalReviews} reviews analysed ·{' '}
               <span className={
                 responseRate >= 80 ? 'text-emerald-400 font-medium' :
@@ -518,16 +518,16 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
           </div>
 
           {/* Breakdown (second on mobile via order-2, first on desktop) */}
-          <div className="order-2 md:order-1 px-8 py-12 border-b md:border-b-0 md:border-r border-white/[0.07]">
-            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#E05A28]/70 mb-6">Breakdown</p>
-            <div className="space-y-3.5">
+          <div className="order-2 md:order-1 px-6 sm:px-8 py-8 sm:py-12 border-b md:border-b-0 md:border-r border-white/[0.07]">
+            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#E05A28]/70 mb-5 sm:mb-6">Breakdown</p>
+            <div className="space-y-3 sm:space-y-3.5">
               {[5, 4, 3, 2, 1].map((star) => {
                 const count = ratingDist[star] ?? 0
                 const pct = totalReviews > 0 ? (count / totalReviews) * 100 : 0
                 return (
-                  <div key={star} className="flex items-center gap-3">
+                  <div key={star} className="flex items-center gap-2 sm:gap-3">
                     <span className="text-[11px] text-white/40 w-5 flex-shrink-0 text-right">{star}★</span>
-                    <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
+                    <div className="flex-1 h-1.5 sm:h-2 bg-white/10 rounded-full overflow-hidden">
                       <div
                         className="h-full rounded-full bg-[#E05A28] transition-all duration-700"
                         style={{ width: `${pct}%` }}
@@ -541,7 +541,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
           </div>
 
           {/* Trend (third, order-3 on both) */}
-          <div className="order-3 px-8 py-12 md:border-l border-white/[0.07]">
+          <div className="order-3 px-6 sm:px-8 py-8 sm:py-12 md:border-l border-white/[0.07]">
             <div className="flex items-center justify-between mb-1">
               <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#E05A28]/70">Trend</p>
               {hasSparkData && (

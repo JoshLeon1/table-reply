@@ -283,19 +283,19 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss }: {
           <button
             onClick={handleApprove}
             disabled={actioning || !review.generated_reply}
-            className="flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#111] hover:bg-[#1C1C1C] text-white text-[13px] font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+            className="flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-[13px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all min-h-[40px]"
           >
             {copied ? (
-              <><svg className="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Reply copied!</>
+              <><svg className="w-3.5 h-3.5 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied!</>
             ) : (
-              <><svg className="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Copy reply &amp; approve</>
+              <><svg className="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Copy &amp; approve</>
             )}
           </button>
         )}
         <button
           onClick={handleDismiss}
           disabled={actioning}
-          className="px-3.5 py-2 rounded-xl text-[13px] font-medium text-[#A8A29E] hover:text-[#333] hover:bg-[#EDE9E4] disabled:opacity-40 transition-all"
+          className="px-3.5 py-2 rounded-xl text-[13px] font-medium text-[#A8A29E] hover:text-[#333] hover:bg-[#EDE9E4] disabled:opacity-40 transition-all min-h-[40px]"
         >
           Dismiss
         </button>
@@ -357,25 +357,25 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onScrapeNow, o
       )}
 
       {/* Page header */}
-      <div className="flex items-start justify-between mb-5">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-5">
         <div>
-          <h1 className="text-xl font-semibold text-[#111]">Auto Reviews</h1>
+          <h1 className="text-xl sm:text-2xl font-semibold text-[#111]">Auto Reviews</h1>
           <div className="flex items-center gap-2 mt-1">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"/>
-            <span className="text-[13px] text-[#6B6B6B]">
+            <span className="text-[13px] text-[#57534E]">
               {profile.restaurant_name}
               {lastScrapedAt && <> · Synced {formatDate(lastScrapedAt)}</>}
             </span>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-shrink-0">
           <button onClick={onTestMode} disabled={scraping}
-            className="px-3.5 py-2 rounded-xl text-[13px] font-medium text-[#A8A29E] hover:text-[#333] border border-dashed border-[#E4DED8] hover:border-[#D4CFC6] disabled:opacity-40 transition-all"
+            className="px-3 py-2 rounded-xl text-[12px] font-medium text-[#A8A29E] hover:text-[#333] border border-dashed border-[#E4DED8] hover:border-[#D4CFC6] disabled:opacity-40 transition-all min-h-[36px]"
             title="Inject fake reviews to test the UI">
             Test data
           </button>
           <button onClick={onScrapeNow} disabled={scraping}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-[#E4DED8] hover:border-[#D4CFC6] text-[13px] font-medium text-[#666] hover:text-[#111] disabled:opacity-40 transition-all">
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-[#E4DED8] hover:border-[#D4CFC6] text-[13px] font-medium text-[#57534E] hover:text-[#111] disabled:opacity-40 transition-all min-h-[36px]">
             <svg className={`w-3.5 h-3.5 ${scraping ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
             </svg>

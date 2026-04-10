@@ -314,7 +314,7 @@ export default function HomeClient({
         </div>
 
         {/* ── Stats ──────────────────────────────────────────────── */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {[
             {
               label: 'Reviews this month',
@@ -324,7 +324,7 @@ export default function HomeClient({
             },
             {
               label: 'Average rating',
-              value: <span className="text-amber-400">{avgRating.toFixed(1)}<span className="text-[16px] sm:text-[18px] ml-0.5">★</span></span>,
+              value: <span className="text-amber-400">{avgRating.toFixed(1)}<span className="text-[14px] sm:text-[16px] ml-0.5">★</span></span>,
               sub: <StarRow rating={Math.round(avgRating)} />,
               delay: 'stagger-2',
             },
@@ -336,14 +336,14 @@ export default function HomeClient({
             },
             {
               label: 'Response rate',
-              value: <span className={rateColor}>{responseRate}<span className="text-[16px] sm:text-[18px]">%</span></span>,
+              value: <span className={rateColor}>{responseRate}<span className="text-[14px] sm:text-[16px]">%</span></span>,
               sub: <span className="text-[11px] text-[#A8A29E]">{totalReviews} total reviews</span>,
               delay: 'stagger-4',
             },
           ].map(({ label, value, sub, delay }) => (
             <div key={label} className={`bg-white rounded-2xl p-4 sm:p-5 border border-[#E4DED8] shadow-card card-hover animate-fade-up ${delay}`}>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.11em] text-[#C4BEB8] mb-3">{label}</p>
-              <p className="text-[28px] sm:text-[32px] font-bold text-[#111] leading-none tracking-[-0.035em] mb-3">{value}</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.11em] text-[#C4BEB8] mb-2.5 leading-tight">{label}</p>
+              <p className="text-[24px] sm:text-[30px] font-bold text-[#111] leading-none tracking-[-0.035em] mb-2.5">{value}</p>
               {sub}
             </div>
           ))}

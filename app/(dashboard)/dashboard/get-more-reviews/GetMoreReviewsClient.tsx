@@ -112,27 +112,26 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
 
   return (
     <div className="space-y-8 pb-12">
-      <div className="max-w-4xl mx-auto space-y-8">
 
         {/* Page Header */}
         <div>
-          <h1 className="text-2xl font-semibold text-[#111]">Get More Reviews</h1>
-          <p className="text-[#888] text-sm mt-1">Ask happy customers to share their experience</p>
+          <h1 className="text-xl sm:text-2xl font-semibold text-[#111]">Get More Reviews</h1>
+          <p className="text-[13px] text-[#57534E] mt-1">Ask happy customers to share their experience</p>
         </div>
 
         {/* Section 1: Review Request Messages */}
-        <div className="bg-white rounded-2xl border border-[#E4DED8] p-6 space-y-5">
-          <div className="flex items-center justify-between">
+        <div className="bg-white rounded-2xl border border-[#E4DED8] p-4 sm:p-6 space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-              <h2 className="text-base font-semibold text-[#111]">Review Request Messages</h2>
-              <p className="text-[#888] text-xs mt-0.5">
+              <h2 className="text-[13px] font-semibold text-[#111]">Review Request Messages</h2>
+              <p className="text-[12px] text-[#A8A29E] mt-0.5">
                 Personalized messages to send via SMS, email, receipt, or table card
               </p>
             </div>
             <button
               onClick={handleGenerateMessages}
               disabled={generating}
-              className="flex items-center gap-2 bg-[#E05A28] hover:bg-[#C94E21] disabled:opacity-60 text-white font-medium text-sm px-4 py-2.5 rounded-xl transition-colors"
+              className="flex items-center justify-center gap-2 bg-[#E05A28] hover:bg-[#C94E21] disabled:opacity-60 text-white font-semibold text-[13px] px-4 py-2.5 rounded-xl transition-colors min-h-[44px] sm:min-h-0 flex-shrink-0"
             >
               {generating ? (
                 <>
@@ -174,12 +173,12 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
 
           {/* Message cards */}
           {showCards && messages && editedMessages && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               {CHANNELS.map((ch) => (
                 <div key={ch.key} className="rounded-xl border border-[#E4DED8] p-4 space-y-3">
                   <div className="flex items-center gap-2">
-                    <span className="text-lg">{ch.icon}</span>
-                    <span className="text-sm font-medium text-[#111]">{ch.label}</span>
+                    <span className="text-base">{ch.icon}</span>
+                    <span className="text-[13px] font-semibold text-[#111]">{ch.label}</span>
                   </div>
                   <textarea
                     className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] text-[13px] text-[#111] focus:ring-2 focus:ring-[#E05A28]/40 focus:outline-none resize-none"
@@ -194,7 +193,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
                   <div className="flex justify-end">
                     <button
                       onClick={() => handleCopy(ch.key)}
-                      className="text-xs font-medium px-3 py-1.5 rounded-lg border border-[#E4DED8] hover:bg-[#F3F0EC] text-[#111] transition-colors"
+                      className="text-[12px] font-semibold px-3.5 py-2 rounded-xl border border-[#E4DED8] hover:bg-[#F3F0EC] hover:border-[#CEC8C1] text-[#57534E] hover:text-[#111] transition-all min-h-[36px]"
                     >
                       {copiedChannel === ch.key ? 'Copied!' : 'Copy'}
                     </button>
@@ -214,10 +213,10 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
         </div>
 
         {/* Section 2: QR Code Generator */}
-        <div className="bg-white rounded-2xl border border-[#E4DED8] p-6 space-y-4">
+        <div className="bg-white rounded-2xl border border-[#E4DED8] p-4 sm:p-6 space-y-4">
           <div>
-            <h2 className="text-base font-semibold text-[#111]">QR Code for your Google review page</h2>
-            <p className="text-[#888] text-xs mt-0.5">Add this to your menu, receipt, or table card</p>
+            <h2 className="text-[13px] font-semibold text-[#111]">QR Code for your Google review page</h2>
+            <p className="text-[12px] text-[#A8A29E] mt-0.5">Add this to your menu, receipt, or table card</p>
           </div>
 
           {restaurantProfile.google_maps_url ? (
@@ -283,8 +282,8 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
 
         {/* Section 3: Tips */}
         <div className="space-y-3">
-          <h2 className="text-base font-semibold text-[#111]">Tips for getting more reviews</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E]">Tips for getting more reviews</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             {[
               {
                 title: 'Ask in person',
@@ -301,16 +300,15 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
             ].map((tip) => (
               <div
                 key={tip.title}
-                className="bg-white rounded-2xl border border-[#E4DED8] border-l-4 border-l-[#E05A28] p-5"
+                className="bg-white rounded-2xl border border-[#E4DED8] border-l-4 border-l-[#E05A28] p-4 sm:p-5"
               >
-                <h3 className="text-sm font-semibold text-[#111] mb-1.5">{tip.title}</h3>
-                <p className="text-[#888] text-xs leading-relaxed">{tip.body}</p>
+                <h3 className="text-[13px] font-semibold text-[#111] mb-1.5">{tip.title}</h3>
+                <p className="text-[12px] text-[#57534E] leading-relaxed">{tip.body}</p>
               </div>
             ))}
           </div>
         </div>
 
-      </div>
     </div>
   )
 }

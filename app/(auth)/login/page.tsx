@@ -110,18 +110,18 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8F6F3] flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[#F8F6F3] flex items-center justify-center px-4 py-10 sm:py-12">
       <div className="w-full max-w-[400px] animate-fade-up">
 
         {/* Logo */}
-        <div className="flex justify-center mb-8">
+        <div className="flex justify-center mb-7 sm:mb-8">
           <Logo />
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-modal p-7 sm:p-8">
+        <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-modal p-6 sm:p-8">
           <h1 className="text-[20px] font-bold text-[#111] tracking-[-0.02em] mb-1">Welcome back</h1>
-          <p className="text-[14px] text-[#7C7672] mb-6">Sign in to your account</p>
+          <p className="text-[13px] text-[#7C7672] mb-6">Sign in to your account</p>
 
           {/* Google */}
           <button

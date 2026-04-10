@@ -58,18 +58,18 @@ export default async function SettingsPage() {
   }
 
   return (
-    <div className="space-y-8 max-w-2xl">
+    <div className="space-y-6 sm:space-y-8 max-w-2xl pb-12">
       {/* Header */}
       <div>
-        <h1 className="text-xl font-semibold text-[#111]">Settings</h1>
-        <p className="text-[13px] text-[#888] mt-0.5">Manage your restaurant profile and subscription.</p>
+        <h1 className="text-xl sm:text-2xl font-semibold text-[#111]">Settings</h1>
+        <p className="text-[13px] text-[#57534E] mt-0.5">Manage your restaurant profile and subscription.</p>
       </div>
 
       {/* Subscription */}
-      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden">
-        <div className="px-6 py-5 border-b border-[#EDE9E4]">
+      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden shadow-card">
+        <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-[#EDE9E4]">
           <div className="flex items-center justify-between">
-            <h2 className="text-[13px] font-semibold text-[#111] uppercase tracking-wide">Subscription</h2>
+            <h2 className="text-[11px] font-semibold text-[#A8A29E] uppercase tracking-[0.12em]">Subscription</h2>
             <span
               className={`text-[11px] font-semibold px-2.5 py-1 rounded-full uppercase tracking-wide ${
                 isPaid
@@ -84,20 +84,20 @@ export default async function SettingsPage() {
           </div>
         </div>
 
-        <div className="px-6 py-5 space-y-1">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-[#888]">Account</span>
-            <span className="font-medium text-[#111]">{user.email}</span>
+        <div className="px-4 sm:px-6 py-4 sm:py-5 space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[13px] text-[#57534E]">Account</span>
+            <span className="text-[13px] font-medium text-[#111] truncate max-w-[55%] text-right">{user.email}</span>
           </div>
           {isPaid && (
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-[#888]">Plan</span>
-              <span className="font-medium text-[#111]">TableReply Pro — $29/month</span>
+            <div className="flex items-center justify-between">
+              <span className="text-[13px] text-[#57534E]">Plan</span>
+              <span className="text-[13px] font-medium text-[#111]">TableReply Pro — $29/month</span>
             </div>
           )}
         </div>
 
-        <div className="px-6 py-5 bg-[#F3F0EC] border-t border-[#EDE9E4]">
+        <div className="px-4 sm:px-6 py-4 sm:py-5 bg-[#F3F0EC] border-t border-[#EDE9E4]">
           {isPaid ? (
             <ManageBillingButton />
           ) : (
@@ -135,12 +135,12 @@ export default async function SettingsPage() {
       </div>
 
       {/* Restaurant profile */}
-      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden">
-        <div className="px-6 py-5 border-b border-[#EDE9E4]">
-          <h2 className="text-[13px] font-semibold text-[#111] uppercase tracking-wide">Restaurant Profile</h2>
-          <p className="text-[12px] text-[#888] mt-0.5">Used to personalise every generated reply.</p>
+      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden shadow-card">
+        <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-[#EDE9E4]">
+          <h2 className="text-[11px] font-semibold text-[#A8A29E] uppercase tracking-[0.12em]">Restaurant Profile</h2>
+          <p className="text-[12px] text-[#57534E] mt-0.5">Used to personalise every generated reply.</p>
         </div>
-        <div className="px-6 py-6">
+        <div className="px-4 sm:px-6 py-5 sm:py-6">
           <RestaurantProfileForm
             userId={user.id}
             existingProfile={restaurantProfile}
@@ -150,12 +150,12 @@ export default async function SettingsPage() {
       </div>
 
       {/* Keyword Alerts */}
-      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden">
-        <div className="px-6 py-5 border-b border-[#EDE9E4]">
-          <h2 className="text-[13px] font-semibold text-[#111] uppercase tracking-wide">Keyword Alerts</h2>
-          <p className="text-[12px] text-[#888] mt-0.5">Get an instant email when a review contains these words.</p>
+      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden shadow-card">
+        <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-[#EDE9E4]">
+          <h2 className="text-[11px] font-semibold text-[#A8A29E] uppercase tracking-[0.12em]">Keyword Alerts</h2>
+          <p className="text-[12px] text-[#57534E] mt-0.5">Get an instant email when a review contains these words.</p>
         </div>
-        <div className="px-6 py-5">
+        <div className="px-4 sm:px-6 py-4 sm:py-5">
           <KeywordAlertsManager userId={user.id} initialAlerts={keywordAlerts ?? []} />
         </div>
       </div>

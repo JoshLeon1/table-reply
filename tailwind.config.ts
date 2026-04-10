@@ -33,8 +33,18 @@ const config: Config = {
         'shimmer':     'shimmer 1.5s ease-in-out infinite',
         'scale-in':    'scaleIn 220ms cubic-bezier(0.16,1,0.3,1) both',
         'slide-down':  'slideDown 280ms cubic-bezier(0.16,1,0.3,1) both',
+        'float':       'float 3.5s ease-in-out infinite',
+        'fade-up':     'fadeUp 380ms cubic-bezier(0.16,1,0.3,1) both',
       },
       keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%':      { transform: 'translateY(-6px)' },
+        },
+        fadeUp: {
+          from: { opacity: '0', transform: 'translateY(14px)' },
+          to:   { opacity: '1', transform: 'translateY(0)' },
+        },
         'pulse-ring': {
           '0%':   { transform: 'scale(1)', opacity: '0.35' },
           '100%': { transform: 'scale(1.9)', opacity: '0' },

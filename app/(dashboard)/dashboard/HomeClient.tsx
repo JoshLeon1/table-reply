@@ -163,7 +163,7 @@ function PendingCard({ review, onAction }: { review: ScrapedReview; onAction: (i
         <button
           onClick={handleApprove}
           disabled={actioning || !review.generated_reply}
-          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#111] hover:bg-[#1E1E1E] text-white text-[12px] font-semibold disabled:opacity-40 transition-all duration-150"
+          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-[12px] font-semibold disabled:opacity-40 transition-all duration-150 active:scale-[0.97]"
         >
           {copied ? (
             <><svg className="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied</>
@@ -188,6 +188,7 @@ export default function HomeClient({
   restaurantName,
   lastScrapedAt,
   userId,
+  isPaid: _isPaid,
   googleMapsUrl,
   reviewsThisMonth,
   reviewsLastMonth,
@@ -279,7 +280,7 @@ export default function HomeClient({
       <div className="space-y-7 pb-12">
 
         {/* ── Header ─────────────────────────────────────────────── */}
-        <div className="bg-[#0A0A0A] rounded-2xl px-5 py-6 sm:px-7 sm:py-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+        <div className="rounded-2xl px-5 py-6 sm:px-7 sm:py-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5" style={{ background: 'linear-gradient(135deg, #0A0A0A 0%, #141414 100%)' }}>
           <div>
             <h1 className="text-[21px] sm:text-[26px] font-bold text-white tracking-[-0.03em] leading-tight">
               {greeting}, {ownerName}
@@ -297,7 +298,7 @@ export default function HomeClient({
             <button
               onClick={handleSync}
               disabled={syncing}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.07] hover:bg-white/[0.12] border border-white/[0.08] text-[13px] font-medium text-white/65 hover:text-white/90 disabled:opacity-40 transition-all duration-150"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.07] hover:bg-white/[0.12] border border-white/[0.08] text-[13px] font-medium text-white/65 hover:text-white/90 disabled:opacity-40 transition-all duration-150 active:scale-[0.97]"
             >
               <svg className={`w-3.5 h-3.5 ${syncing ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -340,9 +341,9 @@ export default function HomeClient({
               delay: 'stagger-4',
             },
           ].map(({ label, value, sub, delay }) => (
-            <div key={label} className={`bg-white rounded-2xl p-4 sm:p-5 border border-[#E4DED8] shadow-card animate-fade-up ${delay}`}>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.11em] text-[#A8A29E] mb-3">{label}</p>
-              <p className="text-[26px] sm:text-[30px] font-bold text-[#111] leading-none tracking-[-0.03em] mb-3">{value}</p>
+            <div key={label} className={`bg-white rounded-2xl p-4 sm:p-5 border border-[#E4DED8] shadow-card card-hover animate-fade-up ${delay}`}>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.11em] text-[#C4BEB8] mb-3">{label}</p>
+              <p className="text-[28px] sm:text-[32px] font-bold text-[#111] leading-none tracking-[-0.035em] mb-3">{value}</p>
               {sub}
             </div>
           ))}
@@ -356,7 +357,7 @@ export default function HomeClient({
             <SectionLabel
               badge={
                 pendingList.length > 0 ? (
-                  <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-[#111] text-white text-[10px] font-bold flex items-center justify-center">
+                  <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-[#E05A28] text-white text-[10px] font-bold flex items-center justify-center shadow-[0_0_8px_rgba(224,90,40,0.4)]">
                     {pendingCount}
                   </span>
                 ) : undefined
@@ -413,7 +414,7 @@ export default function HomeClient({
                   <button
                     onClick={handleQuickGenerate}
                     disabled={quickLoading || !quickReview.trim()}
-                    className="mt-3 w-full py-2.5 rounded-xl bg-[#111] hover:bg-[#1E1E1E] text-white text-[13px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 flex items-center justify-center gap-2"
+                    className="mt-3 w-full py-2.5 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-[13px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-2"
                   >
                     {quickLoading ? (
                       <>
@@ -433,16 +434,19 @@ export default function HomeClient({
 
                 {quickReply && (
                   <div className="border-t border-[#EDE9E4] p-4 space-y-3">
-                    <p className="text-[12px] text-[#57534E] leading-relaxed">{quickReply}</p>
+                    <div className="bg-[#FEF0E8] border border-[#F5C9AD] rounded-xl px-4 py-3">
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-[#E05A28] mb-1.5">Generated reply</p>
+                      <p className="text-[12px] text-[#57534E] leading-relaxed">{quickReply}</p>
+                    </div>
                     <button
                       onClick={handleQuickCopy}
-                      className={`w-full py-2 rounded-xl text-[12px] font-semibold border transition-all duration-150 ${
+                      className={`w-full py-2 rounded-xl text-[12px] font-semibold border transition-all duration-150 active:scale-[0.98] ${
                         quickCopied
                           ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                           : 'bg-white text-[#57534E] border-[#E4DED8] hover:border-[#CEC8C1] hover:text-[#111]'
                       }`}
                     >
-                      {quickCopied ? '✓ Copied' : 'Copy reply'}
+                      {quickCopied ? '✓ Copied to clipboard' : 'Copy reply'}
                     </button>
                   </div>
                 )}
@@ -472,18 +476,18 @@ export default function HomeClient({
                 ) : (
                   <div className="divide-y divide-[#F3F0EC]">
                     {recentApproved.map(review => (
-                      <div key={review.id} className="flex items-center gap-3 px-4 py-3">
-                        <div className="w-8 h-8 rounded-full bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center text-[11px] font-semibold text-[#A8A29E] flex-shrink-0">
+                      <div key={review.id} className="flex items-center gap-3 px-4 py-3 hover:bg-[#FAFAF9] transition-colors duration-150">
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#FEF0E8] to-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center text-[12px] font-bold text-[#E05A28]/70 flex-shrink-0">
                           {review.reviewer_name.charAt(0).toUpperCase()}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-1.5 mb-0.5">
-                            <span className="text-[12px] font-semibold text-[#111] truncate">{review.reviewer_name}</span>
+                            <span className="text-[13px] font-semibold text-[#111] truncate">{review.reviewer_name}</span>
                             <span className="text-amber-400 text-[10px] flex-shrink-0">{'★'.repeat(review.star_rating)}</span>
                           </div>
                           <p className="text-[11px] text-[#C4BEB8]">{formatTimeAgo(review.created_at)}</p>
                         </div>
-                        <div className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0" title="Approved" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 flex-shrink-0 shadow-[0_0_6px_rgba(52,211,153,0.5)]" title="Approved" />
                       </div>
                     ))}
                   </div>
@@ -505,7 +509,7 @@ export default function HomeClient({
               </div>
               <Link
                 href="/dashboard/analytics"
-                className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#111] hover:bg-[#1E1E1E] text-white text-[13px] font-semibold transition-all duration-150"
+                className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-[13px] font-semibold transition-all duration-150 active:scale-[0.97]"
               >
                 Run analysis
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -516,16 +520,16 @@ export default function HomeClient({
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {([
-                { label: 'Customers love', value: themes?.praised?.[0], fallback: 'Run analytics to see what resonates most.', dot: 'bg-emerald-400' },
-                { label: 'Needs attention', value: themes?.complaints?.[0], fallback: "No recurring complaints — great sign.", dot: 'bg-[#E05A28]' },
-                { label: 'Top opportunity', value: themes?.opportunities?.[0], fallback: 'Run analytics to find your growth lever.', dot: 'bg-blue-400' },
-              ] as const).map(({ label, value, fallback, dot }) => (
-                <div key={label} className="bg-white rounded-2xl px-5 py-5 border border-[#E4DED8] shadow-card card-hover">
+                { label: 'Customers love', value: themes?.praised?.[0], fallback: 'Run analytics to see what resonates most.', dot: 'bg-emerald-400', tint: 'from-white to-emerald-50/40' },
+                { label: 'Needs attention', value: themes?.complaints?.[0], fallback: 'No recurring complaints — great sign.', dot: 'bg-[#E05A28]', tint: 'from-white to-[#FEF0E8]/60' },
+                { label: 'Top opportunity', value: themes?.opportunities?.[0], fallback: 'Run analytics to find your growth lever.', dot: 'bg-blue-400', tint: 'from-white to-blue-50/40' },
+              ] as const).map(({ label, value, fallback, dot, tint }) => (
+                <div key={label} className={`bg-gradient-to-br ${tint} rounded-2xl px-5 py-5 border border-[#E4DED8] shadow-card card-hover`}>
                   <div className="flex items-center gap-2 mb-3">
-                    <span className={`w-2 h-2 rounded-full ${dot} flex-shrink-0`} />
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.11em] text-[#A8A29E]">{label}</p>
+                    <span className={`w-2.5 h-2.5 rounded-full ${dot} flex-shrink-0`} />
+                    <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#A8A29E]">{label}</p>
                   </div>
-                  <p className={`text-[13px] leading-snug ${value ? 'font-semibold text-[#111]' : 'text-[#C4BEB8] italic'}`}>
+                  <p className={`text-[13px] leading-snug ${value ? 'font-semibold text-[#111]' : 'text-[#C4BEB8]'}`}>
                     {value ?? fallback}
                   </p>
                 </div>

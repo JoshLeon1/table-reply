@@ -200,18 +200,13 @@ export default function LandingPage() {
       >
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
-            <svg
-              className="w-5 h-5 flex-shrink-0 text-[#E05A28]"
-              viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
-            >
-              <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2" />
-              <path d="M7 2v20" />
-              <path d="M21 15V2a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3zm0 0v7" />
-            </svg>
-            <span className="font-bold text-xl tracking-tight text-[#111111]" style={{ letterSpacing: '-0.02em' }}>
-              TableReply
-            </span>
+            <div className="w-8 h-8 rounded-[8px] bg-[#E05A28] flex items-center justify-center flex-shrink-0">
+              <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5" aria-hidden="true">
+                <path d="M2 1.5h9A1.5 1.5 0 0112.5 3v5A1.5 1.5 0 0111 9.5H7l-2 2v-2H2A1.5 1.5 0 01.5 8V3A1.5 1.5 0 012 1.5z" fill="white" fillOpacity="0.5"/>
+                <path d="M8 8h9.5A1.5 1.5 0 0119 9.5v5A1.5 1.5 0 0117.5 16H16v2.5l-3-2.5H8A1.5 1.5 0 016.5 14.5v-5A1.5 1.5 0 018 8z" fill="white"/>
+              </svg>
+            </div>
+            <span className="font-bold text-[17px] tracking-[-0.025em] text-[#111111]">TableReply</span>
           </Link>
 
           <div className="flex items-center gap-4">
@@ -232,58 +227,164 @@ export default function LandingPage() {
       </nav>
 
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
-      <section className="bg-[#111111] pt-36 pb-20 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="max-w-[580px]">
-            <p className="text-[#E05A28] text-sm font-medium mb-6">
-              Built for independent restaurants
-            </p>
+      <section className="bg-[#111111] pt-36 pb-24 px-6 overflow-hidden">
+        {/* Radial glow behind text */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse 60% 50% at 20% 50%, rgba(224,90,40,0.12) 0%, transparent 70%)',
+          }}
+        />
+        <div className="max-w-6xl mx-auto relative">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
 
-            <h1
-              className="text-white font-bold mb-6"
-              style={{ fontSize: 'clamp(36px, 5vw, 48px)', lineHeight: 1.12, letterSpacing: '-0.02em' }}
-            >
-              Every review deserves a reply. Now they all get one.
-            </h1>
+            {/* Left — text */}
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#E05A28]/10 border border-[#E05A28]/20 mb-7">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#E05A28]" />
+                <span className="text-[#E05A28] text-[12px] font-semibold tracking-wide">Built for independent restaurants</span>
+              </div>
 
-            <p className="text-[#9a9a9a] mb-10 max-w-[440px]" style={{ fontSize: '16px', lineHeight: '1.6' }}>
-              TableReply writes personalized, on-brand responses to your Google and Yelp reviews in seconds. Unlimited replies, $29/mo.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link
-                href="/signup"
-                className="inline-flex items-center justify-center px-6 py-3 bg-[#E05A28] hover:bg-[#B34419] text-white text-sm font-semibold rounded-lg transition-colors duration-200"
+              <h1
+                className="text-white font-bold mb-6"
+                style={{ fontSize: 'clamp(34px, 4.5vw, 52px)', lineHeight: 1.1, letterSpacing: '-0.025em' }}
               >
-                Start free
-              </Link>
-              <a
-                href="#how-it-works"
-                className="inline-flex items-center justify-center px-6 py-3 bg-transparent border border-[#333] hover:border-[#555] text-white text-sm font-semibold rounded-lg transition-colors duration-200"
-              >
-                See how it works
-              </a>
+                Every review deserves a reply.{' '}
+                <span style={{ color: '#E05A28' }}>Now they all get one.</span>
+              </h1>
+
+              <p className="text-[#888] mb-10 max-w-[440px]" style={{ fontSize: '16px', lineHeight: '1.65' }}>
+                TableReply writes personalized, on-brand responses to your Google and Yelp reviews in seconds — so you never leave a customer without an answer again.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-3 mb-8">
+                <Link
+                  href="/signup"
+                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-sm font-bold rounded-xl transition-all duration-150 active:scale-[0.98]"
+                >
+                  Start free — no card needed
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>
+                  </svg>
+                </Link>
+                <a
+                  href="#how-it-works"
+                  className="inline-flex items-center justify-center px-7 py-3.5 bg-transparent border border-white/10 hover:border-white/25 text-white/70 hover:text-white text-sm font-semibold rounded-xl transition-all duration-200"
+                >
+                  See how it works
+                </a>
+              </div>
+
+              <div className="flex items-center gap-5 text-[#555]">
+                <div className="flex items-center gap-1.5">
+                  <svg className="w-3.5 h-3.5 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>
+                  <span className="text-[12px]">7 days free</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <svg className="w-3.5 h-3.5 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>
+                  <span className="text-[12px]">Cancel anytime</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <svg className="w-3.5 h-3.5 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>
+                  <span className="text-[12px]">Google &amp; Yelp</span>
+                </div>
+              </div>
             </div>
 
-            <p className="text-[#555] text-xs mt-6">
-              No credit card required · Cancel anytime · Works with Google, Yelp &amp; TripAdvisor
-            </p>
+            {/* Right — product mockup */}
+            <div className="hidden lg:flex justify-center items-center">
+              <div className="relative w-full max-w-[420px]">
+                {/* Glow behind card */}
+                <div
+                  aria-hidden="true"
+                  className="absolute -inset-8 rounded-3xl pointer-events-none"
+                  style={{ background: 'radial-gradient(ellipse at center, rgba(224,90,40,0.18) 0%, transparent 70%)' }}
+                />
+
+                {/* Background card (depth effect) */}
+                <div className="absolute -bottom-3 left-4 right-4 h-full rounded-2xl bg-white/[0.04] border border-white/[0.06]" />
+
+                {/* Main card */}
+                <div className="relative bg-[#1C1C1C] rounded-2xl border border-white/[0.08] shadow-[0_24px_60px_rgba(0,0,0,0.5)] overflow-hidden animate-float">
+                  {/* Card header bar */}
+                  <div className="flex items-center gap-2 px-4 py-3 border-b border-white/[0.06]">
+                    <div className="w-2.5 h-2.5 rounded-full bg-red-500/60" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/60" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/60" />
+                    <span className="ml-2 text-white/20 text-[11px]">TableReply — Auto Reviews</span>
+                  </div>
+
+                  <div className="p-5">
+                    {/* Review 1 */}
+                    <div className="mb-4 pb-4 border-b border-white/[0.06]">
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-full bg-[#E05A28]/20 flex items-center justify-center text-[11px] font-bold text-[#E05A28] flex-shrink-0">SJ</div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-white text-[13px] font-semibold">Sarah Johnson</span>
+                            <span className="text-white/25 text-[11px]">2h ago</span>
+                          </div>
+                          <div className="text-amber-400 text-[12px] mb-2">★★★★★</div>
+                          <p className="text-white/50 text-[12px] leading-relaxed">"Best Italian outside of Naples. The chef came out to greet us — truly special experience."</p>
+                        </div>
+                      </div>
+                      {/* Reply block */}
+                      <div className="mt-3 ml-11 bg-[#E05A28]/10 border border-[#E05A28]/20 rounded-xl p-3">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-[#E05A28] mb-1.5">Your reply</p>
+                        <p className="text-white/70 text-[12px] leading-relaxed">Thank you so much, Sarah! Chef Marco loves connecting with our guests. We're so glad you felt that warmth — see you again soon! 🙏</p>
+                      </div>
+                      <div className="mt-3 ml-11 flex gap-2">
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white text-[#111] text-[11px] font-semibold cursor-default">
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                          Copy &amp; Approve
+                        </div>
+                        <div className="px-3 py-1.5 rounded-lg border border-white/10 text-white/30 text-[11px] font-medium cursor-default">Dismiss</div>
+                      </div>
+                    </div>
+
+                    {/* Review 2 — pending */}
+                    <div>
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[11px] font-bold text-white/40 flex-shrink-0">MR</div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-white text-[13px] font-semibold">Mike R.</span>
+                            <span className="text-white/25 text-[11px]">5h ago</span>
+                          </div>
+                          <div className="text-amber-400/60 text-[12px] mb-2">★★★<span className="text-white/15">★★</span></div>
+                          <p className="text-white/50 text-[12px] leading-relaxed">"Good food but the wait was longer than expected on a Tuesday."</p>
+                        </div>
+                      </div>
+                      {/* Generating indicator */}
+                      <div className="mt-3 ml-11 flex items-center gap-2 text-[11px] text-white/30">
+                        <svg className="animate-spin w-3 h-3 text-[#E05A28]" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                        Crafting reply…
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
 
       {/* ── TRUST BAR ────────────────────────────────────────────────────── */}
-      <section className="bg-white border-b border-[#e5e5e0] py-8 px-6">
-        <div className="max-w-6xl mx-auto text-center">
-          <p className="text-[#6b6b6b] text-sm mb-4">Trusted by restaurants across the US</p>
-          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
-            {restaurantNames.map((name, i) => (
-              <span key={name} className="flex items-center gap-3">
-                <span style={{ color: '#78716C', fontSize: '14px', fontWeight: 500 }}>{name}</span>
-                <span className="text-[#E05A28] text-[9px]">◆</span>
-              </span>
-            ))}
-            <Link href="/signup" className="text-[#E05A28] hover:text-[#C94E21] text-sm font-medium transition-colors duration-200">
+      <section className="bg-white border-b border-[#e5e5e0] py-6 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-[13px] text-[#999] whitespace-nowrap">Trusted by restaurants across the US</p>
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+              {restaurantNames.map((name) => (
+                <div key={name} className="flex items-center gap-1.5">
+                  <div className="flex text-amber-400 text-[10px]">{'★'.repeat(5)}</div>
+                  <span className="text-[13px] font-medium text-[#555]">{name}</span>
+                </div>
+              ))}
+            </div>
+            <Link href="/signup" className="whitespace-nowrap text-[13px] font-semibold text-[#E05A28] hover:text-[#C94E21] transition-colors duration-200 hidden md:block">
               Join them →
             </Link>
           </div>
@@ -334,7 +435,7 @@ export default function LandingPage() {
 
           {/* Right — The solution */}
           <div className="lg:pl-10 mt-12 lg:mt-0">
-            <p className="text-xs font-semibold uppercase tracking-wider mb-4" style={{ color: '#16a34a' }}>
+            <p className="text-xs font-semibold uppercase tracking-wider mb-4 text-emerald-600">
               The solution
             </p>
             <h2
@@ -403,20 +504,25 @@ export default function LandingPage() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {steps.map(({ num, title, desc }) => (
-              <div key={num} className="flex gap-5">
-                <div
-                  className="w-9 h-9 rounded-lg bg-[#111111] text-white flex items-center justify-center flex-shrink-0 font-bold text-sm"
-                  style={{ letterSpacing: '-0.01em' }}
-                >
-                  {num}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 relative">
+            {/* Connector line (desktop only) */}
+            <div className="hidden md:block absolute top-5 left-[calc(16.66%+18px)] right-[calc(16.66%+18px)] h-px bg-gradient-to-r from-[#E05A28]/30 via-[#E05A28]/50 to-[#E05A28]/30" />
+
+            {steps.map(({ num, title, desc }, idx) => (
+              <div key={num} className="flex flex-col items-start md:items-start gap-4 p-6 md:pr-8">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#E05A28] text-white flex items-center justify-center flex-shrink-0 font-bold text-[15px] shadow-[0_4px_12px_rgba(224,90,40,0.3)] relative z-10">
+                    {num}
+                  </div>
+                  {idx < steps.length - 1 && (
+                    <div className="hidden md:none" />
+                  )}
                 </div>
                 <div>
-                  <h3 className="font-semibold text-[#111111] text-sm mb-2" style={{ letterSpacing: '-0.01em' }}>
+                  <h3 className="font-bold text-[#111111] text-[15px] mb-2 tracking-tight">
                     {title}
                   </h3>
-                  <p style={{ fontSize: '14px', lineHeight: '1.6', color: '#6b6b6b' }}>
+                  <p style={{ fontSize: '14px', lineHeight: '1.65', color: '#6b6b6b' }}>
                     {desc}
                   </p>
                 </div>
@@ -439,32 +545,27 @@ export default function LandingPage() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3">
-            {testimonials.map(({ name, role, restaurant, quote }, i) => (
-              <div
-                key={name}
-                className="px-8 py-6"
-                style={{ borderLeft: i > 0 ? '1px solid rgba(255,255,255,0.08)' : 'none' }}
-              >
-                <p
-                  className="text-[#E05A28] leading-none mb-3 select-none"
-                  style={{ fontSize: '72px', lineHeight: 1, opacity: 0.25, fontFamily: 'Georgia, serif' }}
-                >
-                  &ldquo;
-                </p>
-                <p
-                  className="text-white mb-6"
-                  style={{
-                    fontFamily: 'var(--font-playfair), Georgia, serif',
-                    fontStyle: 'italic',
-                    fontSize: '16px',
-                    lineHeight: '1.7',
-                  }}
-                >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/[0.06] rounded-2xl overflow-hidden">
+            {testimonials.map(({ initials, name, role, restaurant, quote }) => (
+              <div key={name} className="bg-[#111111] px-7 py-8 flex flex-col">
+                {/* Stars */}
+                <div className="text-amber-400 text-[13px] mb-5">★★★★★</div>
+
+                {/* Quote */}
+                <p className="text-white/80 text-[15px] leading-[1.7] flex-1 mb-6">
                   {quote}
                 </p>
-                <p className="font-semibold text-[#9a9a9a] text-sm">{name}</p>
-                <p className="text-xs mt-0.5" style={{ color: '#555' }}>{role} · {restaurant}</p>
+
+                {/* Author */}
+                <div className="flex items-center gap-3 pt-5 border-t border-white/[0.07]">
+                  <div className="w-9 h-9 rounded-full bg-[#E05A28]/15 border border-[#E05A28]/20 flex items-center justify-center text-[12px] font-bold text-[#E05A28] flex-shrink-0">
+                    {initials}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-white text-[13px]">{name}</p>
+                    <p className="text-[12px] text-white/35 mt-0.5">{role} · {restaurant}</p>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -472,7 +573,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── PRICING ──────────────────────────────────────────────────────── */}
-      <section className="py-24 px-6 bg-[#fafaf8] border-t border-[#e5e5e0]">
+      <section id="pricing" className="py-24 px-6 bg-[#fafaf8] border-t border-[#e5e5e0]">
         <div className="max-w-6xl mx-auto flex flex-col items-center">
 
           {/* Header */}
@@ -585,23 +686,41 @@ export default function LandingPage() {
       </section>
 
       {/* ── CTA SECTION ──────────────────────────────────────────────────── */}
-      <section className="py-20 px-6 bg-[#111111]">
-        <div className="max-w-6xl mx-auto text-center">
-          <h2
-            className="font-bold text-white mb-4"
-            style={{ fontSize: 'clamp(28px, 3.5vw, 36px)', lineHeight: 1.2, letterSpacing: '-0.02em' }}
-          >
-            Start replying to every review today
-          </h2>
-          <p className="text-[#9a9a9a] mb-8 max-w-md mx-auto" style={{ fontSize: '15px', lineHeight: '1.6' }}>
-            Join 200+ restaurant owners who never let a review go unanswered.
-          </p>
-          <Link
-            href="/signup"
-            className="inline-flex items-center justify-center px-8 py-3 bg-[#E05A28] hover:bg-[#B34419] text-white text-sm font-semibold rounded-lg transition-colors duration-200"
-          >
-            See pricing
-          </Link>
+      <section className="py-24 px-6 bg-[#111111]">
+        <div className="max-w-6xl mx-auto">
+          <div className="relative rounded-3xl overflow-hidden bg-[#E05A28] px-8 py-14 text-center"
+            style={{ background: 'linear-gradient(135deg, #E05A28 0%, #C94E21 100%)' }}>
+            {/* Subtle grid texture */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 opacity-[0.08]"
+              style={{
+                backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
+                backgroundSize: '24px 24px',
+              }}
+            />
+            <div className="relative">
+              <h2
+                className="font-bold text-white mb-4"
+                style={{ fontSize: 'clamp(26px, 3.5vw, 38px)', lineHeight: 1.15, letterSpacing: '-0.025em' }}
+              >
+                Start replying to every review today
+              </h2>
+              <p className="text-white/75 mb-8 max-w-md mx-auto" style={{ fontSize: '15px', lineHeight: '1.6' }}>
+                Join 200+ restaurant owners who never let a review go unanswered.
+              </p>
+              <Link
+                href="/signup"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#E05A28] text-[15px] font-bold rounded-xl hover:bg-white/90 active:bg-white/80 transition-all duration-150 active:scale-[0.98] shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
+              >
+                Start your free week
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7"/>
+                </svg>
+              </Link>
+              <p className="text-white/50 text-[12px] mt-4">7 days free · then $29/mo · cancel anytime</p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -612,19 +731,16 @@ export default function LandingPage() {
 
             {/* Brand */}
             <div>
-              <div className="flex items-center gap-2 mb-3">
-                <svg
-                  className="w-4 h-4 text-[#E05A28] flex-shrink-0"
-                  viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
-                >
-                  <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2" />
-                  <path d="M7 2v20" />
-                  <path d="M21 15V2a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3zm0 0v7" />
-                </svg>
-                <span className="font-bold text-white text-sm" style={{ letterSpacing: '-0.01em' }}>TableReply</span>
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="w-7 h-7 rounded-[7px] bg-[#E05A28] flex items-center justify-center flex-shrink-0">
+                  <svg viewBox="0 0 20 20" fill="none" className="w-[17px] h-[17px]" aria-hidden="true">
+                    <path d="M2 1.5h9A1.5 1.5 0 0112.5 3v5A1.5 1.5 0 0111 9.5H7l-2 2v-2H2A1.5 1.5 0 01.5 8V3A1.5 1.5 0 012 1.5z" fill="white" fillOpacity="0.5"/>
+                    <path d="M8 8h9.5A1.5 1.5 0 0119 9.5v5A1.5 1.5 0 0117.5 16H16v2.5l-3-2.5H8A1.5 1.5 0 016.5 14.5v-5A1.5 1.5 0 018 8z" fill="white"/>
+                  </svg>
+                </div>
+                <span className="font-bold text-white text-[15px] tracking-[-0.02em]">TableReply</span>
               </div>
-              <p style={{ fontSize: '13px', color: '#6b6b6b', lineHeight: '1.6' }}>
+              <p style={{ fontSize: '13px', color: '#6b6b6b', lineHeight: '1.65' }}>
                 AI-powered review replies for independent restaurants. Built to save you time and protect your reputation.
               </p>
             </div>
@@ -634,8 +750,8 @@ export default function LandingPage() {
               <p className="text-white text-xs font-semibold uppercase tracking-wider mb-4">Product</p>
               <ul className="space-y-2.5">
                 {[
-                  { label: 'Features', href: '#' },
-                  { label: 'Pricing', href: '#' },
+                  { label: 'Features', href: '#how-it-works' },
+                  { label: 'Pricing', href: '#pricing' },
                   { label: 'Sign in', href: '/login' },
                 ].map(({ label, href }) => (
                   <li key={label}>

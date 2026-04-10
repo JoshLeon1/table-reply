@@ -5,6 +5,37 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
+// ─── Logo mark ────────────────────────────────────────────────────────────────
+// Two overlapping speech bubbles: customer review (top-left) + restaurant reply (bottom-right)
+
+export function LogoMark({ size = 28 }: { size?: number }) {
+  return (
+    <div
+      className="rounded-[8px] bg-[#E05A28] flex items-center justify-center flex-shrink-0"
+      style={{ width: size, height: size }}
+    >
+      <svg
+        viewBox="0 0 20 20"
+        fill="none"
+        style={{ width: size * 0.62, height: size * 0.62 }}
+        aria-hidden="true"
+      >
+        {/* Back bubble — customer review */}
+        <path
+          d="M2 1.5h9A1.5 1.5 0 0112.5 3v5A1.5 1.5 0 0111 9.5H7l-2 2v-2H2A1.5 1.5 0 01.5 8V3A1.5 1.5 0 012 1.5z"
+          fill="white"
+          fillOpacity="0.5"
+        />
+        {/* Front bubble — restaurant reply */}
+        <path
+          d="M8 8h9.5A1.5 1.5 0 0119 9.5v5A1.5 1.5 0 0117.5 16H16v2.5l-3-2.5H8A1.5 1.5 0 016.5 14.5v-5A1.5 1.5 0 018 8z"
+          fill="white"
+        />
+      </svg>
+    </div>
+  )
+}
+
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
 function IconHome({ active }: { active: boolean }) {
@@ -128,7 +159,6 @@ export default function Nav() {
 
   useEffect(() => { setMobileOpen(false) }, [pathname])
 
-  // Prevent body scroll when mobile menu open
   useEffect(() => {
     if (mobileOpen) document.body.style.overflow = 'hidden'
     else document.body.style.overflow = ''
@@ -154,18 +184,14 @@ export default function Nav() {
 
   return (
     <>
-      <nav className="bg-[#0A0A0A] sticky top-0 z-40 border-b border-white/[0.04]">
+      <nav className="bg-[#0A0A0A] sticky top-0 z-40 border-b border-white/[0.05]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-14">
 
             {/* Logo */}
             <Link href="/dashboard" className="flex items-center gap-2.5 flex-shrink-0 group">
-              <div className="w-7 h-7 rounded-lg bg-[#E05A28] flex items-center justify-center flex-shrink-0 transition-transform duration-200 group-hover:scale-105">
-                <svg className="w-4 h-4 text-white" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 2v4a2 2 0 002 2v6M8 2v10M11 2s2 1 2 3-2 3-2 3v4"/>
-                </svg>
-              </div>
-              <span className="text-[14px] font-semibold text-white tracking-tight">TableReply</span>
+              <LogoMark size={30} />
+              <span className="text-[14px] font-bold text-white tracking-[-0.02em]">TableReply</span>
             </Link>
 
             {/* Desktop links */}
@@ -176,21 +202,25 @@ export default function Nav() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`relative flex items-center gap-2 px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all duration-150 ${
+                    className={`relative flex items-center gap-2 px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all duration-150 active:scale-[0.97] ${
                       active
-                        ? 'bg-white/[0.09] text-white'
-                        : 'text-white/40 hover:text-white/80 hover:bg-white/[0.05]'
+                        ? 'text-white bg-white/[0.08]'
+                        : 'text-white/45 hover:text-white/85 hover:bg-white/[0.05]'
                     }`}
                   >
+                    {/* Active indicator dot */}
+                    {active && (
+                      <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3.5 h-0.5 rounded-full bg-[#E05A28]" />
+                    )}
                     <span className={active ? 'text-[#E05A28]' : ''}>{link.icon(active)}</span>
                     {link.label}
                     {link.badge != null && (
-                      <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#E05A28] text-white text-[10px] font-bold flex items-center justify-center leading-none">
+                      <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#E05A28] text-white text-[10px] font-bold flex items-center justify-center leading-none shadow-[0_0_8px_rgba(224,90,40,0.5)]">
                         {link.badge > 99 ? '99+' : link.badge}
                       </span>
                     )}
                     {link.dot && !link.badge && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#E05A28] flex-shrink-0" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#E05A28] flex-shrink-0 shadow-[0_0_6px_rgba(224,90,40,0.6)]" />
                     )}
                   </Link>
                 )
@@ -200,7 +230,7 @@ export default function Nav() {
 
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium text-white/35 hover:text-white/70 hover:bg-white/[0.05] transition-all duration-150"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium text-white/35 hover:text-white/70 hover:bg-white/[0.05] transition-all duration-150 active:scale-[0.97]"
               >
                 <IconLogout />
                 Logout
@@ -209,7 +239,7 @@ export default function Nav() {
 
             {/* Mobile hamburger */}
             <button
-              className="lg:hidden flex items-center justify-center w-9 h-9 rounded-lg text-white/50 hover:text-white hover:bg-white/[0.06] transition-all"
+              className="lg:hidden flex items-center justify-center w-9 h-9 rounded-lg text-white/50 hover:text-white hover:bg-white/[0.06] transition-all active:scale-95"
               onClick={() => setMobileOpen((o) => !o)}
               aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
             >
@@ -226,28 +256,26 @@ export default function Nav() {
       {/* Mobile overlay + drawer */}
       {mobileOpen && (
         <>
-          {/* Backdrop */}
           <div
-            className="lg:hidden fixed inset-0 z-30 bg-black/50 backdrop-blur-[2px] animate-fade-in"
+            className="lg:hidden fixed inset-0 z-30 bg-black/60 backdrop-blur-sm animate-fade-in"
             onClick={() => setMobileOpen(false)}
           />
 
-          {/* Drawer */}
-          <div className="lg:hidden fixed top-14 left-0 right-0 z-40 bg-[#0A0A0A] border-b border-white/[0.06] animate-slide-down shadow-[0_16px_40px_rgba(0,0,0,0.5)]">
-            <div className="px-3 py-3 grid grid-cols-2 gap-1">
+          <div className="lg:hidden fixed top-14 left-0 right-0 z-40 bg-[#0D0D0D] border-b border-white/[0.06] animate-slide-down shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
+            <div className="px-3 py-3 space-y-0.5">
               {links.map((link) => {
                 const active = pathname === link.href
                 return (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`flex items-center gap-2.5 px-3.5 py-3 rounded-xl text-[13px] font-medium transition-all duration-150 ${
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-[13px] font-medium transition-all duration-150 ${
                       active
-                        ? 'bg-white/[0.09] text-white'
-                        : 'text-white/45 hover:text-white/85 hover:bg-white/[0.05]'
+                        ? 'bg-white/[0.08] text-white border-l-2 border-[#E05A28]'
+                        : 'text-white/50 hover:text-white/90 hover:bg-white/[0.05]'
                     }`}
                   >
-                    <span className={active ? 'text-[#E05A28]' : 'opacity-70'}>{link.icon(active)}</span>
+                    <span className={active ? 'text-[#E05A28]' : 'opacity-60'}>{link.icon(active)}</span>
                     <span className="flex-1">{link.label}</span>
                     {link.badge != null && (
                       <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-[#E05A28] text-white text-[10px] font-bold flex items-center justify-center">
@@ -264,7 +292,7 @@ export default function Nav() {
             <div className="px-3 pb-3 pt-1 border-t border-white/[0.05]">
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-2.5 w-full px-3.5 py-3 rounded-xl text-[13px] font-medium text-white/40 hover:text-white/70 hover:bg-white/[0.05] transition-all"
+                className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-[13px] font-medium text-white/40 hover:text-white/70 hover:bg-white/[0.05] transition-all"
               >
                 <IconLogout />
                 Logout

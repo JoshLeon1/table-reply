@@ -72,11 +72,11 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F4F0] flex items-center justify-center px-4">
-      <div className="w-full max-w-lg bg-white rounded-2xl border border-[#E8E4DC] p-8">
+    <div className="min-h-screen bg-[#F3F0EC] flex items-center justify-center px-4">
+      <div className="w-full max-w-lg bg-white rounded-2xl border border-[#E4DED8] p-8">
         <div className="mb-6 text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-amber-50 mb-4">
-            <svg className="w-6 h-6 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#FEF0E8] mb-4">
+            <svg className="w-6 h-6 text-[#E05A28]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
           </div>
@@ -99,7 +99,7 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
                   setUrls(next)
                 }}
                 placeholder="https://google.com/maps/place/competitor..."
-                className="w-full px-3.5 py-2.5 rounded-xl border border-[#E8E4DC] text-[13px] text-[#111] placeholder:text-[#CCC] focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400 transition"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] text-[13px] text-[#111] placeholder:text-[#CCC] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/40 focus:border-[#E05A28] transition"
               />
             </div>
           ))}
@@ -165,7 +165,7 @@ function AddMoreForm({
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E8E4DC] p-5 mb-6">
+    <div className="bg-white rounded-2xl border border-[#E4DED8] p-5 mb-6">
       <p className="text-[13px] font-medium text-[#111] mb-4">Add more competitors</p>
       <div className="space-y-3 mb-4">
         {Array.from({ length: slots }).map((_, i) => (
@@ -182,7 +182,7 @@ function AddMoreForm({
                 setUrls(next)
               }}
               placeholder="https://google.com/maps/place/competitor..."
-              className="w-full px-3.5 py-2.5 rounded-xl border border-[#E8E4DC] text-[13px] text-[#111] placeholder:text-[#CCC] focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400 transition"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] text-[13px] text-[#111] placeholder:text-[#CCC] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/40 focus:border-[#E05A28] transition"
             />
           </div>
         ))}
@@ -198,7 +198,7 @@ function AddMoreForm({
         </button>
         <button
           onClick={onCancel}
-          className="px-4 py-2 rounded-xl border border-[#E8E4DC] text-[13px] font-medium text-[#888] hover:bg-[#F5F4F0] transition"
+          className="px-4 py-2 rounded-xl border border-[#E4DED8] text-[13px] font-medium text-[#888] hover:bg-[#F3F0EC] transition"
         >
           Cancel
         </button>
@@ -274,7 +274,7 @@ function ComparisonTable({
       <td
         key={String(value)}
         className={`px-4 py-3 text-[13px] text-center ${
-          isYou ? 'bg-amber-50/60' : ''
+          isYou ? 'bg-[#FEF0E8]/60' : ''
         } ${highlight ? 'text-green-600 font-semibold' : 'text-[#111]'}`}
       >
         {value ?? '—'}
@@ -283,23 +283,23 @@ function ComparisonTable({
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E8E4DC] overflow-hidden mb-6">
+    <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden mb-6">
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-[#E8E4DC]">
+            <tr className="border-b border-[#E4DED8]">
               <th className="px-4 py-3 text-left text-[12px] font-medium text-[#888] w-36">Metric</th>
               {colHeaders.slice(0, activeCount).map((name, i) => (
                 <th
                   key={i}
                   className={`px-4 py-3 text-[12px] font-medium text-center ${
-                    i === 0 ? 'bg-amber-50/60 text-[#111]' : 'text-[#888]'
+                    i === 0 ? 'bg-[#FEF0E8]/60 text-[#111]' : 'text-[#888]'
                   }`}
                 >
                   {i === 0 ? (
                     <span className="flex flex-col items-center gap-0.5">
                       <span>{name}</span>
-                      <span className="text-[10px] font-normal text-amber-500">You</span>
+                      <span className="text-[10px] font-normal text-[#E05A28]">You</span>
                     </span>
                   ) : (
                     name
@@ -308,7 +308,7 @@ function ComparisonTable({
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#E8E4DC]">
+          <tbody className="divide-y divide-[#E4DED8]">
             {/* Average Rating */}
             <tr>
               <td className="px-4 py-3 text-[13px] text-[#888]">Avg Rating</td>
@@ -365,7 +365,7 @@ function ComparisonTable({
                   return (
                     <td
                       key={i}
-                      className={`px-4 py-3 text-[13px] text-center text-[#888] ${i === 0 ? 'bg-amber-50/60' : ''}`}
+                      className={`px-4 py-3 text-[13px] text-center text-[#888] ${i === 0 ? 'bg-[#FEF0E8]/60' : ''}`}
                     >
                       {date}
                     </td>
@@ -400,7 +400,7 @@ function RatingChart({
   ]
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E8E4DC] p-6 mb-6">
+    <div className="bg-white rounded-2xl border border-[#E4DED8] p-6 mb-6">
       <p className="text-[13px] font-semibold text-[#111] mb-5">Rating comparison</p>
       <ResponsiveContainer width="100%" height={220}>
         <BarChart data={data} margin={{ top: 20, right: 16, left: -20, bottom: 0 }} barSize={40}>
@@ -420,7 +420,7 @@ function RatingChart({
           <Tooltip
             contentStyle={{
               background: '#fff',
-              border: '1px solid #E8E4DC',
+              border: '1px solid #E4DED8',
               borderRadius: 12,
               fontSize: 12,
               color: '#111',
@@ -507,7 +507,7 @@ function InsightCallout({
       {insights.map((ins) => (
         <div
           key={ins.key}
-          className="bg-white rounded-2xl border border-[#E8E4DC] border-l-4 border-l-amber-400 px-5 py-4"
+          className="bg-white rounded-2xl border border-[#E4DED8] border-l-4 border-l-[#E05A28] px-5 py-4"
         >
           <p className="text-[13px] text-[#111] leading-relaxed">{ins.text}</p>
         </div>
@@ -538,7 +538,7 @@ function CompetitorCard({
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E8E4DC] p-5">
+    <div className="bg-white rounded-2xl border border-[#E4DED8] p-5">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="text-[14px] font-semibold text-[#111] truncate">
@@ -548,7 +548,7 @@ function CompetitorCard({
             href={competitor.google_maps_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[12px] text-amber-500 hover:text-amber-600 transition truncate block mt-0.5"
+            className="text-[12px] text-[#E05A28] hover:text-[#C94E21] transition truncate block mt-0.5"
           >
             View on Google Maps →
           </a>
@@ -556,13 +556,13 @@ function CompetitorCard({
         <button
           onClick={handleRemove}
           disabled={removing}
-          className="flex-shrink-0 px-4 py-2 rounded-xl border border-[#E8E4DC] text-[13px] font-medium text-[#888] hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition disabled:opacity-50"
+          className="flex-shrink-0 px-4 py-2 rounded-xl border border-[#E4DED8] text-[13px] font-medium text-[#888] hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition disabled:opacity-50"
         >
           {removing ? 'Removing…' : 'Remove'}
         </button>
       </div>
 
-      <div className="flex items-center gap-5 mt-4 pt-4 border-t border-[#E8E4DC]">
+      <div className="flex items-center gap-5 mt-4 pt-4 border-t border-[#E4DED8]">
         <div>
           <p className="text-[11px] text-[#888] mb-0.5">Avg Rating</p>
           <p className="text-[14px] font-semibold text-[#111]">
@@ -604,7 +604,7 @@ export default function CompetitorsClient({
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F4F0] px-4 py-8">
+    <div className="min-h-screen bg-[#F3F0EC] px-4 py-8">
       <div className="max-w-3xl mx-auto">
 
         {/* Header */}
@@ -618,7 +618,7 @@ export default function CompetitorsClient({
           {competitors.length < 3 && !showAddMore && (
             <button
               onClick={() => setShowAddMore(true)}
-              className="px-4 py-2 rounded-xl border border-[#E8E4DC] bg-white text-[13px] font-medium text-[#111] hover:bg-[#F5F4F0] transition"
+              className="px-4 py-2 rounded-xl border border-[#E4DED8] bg-white text-[13px] font-medium text-[#111] hover:bg-[#F3F0EC] transition"
             >
               + Add more competitors
             </button>

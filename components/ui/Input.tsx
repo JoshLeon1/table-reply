@@ -12,20 +12,22 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full">
         {label && (
-          <label htmlFor={id} className="block text-[13px] font-medium text-[#0D0D0D] mb-1.5">
+          <label htmlFor={id} className="block text-[13px] font-medium text-[#111] mb-1.5">
             {label}
           </label>
         )}
-        {hint && <p className="text-[12px] text-[#6B6B6B] mb-1.5">{hint}</p>}
+        {hint && <p className="text-[12px] text-[#7C7672] mb-1.5">{hint}</p>}
         <input
           ref={ref}
           id={id}
           className={cn(
-            'w-full px-3.5 py-2.5 rounded-xl border text-[#0D0D0D] text-sm placeholder:text-[#BEBCB8] bg-white',
+            'w-full px-3.5 py-2.5 rounded-xl border text-[#111] text-sm placeholder:text-[#C4BEB8] bg-white',
             'transition-all duration-150',
-            'focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400',
-            'disabled:bg-[#F5F4F1] disabled:cursor-not-allowed disabled:text-[#999]',
-            error ? 'border-red-400 focus:ring-red-400/40 focus:border-red-400' : 'border-[#E3E1DC]',
+            'focus:outline-none focus:ring-2 focus:ring-[#E05A28]/25 focus:border-[#E05A28]',
+            'disabled:bg-[#F3F0EC] disabled:cursor-not-allowed disabled:text-[#999]',
+            error
+              ? 'border-red-400 focus:ring-red-400/30 focus:border-red-400'
+              : 'border-[#E4DED8] hover:border-[#CEC8C1]',
             className
           )}
           {...props}

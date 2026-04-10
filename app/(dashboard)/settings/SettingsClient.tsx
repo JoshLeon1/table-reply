@@ -35,8 +35,8 @@ function Toggle({
       aria-checked={checked}
       disabled={disabled}
       onClick={() => onChange(!checked)}
-      className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed ${
-        checked ? 'bg-amber-400' : 'bg-[#E0DDD7]'
+      className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E05A28] focus-visible:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed ${
+        checked ? 'bg-[#E05A28]' : 'bg-[#DDD9D3]'
       }`}
     >
       <span
@@ -154,8 +154,8 @@ export default function SettingsClient({
   return (
     <div className="space-y-6">
       {/* Reply preferences */}
-      <div className="bg-white rounded-2xl border border-[#E8E4DC] overflow-hidden">
-        <div className="px-6 py-5 border-b border-[#F0EDE8] flex items-center justify-between">
+      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden">
+        <div className="px-6 py-5 border-b border-[#EDE9E4] flex items-center justify-between">
           <div>
             <h2 className="text-[13px] font-semibold text-[#111] uppercase tracking-wide">Reply Preferences</h2>
             <p className="text-[12px] text-[#888] mt-0.5">Applied to every generated reply.</p>
@@ -213,8 +213,8 @@ export default function SettingsClient({
       </div>
 
       {/* Email notifications */}
-      <div className="bg-white rounded-2xl border border-[#E8E4DC] overflow-hidden">
-        <div className="px-6 py-5 border-b border-[#F0EDE8] flex items-center justify-between">
+      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden">
+        <div className="px-6 py-5 border-b border-[#EDE9E4] flex items-center justify-between">
           <div>
             <h2 className="text-[13px] font-semibold text-[#111] uppercase tracking-wide">Email Notifications</h2>
             <p className="text-[12px] text-[#888] mt-0.5">Sent to {userEmail}</p>
@@ -262,7 +262,7 @@ export default function SettingsClient({
             <button
               onClick={handleExport}
               disabled={exportLoading}
-              className="flex-shrink-0 px-4 py-2 rounded-xl border border-[#E8E4DC] hover:border-[#D4CFC6] bg-white text-[13px] font-medium text-[#555] hover:text-[#111] transition-all duration-150 disabled:opacity-50"
+              className="flex-shrink-0 px-4 py-2 rounded-xl border border-[#E4DED8] hover:border-[#D4CFC6] bg-white text-[13px] font-medium text-[#555] hover:text-[#111] transition-all duration-150 disabled:opacity-50"
             >
               {exportLoading ? 'Exporting…' : 'Export JSON'}
             </button>
@@ -290,7 +290,7 @@ export default function SettingsClient({
                 value={deleteInput}
                 onChange={(e) => setDeleteInput(e.target.value)}
                 placeholder="Type DELETE to confirm"
-                className="flex-1 min-w-0 px-3 py-2 rounded-xl border border-[#E8E4DC] focus:border-red-300 focus:ring-2 focus:ring-red-100 text-[13px] font-mono text-[#111] placeholder-[#CCC] outline-none transition-all"
+                className="flex-1 min-w-0 px-3 py-2 rounded-xl border border-[#E4DED8] focus:border-red-300 focus:ring-2 focus:ring-red-100 text-[13px] font-mono text-[#111] placeholder-[#CCC] outline-none transition-all"
               />
               <button
                 onClick={handleDeleteData}

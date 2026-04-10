@@ -24,22 +24,19 @@ export default function TrialBanner({ daysRemaining, trialExpired, onUpgrade }: 
     setDismissed(true)
   }
 
-  // Active trial banner
   if (!trialExpired && daysRemaining > 0) {
     return (
-      <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-[#111111] text-white">
+      <div className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-[#111] border border-white/[0.06] animate-fade-in">
         <div className="flex items-center gap-3">
-          <div className="w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0" />
-          <p className="text-[13px]">
-            <span className="font-semibold text-white">
-              {daysRemaining} {daysRemaining === 1 ? 'day' : 'days'}
-            </span>
-            <span className="text-white/50"> remaining in your free trial</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-[#E05A28] flex-shrink-0" />
+          <p className="text-[13px] text-white/60">
+            <span className="font-semibold text-white">{daysRemaining} {daysRemaining === 1 ? 'day' : 'days'}</span>
+            {' '}remaining in your free trial
           </p>
         </div>
         <button
           onClick={onUpgrade}
-          className="text-[13px] font-semibold text-amber-400 hover:text-amber-300 transition-colors ml-6 whitespace-nowrap"
+          className="text-[13px] font-semibold text-[#E05A28] hover:text-[#F07040] transition-colors ml-6 whitespace-nowrap"
         >
           Upgrade — $29/mo →
         </button>
@@ -47,27 +44,26 @@ export default function TrialBanner({ daysRemaining, trialExpired, onUpgrade }: 
     )
   }
 
-  // Expired banner (dismissable per session)
   if (trialExpired && !dismissed) {
     return (
-      <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-[#111111] text-white gap-4">
+      <div className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-[#111] border border-white/[0.06] gap-4 animate-fade-in">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="w-1.5 h-1.5 rounded-full bg-red-400 flex-shrink-0" />
+          <span className="w-1.5 h-1.5 rounded-full bg-red-400 flex-shrink-0" />
           <p className="text-[13px] truncate">
             <span className="font-semibold text-white">Your free trial has ended</span>
-            <span className="text-white/50 hidden sm:inline"> — upgrade to keep generating replies</span>
+            <span className="text-white/45 hidden sm:inline"> — upgrade to keep generating replies</span>
           </p>
         </div>
         <div className="flex items-center gap-3 flex-shrink-0">
           <button
             onClick={onUpgrade}
-            className="text-[13px] font-semibold text-amber-400 hover:text-amber-300 transition-colors whitespace-nowrap"
+            className="text-[13px] font-semibold text-[#E05A28] hover:text-[#F07040] transition-colors whitespace-nowrap"
           >
             Upgrade — $29/mo →
           </button>
           <button
             onClick={handleDismiss}
-            className="text-white/30 hover:text-white/60 transition-colors p-1"
+            className="text-white/25 hover:text-white/55 transition-colors p-1"
             aria-label="Dismiss"
           >
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

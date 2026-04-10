@@ -25,7 +25,7 @@ export default function CopyButton({ text, className, label }: CopyButtonProps) 
         'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all duration-150',
         copied
           ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-          : 'bg-[#F5F4F0] hover:bg-[#ECEAE5] text-[#555] border border-[#E8E4DC] hover:border-[#D4CFC6]',
+          : 'bg-[#F3F0EC] hover:bg-[#EDE9E4] text-[#555] border border-[#E4DED8] hover:border-[#D4CFC6]',
         className
       )}
     >

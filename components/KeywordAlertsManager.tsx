@@ -74,12 +74,12 @@ export default function KeywordAlertsManager({ userId, initialAlerts }: KeywordA
           {alerts.map((alert) => (
             <span
               key={alert.id}
-              className="px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 text-[12px] border border-amber-200 flex items-center gap-1.5"
+              className="px-2.5 py-1 rounded-full bg-[#FEF0E8] text-[#B34419] text-[12px] border border-[#F5C9AD] flex items-center gap-1.5"
             >
               {alert.keyword}
               <button
                 onClick={() => handleDelete(alert.id)}
-                className="text-amber-500 hover:text-amber-800 transition-colors leading-none"
+                className="text-[#E05A28] hover:text-[#B34419] transition-colors leading-none"
                 aria-label={`Remove keyword "${alert.keyword}"`}
               >
                 ×
@@ -98,7 +98,7 @@ export default function KeywordAlertsManager({ userId, initialAlerts }: KeywordA
           onKeyDown={handleKeyDown}
           placeholder="e.g. hair, cold food, rude…"
           maxLength={50}
-          className="flex-1 px-3.5 py-2.5 rounded-xl border border-[#E8E4DC] text-[13px] focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400 outline-none"
+          className="flex-1 px-3.5 py-2.5 rounded-xl border border-[#E4DED8] text-[13px] focus:ring-2 focus:ring-[#E05A28]/40 focus:border-[#E05A28] outline-none"
         />
         <button
           onClick={handleAdd}

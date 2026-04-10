@@ -66,8 +66,8 @@ export default async function SettingsPage() {
       </div>
 
       {/* Subscription */}
-      <div className="bg-white rounded-2xl border border-[#E8E4DC] overflow-hidden">
-        <div className="px-6 py-5 border-b border-[#F0EDE8]">
+      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden">
+        <div className="px-6 py-5 border-b border-[#EDE9E4]">
           <div className="flex items-center justify-between">
             <h2 className="text-[13px] font-semibold text-[#111] uppercase tracking-wide">Subscription</h2>
             <span
@@ -75,7 +75,7 @@ export default async function SettingsPage() {
                 isPaid
                   ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                   : daysRemaining > 0
-                  ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                  ? 'bg-[#FEF0E8] text-[#B34419] border border-[#F5C9AD]'
                   : 'bg-red-50 text-red-600 border border-red-200'
               }`}
             >
@@ -97,7 +97,7 @@ export default async function SettingsPage() {
           )}
         </div>
 
-        <div className="px-6 py-5 bg-[#FAFAF8] border-t border-[#F0EDE8]">
+        <div className="px-6 py-5 bg-[#FAFAF8] border-t border-[#EDE9E4]">
           {isPaid ? (
             <ManageBillingButton />
           ) : (
@@ -110,13 +110,13 @@ export default async function SettingsPage() {
                 <div>
                   <div className="flex items-center gap-2 mb-0.5">
                     <span className="text-[13px] font-semibold">Annual plan</span>
-                    <span className="px-1.5 py-0.5 rounded bg-amber-400 text-[#111] text-[9px] font-bold uppercase tracking-wide leading-none">
+                    <span className="px-1.5 py-0.5 rounded bg-[#E05A28] text-[#111] text-[9px] font-bold uppercase tracking-wide leading-none">
                       Best value
                     </span>
                   </div>
                   <p className="text-white/50 text-[11px]">$239/yr · save $109 · under $20/month</p>
                 </div>
-                <span className="text-amber-400 text-[13px] font-semibold group-hover:text-amber-300 transition-colors">
+                <span className="text-[#E05A28] text-[13px] font-semibold group-hover:text-[#F07040] transition-colors">
                   $239/yr →
                 </span>
               </Link>
@@ -124,7 +124,7 @@ export default async function SettingsPage() {
               {/* Monthly */}
               <Link
                 href="/api/stripe/create-checkout"
-                className="flex items-center justify-between px-5 py-3 rounded-xl border border-[#E8E4DC] hover:border-[#D4CFC6] bg-white text-[#111] text-[13px] transition-all duration-150"
+                className="flex items-center justify-between px-5 py-3 rounded-xl border border-[#E4DED8] hover:border-[#D4CFC6] bg-white text-[#111] text-[13px] transition-all duration-150"
               >
                 <span className="font-medium">Monthly plan</span>
                 <span className="text-[#888]">$29/mo →</span>
@@ -135,8 +135,8 @@ export default async function SettingsPage() {
       </div>
 
       {/* Restaurant profile */}
-      <div className="bg-white rounded-2xl border border-[#E8E4DC] overflow-hidden">
-        <div className="px-6 py-5 border-b border-[#F0EDE8]">
+      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden">
+        <div className="px-6 py-5 border-b border-[#EDE9E4]">
           <h2 className="text-[13px] font-semibold text-[#111] uppercase tracking-wide">Restaurant Profile</h2>
           <p className="text-[12px] text-[#888] mt-0.5">Used to personalise every generated reply.</p>
         </div>
@@ -150,8 +150,8 @@ export default async function SettingsPage() {
       </div>
 
       {/* Keyword Alerts */}
-      <div className="bg-white rounded-2xl border border-[#E8E4DC] overflow-hidden">
-        <div className="px-6 py-5 border-b border-[#F0EDE8]">
+      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden">
+        <div className="px-6 py-5 border-b border-[#EDE9E4]">
           <h2 className="text-[13px] font-semibold text-[#111] uppercase tracking-wide">Keyword Alerts</h2>
           <p className="text-[12px] text-[#888] mt-0.5">Get an instant email when a review contains these words.</p>
         </div>

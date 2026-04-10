@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useEffect, useRef } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import StarRating from './StarRating'
 import CopyButton from './CopyButton'
 
@@ -9,7 +9,6 @@ interface ReplyGeneratorProps {
   onUpgrade: () => void
   initialReview?: string
   initialRating?: number
-  /** Passes a trigger function up so parent can fire generate via keyboard shortcut */
   onGenerateTriggerRef?: (fn: () => void) => void
 }
 
@@ -18,14 +17,14 @@ const platforms = ['Google', 'Yelp', 'TripAdvisor', 'OpenTable', 'Facebook', 'Ot
 type Tone = 'warmer' | 'more-professional' | 'more-concise'
 
 const TONES: { value: Tone; label: string }[] = [
-  { value: 'warmer', label: 'Warmer' },
+  { value: 'warmer',            label: 'Warmer' },
   { value: 'more-professional', label: 'More professional' },
-  { value: 'more-concise', label: 'More concise' },
+  { value: 'more-concise',      label: 'More concise' },
 ]
 
 const PLATFORM_TIPS: Record<string, string> = {
-  Google: 'Google replies appear publicly — keep it professional and inviting.',
-  Yelp: 'Yelp replies are highly visible — address specifics and avoid defensiveness.',
+  Google: 'Google replies are public — keep it professional and inviting.',
+  Yelp:   'Yelp replies are highly visible — address specifics, avoid defensiveness.',
 }
 
 const EXAMPLES = [
@@ -73,7 +72,7 @@ function WordCountBadge({ count }: { count: number }) {
     <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${
       ideal
         ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
-        : 'bg-amber-50 text-amber-600 border border-amber-200'
+        : 'bg-[#FEF0E8] text-[#E05A28] border border-[#F5C9AD]'
     }`}>
       {count}w · {ideal ? 'Ideal length' : tooShort ? 'Too short' : 'Too long'}
     </span>
@@ -83,7 +82,7 @@ function WordCountBadge({ count }: { count: number }) {
 function PersonalizationBadge({ score }: { score: ReturnType<typeof getPersonalizationScore> }) {
   if (score === 'highly-personalized') {
     return (
-      <span className="flex items-center gap-1 text-[11px] font-semibold text-amber-600 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
+      <span className="flex items-center gap-1 text-[11px] font-semibold text-[#E05A28] bg-[#FEF0E8] border border-[#F5C9AD] px-2 py-0.5 rounded-full">
         <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
         </svg>
@@ -92,9 +91,9 @@ function PersonalizationBadge({ score }: { score: ReturnType<typeof getPersonali
     )
   }
   if (score === 'personalized') {
-    return <span className="text-[11px] font-medium text-[#888] bg-[#F5F4F0] border border-[#E8E4DC] px-2 py-0.5 rounded-full">Personalized</span>
+    return <span className="text-[11px] font-medium text-[#7C7672] bg-[#F3F0EC] border border-[#E4DED8] px-2 py-0.5 rounded-full">Personalized</span>
   }
-  return <span className="text-[11px] font-medium text-[#AAA] bg-[#F9F9F9] border border-[#E8E4DC] px-2 py-0.5 rounded-full">Generic</span>
+  return <span className="text-[11px] font-medium text-[#A8A29E] bg-[#F8F6F3] border border-[#E4DED8] px-2 py-0.5 rounded-full">Generic</span>
 }
 
 export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', initialRating = 5, onGenerateTriggerRef }: ReplyGeneratorProps) {
@@ -139,7 +138,6 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
       const data = await res.json()
       setGeneratedReply(data.reply)
       setActiveTone(tone ?? null)
-      // Mark step done in localStorage
       if (typeof window !== 'undefined') localStorage.setItem('tr_step_reply', '1')
     } catch (err) {
       setError(
@@ -152,7 +150,6 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
     }
   }
 
-  // Expose trigger to parent for keyboard shortcut
   useEffect(() => {
     onGenerateTriggerRef?.(() => handleGenerate(activeTone))
   }, [reviewText, activeTone])
@@ -165,9 +162,7 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ generatedReply, rating }),
       })
-    } catch {
-      // silent — feedback is best-effort
-    }
+    } catch { /* silent */ }
   }
 
   const handleGenerateSocial = async () => {
@@ -188,28 +183,29 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
 
   return (
     <div className="space-y-4">
+
       {/* Input card */}
-      <div className="bg-white rounded-2xl border border-[#E8E4DC] p-6">
+      <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-card p-5 sm:p-6">
         <div className="space-y-5">
           <div>
-            <label className="block text-[13px] font-medium text-[#111] mb-2">Review</label>
+            <label className="block text-[13px] font-semibold text-[#111] mb-2">Review</label>
             <textarea
               value={reviewText}
               onChange={(e) => setReviewText(e.target.value)}
               placeholder="Paste the customer review here…"
               rows={5}
-              className="w-full px-3.5 py-3 rounded-xl border border-[#E8E4DC] text-[#111] text-sm placeholder:text-[#C0BDB8] bg-white resize-y focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400 transition-all duration-150 min-h-[56px]"
+              className="w-full px-3.5 py-3 rounded-xl border border-[#E4DED8] text-[#111] text-[14px] placeholder:text-[#C4BEB8] bg-[#F8F6F3] hover:bg-white focus:bg-white resize-y focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] transition-all duration-150 leading-relaxed min-h-[100px]"
             />
           </div>
 
           <div className="flex flex-wrap items-end gap-x-8 gap-y-4">
             <div>
-              <label className="block text-[13px] font-medium text-[#111] mb-2">Rating</label>
+              <label className="block text-[13px] font-semibold text-[#111] mb-2">Rating</label>
               <StarRating value={starRating} onChange={setStarRating} />
             </div>
 
             <div>
-              <label className="block text-[13px] font-medium text-[#111] mb-2">Platform</label>
+              <label className="block text-[13px] font-semibold text-[#111] mb-2">Platform</label>
               <div className="flex gap-1.5 flex-wrap">
                 {platforms.map((p) => (
                   <button
@@ -218,7 +214,7 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
                     className={`px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all duration-150 ${
                       platform === p
                         ? 'bg-[#111] text-white'
-                        : 'bg-[#F5F4F0] text-[#666] hover:bg-[#ECEAE5] border border-[#E8E4DC]'
+                        : 'bg-[#F3F0EC] text-[#57534E] hover:bg-[#EDE9E4] border border-[#E4DED8]'
                     }`}
                   >
                     {p}
@@ -226,8 +222,8 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
                 ))}
               </div>
               {PLATFORM_TIPS[platform] && (
-                <p className="text-[11px] text-[#AAA] mt-2 flex items-center gap-1.5">
-                  <svg className="w-3 h-3 flex-shrink-0 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                <p className="text-[11px] text-[#A8A29E] mt-2 flex items-center gap-1.5">
+                  <svg className="w-3 h-3 flex-shrink-0 text-[#E05A28]" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"/>
                   </svg>
                   {PLATFORM_TIPS[platform]}
@@ -237,7 +233,7 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
           </div>
 
           {error && (
-            <p className="text-[13px] text-red-500 bg-red-50 border border-red-200 rounded-xl px-3.5 py-3">
+            <p className="text-[13px] text-red-600 bg-red-50 border border-red-100 rounded-xl px-3.5 py-3">
               {error}
             </p>
           )}
@@ -245,7 +241,7 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
           <button
             onClick={() => handleGenerate(null)}
             disabled={!reviewText.trim() || loading}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#111111] hover:bg-[#2a2a2a] text-white text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 min-h-[44px]"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#111] hover:bg-[#1E1E1E] text-white text-[14px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 min-h-[44px]"
           >
             {loading ? (
               <>
@@ -269,37 +265,37 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
 
       {/* Output card */}
       {generatedReply && (
-        <div className="bg-white rounded-2xl border border-[#E8E4DC] overflow-hidden">
-          <div className="flex items-center justify-between px-6 py-4 border-b border-[#F0EDE8]">
+        <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-card overflow-hidden animate-fade-up">
+          <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-[#EDE9E4]">
             <div className="flex items-center gap-2 flex-wrap">
-              <div className="w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0"/>
+              <span className="w-2 h-2 rounded-full bg-[#E05A28] flex-shrink-0" />
               <span className="text-[13px] font-semibold text-[#111]">Generated reply</span>
-              {personalization && <PersonalizationBadge score={personalization}/>}
-              <WordCountBadge count={replyWords}/>
+              {personalization && <PersonalizationBadge score={personalization} />}
+              <WordCountBadge count={replyWords} />
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
               <button
                 onClick={() => handleGenerate(activeTone)}
                 disabled={loading}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium text-[#666] hover:text-[#111] hover:bg-[#F5F4F0] border border-transparent hover:border-[#E8E4DC] disabled:opacity-40 transition-all"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium text-[#57534E] hover:text-[#111] hover:bg-[#F3F0EC] border border-transparent hover:border-[#E4DED8] disabled:opacity-40 transition-all"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                 </svg>
                 Regenerate
               </button>
-              <CopyButton text={generatedReply}/>
+              <CopyButton text={generatedReply} />
             </div>
           </div>
 
-          <div className="px-6 py-5">
-            <p className="text-[#333] text-sm leading-relaxed whitespace-pre-wrap">{generatedReply}</p>
+          <div className="px-5 sm:px-6 py-5">
+            <p className="text-[#333] text-[14px] leading-relaxed whitespace-pre-wrap">{generatedReply}</p>
           </div>
 
           {/* Tone picker */}
-          <div className="px-6 py-4 border-t border-[#F0EDE8]">
-            <p className="text-[11px] font-semibold text-[#AAA] uppercase tracking-[0.12em] mb-3">
-              Regenerate with different tone
+          <div className="px-5 sm:px-6 py-4 border-t border-[#EDE9E4]">
+            <p className="text-[10px] font-semibold text-[#A8A29E] uppercase tracking-[0.12em] mb-3">
+              Adjust tone
             </p>
             <div className="flex gap-2 flex-wrap">
               {TONES.map(({ value, label }) => (
@@ -308,7 +304,9 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
                   onClick={() => handleGenerate(value)}
                   disabled={loading}
                   className={`px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all disabled:opacity-40 ${
-                    activeTone === value ? 'bg-[#111] text-white' : 'bg-[#F5F4F0] text-[#666] hover:bg-[#ECEAE5] border border-[#E8E4DC]'
+                    activeTone === value
+                      ? 'bg-[#111] text-white'
+                      : 'bg-[#F3F0EC] text-[#57534E] hover:bg-[#EDE9E4] border border-[#E4DED8]'
                   }`}
                 >
                   {label}
@@ -318,13 +316,12 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
           </div>
 
           {/* Feedback */}
-          <div className="px-6 py-4 border-t border-[#F0EDE8] flex items-center justify-between">
-            <span className="text-[12px] text-[#AAA]">Was this reply good?</span>
-            <div className="flex items-center gap-2">
+          <div className="px-5 sm:px-6 py-3.5 border-t border-[#EDE9E4] flex items-center justify-between">
+            <span className="text-[12px] text-[#A8A29E]">Was this good?</span>
+            <div className="flex items-center gap-1.5">
               <button
                 onClick={() => handleFeedback('good')}
-                className={`p-1.5 rounded-lg transition-all ${feedback === 'good' ? 'bg-emerald-50 text-emerald-600' : 'text-[#CCC] hover:text-emerald-500 hover:bg-emerald-50'}`}
-                title="Good reply"
+                className={`p-1.5 rounded-lg transition-all ${feedback === 'good' ? 'bg-emerald-50 text-emerald-600' : 'text-[#CEC8C1] hover:text-emerald-500 hover:bg-emerald-50'}`}
               >
                 <svg className="w-4 h-4" fill={feedback === 'good' ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/>
@@ -332,25 +329,24 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
               </button>
               <button
                 onClick={() => handleFeedback('bad')}
-                className={`p-1.5 rounded-lg transition-all ${feedback === 'bad' ? 'bg-red-50 text-red-500' : 'text-[#CCC] hover:text-red-400 hover:bg-red-50'}`}
-                title="Bad reply"
+                className={`p-1.5 rounded-lg transition-all ${feedback === 'bad' ? 'bg-red-50 text-red-500' : 'text-[#CEC8C1] hover:text-red-400 hover:bg-red-50'}`}
               >
                 <svg className="w-4 h-4" fill={feedback === 'bad' ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5"/>
                 </svg>
               </button>
               {feedback && (
-                <span className="text-[11px] text-[#AAA]">{feedback === 'good' ? 'Thanks!' : 'Got it, we\'ll improve'}</span>
+                <span className="text-[11px] text-[#A8A29E] ml-1">{feedback === 'good' ? 'Thanks!' : 'Got it, we\'ll improve'}</span>
               )}
             </div>
           </div>
 
           {/* Social post */}
-          <div className="px-6 py-4 border-t border-[#F0EDE8]">
+          <div className="px-5 sm:px-6 py-4 border-t border-[#EDE9E4]">
             <button
               onClick={handleGenerateSocial}
               disabled={socialLoading}
-              className="flex items-center gap-2 text-[13px] font-medium text-[#666] hover:text-[#111] disabled:opacity-40 transition-colors"
+              className="flex items-center gap-2 text-[13px] font-medium text-[#57534E] hover:text-[#111] disabled:opacity-40 transition-colors"
             >
               {socialLoading ? (
                 <svg className="animate-spin h-3.5 w-3.5" fill="none" viewBox="0 0 24 24">
@@ -362,63 +358,77 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m9.632 4.684a3 3 0 10-5.368 2.684 3 3 0 005.368-2.684zm-9.632-7.368a3 3 0 10-5.368-2.684 3 3 0 005.368 2.684z"/>
                 </svg>
               )}
-              {isPaid ? 'Turn into social post' : 'Turn into social post · Pro'}
+              Turn into social post
               {!isPaid && (
-                <span className="px-1.5 py-0.5 rounded-md bg-amber-50 text-amber-600 text-[10px] font-bold border border-amber-200 uppercase tracking-wide">Pro</span>
+                <span className="px-1.5 py-0.5 rounded-md bg-[#FEF0E8] text-[#E05A28] text-[10px] font-bold border border-[#F5C9AD] uppercase tracking-wide">Pro</span>
               )}
             </button>
             {socialPost && (
-              <div className="mt-4 p-4 bg-[#F7F6F3] rounded-xl border border-[#E8E4DC]">
+              <div className="mt-4 p-4 bg-[#F8F6F3] rounded-xl border border-[#E4DED8]">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-[12px] font-semibold text-[#888] uppercase tracking-wide">Instagram / Facebook</span>
-                  <CopyButton text={socialPost}/>
+                  <span className="text-[11px] font-semibold text-[#A8A29E] uppercase tracking-wide">Instagram / Facebook</span>
+                  <CopyButton text={socialPost} />
                 </div>
-                <p className="text-sm text-[#333] whitespace-pre-wrap leading-relaxed">{socialPost}</p>
+                <p className="text-[13px] text-[#333] whitespace-pre-wrap leading-relaxed">{socialPost}</p>
               </div>
             )}
           </div>
         </div>
       )}
 
-      {/* Reply examples */}
-      <div className="bg-white rounded-2xl border border-[#E8E4DC] overflow-hidden">
+      {/* Loading skeleton */}
+      {loading && !generatedReply && (
+        <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-card p-5 sm:p-6 animate-fade-in">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-2 h-2 rounded-full bg-[#E05A28] animate-pulse" />
+            <div className="skeleton h-3.5 w-32" />
+          </div>
+          <div className="space-y-2.5">
+            <div className="skeleton h-3.5 w-full" />
+            <div className="skeleton h-3.5 w-[92%]" />
+            <div className="skeleton h-3.5 w-[85%]" />
+            <div className="skeleton h-3.5 w-[78%]" />
+            <div className="skeleton h-3.5 w-[60%]" />
+          </div>
+        </div>
+      )}
+
+      {/* Examples */}
+      <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-card overflow-hidden">
         <button
           onClick={() => setShowExamples((p) => !p)}
-          className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-[#FAFAF8] transition-colors"
+          className="w-full flex items-center justify-between px-5 sm:px-6 py-4 text-left hover:bg-[#F8F6F3] transition-colors"
         >
           <div className="flex items-center gap-2">
-            <svg className="w-4 h-4 text-[#AAA]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
             </svg>
-            <span className="text-[13px] font-medium text-[#555]">Reply examples — see what great looks like</span>
+            <span className="text-[13px] font-medium text-[#57534E]">See example replies</span>
           </div>
-          <svg
-            className={`w-4 h-4 text-[#AAA] transition-transform ${showExamples ? 'rotate-180' : ''}`}
-            fill="none" stroke="currentColor" viewBox="0 0 24 24"
-          >
+          <svg className={`w-4 h-4 text-[#A8A29E] transition-transform duration-200 ${showExamples ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"/>
           </svg>
         </button>
 
         {showExamples && (
-          <div className="border-t border-[#F0EDE8] divide-y divide-[#F0EDE8]">
+          <div className="border-t border-[#EDE9E4] divide-y divide-[#EDE9E4]">
             {EXAMPLES.map((ex, i) => (
-              <div key={i} className="px-6 py-5">
+              <div key={i} className="px-5 sm:px-6 py-5">
                 <div className="flex items-center gap-2 mb-3">
                   <div className="flex gap-0.5">
                     {[1,2,3,4,5].map((s) => (
-                      <svg key={s} className={`w-3.5 h-3.5 ${s <= ex.stars ? 'text-amber-400' : 'text-[#E8E4DC]'}`} fill="currentColor" viewBox="0 0 20 20">
+                      <svg key={s} className={`w-3.5 h-3.5 ${s <= ex.stars ? 'text-amber-400' : 'text-[#E4DED8]'}`} fill="currentColor" viewBox="0 0 20 20">
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                       </svg>
                     ))}
                   </div>
-                  <span className="text-[11px] text-[#AAA] font-medium uppercase tracking-wide">{ex.stars}-star review</span>
+                  <span className="text-[11px] text-[#A8A29E] font-medium">{ex.stars}-star</span>
                 </div>
-                <p className="text-[12px] text-[#888] italic mb-3 leading-relaxed">"{ex.review}"</p>
-                <div className="bg-[#F7F6F3] rounded-xl p-3.5 border border-[#E8E4DC]">
+                <p className="text-[12px] text-[#7C7672] italic mb-3 leading-relaxed">"{ex.review}"</p>
+                <div className="bg-[#F8F6F3] rounded-xl p-4 border border-[#E4DED8]">
                   <div className="flex items-center gap-1.5 mb-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-amber-400"/>
-                    <span className="text-[10px] font-semibold uppercase tracking-wide text-[#AAA]">Example reply</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#E05A28]" />
+                    <span className="text-[10px] font-semibold uppercase tracking-wide text-[#A8A29E]">Example reply</span>
                   </div>
                   <p className="text-[12px] text-[#444] leading-relaxed whitespace-pre-wrap">{ex.reply}</p>
                 </div>

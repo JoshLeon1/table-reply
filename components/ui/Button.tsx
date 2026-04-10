@@ -2,7 +2,7 @@ import { ButtonHTMLAttributes, forwardRef } from 'react'
 import { cn } from '@/lib/utils'
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'destructive'
+  variant?: 'primary' | 'secondary' | 'ghost' | 'destructive' | 'accent'
   size?: 'sm' | 'md' | 'lg'
   loading?: boolean
 }
@@ -10,23 +10,25 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', size = 'md', loading, children, disabled, ...props }, ref) => {
     const base =
-      'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-150 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed'
+      'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed select-none'
 
     const variants = {
       primary:
-        'bg-[#111111] hover:bg-[#2a2a2a] active:bg-[#1a1a1a] text-white',
+        'bg-[#111] hover:bg-[#1E1E1E] active:bg-[#141414] text-white focus-visible:ring-[#111]',
+      accent:
+        'bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white focus-visible:ring-[#E05A28]',
       secondary:
-        'bg-white border border-[#E8E4DC] hover:border-[#D4CFC6] hover:bg-[#FAFAF8] text-[#111111]',
+        'bg-white border border-[#E4DED8] hover:border-[#CEC8C1] hover:bg-[#FAFAF8] text-[#111] focus-visible:ring-[#111]',
       ghost:
-        'hover:bg-[#F0EDE8] text-[#444444] hover:text-[#111111]',
+        'hover:bg-[#EDE9E4] text-[#444] hover:text-[#111] focus-visible:ring-[#111]',
       destructive:
-        'bg-red-500 hover:bg-red-600 text-white',
+        'bg-red-500 hover:bg-red-600 active:bg-red-700 text-white focus-visible:ring-red-500',
     }
 
     const sizes = {
-      sm: 'px-3 py-1.5 text-[13px] gap-1.5',
-      md: 'px-4 py-2 text-sm gap-2',
-      lg: 'px-5 py-2.5 text-sm gap-2',
+      sm: 'px-3 py-1.5 text-[13px] gap-1.5 h-8',
+      md: 'px-4 py-2 text-sm gap-2 h-9',
+      lg: 'px-5 py-2.5 text-sm gap-2 h-10',
     }
 
     return (
@@ -37,11 +39,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {loading && (
-          <svg
-            className="animate-spin h-3.5 w-3.5 opacity-70"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
+          <svg className="animate-spin h-3.5 w-3.5 opacity-70 flex-shrink-0" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
           </svg>

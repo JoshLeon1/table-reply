@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
 const LS_REPLY  = 'tr_step_reply'
@@ -42,42 +42,33 @@ export default function WelcomeBanner({ hasGeneratedReply, hasAutoSync }: Props)
   if (!visible) return null
 
   const stepList = [
-    {
-      done: steps.voice,
-      label: 'Set your restaurant voice',
-      href: '/settings',
-      hint: 'Settings',
-    },
-    {
-      done: steps.reply,
-      label: 'Generate your first reply',
-      href: '/dashboard',
-      hint: 'Generate',
-    },
-    {
-      done: steps.sync,
-      label: 'Connect Google for auto-sync',
-      href: '/dashboard/reviews',
-      hint: 'Auto Reviews',
-    },
+    { done: steps.voice, label: 'Set restaurant voice', href: '/settings' },
+    { done: steps.reply, label: 'Generate first reply',  href: '/dashboard' },
+    { done: steps.sync,  label: 'Connect Google sync',   href: '/dashboard/reviews' },
   ]
 
   const doneCount = stepList.filter((s) => s.done).length
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E8E4DC] p-5 mb-2">
-      <div className="flex items-start justify-between gap-4 mb-4">
+    <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-card p-4 mb-2 animate-fade-up">
+      <div className="flex items-start justify-between gap-4 mb-3">
         <div>
-          <p className="text-[13px] font-semibold text-[#111]">
-            Welcome to TableReply! Here's how to get the most out of it:
-          </p>
-          <p className="text-[12px] text-[#AAA] mt-0.5">{doneCount} of 3 steps complete</p>
+          <p className="text-[13px] font-semibold text-[#111]">Get started with TableReply</p>
+          <p className="text-[12px] text-[#A8A29E] mt-0.5">{doneCount} of 3 steps complete</p>
         </div>
-        <button onClick={dismiss} className="text-[#CCC] hover:text-[#888] transition-colors flex-shrink-0 mt-0.5">
+        <button onClick={dismiss} className="text-[#C4BEB8] hover:text-[#7C7672] transition-colors flex-shrink-0 mt-0.5 p-0.5">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
           </svg>
         </button>
+      </div>
+
+      {/* Progress bar */}
+      <div className="w-full h-1 bg-[#F3F0EC] rounded-full mb-3 overflow-hidden">
+        <div
+          className="h-full bg-[#E05A28] rounded-full transition-all duration-500"
+          style={{ width: `${(doneCount / 3) * 100}%` }}
+        />
       </div>
 
       <div className="flex flex-col sm:flex-row gap-2">
@@ -87,12 +78,12 @@ export default function WelcomeBanner({ hasGeneratedReply, hasAutoSync }: Props)
             href={step.href}
             className={`flex-1 flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl border transition-all duration-150 ${
               step.done
-                ? 'bg-[#F5F4F0] border-[#E8E4DC] opacity-60 pointer-events-none'
-                : 'bg-white border-amber-200 hover:border-amber-400 hover:bg-amber-50'
+                ? 'bg-[#F3F0EC] border-[#E4DED8] opacity-55 pointer-events-none'
+                : 'bg-white border-[#F5C9AD] hover:border-[#E05A28] hover:bg-[#FEF0E8]'
             }`}
           >
             <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${
-              step.done ? 'bg-emerald-100 text-emerald-600' : 'border-2 border-amber-300'
+              step.done ? 'bg-emerald-100 text-emerald-600' : 'border-2 border-[#E05A28]/40'
             }`}>
               {step.done && (
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -100,7 +91,7 @@ export default function WelcomeBanner({ hasGeneratedReply, hasAutoSync }: Props)
                 </svg>
               )}
             </div>
-            <span className={`text-[12px] font-medium leading-snug ${step.done ? 'text-[#AAA] line-through' : 'text-[#333]'}`}>
+            <span className={`text-[12px] font-medium leading-snug ${step.done ? 'text-[#A8A29E] line-through' : 'text-[#333]'}`}>
               {step.label}
             </span>
           </Link>

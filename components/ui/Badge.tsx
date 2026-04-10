@@ -9,7 +9,7 @@ export function Badge({ className, variant = 'default', children, ...props }: Ba
   const variants = {
     default: 'bg-[#F0EDE8] text-[#555]',
     success: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
-    warning: 'bg-amber-50 text-amber-700 border border-amber-200',
+    warning: 'bg-[#FEF0E8] text-[#B34419] border border-[#F5C9AD]',
     error:   'bg-red-50 text-red-600 border border-red-200',
   }
 

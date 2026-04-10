@@ -136,13 +136,13 @@ export default function DemoClient({ restaurantProfile }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F4F0] flex items-center justify-center p-6">
+    <div className="min-h-screen bg-[#F8F6F3] flex items-center justify-center p-6">
       <div className="w-full max-w-2xl">
 
         {/* Header */}
         <div className="mb-8 text-center">
           <div className="inline-flex items-center gap-2 mb-4">
-            <div className="w-6 h-6 rounded-md bg-amber-400 flex items-center justify-center">
+            <div className="w-6 h-6 rounded-md bg-[#E05A28] flex items-center justify-center">
               <svg className="w-3.5 h-3.5 text-[#111]" viewBox="0 0 14 14" fill="currentColor">
                 <path d="M7 1C3.686 1 1 3.686 1 7s2.686 6 6 6 6-2.686 6-6-2.686-6-6-6zm0 2a4 4 0 110 8A4 4 0 017 3z"/>
               </svg>
@@ -162,11 +162,11 @@ export default function DemoClient({ restaurantProfile }: Props) {
         </div>
 
         {/* Sample review */}
-        <div className="bg-white rounded-2xl border border-[#E8E4DC] p-6 mb-4">
+        <div className="bg-white rounded-2xl border border-[#E4DED8] p-6 mb-4">
           <div className="flex items-center gap-2 mb-4">
             <div className="flex gap-0.5">
               {[1,2,3,4,5].map((i) => (
-                <svg key={i} className={`w-4 h-4 ${i <= demo.rating ? 'text-amber-400' : 'text-[#E8E4DC]'}`} fill="currentColor" viewBox="0 0 20 20">
+                <svg key={i} className={`w-4 h-4 ${i <= demo.rating ? 'text-amber-400' : 'text-[#E4DED8]'}`} fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                 </svg>
               ))}
@@ -178,11 +178,11 @@ export default function DemoClient({ restaurantProfile }: Props) {
         </div>
 
         {/* Reply area */}
-        <div className="bg-white rounded-2xl border border-[#E8E4DC] overflow-hidden mb-4">
+        <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden mb-4">
           {state === 'loading' && (
             <div className="px-6 py-10 flex flex-col items-center justify-center text-center">
               <div className="flex items-center gap-3 mb-3">
-                <svg className="animate-spin w-5 h-5 text-amber-500" fill="none" viewBox="0 0 24 24">
+                <svg className="animate-spin w-5 h-5 text-[#E05A28]" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
@@ -202,12 +202,12 @@ export default function DemoClient({ restaurantProfile }: Props) {
             <>
               <div className="flex items-center justify-between px-6 py-4 border-b border-[#F0EDE8]">
                 <div className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#E05A28]" />
                   <span className="text-[13px] font-semibold text-[#111]">Generated reply</span>
                 </div>
                 <button
                   onClick={handleCopy}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium text-[#666] hover:text-[#111] hover:bg-[#F5F4F0] border border-transparent hover:border-[#E8E4DC] transition-all"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium text-[#666] hover:text-[#111] hover:bg-[#F8F6F3] border border-transparent hover:border-[#E4DED8] transition-all"
                 >
                   {copied ? (
                     <><svg className="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/></svg> Copied</>
@@ -229,11 +229,11 @@ export default function DemoClient({ restaurantProfile }: Props) {
             <div>
               <p className="text-[14px] font-semibold">
                 That took{' '}
-                <span className="text-amber-400">{elapsed.toFixed(1)} seconds.</span>
+                <span className="text-[#E05A28]">{elapsed.toFixed(1)} seconds.</span>
               </p>
               <p className="text-white/50 text-[13px] mt-0.5">You just saved 5 minutes of writing.</p>
             </div>
-            <svg className="w-8 h-8 text-amber-400/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-8 h-8 text-[#E05A28]/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </div>
@@ -250,7 +250,7 @@ export default function DemoClient({ restaurantProfile }: Props) {
           {state === 'loading' && (
             <Link
               href="/dashboard"
-              className="flex items-center justify-center px-6 py-3.5 rounded-xl border border-[#E8E4DC] text-[#888] hover:text-[#111] text-[13px] font-medium transition-all"
+              className="flex items-center justify-center px-6 py-3.5 rounded-xl border border-[#E4DED8] text-[#888] hover:text-[#111] text-[13px] font-medium transition-all"
             >
               Skip to dashboard
             </Link>

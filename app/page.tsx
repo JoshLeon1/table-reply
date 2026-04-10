@@ -172,12 +172,12 @@ export default function LandingPage() {
       {/* ── NOTIFICATION BANNER ─────────────────────────────────────────── */}
       {bannerVisible && (
         <div
-          className="fixed top-0 left-0 right-0 z-[60] flex items-center justify-center gap-3 px-10 bg-amber-400 text-[#111]"
+          className="fixed top-0 left-0 right-0 z-[60] flex items-center justify-center gap-3 px-10 bg-[#E05A28] text-[#111]"
           style={{ opacity: bannerOpacity, pointerEvents: bannerOpacity < 0.1 ? 'none' : 'auto', height: '40px' }}
         >
           <span className="text-[13px] font-medium">
             First week free — no credit card required.{' '}
-            <Link href="/signup" className="font-bold underline underline-offset-2 hover:text-amber-900 transition-colors duration-200">
+            <Link href="/signup" className="font-bold underline underline-offset-2 hover:text-white transition-colors duration-200">
               Start today
             </Link>
           </span>
@@ -201,7 +201,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
             <svg
-              className="w-5 h-5 flex-shrink-0 text-amber-600"
+              className="w-5 h-5 flex-shrink-0 text-[#E05A28]"
               viewBox="0 0 24 24" fill="none" stroke="currentColor"
               strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
             >
@@ -223,7 +223,7 @@ export default function LandingPage() {
             </Link>
             <Link
               href="/signup"
-              className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold rounded-lg transition-colors duration-200"
+              className="px-4 py-2 bg-[#E05A28] hover:bg-[#B34419] text-white text-sm font-semibold rounded-lg transition-colors duration-200"
             >
               Start free
             </Link>
@@ -235,7 +235,7 @@ export default function LandingPage() {
       <section className="bg-[#111111] pt-36 pb-20 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="max-w-[580px]">
-            <p className="text-amber-500 text-sm font-medium mb-6">
+            <p className="text-[#E05A28] text-sm font-medium mb-6">
               Built for independent restaurants
             </p>
 
@@ -253,7 +253,7 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 href="/signup"
-                className="inline-flex items-center justify-center px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold rounded-lg transition-colors duration-200"
+                className="inline-flex items-center justify-center px-6 py-3 bg-[#E05A28] hover:bg-[#B34419] text-white text-sm font-semibold rounded-lg transition-colors duration-200"
               >
                 Start free
               </Link>
@@ -280,10 +280,10 @@ export default function LandingPage() {
             {restaurantNames.map((name, i) => (
               <span key={name} className="flex items-center gap-3">
                 <span style={{ color: '#78716C', fontSize: '14px', fontWeight: 500 }}>{name}</span>
-                <span className="text-amber-500 text-[9px]">◆</span>
+                <span className="text-[#E05A28] text-[9px]">◆</span>
               </span>
             ))}
-            <Link href="/signup" className="text-amber-600 hover:text-amber-500 text-sm font-medium transition-colors duration-200">
+            <Link href="/signup" className="text-[#E05A28] hover:text-[#C94E21] text-sm font-medium transition-colors duration-200">
               Join them →
             </Link>
           </div>
@@ -296,7 +296,7 @@ export default function LandingPage() {
 
           {/* Left — The problem */}
           <div className="lg:pr-10">
-            <p className="text-amber-600 text-xs font-semibold uppercase tracking-wider mb-4">
+            <p className="text-[#E05A28] text-xs font-semibold uppercase tracking-wider mb-4">
               The problem
             </p>
             <h2
@@ -324,7 +324,7 @@ export default function LandingPage() {
               <div key={stat} className="flex flex-col items-center">
                 {i > 0 && <div className="w-px h-5 bg-[#e5e5e0]" />}
                 <div className="flex flex-col items-center py-4 px-1">
-                  <p className="font-bold text-amber-600 text-xl leading-none" style={{ letterSpacing: '-0.03em' }}>{stat}</p>
+                  <p className="font-bold text-[#E05A28] text-xl leading-none" style={{ letterSpacing: '-0.03em' }}>{stat}</p>
                   <p className="text-[#aaa] text-[10px] text-center mt-1 leading-tight" style={{ maxWidth: '65px' }}>{label}</p>
                 </div>
               </div>
@@ -359,7 +359,7 @@ export default function LandingPage() {
 
           {/* Left — headline */}
           <div className="lg:sticky lg:top-32">
-            <p className="text-amber-600 text-xs font-semibold uppercase tracking-wider mb-4">Features</p>
+            <p className="text-[#E05A28] text-xs font-semibold uppercase tracking-wider mb-4">Features</p>
             <h2
               className="font-bold text-[#111111]"
               style={{
@@ -374,10 +374,10 @@ export default function LandingPage() {
           </div>
 
           {/* Right — feature rows */}
-          <div style={{ borderLeft: '2px solid rgba(217,119,6,0.25)', paddingLeft: '2rem' }}>
+          <div style={{ borderLeft: '2px solid rgba(224,90,40,0.25)', paddingLeft: '2rem' }}>
             {features.map(({ icon, title, desc }) => (
               <div key={title} className="flex gap-4 mb-8 last:mb-0">
-                <div className="text-amber-500 mt-0.5 flex-shrink-0">{icon}</div>
+                <div className="text-[#E05A28] mt-0.5 flex-shrink-0">{icon}</div>
                 <div>
                   <p className="font-semibold text-[#111111] text-sm mb-1" style={{ letterSpacing: '-0.01em' }}>{title}</p>
                   <p style={{ fontSize: '14px', lineHeight: '1.6', color: '#6b6b6b' }}>{desc}</p>
@@ -392,7 +392,7 @@ export default function LandingPage() {
       <section id="how-it-works" className="py-20 px-6 bg-[#fafaf8] border-t border-[#e5e5e0]">
         <div className="max-w-6xl mx-auto">
           <div className="mb-12">
-            <p className="text-amber-600 text-xs font-semibold uppercase tracking-wider mb-3">
+            <p className="text-[#E05A28] text-xs font-semibold uppercase tracking-wider mb-3">
               How it works
             </p>
             <h2
@@ -430,7 +430,7 @@ export default function LandingPage() {
       <section className="py-24 px-6" style={{ background: '#111111' }}>
         <div className="max-w-6xl mx-auto">
           <div className="mb-14 text-center">
-            <p className="text-amber-500 text-xs font-semibold uppercase tracking-wider mb-3">What owners say</p>
+            <p className="text-[#E05A28] text-xs font-semibold uppercase tracking-wider mb-3">What owners say</p>
             <h2
               className="font-bold text-white"
               style={{ fontSize: 'clamp(28px, 3.5vw, 36px)', lineHeight: 1.2, letterSpacing: '-0.02em' }}
@@ -447,7 +447,7 @@ export default function LandingPage() {
                 style={{ borderLeft: i > 0 ? '1px solid rgba(255,255,255,0.08)' : 'none' }}
               >
                 <p
-                  className="text-amber-500 leading-none mb-3 select-none"
+                  className="text-[#E05A28] leading-none mb-3 select-none"
                   style={{ fontSize: '72px', lineHeight: 1, opacity: 0.25, fontFamily: 'Georgia, serif' }}
                 >
                   &ldquo;
@@ -503,7 +503,7 @@ export default function LandingPage() {
               }`}
             >
               Annual
-              <span className="px-1.5 py-0.5 rounded-full bg-amber-600 text-white text-[10px] font-bold leading-none tracking-wide">
+              <span className="px-1.5 py-0.5 rounded-full bg-[#E05A28] text-white text-[10px] font-bold leading-none tracking-wide">
                 SAVE 33%
               </span>
             </button>
@@ -515,15 +515,15 @@ export default function LandingPage() {
             style={{
               maxWidth: '480px',
               background: '#111111',
-              border: '1px solid rgba(217,119,6,0.35)',
-              boxShadow: '0 0 0 0 rgba(217,119,6,0)',
+              border: '1px solid rgba(224,90,40,0.35)',
+              boxShadow: '0 0 0 0 rgba(224,90,40,0)',
             }}
-            onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 0 40px rgba(217,119,6,0.15)')}
-            onMouseLeave={e => (e.currentTarget.style.boxShadow = '0 0 0 0 rgba(217,119,6,0)')}
+            onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 0 40px rgba(224,90,40,0.15)')}
+            onMouseLeave={e => (e.currentTarget.style.boxShadow = '0 0 0 0 rgba(224,90,40,0)')}
           >
             {/* Badge */}
             <div className="flex justify-center pt-7 pb-0">
-              <span className="px-3 py-1 rounded-full bg-amber-600/20 text-amber-400 text-[10px] font-bold uppercase tracking-[0.12em]">
+              <span className="px-3 py-1 rounded-full bg-[#E05A28]/20 text-[#E05A28] text-[10px] font-bold uppercase tracking-[0.12em]">
                 First week free
               </span>
             </div>
@@ -548,19 +548,19 @@ export default function LandingPage() {
               </div>
 
               {annual ? (
-                <p className="text-center text-amber-400 text-[13px] mb-4">Billed $228/yr — save $120</p>
+                <p className="text-center text-[#E05A28] text-[13px] mb-4">Billed $228/yr — save $120</p>
               ) : (
                 <p className="text-center text-[#9a9a9a] text-[13px] mb-4">Start free — first 7 days on us. No credit card required.</p>
               )}
 
               {/* Divider */}
-              <div className="h-px bg-amber-600/25 mb-6" />
+              <div className="h-px bg-[#E05A28]/25 mb-6" />
 
               {/* Features */}
               <ul className="space-y-3.5 mb-8">
                 {proFeatures.map((f) => (
                   <li key={f} className="flex items-center gap-3">
-                    <svg className="w-4 h-4 text-amber-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <svg className="w-4 h-4 text-[#E05A28] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                     <span style={{ fontSize: '14px', color: '#d4d4d4' }}>{f}</span>
@@ -571,7 +571,7 @@ export default function LandingPage() {
               {/* CTA */}
               <Link
                 href={annual ? '/signup?plan=annual' : '/signup'}
-                className="block w-full text-center font-semibold text-white bg-amber-600 hover:bg-amber-500 rounded-full transition-colors duration-200"
+                className="block w-full text-center font-semibold text-white bg-[#E05A28] hover:bg-[#C94E21] rounded-full transition-colors duration-200"
                 style={{ fontSize: '15px', height: '56px', lineHeight: '56px' }}
               >
                 Start your free week →
@@ -598,7 +598,7 @@ export default function LandingPage() {
           </p>
           <Link
             href="/signup"
-            className="inline-flex items-center justify-center px-8 py-3 bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold rounded-lg transition-colors duration-200"
+            className="inline-flex items-center justify-center px-8 py-3 bg-[#E05A28] hover:bg-[#B34419] text-white text-sm font-semibold rounded-lg transition-colors duration-200"
           >
             See pricing
           </Link>
@@ -614,7 +614,7 @@ export default function LandingPage() {
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <svg
-                  className="w-4 h-4 text-amber-600 flex-shrink-0"
+                  className="w-4 h-4 text-[#E05A28] flex-shrink-0"
                   viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
                 >

@@ -41,7 +41,7 @@ function buildHtml(params: {
       <div style="margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #e5e7eb;">
         <div style="margin-bottom:6px;">
           <span style="font-weight:600;color:#111827;">${r.reviewerName || 'Anonymous'}</span>
-          <span style="margin-left:10px;color:#F59E0B;letter-spacing:1px;">${starString(r.starRating)}</span>
+          <span style="margin-left:10px;color:#E0A020;letter-spacing:1px;">${starString(r.starRating)}</span>
         </div>
         ${
           r.reviewText
@@ -50,7 +50,7 @@ function buildHtml(params: {
         }
         ${
           r.generatedReply
-            ? `<div style="background:#f3f4f6;border-left:3px solid #F59E0B;padding:10px 14px;border-radius:4px;">
+            ? `<div style="background:#f3f4f6;border-left:3px solid #E05A28;padding:10px 14px;border-radius:4px;">
                 <p style="margin:0;color:#6b7280;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Your reply</p>
                 <p style="margin:0;color:#374151;font-size:13px;line-height:1.6;">${truncate(r.generatedReply, 200)}</p>
               </div>`
@@ -76,7 +76,7 @@ function buildHtml(params: {
           <!-- Header -->
           <tr>
             <td style="background-color:#111827;padding:28px 32px;">
-              <p style="margin:0 0 6px;font-size:18px;font-weight:700;color:#F59E0B;letter-spacing:.5px;">TableReply</p>
+              <p style="margin:0 0 6px;font-size:18px;font-weight:700;color:#E05A28;letter-spacing:.5px;">TableReply</p>
               <p style="margin:0;font-size:22px;font-weight:600;color:#ffffff;">${restaurantName}</p>
               <p style="margin:6px 0 0;font-size:13px;color:#9ca3af;">Weekly review digest</p>
             </td>
@@ -87,17 +87,17 @@ function buildHtml(params: {
             <td style="padding:24px 32px 0;">
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
-                  <td width="33%" style="text-align:center;padding:16px 8px;border:2px solid #F59E0B;border-radius:6px;margin:0 4px;">
+                  <td width="33%" style="text-align:center;padding:16px 8px;border:2px solid #E05A28;border-radius:6px;margin:0 4px;">
                     <p style="margin:0;font-size:28px;font-weight:700;color:#111827;">${newReviewCount}</p>
                     <p style="margin:4px 0 0;font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;">New Reviews</p>
                   </td>
                   <td width="4px"></td>
-                  <td width="33%" style="text-align:center;padding:16px 8px;border:2px solid #F59E0B;border-radius:6px;">
+                  <td width="33%" style="text-align:center;padding:16px 8px;border:2px solid #E05A28;border-radius:6px;">
                     <p style="margin:0;font-size:28px;font-weight:700;color:#111827;">${avgDisplay}</p>
                     <p style="margin:4px 0 0;font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;">Avg Rating This Week</p>
                   </td>
                   <td width="4px"></td>
-                  <td width="33%" style="text-align:center;padding:16px 8px;border:2px solid #F59E0B;border-radius:6px;">
+                  <td width="33%" style="text-align:center;padding:16px 8px;border:2px solid #E05A28;border-radius:6px;">
                     <p style="margin:0;font-size:28px;font-weight:700;color:#111827;">${approvedCount}</p>
                     <p style="margin:4px 0 0;font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;">Replies Approved</p>
                   </td>

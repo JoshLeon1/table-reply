@@ -97,7 +97,7 @@ export default async function SettingsPage() {
           )}
         </div>
 
-        <div className="px-6 py-5 bg-[#FAFAF8] border-t border-[#EDE9E4]">
+        <div className="px-6 py-5 bg-[#F3F0EC] border-t border-[#EDE9E4]">
           {isPaid ? (
             <ManageBillingButton />
           ) : (

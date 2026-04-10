@@ -749,7 +749,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
 
         {!hasEnoughTrend ? (
           /* Single-month state — show current avg prominently + explanation */
-          <div className="rounded-2xl border border-[#E4DED8] bg-[#FAFAF8] px-8 py-10">
+          <div className="rounded-2xl border border-[#E4DED8] bg-[#F3F0EC] px-8 py-10">
             <div className="flex flex-col sm:flex-row sm:items-center gap-8">
               <div className="text-center sm:text-left flex-shrink-0">
                 <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#E05A28] mb-2">

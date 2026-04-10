@@ -18,7 +18,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       accent:
         'bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white focus-visible:ring-[#E05A28]',
       secondary:
-        'bg-white border border-[#E4DED8] hover:border-[#CEC8C1] hover:bg-[#FAFAF8] text-[#111] focus-visible:ring-[#111]',
+        'bg-white border border-[#E4DED8] hover:border-[#CEC8C1] hover:bg-[#F3F0EC] text-[#111] focus-visible:ring-[#111]',
       ghost:
         'hover:bg-[#EDE9E4] text-[#444] hover:text-[#111] focus-visible:ring-[#111]',
       destructive:

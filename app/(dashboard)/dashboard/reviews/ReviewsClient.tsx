@@ -195,11 +195,11 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss }: {
   }
 
   return (
-    <div className={`bg-white rounded-2xl border overflow-hidden ${noText ? 'border-[#F0EDE8] opacity-75' : 'border-[#E8E4DC]'}`}>
+    <div className={`bg-white rounded-2xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.05),0_4px_16px_rgba(0,0,0,0.05)] transition-all duration-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.07),0_12px_32px_rgba(0,0,0,0.07)] ${noText ? 'opacity-60' : ''}`}>
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-[#F0EDE8]">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-[#F2F1EE]">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-[#F5F4F0] border border-[#E8E4DC] flex items-center justify-center text-[12px] font-semibold text-[#555]">
+          <div className="w-8 h-8 rounded-full bg-[#0D0D0D] flex items-center justify-center text-[12px] font-semibold text-white flex-shrink-0">
             {review.reviewer_name.charAt(0).toUpperCase()}
           </div>
           <div>
@@ -227,7 +227,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss }: {
         </div>
       </div>
 
-      <div className="divide-y divide-[#F5F3EF]">
+      <div className="divide-y divide-[#F2F1EE]">
         {/* Review text */}
         <div className="px-5 py-4">
           <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#C0BDB8] mb-1.5">Their review</p>
@@ -276,7 +276,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss }: {
       </div>
 
       {/* Actions */}
-      <div className="flex flex-wrap items-center gap-2 px-4 sm:px-5 py-3.5 bg-[#FAFAF8] border-t border-[#F0EDE8]">
+      <div className="flex flex-wrap items-center gap-2 px-4 sm:px-5 py-3.5 bg-[#F8F7F5] border-t border-[#F2F1EE]">
         {noText ? (
           <span className="text-[12px] text-[#CCC] italic flex-1">No reply needed</span>
         ) : (

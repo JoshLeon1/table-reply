@@ -70,8 +70,8 @@ export default function Nav() {
   ]
 
   return (
-    <nav className="bg-[#111111] border-b border-white/[0.06]">
-      <div className="max-w-5xl mx-auto px-5">
+    <nav className="bg-[#0D0D0D] border-b border-white/[0.05] sticky top-0 z-40 backdrop-blur-sm">
+      <div className="max-w-5xl mx-auto px-4 sm:px-5">
         <div className="flex items-center justify-between h-14">
 
           {/* Logo */}
@@ -94,8 +94,8 @@ export default function Nav() {
                   href={link.href}
                   className={`relative flex items-center gap-1.5 px-3.5 py-1.5 mx-0.5 rounded-md text-[13px] font-medium transition-all duration-150 ${
                     active
-                      ? 'bg-white/10 text-white after:absolute after:bottom-0 after:left-2 after:right-2 after:h-0.5 after:rounded-full after:bg-amber-400'
-                      : 'text-white/50 hover:text-white/80 hover:bg-white/[0.06]'
+                      ? 'bg-white/[0.08] text-white'
+                      : 'text-white/40 hover:text-white/75 hover:bg-white/[0.05]'
                   }`}
                 >
                   {link.label}

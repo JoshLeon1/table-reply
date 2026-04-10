@@ -81,9 +81,9 @@ function StarRow({ rating }: { rating: number }) {
 function SectionLabel({ children, badge }: { children: React.ReactNode; badge?: React.ReactNode }) {
   return (
     <div className="flex items-center gap-2.5 mb-4">
-      <span className="text-[11px] font-bold uppercase tracking-[0.13em] text-[#B0ABA4]">{children}</span>
+      <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A8A5A0]">{children}</span>
       {badge}
-      <div className="flex-1 h-px bg-[#EDEAE5]" />
+      <div className="flex-1 h-px bg-[#E8E6E1]" />
     </div>
   )
 }
@@ -292,12 +292,12 @@ export default function HomeClient({
         onClose={() => setShowConnectModal(false)}
       />
     )}
-    <div className="space-y-8 pb-10">
+    <div className="space-y-10 pb-12">
 
       {/* ── Header ───────────────────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-6">
         <div>
-          <h1 className="text-[22px] sm:text-[24px] font-bold text-[#111] tracking-tight leading-tight">
+          <h1 className="text-[22px] sm:text-[26px] font-bold text-[#0D0D0D] tracking-[-0.02em] leading-tight">
             {greeting}, {ownerName} 👋
           </h1>
           <div className="flex items-center gap-2 mt-1.5">
@@ -313,7 +313,7 @@ export default function HomeClient({
           <button
             onClick={handleSync}
             disabled={syncing}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-[#E8E4DC] hover:border-[#D4CFC6] hover:bg-[#FAFAF8] text-[13px] font-medium text-[#555] hover:text-[#111] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-150 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white text-[13px] font-medium text-[#555] hover:text-[#111] disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.1)]"
           >
             <svg className={`w-3.5 h-3.5 opacity-60 ${syncing ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -332,31 +332,31 @@ export default function HomeClient({
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
 
         {/* Reviews this month */}
-        <div className="bg-white rounded-2xl border border-[#E8E4DC] p-4 sm:p-5 shadow-[0_1px_4px_rgba(0,0,0,0.04)] relative overflow-hidden">
-          <div className="absolute top-4 right-4 opacity-[0.07]">
+        <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-[0_1px_3px_rgba(0,0,0,0.05),0_4px_16px_rgba(0,0,0,0.05)] card-hover animate-fade-up stagger-1 relative overflow-hidden">
+          <div className="absolute top-3 right-3 opacity-[0.06]">
             <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
               <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
             </svg>
           </div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#999] mb-3">Reviews</p>
-          <p className="text-[26px] sm:text-[32px] font-bold text-[#111] leading-none tracking-tight mb-3">{reviewsThisMonth}</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A5A0] mb-3">Reviews</p>
+          <p className="text-[26px] sm:text-[30px] font-bold text-[#0D0D0D] leading-none tracking-[-0.02em] mb-3">{reviewsThisMonth}</p>
           <TrendBadge current={reviewsThisMonth} prev={reviewsLastMonth} />
         </div>
 
         {/* Average rating */}
-        <div className="bg-white rounded-2xl border border-[#E8E4DC] p-4 sm:p-5 shadow-[0_1px_4px_rgba(0,0,0,0.04)] relative overflow-hidden">
-          <div className="absolute top-4 right-4 opacity-[0.08] text-amber-400">
+        <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-[0_1px_3px_rgba(0,0,0,0.05),0_4px_16px_rgba(0,0,0,0.05)] card-hover animate-fade-up stagger-2 relative overflow-hidden">
+          <div className="absolute top-3 right-3 opacity-[0.07] text-amber-400">
             <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
               <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
             </svg>
           </div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#999] mb-3">Avg rating</p>
-          <p className="text-[26px] sm:text-[32px] font-bold text-[#F59E0B] leading-none tracking-tight mb-3">
-            {avgRating.toFixed(1)}<span className="text-[20px] ml-0.5">★</span>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A5A0] mb-3">Avg rating</p>
+          <p className="text-[26px] sm:text-[30px] font-bold text-[#F59E0B] leading-none tracking-[-0.02em] mb-3">
+            {avgRating.toFixed(1)}<span className="text-[18px] ml-0.5">★</span>
           </p>
           <div className="flex gap-0.5">
             {[1,2,3,4,5].map(i => (
-              <svg key={i} className={`w-3.5 h-3.5 ${i <= Math.round(avgRating) ? 'text-amber-400' : 'text-[#E8E4DC]'}`} fill="currentColor" viewBox="0 0 20 20">
+              <svg key={i} className={`w-3 h-3 ${i <= Math.round(avgRating) ? 'text-amber-400' : 'text-[#E8E6E1]'}`} fill="currentColor" viewBox="0 0 20 20">
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
               </svg>
             ))}
@@ -364,27 +364,27 @@ export default function HomeClient({
         </div>
 
         {/* Replies approved */}
-        <div className="bg-white rounded-2xl border border-[#E8E4DC] p-4 sm:p-5 shadow-[0_1px_4px_rgba(0,0,0,0.04)] relative overflow-hidden">
-          <div className="absolute top-4 right-4 opacity-[0.07]">
+        <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-[0_1px_3px_rgba(0,0,0,0.05),0_4px_16px_rgba(0,0,0,0.05)] card-hover animate-fade-up stagger-3 relative overflow-hidden">
+          <div className="absolute top-3 right-3 opacity-[0.06]">
             <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#999] mb-3">Approved</p>
-          <p className="text-[26px] sm:text-[32px] font-bold text-[#111] leading-none tracking-tight mb-3">{approvedThisMonth}</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A5A0] mb-3">Approved</p>
+          <p className="text-[26px] sm:text-[30px] font-bold text-[#0D0D0D] leading-none tracking-[-0.02em] mb-3">{approvedThisMonth}</p>
           <TrendBadge current={approvedThisMonth} prev={approvedLastMonth} />
         </div>
 
         {/* Response rate */}
-        <div className="bg-white rounded-2xl border border-[#E8E4DC] p-4 sm:p-5 shadow-[0_1px_4px_rgba(0,0,0,0.04)] relative overflow-hidden">
-          <div className="absolute top-4 right-4 opacity-[0.07]">
+        <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-[0_1px_3px_rgba(0,0,0,0.05),0_4px_16px_rgba(0,0,0,0.05)] card-hover animate-fade-up stagger-4 relative overflow-hidden">
+          <div className="absolute top-3 right-3 opacity-[0.06]">
             <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
             </svg>
           </div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#999] mb-3">Response rate</p>
-          <p className={`text-[26px] sm:text-[32px] font-bold leading-none tracking-tight mb-3 ${rateColor}`}>{responseRate}<span className="text-[18px] sm:text-[20px]">%</span></p>
-          <span className="text-[11px] text-[#C0BDB8]">all time · {totalReviews} reviews</span>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A5A0] mb-3">Response rate</p>
+          <p className={`text-[26px] sm:text-[30px] font-bold leading-none tracking-[-0.02em] mb-3 ${rateColor}`}>{responseRate}<span className="text-[17px] sm:text-[18px]">%</span></p>
+          <span className="text-[11px] text-[#A8A5A0]">all time · {totalReviews} reviews</span>
         </div>
       </div>
 
@@ -406,7 +406,7 @@ export default function HomeClient({
           </SectionLabel>
 
           {pendingList.length === 0 ? (
-            <div className="flex items-center gap-4 px-5 py-5 bg-emerald-50/60 border border-emerald-200/60 rounded-2xl">
+            <div className="flex items-center gap-4 px-5 py-5 bg-emerald-50/50 rounded-2xl">
               <div className="w-9 h-9 rounded-full bg-emerald-100 border border-emerald-200 flex items-center justify-center flex-shrink-0">
                 <svg className="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -440,7 +440,7 @@ export default function HomeClient({
           {/* Quick reply */}
           <div>
             <SectionLabel>Quick reply</SectionLabel>
-            <div className="bg-white rounded-2xl border border-[#E8E4DC] overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
+            <div className="bg-white rounded-2xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.05),0_4px_16px_rgba(0,0,0,0.05)]">
               <div className="p-4">
                 <textarea
                   value={quickReview}
@@ -448,7 +448,7 @@ export default function HomeClient({
                   onKeyDown={e => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') handleQuickGenerate() }}
                   placeholder="Paste a review…"
                   rows={4}
-                  className="w-full resize-none px-3.5 py-3 rounded-xl border border-[#E8E4DC] bg-[#FAFAF8] focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-400/30 focus:border-amber-300 text-[13px] text-[#111] placeholder-[#C8C4BE] transition-all duration-150 leading-relaxed"
+                  className="w-full resize-none px-3.5 py-3 rounded-xl border border-[#EBEBEB] bg-[#F8F7F5] focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-400/30 focus:border-amber-300 text-[13px] text-[#0D0D0D] placeholder-[#B8B5B0] transition-all duration-200 leading-relaxed"
                 />
                 <button
                   onClick={handleQuickGenerate}
@@ -481,7 +481,7 @@ export default function HomeClient({
                 </div>
               )}
 
-              <div className="px-4 py-2.5 border-t border-[#F5F4F0] bg-[#FAFAF8]">
+              <div className="px-4 py-2.5 border-t border-[#F2F1EE] bg-[#F8F7F5]">
                 <Link href="/dashboard/generate" className="text-[11px] text-[#AAA] hover:text-[#666] transition-colors font-medium">
                   More options in full generator →
                 </Link>
@@ -492,7 +492,7 @@ export default function HomeClient({
           {/* Recent activity */}
           <div>
             <SectionLabel>Recent activity</SectionLabel>
-            <div className="bg-white rounded-2xl border border-[#E8E4DC] overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
+            <div className="bg-white rounded-2xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.05),0_4px_16px_rgba(0,0,0,0.05)]">
               {recentApproved.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-10 px-4 text-center">
                   <div className="w-9 h-9 rounded-full bg-[#F5F4F0] border border-[#E8E4DC] flex items-center justify-center mb-3">
@@ -532,7 +532,7 @@ export default function HomeClient({
         <SectionLabel>At a glance</SectionLabel>
 
         {!hasAnalytics ? (
-          <div className="flex items-center justify-between gap-4 px-6 py-5 bg-white rounded-2xl border border-[#E8E4DC] shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
+          <div className="flex items-center justify-between gap-4 px-6 py-5 bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.05),0_4px_16px_rgba(0,0,0,0.05)]">
             <div>
               <p className="text-[13px] font-semibold text-[#111]">Get insights from your reviews</p>
               <p className="text-[12px] text-[#888] mt-0.5">Discover what customers love, what needs improving, and your top growth opportunity.</p>
@@ -548,7 +548,7 @@ export default function HomeClient({
               { label: 'Needs attention', value: themes?.complaints?.[0], fallback: "No recurring complaints — that's a great sign.", dot: 'bg-amber-400' },
               { label: 'Top opportunity', value: themes?.opportunities?.[0], fallback: 'Run analytics to find your biggest growth lever.', dot: 'bg-blue-400' },
             ] as const).map(({ label, value, fallback, dot }) => (
-              <div key={label} className="bg-white rounded-2xl border border-[#E8E4DC] px-5 py-5 shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
+              <div key={label} className="bg-white rounded-2xl px-5 py-5 shadow-[0_1px_3px_rgba(0,0,0,0.05),0_4px_16px_rgba(0,0,0,0.05)] card-hover">
                 <div className="flex items-center gap-2 mb-3">
                   <span className={`w-1.5 h-1.5 rounded-full ${dot} flex-shrink-0`} />
                   <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#B0ABA4]">{label}</p>

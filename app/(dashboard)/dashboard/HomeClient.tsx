@@ -83,7 +83,7 @@ function SectionLabel({ children, badge }: { children: React.ReactNode; badge?: 
     <div className="flex items-center gap-2.5 mb-4">
       <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A8A5A0]">{children}</span>
       {badge}
-      <div className="flex-1 h-px bg-[#E8E6E1]" />
+      <div className="flex-1 h-px bg-[#E3E1DC]" />
     </div>
   )
 }
@@ -118,13 +118,13 @@ function PendingCard({ review, onAction }: { review: ScrapedReview; onAction: (i
   const initials = review.reviewer_name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E8E4DC] overflow-hidden transition-all duration-200 hover:border-[#D9D5CF] hover:shadow-[0_2px_12px_rgba(0,0,0,0.05)]">
+    <div className="bg-white rounded-2xl border border-[#E3E1DC] overflow-hidden transition-all duration-200 hover:border-[#D9D5CF] hover:shadow-[0_2px_12px_rgba(0,0,0,0.05)]">
 
       {/* Card header */}
       <div className="px-5 pt-4 pb-3.5">
         <div className="flex items-start gap-3">
           {/* Avatar */}
-          <div className="w-9 h-9 rounded-full bg-[#F5F4F0] border border-[#E8E4DC] flex items-center justify-center text-[12px] font-semibold text-[#888] flex-shrink-0 mt-0.5">
+          <div className="w-9 h-9 rounded-full bg-[#F4F3F0] border border-[#E3E1DC] flex items-center justify-center text-[12px] font-semibold text-[#6B6B6B] flex-shrink-0 mt-0.5">
             {initials}
           </div>
 
@@ -148,7 +148,7 @@ function PendingCard({ review, onAction }: { review: ScrapedReview; onAction: (i
         </div>
 
         {/* Review snippet */}
-        <p className="text-[13px] text-[#555] leading-relaxed mt-3 pl-0 sm:pl-12">
+        <p className="text-[13px] text-[#666] leading-relaxed mt-3 pl-0 sm:pl-12">
           {review.review_text.length > 110 ? review.review_text.slice(0, 110) + '…' : review.review_text}
         </p>
       </div>
@@ -158,7 +158,7 @@ function PendingCard({ review, onAction }: { review: ScrapedReview; onAction: (i
         <div className="px-5 pb-3.5 pl-5">
           <button
             onClick={() => setExpanded(v => !v)}
-            className="flex items-center gap-1.5 text-[12px] text-[#999] hover:text-[#555] font-medium transition-colors group"
+            className="flex items-center gap-1.5 text-[12px] text-[#9E9E9E] hover:text-[#333] font-medium transition-colors group"
           >
             <svg className={`w-3.5 h-3.5 transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -166,7 +166,7 @@ function PendingCard({ review, onAction }: { review: ScrapedReview; onAction: (i
             {expanded ? 'Hide reply' : 'View reply'}
           </button>
           {expanded && (
-            <div className="mt-2.5 bg-[#F9F8F6] rounded-xl px-4 py-3 border border-[#EDEAE5] text-[12px] text-[#555] leading-relaxed">
+            <div className="mt-2.5 bg-[#F5F4F1] rounded-xl px-4 py-3 border border-[#E3E1DC] text-[12px] text-[#666] leading-relaxed">
               {review.generated_reply}
             </div>
           )}
@@ -178,7 +178,7 @@ function PendingCard({ review, onAction }: { review: ScrapedReview; onAction: (i
         <button
           onClick={handleApprove}
           disabled={actioning || !review.generated_reply}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#111] hover:bg-[#1e1e1e] text-white text-[12px] font-semibold disabled:opacity-40 transition-all duration-150"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#111] hover:bg-[#1C1C1C] text-white text-[12px] font-semibold disabled:opacity-40 transition-all duration-150"
         >
           {copied ? (
             <><svg className="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied</>
@@ -189,7 +189,7 @@ function PendingCard({ review, onAction }: { review: ScrapedReview; onAction: (i
         <button
           onClick={handleDismiss}
           disabled={actioning}
-          className="px-3.5 py-2 rounded-xl text-[12px] font-medium text-[#AAA] hover:text-[#666] hover:bg-[#F5F4F0] disabled:opacity-40 transition-all duration-150"
+          className="px-3.5 py-2 rounded-xl text-[12px] font-medium text-[#9E9E9E] hover:text-[#333] hover:bg-[#F4F3F0] disabled:opacity-40 transition-all duration-150"
         >
           Dismiss
         </button>
@@ -356,7 +356,7 @@ export default function HomeClient({
           </p>
           <div className="flex gap-0.5">
             {[1,2,3,4,5].map(i => (
-              <svg key={i} className={`w-3 h-3 ${i <= Math.round(avgRating) ? 'text-amber-400' : 'text-[#E8E6E1]'}`} fill="currentColor" viewBox="0 0 20 20">
+              <svg key={i} className={`w-3 h-3 ${i <= Math.round(avgRating) ? 'text-amber-400' : 'text-[#E3E1DC]'}`} fill="currentColor" viewBox="0 0 20 20">
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
               </svg>
             ))}
@@ -448,12 +448,12 @@ export default function HomeClient({
                   onKeyDown={e => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') handleQuickGenerate() }}
                   placeholder="Paste a review…"
                   rows={4}
-                  className="w-full resize-none px-3.5 py-3 rounded-xl border border-[#EBEBEB] bg-[#F8F7F5] focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-400/30 focus:border-amber-300 text-[13px] text-[#0D0D0D] placeholder-[#B8B5B0] transition-all duration-200 leading-relaxed"
+                  className="w-full resize-none px-3.5 py-3 rounded-xl border border-[#EBEBEB] bg-[#F5F4F1] focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-400/30 focus:border-amber-300 text-[13px] text-[#0D0D0D] placeholder-[#B8B5B0] transition-all duration-200 leading-relaxed"
                 />
                 <button
                   onClick={handleQuickGenerate}
                   disabled={quickLoading || !quickReview.trim()}
-                  className="mt-3 w-full py-2.5 rounded-xl bg-[#111] hover:bg-[#1e1e1e] text-white text-[13px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 flex items-center justify-center gap-2"
+                  className="mt-3 w-full py-2.5 rounded-xl bg-[#111] hover:bg-[#1C1C1C] text-white text-[13px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 flex items-center justify-center gap-2"
                 >
                   {quickLoading ? (
                     <><svg className="animate-spin w-3.5 h-3.5 opacity-70" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>Generating…</>
@@ -466,14 +466,14 @@ export default function HomeClient({
               )}
 
               {quickReply && (
-                <div className="border-t border-[#F0EDE8] p-4 space-y-3">
-                  <p className="text-[12px] text-[#888] leading-relaxed">{quickReply}</p>
+                <div className="border-t border-[#EEECE9] p-4 space-y-3">
+                  <p className="text-[12px] text-[#6B6B6B] leading-relaxed">{quickReply}</p>
                   <button
                     onClick={handleQuickCopy}
                     className={`w-full py-2 rounded-xl text-[12px] font-semibold border transition-all duration-150 ${
                       quickCopied
                         ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                        : 'bg-white text-[#555] border-[#E8E4DC] hover:border-[#D4CFC6] hover:text-[#111]'
+                        : 'bg-white text-[#666] border-[#E3E1DC] hover:border-[#D4D2CD] hover:text-[#0D0D0D]'
                     }`}
                   >
                     {quickCopied ? '✓ Copied' : 'Copy reply'}
@@ -481,8 +481,8 @@ export default function HomeClient({
                 </div>
               )}
 
-              <div className="px-4 py-2.5 border-t border-[#F2F1EE] bg-[#F8F7F5]">
-                <Link href="/dashboard/generate" className="text-[11px] text-[#AAA] hover:text-[#666] transition-colors font-medium">
+              <div className="px-4 py-2.5 border-t border-[#EEECE9] bg-[#F5F4F1]">
+                <Link href="/dashboard/generate" className="text-[11px] text-[#9E9E9E] hover:text-[#333] transition-colors font-medium">
                   More options in full generator →
                 </Link>
               </div>
@@ -495,19 +495,19 @@ export default function HomeClient({
             <div className="bg-white rounded-2xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.05),0_4px_16px_rgba(0,0,0,0.05)]">
               {recentApproved.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-10 px-4 text-center">
-                  <div className="w-9 h-9 rounded-full bg-[#F5F4F0] border border-[#E8E4DC] flex items-center justify-center mb-3">
-                    <svg className="w-4 h-4 text-[#CCC]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-9 h-9 rounded-full bg-[#F4F3F0] border border-[#E3E1DC] flex items-center justify-center mb-3">
+                    <svg className="w-4 h-4 text-[#BEBCB8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
                   </div>
-                  <p className="text-[12px] font-medium text-[#AAA]">No approved replies yet</p>
+                  <p className="text-[12px] font-medium text-[#9E9E9E]">No approved replies yet</p>
                   <p className="text-[11px] text-[#C8C4BE] mt-0.5">Approved reviews will appear here</p>
                 </div>
               ) : (
-                <div className="divide-y divide-[#F5F4F0]">
+                <div className="divide-y divide-[#F4F3F0]">
                   {recentApproved.map(review => (
                     <div key={review.id} className="flex items-center gap-3 px-4 py-3">
-                      <div className="w-8 h-8 rounded-full bg-[#F5F4F0] border border-[#EDEAE5] flex items-center justify-center text-[11px] font-semibold text-[#999] flex-shrink-0">
+                      <div className="w-8 h-8 rounded-full bg-[#F4F3F0] border border-[#E3E1DC] flex items-center justify-center text-[11px] font-semibold text-[#9E9E9E] flex-shrink-0">
                         {review.reviewer_name.charAt(0).toUpperCase()}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -535,9 +535,9 @@ export default function HomeClient({
           <div className="flex items-center justify-between gap-4 px-6 py-5 bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.05),0_4px_16px_rgba(0,0,0,0.05)]">
             <div>
               <p className="text-[13px] font-semibold text-[#111]">Get insights from your reviews</p>
-              <p className="text-[12px] text-[#888] mt-0.5">Discover what customers love, what needs improving, and your top growth opportunity.</p>
+              <p className="text-[12px] text-[#6B6B6B] mt-0.5">Discover what customers love, what needs improving, and your top growth opportunity.</p>
             </div>
-            <Link href="/dashboard/analytics" className="flex-shrink-0 px-4 py-2.5 rounded-xl bg-[#111] hover:bg-[#1e1e1e] text-white text-[13px] font-semibold transition-all duration-150 ml-4">
+            <Link href="/dashboard/analytics" className="flex-shrink-0 px-4 py-2.5 rounded-xl bg-[#111] hover:bg-[#1C1C1C] text-white text-[13px] font-semibold transition-all duration-150 ml-4">
               Run analysis →
             </Link>
           </div>

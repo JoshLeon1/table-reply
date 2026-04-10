@@ -86,13 +86,13 @@ function SyncLoadingScreen({ restaurantName }: { restaurantName: string }) {
       <h3 className="text-[20px] font-bold text-[#111] leading-tight mb-1">
         Setting up your account
       </h3>
-      <p className="text-[13px] text-[#888] mb-8 leading-relaxed">
+      <p className="text-[13px] text-[#6B6B6B] mb-8 leading-relaxed">
         We&apos;re importing your reviews and crafting<br />personalised replies for each one.
       </p>
 
       {/* Progress bar */}
       <div className="w-full mb-3">
-        <div className="w-full h-2 bg-[#F0EDE8] rounded-full overflow-hidden">
+        <div className="w-full h-2 bg-[#EEECE9] rounded-full overflow-hidden">
           <div
             className="h-full bg-amber-400 rounded-full transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
@@ -104,7 +104,7 @@ function SyncLoadingScreen({ restaurantName }: { restaurantName: string }) {
       <div className="h-5 overflow-hidden">
         <p
           key={msgIndex}
-          className="text-[12px] text-[#AAA] animate-pulse"
+          className="text-[12px] text-[#9E9E9E] animate-pulse"
         >
           {SYNC_MESSAGES[msgIndex]}
         </p>
@@ -115,7 +115,7 @@ function SyncLoadingScreen({ restaurantName }: { restaurantName: string }) {
         {['★★★★★', '★★★★★', '★★★★★'].map((stars, i) => (
           <div
             key={i}
-            className="px-3 py-1.5 rounded-full border border-[#E8E4DC] bg-[#F7F6F3] text-[11px] text-[#AAA]"
+            className="px-3 py-1.5 rounded-full border border-[#E3E1DC] bg-[#F5F4F1] text-[11px] text-[#9E9E9E]"
             style={{ animationDelay: `${i * 0.3}s` }}
           >
             {stars}
@@ -123,7 +123,7 @@ function SyncLoadingScreen({ restaurantName }: { restaurantName: string }) {
         ))}
       </div>
 
-      <p className="text-[11px] text-[#CCC] mt-6">
+      <p className="text-[11px] text-[#BEBCB8] mt-6">
         This usually takes 1–2 minutes. Don&apos;t close this window.
       </p>
     </div>
@@ -270,14 +270,14 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
               </div>
               <div>
                 <h2 className="text-[17px] font-bold text-[#111] leading-tight">Connect your Google listing</h2>
-                <p className="text-[13px] text-[#888] mt-0.5 leading-snug">
+                <p className="text-[13px] text-[#6B6B6B] mt-0.5 leading-snug">
                   Find your restaurant so we can pull in your latest reviews automatically.
                 </p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="text-[#CCC] hover:text-[#666] transition-colors ml-3 flex-shrink-0"
+              className="text-[#BEBCB8] hover:text-[#333] transition-colors ml-3 flex-shrink-0"
               aria-label="Close"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -299,7 +299,7 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
               <h3 className="text-[16px] font-bold text-[#111] mb-1">
                 {syncCount > 0 ? `${syncCount} review${syncCount !== 1 ? 's' : ''} imported!` : 'Connected!'}
               </h3>
-              <p className="text-[13px] text-[#888] mb-5 leading-relaxed">
+              <p className="text-[13px] text-[#6B6B6B] mb-5 leading-relaxed">
                 {syncCount > 0
                   ? 'Replies have been generated for each review. Head to your reviews to approve them.'
                   : "You're all set. New reviews will sync automatically every day."}
@@ -314,7 +314,7 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
           ) : showManual ? (
             /* ── Manual URL ── */
             <div className="space-y-4">
-              <div className="bg-[#F7F6F3] rounded-xl border border-[#EDEAE5] px-4 py-3 text-[12px] text-[#666] leading-relaxed">
+              <div className="bg-[#F5F4F1] rounded-xl border border-[#E3E1DC] px-4 py-3 text-[12px] text-[#666] leading-relaxed">
                 <p className="font-semibold text-[#444] mb-1">How to find your Google Maps URL:</p>
                 <ol className="space-y-0.5 list-decimal list-inside">
                   <li>Open <span className="font-medium">maps.google.com</span> in your browser</li>
@@ -330,7 +330,7 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
                   value={manualUrl}
                   onChange={e => { setManualUrl(e.target.value); setManualUrlError('') }}
                   placeholder="https://www.google.com/maps/place/Your+Restaurant/..."
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#E8E4DC] text-sm text-[#111] placeholder:text-[#BBB] focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400 transition-all"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#E3E1DC] text-sm text-[#111] placeholder:text-[#9E9E9E] focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400 transition-all"
                   disabled={isBusy}
                 />
                 {manualUrlError && <p className="text-[12px] text-red-500 mt-1.5">{manualUrlError}</p>}
@@ -343,7 +343,7 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
               <div className="flex gap-3">
                 <button type="button" onClick={() => { setShowManual(false); setManualUrlError(''); setConnectError('') }}
                   disabled={isBusy}
-                  className="flex-1 h-[44px] rounded-full border border-[#E8E4DC] bg-white hover:bg-[#FAFAF8] text-[#666] text-sm font-medium disabled:opacity-40 transition-all">
+                  className="flex-1 h-[44px] rounded-full border border-[#E3E1DC] bg-white hover:bg-[#F5F4F1] text-[#666] text-sm font-medium disabled:opacity-40 transition-all">
                   ← Back to search
                 </button>
                 <button type="button" onClick={handleManualConnect}
@@ -359,12 +359,12 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
               <div className="relative mb-3">
                 <div className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
                   {searching ? (
-                    <svg className="w-4 h-4 text-[#AAA] animate-spin" fill="none" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 text-[#9E9E9E] animate-spin" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
                   ) : (
-                    <svg className="w-4 h-4 text-[#AAA]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 text-[#9E9E9E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                   )}
@@ -375,7 +375,7 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
                   value={query}
                   onChange={e => handleQueryChange(e.target.value)}
                   placeholder="Search restaurant name and city…"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#E8E4DC] text-sm text-[#111] placeholder:text-[#BBB] focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400 transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#E3E1DC] text-sm text-[#111] placeholder:text-[#9E9E9E] focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400 transition-all"
                 />
               </div>
 
@@ -393,16 +393,16 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
                       className={`w-full text-left px-4 py-3 rounded-xl border transition-all duration-150 ${
                         selected?.placeId === place.placeId
                           ? 'bg-amber-50 border-amber-400'
-                          : 'bg-white border-[#E8E4DC] hover:border-stone-300 hover:bg-[#FAFAF8]'
+                          : 'bg-white border-[#E3E1DC] hover:border-stone-300 hover:bg-[#F5F4F1]'
                       }`}>
                       <div className="flex items-center justify-between gap-3">
                         <div className="flex-1 min-w-0">
                           <p className="text-[13px] font-semibold text-[#111] leading-tight truncate">{place.name}</p>
-                          <p className="text-[12px] text-[#888] leading-tight mt-0.5 truncate">{place.address}</p>
+                          <p className="text-[12px] text-[#6B6B6B] leading-tight mt-0.5 truncate">{place.address}</p>
                         </div>
                         <div className="flex items-center gap-2 flex-shrink-0">
                           {place.rating !== undefined && (
-                            <span className="text-[12px] font-medium text-[#888]">★ {place.rating}</span>
+                            <span className="text-[12px] font-medium text-[#6B6B6B]">★ {place.rating}</span>
                           )}
                           {selected?.placeId === place.placeId && (
                             <svg className="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
@@ -417,7 +417,7 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
               )}
 
               {results.length === 0 && query.trim() && !searching && !searchError && (
-                <p className="text-[13px] text-[#AAA] text-center py-3 mb-2">
+                <p className="text-[13px] text-[#9E9E9E] text-center py-3 mb-2">
                   No results found. Try adding your city name.
                 </p>
               )}
@@ -430,7 +430,7 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
 
               <div className="flex gap-3 mt-1">
                 <button type="button" onClick={onClose}
-                  className="flex-1 h-[44px] rounded-full border border-[#E8E4DC] bg-white hover:bg-[#FAFAF8] text-[#666] text-sm font-medium transition-all">
+                  className="flex-1 h-[44px] rounded-full border border-[#E3E1DC] bg-white hover:bg-[#F5F4F1] text-[#666] text-sm font-medium transition-all">
                   Skip for now
                 </button>
                 <button type="button" onClick={handleConnect}
@@ -442,7 +442,7 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
 
               <p className="text-center mt-3">
                 <button type="button" onClick={() => setShowManual(true)}
-                  className="text-[12px] text-[#AAA] hover:text-amber-600 underline underline-offset-2 transition-colors">
+                  className="text-[12px] text-[#9E9E9E] hover:text-amber-600 underline underline-offset-2 transition-colors">
                   Can&apos;t find it? Paste your Google Maps URL instead
                 </button>
               </p>

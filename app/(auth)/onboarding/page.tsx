@@ -106,7 +106,7 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8] flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[#ECEAE6] flex flex-col items-center justify-center px-4 py-12">
       {/* Logo */}
       <div className="flex flex-col items-center mb-8">
         <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="mb-3">
@@ -115,13 +115,13 @@ export default function OnboardingPage() {
           <path d="M18 10v20" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           <path d="M22 10c0 0 4 2 4 6s-4 6-4 6v8" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
-        <span className="text-[22px] font-bold text-stone-900 tracking-tight">TableReply</span>
+        <span className="text-[22px] font-bold text-[#0D0D0D] tracking-tight">TableReply</span>
       </div>
 
       <div className="w-full max-w-sm bg-white rounded-2xl shadow-xl p-8">
         {/* Progress */}
         <div className="flex items-center justify-between mb-6">
-          <span className="text-xs font-medium text-stone-500">Step {step} of 3</span>
+          <span className="text-xs font-medium text-[#6B6B6B]">Step {step} of 3</span>
           <div className="flex gap-1.5">
             {[1, 2, 3].map((s) => (
               <div
@@ -137,8 +137,8 @@ export default function OnboardingPage() {
         {/* Step 1: Restaurant Basics */}
         {step === 1 && (
           <>
-            <h2 className="text-lg font-bold text-stone-900 mb-1">Restaurant basics</h2>
-            <p className="text-sm text-stone-500 mb-6">Tell us about your restaurant.</p>
+            <h2 className="text-lg font-bold text-[#0D0D0D] mb-1">Restaurant basics</h2>
+            <p className="text-sm text-[#6B6B6B] mb-6">Tell us about your restaurant.</p>
             <form onSubmit={handleStep1} className="space-y-4">
               <Input
                 id="restaurant-name"
@@ -157,7 +157,7 @@ export default function OnboardingPage() {
                   value={cuisineType}
                   onChange={(e) => setCuisineType(e.target.value)}
                   required
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#E8E4DC] text-[#111111] text-sm bg-white focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400 transition-all duration-150"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#E3E1DC] text-[#111111] text-sm bg-white focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400 transition-all duration-150"
                 >
                   <option value="" disabled>Select a cuisine type</option>
                   {CUISINE_OPTIONS.map((c) => (
@@ -193,8 +193,8 @@ export default function OnboardingPage() {
         {/* Step 2: Voice Setup */}
         {step === 2 && (
           <>
-            <h2 className="text-lg font-bold text-stone-900 mb-1">Voice setup</h2>
-            <p className="text-sm text-stone-500 mb-6">How should your replies feel?</p>
+            <h2 className="text-lg font-bold text-[#0D0D0D] mb-1">Voice setup</h2>
+            <p className="text-sm text-[#6B6B6B] mb-6">How should your replies feel?</p>
             <form onSubmit={handleStep2} className="space-y-5">
               <div>
                 <p className="text-[13px] font-medium text-[#111111] mb-2">Restaurant vibe</p>
@@ -207,7 +207,7 @@ export default function OnboardingPage() {
                       className={`px-3 py-2.5 rounded-xl text-[13px] font-medium border transition-all duration-150 text-left ${
                         vibe === option.value
                           ? 'bg-amber-50 border-amber-400 text-amber-700'
-                          : 'bg-white border-[#E8E4DC] text-stone-700 hover:border-stone-300'
+                          : 'bg-white border-[#E3E1DC] text-[#333] hover:border-[#E3E1DC]'
                       }`}
                     >
                       {option.label}
@@ -227,7 +227,7 @@ export default function OnboardingPage() {
                       className={`px-3 py-2.5 rounded-xl text-[13px] font-medium border transition-all duration-150 text-left ${
                         replyTone === option.value
                           ? 'bg-amber-50 border-amber-400 text-amber-700'
-                          : 'bg-white border-[#E8E4DC] text-stone-700 hover:border-stone-300'
+                          : 'bg-white border-[#E3E1DC] text-[#333] hover:border-[#E3E1DC]'
                       }`}
                     >
                       {option.label}
@@ -246,7 +246,7 @@ export default function OnboardingPage() {
                 <button
                   type="button"
                   onClick={() => { setStep(1); setError('') }}
-                  className="flex-1 h-[52px] rounded-full border border-[#E8E4DC] bg-white hover:bg-[#FAFAF8] text-stone-700 font-medium text-sm transition-all duration-150"
+                  className="flex-1 h-[52px] rounded-full border border-[#E3E1DC] bg-white hover:bg-[#F5F4F1] text-[#333] font-medium text-sm transition-all duration-150"
                 >
                   Back
                 </button>
@@ -264,8 +264,8 @@ export default function OnboardingPage() {
         {/* Step 3: Voice Training */}
         {step === 3 && (
           <>
-            <h2 className="text-lg font-bold text-stone-900 mb-1">Train your voice <span className="text-stone-400 font-normal text-sm">(optional)</span></h2>
-            <p className="text-sm text-stone-500 mb-6">
+            <h2 className="text-lg font-bold text-[#0D0D0D] mb-1">Train your voice <span className="text-[#9E9E9E] font-normal text-sm">(optional)</span></h2>
+            <p className="text-sm text-[#6B6B6B] mb-6">
               Paste 3–5 of your past review replies below. TableReply will match your exact writing style.
             </p>
 
@@ -276,7 +276,7 @@ export default function OnboardingPage() {
                   onChange={(e) => setVoiceTrainingText(e.target.value)}
                   placeholder="Paste your past review replies here..."
                   rows={6}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#E8E4DC] text-[#111111] text-sm placeholder:text-[#BBBAB6] bg-white focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400 transition-all duration-150 resize-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#E3E1DC] text-[#111111] text-sm placeholder:text-[#BBBAB6] bg-white focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400 transition-all duration-150 resize-none"
                 />
               </div>
 
@@ -291,7 +291,7 @@ export default function OnboardingPage() {
                   type="button"
                   onClick={() => handleFinish(true)}
                   disabled={loading}
-                  className="flex-1 h-[52px] rounded-full border border-[#E8E4DC] bg-white hover:bg-[#FAFAF8] text-stone-700 font-medium text-sm transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="flex-1 h-[52px] rounded-full border border-[#E3E1DC] bg-white hover:bg-[#F5F4F1] text-[#333] font-medium text-sm transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   Skip for now
                 </button>

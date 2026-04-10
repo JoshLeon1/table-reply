@@ -105,7 +105,7 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8] flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen bg-[#ECEAE6] flex flex-col items-center justify-center px-4">
       {/* Logo */}
       <div className="flex flex-col items-center mb-8">
         <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="mb-3">
@@ -114,13 +114,13 @@ export default function SignupPage() {
           <path d="M18 10v20" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           <path d="M22 10c0 0 4 2 4 6s-4 6-4 6v8" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
-        <span className="text-[22px] font-bold text-stone-900" style={{ fontFamily: '"Playfair Display", Georgia, serif', letterSpacing: '-0.01em' }}>TableReply</span>
+        <span className="text-[22px] font-bold text-[#0D0D0D]" style={{ fontFamily: '"Playfair Display", Georgia, serif', letterSpacing: '-0.01em' }}>TableReply</span>
       </div>
 
       {/* Card */}
       <div className="w-full bg-white rounded-2xl shadow-xl p-8" style={{ maxWidth: '420px' }}>
-        <h2 className="text-xl font-bold text-stone-900 mb-1 text-center">Start your free week</h2>
-        <p className="text-sm text-stone-500 mb-6 text-center">No credit card required. First 7 days free.</p>
+        <h2 className="text-xl font-bold text-[#0D0D0D] mb-1 text-center">Start your free week</h2>
+        <p className="text-sm text-[#6B6B6B] mb-6 text-center">No credit card required. First 7 days free.</p>
 
         {successMessage && (
           <div className="rounded-xl bg-green-50 border border-green-200 px-4 py-3 mb-4">
@@ -135,7 +135,7 @@ export default function SignupPage() {
               type="button"
               onClick={handleGoogleSignup}
               disabled={googleLoading || loading}
-              className="w-full flex items-center justify-center gap-3 h-[52px] rounded-full border border-[#E8E4DC] bg-white hover:bg-[#FAFAF8] text-stone-800 text-sm font-medium transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed mb-4"
+              className="w-full flex items-center justify-center gap-3 h-[52px] rounded-full border border-[#E3E1DC] bg-white hover:bg-[#F5F4F1] text-[#0D0D0D] text-sm font-medium transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed mb-4"
             >
               {googleLoading ? (
                 <svg className="animate-spin h-4 w-4 opacity-70" fill="none" viewBox="0 0 24 24">
@@ -154,9 +154,9 @@ export default function SignupPage() {
             </button>
 
             <div className="flex items-center gap-3 mb-4">
-              <div className="flex-1 h-px bg-[#E8E4DC]" />
-              <span className="text-xs text-stone-400 font-medium">or</span>
-              <div className="flex-1 h-px bg-[#E8E4DC]" />
+              <div className="flex-1 h-px bg-[#E3E1DC]" />
+              <span className="text-xs text-[#9E9E9E] font-medium">or</span>
+              <div className="flex-1 h-px bg-[#E3E1DC]" />
             </div>
 
             <form onSubmit={handleSignup} className="space-y-4">
@@ -206,7 +206,7 @@ export default function SignupPage() {
           </>
         )}
 
-        <p className="mt-6 text-sm text-center text-stone-600">
+        <p className="mt-6 text-sm text-center text-[#666]">
           Already have an account?{' '}
           <Link href="/login" className="text-amber-600 hover:text-amber-700 font-medium">
             Sign in →

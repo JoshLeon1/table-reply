@@ -189,14 +189,14 @@ function CreatePostModal({
         <div className="px-5 pt-5 pb-4 flex-shrink-0">
           {/* Review pill */}
           <div className="flex items-center gap-2 mb-4">
-            <div className="flex-1 min-w-0 flex items-center gap-2 px-3 py-2 bg-[#F3F0EC] rounded-xl border border-[#E3E1DC]">
+            <div className="flex-1 min-w-0 flex items-center gap-2 px-3 py-2 bg-[#F3F0EC] rounded-xl border border-[#E4DED8]">
               <Stars rating={review.star_rating} />
               <span className="text-[12px] font-semibold text-[#444] truncate">{review.reviewer_name}</span>
-              <span className="text-[12px] text-[#9E9E9E] truncate flex-1">
+              <span className="text-[12px] text-[#A8A29E] truncate flex-1">
                 — {review.review_text.length > 60 ? review.review_text.slice(0, 60) + '…' : review.review_text}
               </span>
             </div>
-            <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center text-[#9E9E9E] hover:text-[#0D0D0D] hover:bg-[#F4F3F0] transition-all flex-shrink-0">
+            <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center text-[#A8A29E] hover:text-[#111] hover:bg-[#F3F0EC] transition-all flex-shrink-0">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -204,7 +204,7 @@ function CreatePostModal({
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-1 p-1 bg-[#F4F3F0] rounded-xl">
+          <div className="flex gap-1 p-1 bg-[#F3F0EC] rounded-xl">
             {(['caption', 'graphic'] as Tab[]).map(t => (
               <button
                 key={t}
@@ -227,7 +227,7 @@ function CreatePostModal({
             <div className="space-y-4">
               {/* Platform */}
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#9E9E9E] mb-2">Platform</p>
+                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#A8A29E] mb-2">Platform</p>
                 <div className="flex flex-wrap gap-1.5">
                   {platforms.map(p => (
                     <button
@@ -236,7 +236,7 @@ function CreatePostModal({
                       className={`px-3 py-1.5 rounded-lg text-[12px] font-semibold border transition-all ${
                         platform === p
                           ? 'bg-[#111] text-white border-[#111]'
-                          : 'bg-white text-[#666] border-[#E3E1DC] hover:border-[#C0BCB5]'
+                          : 'bg-white text-[#666] border-[#E4DED8] hover:border-[#CEC8C1]'
                       }`}
                     >
                       {p}
@@ -247,7 +247,7 @@ function CreatePostModal({
 
               {/* Style */}
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#9E9E9E] mb-2">Tone</p>
+                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#A8A29E] mb-2">Tone</p>
                 <div className="flex flex-wrap gap-1.5">
                   {captionStyles.map(s => (
                     <button
@@ -256,7 +256,7 @@ function CreatePostModal({
                       className={`px-3 py-1.5 rounded-lg text-[12px] font-semibold border transition-all ${
                         captionStyle === s
                           ? 'bg-[#E05A28] text-white border-[#E05A28]'
-                          : 'bg-white text-[#666] border-[#E3E1DC] hover:border-[#C0BCB5]'
+                          : 'bg-white text-[#666] border-[#E4DED8] hover:border-[#CEC8C1]'
                       }`}
                     >
                       {s}
@@ -282,7 +282,7 @@ function CreatePostModal({
               {caption && (
                 <>
                   {/* Caption text */}
-                  <div className="bg-[#F3F0EC] rounded-xl border border-[#E3E1DC] p-4">
+                  <div className="bg-[#F3F0EC] rounded-xl border border-[#E4DED8] p-4">
                     <p className="text-[14px] text-[#222] leading-relaxed font-medium">{caption}</p>
                     {hashtags.length > 0 && (
                       <p className="text-[13px] text-[#C94E21] mt-2 leading-relaxed">{hashtags.join(' ')}</p>
@@ -295,7 +295,7 @@ function CreatePostModal({
                     className={`w-full h-[44px] rounded-xl text-[13px] font-semibold border transition-all flex items-center justify-center gap-2 ${
                       copied
                         ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                        : 'bg-white text-[#666] border-[#E3E1DC] hover:border-[#C0BCB5] hover:text-[#0D0D0D]'
+                        : 'bg-white text-[#666] border-[#E4DED8] hover:border-[#CEC8C1] hover:text-[#111]'
                     }`}
                   >
                     {copied ? (
@@ -314,7 +314,7 @@ function CreatePostModal({
             <div className="space-y-4">
               {/* Style */}
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#9E9E9E] mb-2">Style</p>
+                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#A8A29E] mb-2">Style</p>
                 <div className="grid grid-cols-2 gap-1.5">
                   {graphicStyles.map(s => {
                     const preview: Record<string, string> = {
@@ -330,7 +330,7 @@ function CreatePostModal({
                         className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-left transition-all ${
                           graphicStyle === s
                             ? 'border-[#E05A28] ring-2 ring-[#E05A28]/20 bg-[#FEF0E8]'
-                            : 'border-[#E3E1DC] bg-white hover:border-[#C0BCB5]'
+                            : 'border-[#E4DED8] bg-white hover:border-[#CEC8C1]'
                         }`}
                       >
                         <div
@@ -366,7 +366,7 @@ function CreatePostModal({
               {graphicHtml && (
                 <div className="flex flex-col items-center gap-4">
                   {/* Preview */}
-                  <div className="rounded-2xl overflow-hidden shadow-lg border border-[#E3E1DC] w-full" style={{ maxWidth: 320, aspectRatio: '1 / 1' }}>
+                  <div className="rounded-2xl overflow-hidden shadow-lg border border-[#E4DED8] w-full" style={{ maxWidth: 320, aspectRatio: '1 / 1' }}>
                     <iframe
                       ref={iframeRef}
                       srcDoc={graphicHtml}
@@ -416,21 +416,21 @@ export default function SocialClient({ reviews, restaurantProfile }: Props) {
       </div>
 
       {goodReviews.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-[#E3E1DC] p-12 text-center">
-          <div className="w-12 h-12 rounded-full bg-[#F4F3F0] border border-[#E3E1DC] flex items-center justify-center mx-auto mb-3">
-            <svg className="w-5 h-5 text-[#9E9E9E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="bg-white rounded-2xl border border-[#E4DED8] p-12 text-center">
+          <div className="w-12 h-12 rounded-full bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mx-auto mb-3">
+            <svg className="w-5 h-5 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
           <p className="text-[14px] font-medium text-[#666]">No 4★ or 5★ reviews yet</p>
-          <p className="text-[13px] text-[#9E9E9E] mt-1">Sync your reviews to unlock social post creation.</p>
+          <p className="text-[13px] text-[#A8A29E] mt-1">Sync your reviews to unlock social post creation.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {goodReviews.map((review) => (
             <div
               key={review.id}
-              className="bg-white rounded-2xl border border-[#E3E1DC] p-5 flex flex-col gap-3 hover:border-[#D4D2CD] hover:shadow-[0_2px_12px_rgba(0,0,0,0.05)] transition-all duration-150"
+              className="bg-white rounded-2xl border border-[#E4DED8] p-5 flex flex-col gap-3 hover:border-[#D4CFC6] hover:shadow-[0_2px_12px_rgba(0,0,0,0.05)] transition-all duration-150"
             >
               {/* Header */}
               <div className="flex items-center justify-between">

@@ -14,7 +14,7 @@ function StarRow({ rating }: { rating: number }) {
   return (
     <div className="flex items-center gap-0.5">
       {[1,2,3,4,5].map((i) => (
-        <svg key={i} className={`w-3 h-3 ${i <= rating ? 'text-[#E05A28]' : 'text-[#E3E1DC]'}`} fill="currentColor" viewBox="0 0 20 20">
+        <svg key={i} className={`w-3 h-3 ${i <= rating ? 'text-[#E05A28]' : 'text-[#E4DED8]'}`} fill="currentColor" viewBox="0 0 20 20">
           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
         </svg>
       ))}
@@ -118,7 +118,7 @@ function SetupPanel({ profile, onSaved }: { profile: RestaurantProfile; onSaved:
         </button>
       </div>
       <details className="mt-8 text-left w-full sm:max-w-md group">
-        <summary className="text-[12px] text-[#9E9E9E] cursor-pointer hover:text-[#333] select-none list-none flex items-center gap-1.5 transition-colors">
+        <summary className="text-[12px] text-[#A8A29E] cursor-pointer hover:text-[#333] select-none list-none flex items-center gap-1.5 transition-colors">
           <svg className="w-3 h-3 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>
           </svg>
@@ -128,7 +128,7 @@ function SetupPanel({ profile, onSaved }: { profile: RestaurantProfile; onSaved:
           <p>1. Go to <strong>Google Maps</strong> and search for your restaurant.</p>
           <p>2. Click your listing to open the info panel.</p>
           <p>3. Copy the URL from your browser address bar.</p>
-          <p className="text-[#9E9E9E] mt-1">URL starts with <code className="font-mono bg-[#F4F3F0] px-1 py-0.5 rounded">google.com/maps/place/</code></p>
+          <p className="text-[#A8A29E] mt-1">URL starts with <code className="font-mono bg-[#F3F0EC] px-1 py-0.5 rounded">google.com/maps/place/</code></p>
         </div>
       </details>
     </div>
@@ -199,14 +199,14 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss }: {
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-[#EDE9E4]">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-[#0D0D0D] flex items-center justify-center text-[12px] font-semibold text-white flex-shrink-0">
+          <div className="w-8 h-8 rounded-full bg-[#111] flex items-center justify-center text-[12px] font-semibold text-white flex-shrink-0">
             {review.reviewer_name.charAt(0).toUpperCase()}
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-[13px] font-semibold text-[#111]">{review.reviewer_name}</span>
               {noText ? (
-                <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-[#F4F3F0] text-[#9E9E9E] border border-[#E4DED8]">Rating only</span>
+                <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-[#F3F0EC] text-[#A8A29E] border border-[#E4DED8]">Rating only</span>
               ) : review.star_rating >= 4 ? (
                 <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Positive</span>
               ) : review.star_rating <= 2 ? (
@@ -218,7 +218,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss }: {
             </div>
             <div className="flex items-center gap-2 mt-0.5">
               <StarRow rating={review.star_rating}/>
-              <span className="text-[11px] text-[#9E9E9E]">{formatDate(review.review_datetime_utc)}</span>
+              <span className="text-[11px] text-[#A8A29E]">{formatDate(review.review_datetime_utc)}</span>
               {review.language && review.language !== 'English' && (
                 <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-blue-50 text-blue-600 border border-blue-100">{review.language}</span>
               )}
@@ -227,7 +227,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss }: {
         </div>
       </div>
 
-      <div className="divide-y divide-[#EEECE9]">
+      <div className="divide-y divide-[#EDE9E4]">
         {/* Review text */}
         <div className="px-5 py-4">
           <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#C0BDB8] mb-1.5">Their review</p>
@@ -295,7 +295,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss }: {
         <button
           onClick={handleDismiss}
           disabled={actioning}
-          className="px-3.5 py-2 rounded-xl text-[13px] font-medium text-[#9E9E9E] hover:text-[#333] hover:bg-[#EEECE9] disabled:opacity-40 transition-all"
+          className="px-3.5 py-2 rounded-xl text-[13px] font-medium text-[#A8A29E] hover:text-[#333] hover:bg-[#EDE9E4] disabled:opacity-40 transition-all"
         >
           Dismiss
         </button>
@@ -370,12 +370,12 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onScrapeNow, o
         </div>
         <div className="flex items-center gap-2">
           <button onClick={onTestMode} disabled={scraping}
-            className="px-3.5 py-2 rounded-xl text-[13px] font-medium text-[#9E9E9E] hover:text-[#333] border border-dashed border-[#E4DED8] hover:border-[#D4D2CD] disabled:opacity-40 transition-all"
+            className="px-3.5 py-2 rounded-xl text-[13px] font-medium text-[#A8A29E] hover:text-[#333] border border-dashed border-[#E4DED8] hover:border-[#D4CFC6] disabled:opacity-40 transition-all"
             title="Inject fake reviews to test the UI">
             Test data
           </button>
           <button onClick={onScrapeNow} disabled={scraping}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-[#E4DED8] hover:border-[#D4D2CD] text-[13px] font-medium text-[#666] hover:text-[#0D0D0D] disabled:opacity-40 transition-all">
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-[#E4DED8] hover:border-[#D4CFC6] text-[13px] font-medium text-[#666] hover:text-[#111] disabled:opacity-40 transition-all">
             <svg className={`w-3.5 h-3.5 ${scraping ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
             </svg>
@@ -434,7 +434,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onScrapeNow, o
             </svg>
           </div>
           <p className="text-[13px] font-semibold text-[#111]">All caught up</p>
-          <p className="text-[12px] text-[#9E9E9E] mt-1">New reviews will appear here after the next sync.</p>
+          <p className="text-[12px] text-[#A8A29E] mt-1">New reviews will appear here after the next sync.</p>
         </div>
       ))}
 
@@ -444,7 +444,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onScrapeNow, o
           <div className="flex items-center justify-between mb-3">
             <button
               onClick={() => setShowHistory((p) => !p)}
-              className="flex items-center gap-1.5 text-[12px] font-medium text-[#9E9E9E] hover:text-[#333] transition-colors"
+              className="flex items-center gap-1.5 text-[12px] font-medium text-[#A8A29E] hover:text-[#333] transition-colors"
             >
               <svg className={`w-3 h-3 transition-transform ${showHistory ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>
@@ -455,7 +455,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onScrapeNow, o
             {showHistory && approved.some((r) => r.generated_reply) && (
               <button
                 onClick={handleCopyAll}
-                className="flex items-center gap-1.5 text-[12px] font-medium text-[#666] hover:text-[#0D0D0D] px-3 py-1.5 rounded-lg border border-[#E4DED8] hover:border-[#D4D2CD] bg-white transition-all"
+                className="flex items-center gap-1.5 text-[12px] font-medium text-[#666] hover:text-[#111] px-3 py-1.5 rounded-lg border border-[#E4DED8] hover:border-[#D4CFC6] bg-white transition-all"
               >
                 {copiedAll ? (
                   <><svg className="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied all</>

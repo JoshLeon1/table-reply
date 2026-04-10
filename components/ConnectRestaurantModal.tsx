@@ -92,7 +92,7 @@ function SyncLoadingScreen({ restaurantName }: { restaurantName: string }) {
 
       {/* Progress bar */}
       <div className="w-full mb-3">
-        <div className="w-full h-2 bg-[#EEECE9] rounded-full overflow-hidden">
+        <div className="w-full h-2 bg-[#EDE9E4] rounded-full overflow-hidden">
           <div
             className="h-full bg-[#E05A28] rounded-full transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
@@ -104,7 +104,7 @@ function SyncLoadingScreen({ restaurantName }: { restaurantName: string }) {
       <div className="h-5 overflow-hidden">
         <p
           key={msgIndex}
-          className="text-[12px] text-[#9E9E9E] animate-pulse"
+          className="text-[12px] text-[#A8A29E] animate-pulse"
         >
           {SYNC_MESSAGES[msgIndex]}
         </p>
@@ -115,7 +115,7 @@ function SyncLoadingScreen({ restaurantName }: { restaurantName: string }) {
         {['★★★★★', '★★★★★', '★★★★★'].map((stars, i) => (
           <div
             key={i}
-            className="px-3 py-1.5 rounded-full border border-[#E4DED8] bg-[#F3F0EC] text-[11px] text-[#9E9E9E]"
+            className="px-3 py-1.5 rounded-full border border-[#E4DED8] bg-[#F3F0EC] text-[11px] text-[#A8A29E]"
             style={{ animationDelay: `${i * 0.3}s` }}
           >
             {stars}
@@ -330,7 +330,7 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
                   value={manualUrl}
                   onChange={e => { setManualUrl(e.target.value); setManualUrlError('') }}
                   placeholder="https://www.google.com/maps/place/Your+Restaurant/..."
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] text-sm text-[#111] placeholder:text-[#9E9E9E] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/40 focus:border-[#E05A28] transition-all"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] text-sm text-[#111] placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/40 focus:border-[#E05A28] transition-all"
                   disabled={isBusy}
                 />
                 {manualUrlError && <p className="text-[12px] text-red-500 mt-1.5">{manualUrlError}</p>}
@@ -359,12 +359,12 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
               <div className="relative mb-3">
                 <div className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
                   {searching ? (
-                    <svg className="w-4 h-4 text-[#9E9E9E] animate-spin" fill="none" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 text-[#A8A29E] animate-spin" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
                   ) : (
-                    <svg className="w-4 h-4 text-[#9E9E9E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                   )}
@@ -375,7 +375,7 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
                   value={query}
                   onChange={e => handleQueryChange(e.target.value)}
                   placeholder="Search restaurant name and city…"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#E4DED8] text-sm text-[#111] placeholder:text-[#9E9E9E] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/40 focus:border-[#E05A28] transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#E4DED8] text-sm text-[#111] placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/40 focus:border-[#E05A28] transition-all"
                 />
               </div>
 
@@ -417,7 +417,7 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
               )}
 
               {results.length === 0 && query.trim() && !searching && !searchError && (
-                <p className="text-[13px] text-[#9E9E9E] text-center py-3 mb-2">
+                <p className="text-[13px] text-[#A8A29E] text-center py-3 mb-2">
                   No results found. Try adding your city name.
                 </p>
               )}
@@ -442,7 +442,7 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
 
               <p className="text-center mt-3">
                 <button type="button" onClick={() => setShowManual(true)}
-                  className="text-[12px] text-[#9E9E9E] hover:text-[#C94E21] underline underline-offset-2 transition-colors">
+                  className="text-[12px] text-[#A8A29E] hover:text-[#C94E21] underline underline-offset-2 transition-colors">
                   Can&apos;t find it? Paste your Google Maps URL instead
                 </button>
               </p>

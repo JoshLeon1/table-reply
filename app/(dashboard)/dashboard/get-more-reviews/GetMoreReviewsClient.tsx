@@ -116,14 +116,14 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
         {/* Page Header */}
         <div>
           <h1 className="text-xl sm:text-2xl font-semibold text-[#111]">Get More Reviews</h1>
-          <p className="text-[13px] text-[#57534E] mt-1">Ask happy customers to share their experience</p>
+          <p className="text-[13px] text-[#57534E] mt-1">Generate personalized messages and tools to earn more 5-star reviews.</p>
         </div>
 
         {/* Section 1: Review Request Messages */}
         <div className="bg-white rounded-2xl border border-[#E4DED8] p-4 sm:p-6 space-y-5">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-              <h2 className="text-[13px] font-semibold text-[#111]">Review Request Messages</h2>
+              <h2 className="text-[14px] font-semibold text-[#111]">Review Request Messages</h2>
               <p className="text-[12px] text-[#A8A29E] mt-0.5">
                 Personalized messages to send via SMS, email, receipt, or table card
               </p>
@@ -215,7 +215,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
         {/* Section 2: QR Code Generator */}
         <div className="bg-white rounded-2xl border border-[#E4DED8] p-4 sm:p-6 space-y-4">
           <div>
-            <h2 className="text-[13px] font-semibold text-[#111]">QR Code for your Google review page</h2>
+            <h2 className="text-[14px] font-semibold text-[#111]">QR Code for your Google review page</h2>
             <p className="text-[12px] text-[#A8A29E] mt-0.5">Add this to your menu, receipt, or table card</p>
           </div>
 
@@ -300,7 +300,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
             ].map((tip) => (
               <div
                 key={tip.title}
-                className="bg-white rounded-2xl border border-[#E4DED8] border-l-4 border-l-[#E05A28] p-4 sm:p-5"
+                className="bg-white rounded-2xl border border-[#E4DED8] p-4 sm:p-5"
               >
                 <h3 className="text-[13px] font-semibold text-[#111] mb-1.5">{tip.title}</h3>
                 <p className="text-[12px] text-[#57534E] leading-relaxed">{tip.body}</p>

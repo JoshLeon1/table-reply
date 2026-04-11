@@ -79,7 +79,7 @@ function SectionLabel({ children, badge }: { children: React.ReactNode; badge?: 
     <div className="flex items-center gap-2.5 mb-3">
       <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] whitespace-nowrap">{children}</span>
       {badge}
-      <div className="flex-1 h-px bg-[#E4DED8]" />
+      <div className="flex-1 h-px bg-[#EDE9E4]" />
     </div>
   )
 }
@@ -144,7 +144,7 @@ function PendingCard({ review, onAction }: { review: ScrapedReview; onAction: (i
         <div className="px-4 pb-3 pl-4">
           <button
             onClick={() => setExpanded(v => !v)}
-            className="flex items-center gap-1.5 text-[12px] text-[#A8A29E] hover:text-[#333] font-medium transition-colors"
+            className="flex items-center gap-1.5 text-[12px] font-medium text-[#888] hover:text-[#555] transition-colors"
           >
             <svg className={`w-3.5 h-3.5 transition-transform duration-150 ${expanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -342,7 +342,7 @@ export default function HomeClient({
             },
           ].map(({ label, value, sub, delay }) => (
             <div key={label} className={`bg-white rounded-2xl p-4 sm:p-5 border border-[#E4DED8] shadow-card card-hover animate-fade-up ${delay}`}>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.11em] text-[#C4BEB8] mb-2.5 leading-tight">{label}</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.11em] text-[#A8A29E] mb-2.5 leading-tight">{label}</p>
               <p className="text-[24px] sm:text-[30px] font-bold text-[#111] leading-none tracking-[-0.035em] mb-2.5">{value}</p>
               {sub}
             </div>
@@ -451,9 +451,12 @@ export default function HomeClient({
                   </div>
                 )}
 
-                <div className="px-4 py-2.5 border-t border-[#EDE9E4] bg-[#F8F6F3]">
-                  <Link href="/dashboard/generate" className="text-[11px] text-[#A8A29E] hover:text-[#57534E] transition-colors font-medium">
-                    More options in Full Generator →
+                <div className="px-4 py-2.5 border-t border-[#EDE9E4]">
+                  <Link href="/dashboard/generate" className="inline-flex items-center gap-1 text-[12px] font-medium text-[#A8A29E] hover:text-[#57534E] transition-colors group">
+                    More options in Full Generator
+                    <svg className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
                   </Link>
                 </div>
               </div>

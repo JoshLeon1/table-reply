@@ -109,7 +109,7 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
           </div>
-          <h2 className="text-[18px] font-semibold text-[#111] mb-1">Track Up To 3 Competitors</h2>
+          <h2 className="text-[18px] font-semibold text-[#111] mb-1">Track Up to 3 Competitors</h2>
           <p className="text-[13px] text-[#888]">See how you stack up against nearby restaurants</p>
         </div>
 
@@ -478,7 +478,7 @@ function RatingChart({
   ]
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E4DED8] p-6 mb-6">
+    <div className="bg-white rounded-2xl border border-[#E4DED8] p-5 sm:p-6 mb-6">
       <p className="text-[13px] font-semibold text-[#111] mb-5">Rating comparison</p>
       <ResponsiveContainer width="100%" height={220}>
         <BarChart data={data} margin={{ top: 20, right: 16, left: -20, bottom: 0 }} barSize={40}>
@@ -638,19 +638,19 @@ function CompetitorCard({
 
       <div className="flex items-center gap-5 mt-4 pt-4 border-t border-[#E4DED8]">
         <div>
-          <p className="text-[11px] text-[#888] mb-0.5">Avg Rating</p>
+          <p className="text-[11px] font-medium text-[#A8A29E] mb-0.5">Avg Rating</p>
           <p className="text-[14px] font-semibold text-[#111]">
             {competitor.avg_rating !== null ? `${competitor.avg_rating.toFixed(1)} ★` : '—'}
           </p>
         </div>
         <div>
-          <p className="text-[11px] text-[#888] mb-0.5">Reviews</p>
+          <p className="text-[11px] font-medium text-[#A8A29E] mb-0.5">Reviews</p>
           <p className="text-[14px] font-semibold text-[#111]">
             {competitor.review_count !== null ? competitor.review_count.toLocaleString() : '—'}
           </p>
         </div>
         <div>
-          <p className="text-[11px] text-[#888] mb-0.5">Last Synced</p>
+          <p className="text-[11px] font-medium text-[#A8A29E] mb-0.5">Last Synced</p>
           <p className="text-[13px] text-[#888]">{formatDate(competitor.last_scraped_at)}</p>
         </div>
       </div>

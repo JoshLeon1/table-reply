@@ -5,7 +5,6 @@ import ReplyGenerator from '@/components/ReplyGenerator'
 import TrialBanner from '@/components/TrialBanner'
 import PaywallModal from '@/components/PaywallModal'
 import GoogleConnectModal from '@/components/GoogleConnectModal'
-import WelcomeBanner from '@/components/WelcomeBanner'
 
 interface DashboardClientProps {
   isPaid: boolean
@@ -69,13 +68,12 @@ export default function DashboardClient({
       )}
 
       <div className="space-y-5">
-        <WelcomeBanner hasGeneratedReply={hasGeneratedReply} hasAutoSync={hasAutoSync} />
 
         {/* Page header */}
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-xl font-semibold text-[#111]">Generate a reply</h1>
-            <p className="text-[13px] text-[#888] mt-0.5">
+            <h1 className="text-[22px] font-bold text-[#111] tracking-tight">Generate a reply</h1>
+            <p className="text-[13px] text-[#A8A29E] mt-1">
               Paste any review and get a personalised response in seconds.{' '}
               <kbd className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded border border-[#E4DED8] text-[10px] font-mono text-[#AAA] bg-[#F9F8F6]">
                 ⌘ Enter
@@ -85,7 +83,7 @@ export default function DashboardClient({
 
           <button
             onClick={() => setShowGoogleModal(true)}
-            className="flex items-center gap-2 px-3.5 py-2 bg-white border border-[#E4DED8] hover:border-[#D4CFC6] rounded-xl text-[13px] font-medium text-[#555] hover:text-[#111] transition-all duration-150 flex-shrink-0"
+            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white border border-[#E4DED8] hover:border-[#D0C9C1] text-[13px] font-medium text-[#666] hover:text-[#111] transition-all duration-150 flex-shrink-0"
           >
             <GoogleLogo className="w-4 h-4 flex-shrink-0" />
             Auto-sync

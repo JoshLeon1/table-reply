@@ -98,7 +98,7 @@ function SetupPanel({ profile, onSaved }: { profile: RestaurantProfile; onSaved:
       <p className="text-[13px] text-[#6B6B6B] max-w-[280px] sm:max-w-sm mb-8 leading-relaxed">
         Connect your Google Maps listing and TableReply will scrape new reviews every morning, generate personalised replies, and queue them for your approval.
       </p>
-      <div className="w-full sm:max-w-md text-left space-y-3">
+      <div className="w-full sm:max-w-lg text-left space-y-3">
         <label className="block text-[13px] font-medium text-[#111]">Google Maps URL</label>
         <input
           type="url"
@@ -117,7 +117,7 @@ function SetupPanel({ profile, onSaved }: { profile: RestaurantProfile; onSaved:
           {saving ? 'Saving…' : 'Connect & Start Syncing'}
         </button>
       </div>
-      <details className="mt-8 text-left w-full sm:max-w-md group">
+      <details className="mt-8 text-left w-full sm:max-w-lg group">
         <summary className="text-[12px] text-[#A8A29E] cursor-pointer hover:text-[#333] select-none list-none flex items-center gap-1.5 transition-colors">
           <svg className="w-3 h-3 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>
@@ -264,7 +264,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss }: {
                       <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/>
                       </svg>
-                      Generate reply
+                      Generate Reply
                     </button>
                     {genError && <p className="text-[12px] text-red-500 mt-1.5">{genError}</p>}
                   </div>
@@ -276,7 +276,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss }: {
       </div>
 
       {/* Actions */}
-      <div className="flex flex-wrap items-center gap-2 px-4 sm:px-5 py-3.5 bg-[#F3F0EC] border-t border-[#EDE9E4]">
+      <div className="flex flex-wrap items-center gap-2 px-4 sm:px-5 py-3.5 bg-white border-t border-[#EDE9E4]">
         {noText ? (
           <span className="text-[12px] text-[#BEBCB8] italic flex-1">No reply needed</span>
         ) : (
@@ -288,7 +288,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss }: {
             {copied ? (
               <><svg className="w-3.5 h-3.5 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied!</>
             ) : (
-              <><svg className="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Copy &amp; approve</>
+              <><svg className="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Copy &amp; Approve</>
             )}
           </button>
         )}
@@ -359,7 +359,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onScrapeNow, o
       {/* Page header */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-5">
         <div>
-          <h1 className="text-xl sm:text-2xl font-semibold text-[#111]">Auto Reviews</h1>
+          <h1 className="text-[22px] font-bold tracking-tight text-[#111]">Auto Reviews</h1>
           <div className="flex items-center gap-2 mt-1">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"/>
             <span className="text-[13px] text-[#57534E]">
@@ -386,7 +386,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onScrapeNow, o
 
       {/* Response rate stat */}
       {reviews.length > 0 && (
-        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white border border-[#E4DED8] mb-5">
+        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white border border-[#E4DED8] border-l-2 border-l-[#E05A28] mb-5">
           <svg className="w-4 h-4 text-[#E05A28] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
           </svg>
@@ -408,13 +408,13 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onScrapeNow, o
 
       {/* Pending banner */}
       {pending.length > 0 && !scraping && (
-        <div className="mb-5 flex items-center gap-3 px-4 py-3 rounded-xl bg-[#111] text-white">
+        <div className="mb-5 flex items-center gap-3 px-4 py-3 rounded-xl bg-[#FEF0E8] border border-[#F5C9AD]">
           <span className="w-6 h-6 rounded-full bg-[#E05A28] text-white text-[11px] font-bold flex items-center justify-center flex-shrink-0">
             {pending.length}
           </span>
-          <p className="text-[13px]">
+          <p className="text-[13px] text-[#C94E21]">
             <span className="font-semibold">{pending.length} {pending.length === 1 ? 'review' : 'reviews'}</span>
-            <span className="text-white/60"> waiting for approval — copy the reply and paste it into Google Maps.</span>
+            <span className="text-[#E05A28]/70"> waiting for approval — copy the reply and paste it into Google Maps.</span>
           </p>
         </div>
       )}
@@ -444,7 +444,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onScrapeNow, o
           <div className="flex items-center justify-between mb-3">
             <button
               onClick={() => setShowHistory((p) => !p)}
-              className="flex items-center gap-1.5 text-[12px] font-medium text-[#A8A29E] hover:text-[#333] transition-colors"
+              className="flex items-center gap-1.5 text-[13px] font-medium text-[#888] hover:text-[#333] transition-colors"
             >
               <svg className={`w-3 h-3 transition-transform ${showHistory ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>

@@ -18,8 +18,8 @@ type Tone = 'warmer' | 'more-professional' | 'more-concise'
 
 const TONES: { value: Tone; label: string }[] = [
   { value: 'warmer',            label: 'Warmer' },
-  { value: 'more-professional', label: 'More professional' },
-  { value: 'more-concise',      label: 'More concise' },
+  { value: 'more-professional', label: 'More Professional' },
+  { value: 'more-concise',      label: 'More Concise' },
 ]
 
 const PLATFORM_TIPS: Record<string, string> = {
@@ -187,6 +187,7 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
       {/* Input card */}
       <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-card p-5 sm:p-6">
         <div className="space-y-5">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-5">Review Details</p>
           <div>
             <label className="block text-[13px] font-semibold text-[#111] mb-2">Review</label>
             <textarea
@@ -397,7 +398,7 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
       <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-card overflow-hidden">
         <button
           onClick={() => setShowExamples((p) => !p)}
-          className="w-full flex items-center justify-between px-5 sm:px-6 py-4 text-left hover:bg-[#F8F6F3] transition-colors"
+          className="w-full flex items-center justify-between px-5 sm:px-6 py-4 text-left hover:bg-[#F8F6F3] rounded-xl transition-colors"
         >
           <div className="flex items-center gap-2">
             <svg className="w-4 h-4 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">

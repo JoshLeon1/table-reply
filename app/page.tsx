@@ -690,11 +690,10 @@ export default function LandingPage() {
       </section>
 
       {/* ── CTA SECTION ──────────────────────────────────────────────────── */}
-      <section className="py-24 px-6 bg-[#111111]">
-        <div className="max-w-6xl mx-auto">
-          <div className="relative rounded-3xl overflow-hidden bg-[#E05A28] px-8 py-14 text-center"
+      <section className="py-12 px-6 bg-[#111111]">
+        <div className="max-w-2xl mx-auto">
+          <div className="relative rounded-2xl overflow-hidden px-8 py-10 text-center"
             style={{ background: 'linear-gradient(135deg, #E05A28 0%, #C94E21 100%)' }}>
-            {/* Subtle grid texture */}
             <div
               aria-hidden="true"
               className="absolute inset-0 opacity-[0.08]"
@@ -704,25 +703,22 @@ export default function LandingPage() {
               }}
             />
             <div className="relative">
-              <h2
-                className="font-bold text-white mb-4"
-                style={{ fontSize: 'clamp(26px, 3.5vw, 38px)', lineHeight: 1.15, letterSpacing: '-0.025em' }}
-              >
+              <h2 className="font-bold text-white mb-2" style={{ fontSize: 'clamp(22px, 3vw, 28px)', lineHeight: 1.2, letterSpacing: '-0.02em' }}>
                 Start replying to every review today
               </h2>
-              <p className="text-white/75 mb-8 max-w-md mx-auto" style={{ fontSize: '15px', lineHeight: '1.6' }}>
+              <p className="text-white/70 mb-6 text-[14px]">
                 Join 200+ restaurant owners who never let a review go unanswered.
               </p>
               <Link
                 href="/signup"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#E05A28] text-[15px] font-bold rounded-xl hover:bg-white/90 active:bg-white/80 transition-all duration-150 active:scale-[0.98] shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-white text-[#E05A28] text-[14px] font-bold rounded-xl hover:bg-white/90 active:bg-white/80 transition-all duration-150 active:scale-[0.98] shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
               >
-                Start your free week
+                Start Your Free Week
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7"/>
                 </svg>
               </Link>
-              <p className="text-white/50 text-[12px] mt-4">7 days free · then $29/mo · cancel anytime</p>
+              <p className="text-white/50 text-[12px] mt-3">7 days free · then $29/mo · cancel anytime</p>
             </div>
           </div>
         </div>

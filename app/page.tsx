@@ -501,7 +501,7 @@ export default function LandingPage() {
       {/* ── HOW IT WORKS ─────────────────────────────────────────────────── */}
       <section id="how-it-works" className="py-20 px-6 bg-[#fafaf8] border-t border-[#e5e5e0]">
         <div className="max-w-6xl mx-auto">
-          <div className="mb-12">
+          <div className="mb-12 text-center">
             <p className="text-[#E05A28] text-xs font-semibold uppercase tracking-wider mb-3">
               How it works
             </p>
@@ -517,15 +517,10 @@ export default function LandingPage() {
             {/* Connector line (desktop only) */}
             <div className="hidden md:block absolute top-5 left-[calc(16.66%+18px)] right-[calc(16.66%+18px)] h-px bg-gradient-to-r from-[#E05A28]/30 via-[#E05A28]/50 to-[#E05A28]/30" />
 
-            {steps.map(({ num, title, desc }, idx) => (
-              <div key={num} className="flex flex-col items-start md:items-start gap-4 p-6 md:pr-8">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#E05A28] text-white flex items-center justify-center flex-shrink-0 font-bold text-[15px] shadow-[0_4px_12px_rgba(224,90,40,0.3)] relative z-10">
-                    {num}
-                  </div>
-                  {idx < steps.length - 1 && (
-                    <div className="hidden md:none" />
-                  )}
+            {steps.map(({ num, title, desc }) => (
+              <div key={num} className="flex flex-col items-center gap-4 p-6 text-center">
+                <div className="w-10 h-10 rounded-xl bg-[#E05A28] text-white flex items-center justify-center flex-shrink-0 font-bold text-[15px] shadow-[0_4px_12px_rgba(224,90,40,0.3)] relative z-10">
+                  {num}
                 </div>
                 <div>
                   <h3 className="font-bold text-[#111111] text-[15px] mb-2 tracking-tight">

@@ -21,20 +21,21 @@ export default function CopyButton({ text, className, label }: CopyButtonProps) 
   return (
     <button
       onClick={handleCopy}
+      title={copied ? 'Copied!' : 'Copy to clipboard'}
       className={cn(
-        'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all duration-150',
+        'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all duration-200 select-none',
         copied
-          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-          : 'bg-[#F3F0EC] hover:bg-[#EDE9E4] text-[#555] border border-[#E4DED8] hover:border-[#D4CFC6]',
+          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 scale-[0.97]'
+          : 'bg-[#F3F0EC] hover:bg-[#EDE9E4] active:bg-[#E4DED8] text-[#555] border border-[#E4DED8] hover:border-[#CEC8C1] active:scale-[0.97]',
         className
       )}
     >
       {copied ? (
         <>
-          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
           </svg>
-          {label ? 'Copied!' : 'Copied!'}
+          Copied!
         </>
       ) : (
         <>

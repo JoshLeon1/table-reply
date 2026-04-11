@@ -784,7 +784,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
 
           {/* Breakdown */}
           <div className="order-2 md:order-1 px-5 sm:px-8 py-6 sm:py-12 border-b md:border-b-0 md:border-r border-white/[0.07]">
-            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#E05A28]/70 mb-4 sm:mb-6">Breakdown</p>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28]/60 mb-4 sm:mb-6">Breakdown</p>
             <div className="space-y-2.5 sm:space-y-3">
               {[5, 4, 3, 2, 1].map((star) => {
                 const count = ratingDist[star] ?? 0
@@ -805,7 +805,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
           {/* Trend */}
           <div className="order-3 px-5 sm:px-8 py-6 sm:py-12 md:border-l border-white/[0.07]">
             <div className="flex items-center justify-between mb-1">
-              <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#E05A28]/70">Trend</p>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28]/60">Trend</p>
               {hasSparkData && (
                 <span className={`text-[11px] font-semibold ${sparkTrend === 'up' ? 'text-emerald-400' : sparkTrend === 'down' ? 'text-red-400' : 'text-white/30'}`}>
                   {sparkTrend === 'up' ? '▲ Improving' : sparkTrend === 'down' ? '▼ Declining' : '→ Steady'}
@@ -879,13 +879,13 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
         <div className="rounded-2xl border border-[#E4DED8] bg-white p-5 sm:p-8 shadow-card">
           <div className="flex flex-col sm:flex-row gap-6 sm:gap-8 mb-8">
             <div className="flex-shrink-0">
-              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#CCC] mb-1">Industry avg</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#C4BEB8] mb-1">Industry avg</p>
               <p className="text-[#CCC] leading-none mb-1 text-4xl sm:text-5xl font-bold">~15%</p>
               <p className="text-[11px] text-[#CCC]">respond to reviews</p>
             </div>
             <div className="w-px bg-[#EDE9E4] self-stretch hidden sm:block" />
             <div className="flex-1">
-              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#E05A28] mb-1">{restaurantName}</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-1">{restaurantName}</p>
               <p className="leading-none mb-2 text-4xl sm:text-5xl font-bold"
                 style={{ color: responseRate >= 80 ? '#22c55e' : responseRate >= 50 ? '#111' : '#E05A28' }}>
                 {responseRate}%
@@ -1211,10 +1211,17 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       {!themesLoading && !themes.insufficient && themes.opportunities.length > 0 && (
         <div>
           <SectionLabel>Quick win</SectionLabel>
-          <div className="border-l-[3px] border-[#E05A28] pl-6 py-1">
-            <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#E05A28] mb-2">Your #1 opportunity right now</p>
-            <p className="text-[17px] font-semibold text-[#111] leading-snug mb-2">{themes.opportunities[0]}</p>
-            <p className="text-[12px] text-[#AAA]">Based on patterns across your {totalReviews} review{totalReviews !== 1 ? 's' : ''}</p>
+          <div className="bg-gradient-to-r from-[#FEF0E8] to-white rounded-2xl border border-[#F5C9AD] px-6 py-5 flex items-start gap-4">
+            <div className="w-9 h-9 rounded-xl bg-[#E05A28] flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg className="w-[18px] h-[18px] text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/>
+              </svg>
+            </div>
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28] mb-1.5">Your #1 opportunity right now</p>
+              <p className="text-[16px] font-semibold text-[#111] leading-snug mb-2">{themes.opportunities[0]}</p>
+              <p className="text-[12px] text-[#A8A29E]">Based on patterns across your {totalReviews} review{totalReviews !== 1 ? 's' : ''}</p>
+            </div>
           </div>
         </div>
       )}

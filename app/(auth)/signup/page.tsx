@@ -127,7 +127,7 @@ export default function SignupPage() {
         {/* Card */}
         <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-modal p-6 sm:p-8">
           <h1 className="text-[20px] font-bold text-[#111] tracking-[-0.02em] mb-1">Start your free trial</h1>
-          <p className="text-[13px] text-[#7C7672] mb-6">7 days free — no credit card required.</p>
+          <p className="text-[13px] text-[#A8A29E] mb-6">7 days free — no credit card required.</p>
 
           {successMessage ? (
             <div className="rounded-xl bg-emerald-50 border border-emerald-100 px-4 py-4">
@@ -182,7 +182,10 @@ export default function SignupPage() {
                 />
 
                 {error && (
-                  <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3">
+                  <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 flex items-start gap-2.5">
+                    <svg className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                     <p className="text-[13px] text-red-600">{error}</p>
                   </div>
                 )}
@@ -204,7 +207,7 @@ export default function SignupPage() {
             </>
           )}
 
-          <p className="mt-6 text-[13px] text-center text-[#7C7672]">
+          <p className="mt-6 text-[13px] text-center text-[#A8A29E]">
             Already have an account?{' '}
             <Link href="/login" className="text-[#E05A28] hover:text-[#C94E21] font-semibold transition-colors">
               Sign in →

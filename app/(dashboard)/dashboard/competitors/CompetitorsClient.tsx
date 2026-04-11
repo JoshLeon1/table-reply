@@ -101,44 +101,47 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
   }
 
   return (
-    <div className="flex items-center justify-center py-16">
-      <div className="w-full max-w-lg bg-white rounded-2xl border border-[#E4DED8] p-8">
-        <div className="mb-6 text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#FEF0E8] mb-4">
-            <svg className="w-6 h-6 text-[#E05A28]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+    <div className="flex items-center justify-center py-12 sm:py-16">
+      <div className="w-full max-w-lg bg-white rounded-2xl border border-[#E4DED8] shadow-card p-7 sm:p-8">
+        <div className="mb-7 text-center">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#FEF0E8] border border-[#F5C9AD] mb-4">
+            <svg className="w-6 h-6 text-[#E05A28]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
           </div>
-          <h2 className="text-[18px] font-semibold text-[#111] mb-1">Track Up to 3 Competitors</h2>
-          <p className="text-[13px] text-[#888]">See how you stack up against nearby restaurants</p>
+          <h2 className="text-[18px] font-bold text-[#111] tracking-tight mb-1">Track up to 3 competitors</h2>
+          <p className="text-[13px] text-[#A8A29E]">Monitor nearby restaurants to see how you compare</p>
         </div>
 
         {/* Auto-find button */}
         <button
           onClick={handleFindCompetitors}
           disabled={suggesting}
-          className="w-full flex items-center justify-center gap-2 mb-5 px-4 py-2.5 rounded-xl bg-[#FEF0E8] border border-[#F5C9AD] text-[#E05A28] text-[13px] font-semibold hover:bg-[#FCDFC7] transition disabled:opacity-50"
+          className="w-full flex items-center justify-center gap-2 mb-5 h-11 rounded-xl bg-[#FEF0E8] border border-[#F5C9AD] text-[#E05A28] text-[13px] font-semibold hover:bg-[#FCDFC7] active:bg-[#F9D0B8] transition-all disabled:opacity-50"
         >
           {suggesting ? (
-            <><svg className="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/></svg>Finding nearby competitors…</>
+            <><svg className="animate-spin w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/></svg>Finding nearby competitors…</>
           ) : (
-            <><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>Find My Competitors Automatically</>
+            <><svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>Find my competitors automatically</>
           )}
         </button>
 
         {suggestError && (
-          <p className="text-[12px] text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-4">{suggestError}</p>
+          <div className="flex items-start gap-2 text-[12px] text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-3.5 py-2.5 mb-4">
+            <svg className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+            {suggestError}
+          </div>
         )}
 
         {suggestions.length > 0 && (
-          <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
-            <p className="text-[11px] font-semibold text-emerald-700 mb-2">Found {suggestions.length} nearby competitors — review and confirm below</p>
-            <div className="space-y-1">
+          <div className="mb-4 p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.10em] text-emerald-700 mb-3">Found {suggestions.length} nearby — review below</p>
+            <div className="space-y-2">
               {suggestions.map((s, i) => (
-                <div key={s.placeId} className="flex items-center gap-2 text-[12px]">
-                  <span className="text-emerald-500 font-bold">{i + 1}.</span>
-                  <span className="font-medium text-[#111]">{s.name}</span>
-                  {s.rating && <span className="text-amber-500">{s.rating.toFixed(1)}★</span>}
+                <div key={s.placeId} className="flex items-center gap-2 text-[13px]">
+                  <span className="text-emerald-500 font-bold w-4 flex-shrink-0">{i + 1}.</span>
+                  <span className="font-medium text-[#111] flex-1 truncate">{s.name}</span>
+                  {s.rating && <span className="text-amber-500 text-[12px] flex-shrink-0">{s.rating.toFixed(1)}★</span>}
                   <button
                     onClick={() => {
                       const next = [...urls]
@@ -146,7 +149,7 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
                       setUrls(next)
                       setSuggestions(prev => prev.filter((_, j) => j !== i))
                     }}
-                    className="ml-auto text-[#A8A29E] hover:text-red-500 transition text-[11px]"
+                    className="ml-2 text-[#A8A29E] hover:text-red-500 transition text-[11px] flex-shrink-0"
                   >
                     Remove
                   </button>
@@ -158,14 +161,14 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
 
         <div className="relative flex items-center gap-3 mb-5">
           <div className="flex-1 h-px bg-[#E4DED8]" />
-          <span className="text-[11px] text-[#C4BEB8] font-medium">or enter manually</span>
+          <span className="text-[11px] text-[#C4BEB8] font-medium whitespace-nowrap">or enter Google Maps URLs manually</span>
           <div className="flex-1 h-px bg-[#E4DED8]" />
         </div>
 
-        <div className="space-y-4 mb-6">
+        <div className="space-y-3 mb-6">
           {[0, 1, 2].map((i) => (
             <div key={i}>
-              <label className="block text-[12px] font-medium text-[#888] mb-1.5">
+              <label className="block text-[11px] font-semibold uppercase tracking-[0.10em] text-[#A8A29E] mb-1.5">
                 Competitor {i + 1}
               </label>
               <input
@@ -176,23 +179,26 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
                   next[i] = e.target.value
                   setUrls(next)
                 }}
-                placeholder="https://google.com/maps/place/competitor..."
-                className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] text-[13px] text-[#111] placeholder:text-[#CCC] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/40 focus:border-[#E05A28] transition"
+                placeholder="https://google.com/maps/place/restaurant-name..."
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] bg-[#F8F6F3] focus:bg-white transition-all"
               />
             </div>
           ))}
         </div>
 
         {error && (
-          <p className="text-[12px] text-red-500 mb-4">{error}</p>
+          <div className="flex items-center gap-2 text-[12px] text-red-600 mb-4">
+            <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            {error}
+          </div>
         )}
 
         <button
           onClick={handleSubmit}
           disabled={loading}
-          className="w-full px-4 py-2.5 rounded-xl bg-[#111] text-white text-[13px] font-medium hover:bg-[#222] transition disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full h-11 rounded-xl bg-[#111] text-white text-[13px] font-semibold hover:bg-[#1E1E1E] active:bg-[#0A0A0A] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? 'Adding Competitors…' : 'Add Competitors'}
+          {loading ? 'Adding competitors…' : 'Add competitors'}
         </button>
       </div>
     </div>
@@ -243,12 +249,12 @@ function AddMoreForm({
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E4DED8] p-5 mb-6">
-      <p className="text-[13px] font-medium text-[#111] mb-4">Add more competitors</p>
+    <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-card p-5 mb-6">
+      <p className="text-[13px] font-semibold text-[#111] mb-4">Add more competitors</p>
       <div className="space-y-3 mb-4">
         {Array.from({ length: slots }).map((_, i) => (
           <div key={i}>
-            <label className="block text-[12px] font-medium text-[#888] mb-1.5">
+            <label className="block text-[11px] font-semibold uppercase tracking-[0.10em] text-[#A8A29E] mb-1.5">
               Competitor {existingCount + i + 1}
             </label>
             <input
@@ -259,8 +265,8 @@ function AddMoreForm({
                 next[i] = e.target.value
                 setUrls(next)
               }}
-              placeholder="https://google.com/maps/place/competitor..."
-              className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] text-[13px] text-[#111] placeholder:text-[#CCC] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/40 focus:border-[#E05A28] transition"
+              placeholder="https://google.com/maps/place/restaurant..."
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] bg-[#F8F6F3] focus:bg-white transition-all"
             />
           </div>
         ))}
@@ -270,13 +276,13 @@ function AddMoreForm({
         <button
           onClick={handleSubmit}
           disabled={loading}
-          className="px-4 py-2 rounded-xl bg-[#111] text-white text-[13px] font-medium hover:bg-[#222] transition disabled:opacity-50"
+          className="h-9 px-4 rounded-xl bg-[#111] text-white text-[13px] font-medium hover:bg-[#1E1E1E] transition-all disabled:opacity-50"
         >
           {loading ? 'Adding…' : 'Add'}
         </button>
         <button
           onClick={onCancel}
-          className="px-4 py-2 rounded-xl border border-[#E4DED8] text-[13px] font-medium text-[#888] hover:bg-[#F3F0EC] transition"
+          className="h-9 px-4 rounded-xl border border-[#E4DED8] text-[13px] font-medium text-[#888] hover:bg-[#F3F0EC] transition-all"
         >
           Cancel
         </button>
@@ -682,19 +688,19 @@ export default function CompetitorsClient({
       <div className="max-w-3xl mx-auto">
 
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-start justify-between mb-6 gap-4">
           <div>
-            <h1 className="text-[20px] font-semibold text-[#111]">Competitor Tracker</h1>
-            <p className="text-[13px] text-[#888] mt-0.5">
+            <h1 className="text-[22px] font-semibold text-[#111] leading-tight tracking-tight">Competitor Tracker</h1>
+            <p className="text-[13px] text-[#A8A29E] mt-1">
               See how {restaurantProfile.restaurant_name} stacks up
             </p>
           </div>
           {competitors.length < 3 && !showAddMore && (
             <button
               onClick={() => setShowAddMore(true)}
-              className="px-4 py-2 rounded-xl border border-[#E4DED8] bg-white text-[13px] font-medium text-[#111] hover:bg-[#F3F0EC] transition"
+              className="flex-shrink-0 h-9 px-4 rounded-xl border border-[#E4DED8] bg-white text-[13px] font-medium text-[#111] hover:bg-[#F3F0EC] hover:border-[#CEC8C1] transition-all"
             >
-              + Add More Competitors
+              + Add competitor
             </button>
           )}
         </div>
@@ -734,7 +740,7 @@ export default function CompetitorsClient({
 
         {/* Competitor Cards */}
         <div className="space-y-3">
-          <p className="text-[12px] font-medium text-[#888] uppercase tracking-wide">Your competitors</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E]">Your competitors</p>
           {competitors.map((c) => (
             <CompetitorCard key={c.id} competitor={c} onRemove={handleRemove} />
           ))}

@@ -7,26 +7,28 @@ export const metadata = {
 
 export default function PrivacyPage() {
   return (
-    <div style={{ fontFamily: 'Inter, sans-serif', background: '#FAFAF8', minHeight: '100vh' }}>
+    <div style={{ fontFamily: 'Inter, sans-serif', background: '#F8F6F3', minHeight: '100vh' }}>
       {/* Nav */}
-      <nav className="border-b border-[#E4DED8] bg-white">
-        <div className="max-w-3xl mx-auto px-6 h-14 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
+      <nav className="border-b border-[#E4DED8] bg-white sticky top-0 z-10">
+        <div className="max-w-3xl mx-auto px-5 sm:px-6 h-14 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2.5">
             <div className="w-7 h-7 rounded-lg bg-[#E05A28] flex items-center justify-center">
               <svg viewBox="0 0 20 20" fill="none" className="w-4 h-4" aria-hidden="true">
                 <path d="M2 1.5h9A1.5 1.5 0 0112.5 3v5A1.5 1.5 0 0111 9.5H7l-2 2v-2H2A1.5 1.5 0 01.5 8V3A1.5 1.5 0 012 1.5z" fill="white" fillOpacity="0.5"/>
                 <path d="M8 8h9.5A1.5 1.5 0 0119 9.5v5A1.5 1.5 0 0117.5 16H16v2.5l-3-2.5H8A1.5 1.5 0 016.5 14.5v-5A1.5 1.5 0 018 8z" fill="white"/>
               </svg>
             </div>
-            <span className="font-bold text-[15px] text-[#111]">TableReply</span>
+            <span className="font-bold text-[15px] text-[#111] tracking-tight">TableReply</span>
           </Link>
-          <Link href="/" className="text-[13px] text-[#888] hover:text-[#111] transition-colors">← Back</Link>
+          <Link href="/" className="text-[13px] text-[#A8A29E] hover:text-[#111] transition-colors font-medium">← Back</Link>
         </div>
       </nav>
 
-      <div className="max-w-3xl mx-auto px-6 py-12">
-        <h1 className="text-[28px] font-bold text-[#111] mb-2">Privacy Policy</h1>
-        <p className="text-[13px] text-[#A8A29E] mb-10">Last updated: April 10, 2026</p>
+      <div className="max-w-3xl mx-auto px-5 sm:px-6 py-12 sm:py-16">
+        <div className="mb-10">
+          <h1 className="text-[26px] sm:text-[28px] font-bold text-[#111] tracking-tight mb-2">Privacy Policy</h1>
+          <p className="text-[13px] text-[#A8A29E]">Last updated: April 10, 2026</p>
+        </div>
 
         <div className="prose prose-sm max-w-none space-y-8 text-[#57534E] leading-relaxed">
 
@@ -113,15 +115,15 @@ export default function PrivacyPage() {
         </div>
       </div>
 
-      <footer className="border-t border-[#E4DED8] py-8 text-center text-[12px] text-[#A8A29E]">
-        <div className="flex items-center justify-center gap-4">
-          <Link href="/privacy" className="hover:text-[#111] transition-colors">Privacy Policy</Link>
-          <span>·</span>
-          <Link href="/terms" className="hover:text-[#111] transition-colors">Terms of Service</Link>
-          <span>·</span>
+      <footer className="border-t border-[#E4DED8] py-8 text-center text-[12px] text-[#A8A29E] bg-white">
+        <div className="flex items-center justify-center gap-5">
+          <Link href="/privacy" className="hover:text-[#111] transition-colors">Privacy</Link>
+          <span className="text-[#E4DED8]">·</span>
+          <Link href="/terms" className="hover:text-[#111] transition-colors">Terms</Link>
+          <span className="text-[#E4DED8]">·</span>
           <Link href="/contact" className="hover:text-[#111] transition-colors">Contact</Link>
         </div>
-        <p className="mt-3">© {new Date().getFullYear()} TableReply. All rights reserved.</p>
+        <p className="mt-2.5 text-[#C4BEB8]">© {new Date().getFullYear()} TableReply. All rights reserved.</p>
       </footer>
     </div>
   )

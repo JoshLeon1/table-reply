@@ -121,7 +121,7 @@ export default function LoginPage() {
         {/* Card */}
         <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-modal p-6 sm:p-8">
           <h1 className="text-[20px] font-bold text-[#111] tracking-[-0.02em] mb-1">Welcome back</h1>
-          <p className="text-[13px] text-[#7C7672] mb-6">Sign in to your account</p>
+          <p className="text-[13px] text-[#A8A29E] mb-6">Sign in to manage your reviews</p>
 
           {/* Google */}
           <button
@@ -175,7 +175,10 @@ export default function LoginPage() {
             </div>
 
             {error && (
-              <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3">
+              <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 flex items-start gap-2.5">
+                <svg className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
                 <p className="text-[13px] text-red-600">{error}</p>
               </div>
             )}
@@ -183,7 +186,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading || googleLoading}
-              className="w-full h-11 rounded-xl bg-[#111] hover:bg-[#1E1E1E] active:bg-[#141414] text-white font-semibold text-[14px] transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full h-11 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white font-semibold text-[14px] transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(224,90,40,0.3)]"
             >
               {loading && (
                 <svg className="animate-spin h-4 w-4 opacity-70" fill="none" viewBox="0 0 24 24">
@@ -195,7 +198,7 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <p className="mt-6 text-[13px] text-center text-[#7C7672]">
+          <p className="mt-6 text-[13px] text-center text-[#A8A29E]">
             Don&apos;t have an account?{' '}
             <Link href="/signup" className="text-[#E05A28] hover:text-[#C94E21] font-semibold transition-colors">
               Start free →

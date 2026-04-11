@@ -110,10 +110,10 @@ export default function OnboardingPage() {
   const stepLabels = ['Basics', 'Voice', 'Training']
 
   return (
-    <div className="min-h-screen bg-[#F8F6F3] flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[#F8F6F3] flex flex-col items-center justify-center px-4 py-10 sm:py-12">
 
       {/* Logo */}
-      <div className="flex items-center gap-2.5 mb-8">
+      <div className="flex items-center gap-2.5 mb-7">
         <div className="w-8 h-8 rounded-lg bg-[#E05A28] flex items-center justify-center">
           <svg className="text-white" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 2v4a2 2 0 002 2v6M8 2v10M11 2s2 1 2 3-2 3-2 3v4"/>
@@ -124,16 +124,16 @@ export default function OnboardingPage() {
 
       <div className="w-full max-w-sm animate-fade-up">
 
-        {/* Progress steps */}
-        <div className="flex items-center gap-2 mb-6">
-          {stepLabels.map((label, i) => {
-            const s = i + 1
-            const done = step > s
-            const active = step === s
-            return (
-              <div key={s} className="flex items-center gap-2 flex-1">
-                <div className={`flex items-center gap-1.5 ${active ? 'opacity-100' : done ? 'opacity-100' : 'opacity-35'}`}>
-                  <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold transition-all ${
+        {/* Progress bar + step labels */}
+        <div className="mb-5">
+          <div className="flex items-center justify-between mb-2">
+            {stepLabels.map((label, i) => {
+              const s = i + 1
+              const done = step > s
+              const active = step === s
+              return (
+                <div key={s} className="flex items-center gap-1.5">
+                  <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold transition-all duration-200 ${
                     done ? 'bg-emerald-500 text-white' : active ? 'bg-[#E05A28] text-white' : 'bg-[#E4DED8] text-[#A8A29E]'
                   }`}>
                     {done ? (
@@ -142,12 +142,18 @@ export default function OnboardingPage() {
                       </svg>
                     ) : s}
                   </div>
-                  <span className={`text-[12px] font-medium ${active ? 'text-[#111]' : 'text-[#A8A29E]'}`}>{label}</span>
+                  <span className={`text-[12px] font-medium transition-colors ${active ? 'text-[#111]' : done ? 'text-[#A8A29E]' : 'text-[#C4BEB8]'}`}>{label}</span>
                 </div>
-                {s < 3 && <div className="flex-1 h-px bg-[#E4DED8]" />}
-              </div>
-            )
-          })}
+              )
+            })}
+          </div>
+          {/* Progress bar */}
+          <div className="h-1 bg-[#E4DED8] rounded-full overflow-hidden">
+            <div
+              className="h-full bg-[#E05A28] rounded-full transition-all duration-500 ease-out"
+              style={{ width: `${((step - 1) / (stepLabels.length - 1)) * 100}%` }}
+            />
+          </div>
         </div>
 
         {/* Card */}
@@ -157,7 +163,7 @@ export default function OnboardingPage() {
           {step === 1 && (
             <>
               <h2 className="text-[18px] font-bold text-[#111] tracking-[-0.02em] mb-1">Restaurant basics</h2>
-              <p className="text-[13px] text-[#7C7672] mb-5">Tell us about your restaurant — takes 30 seconds.</p>
+              <p className="text-[13px] text-[#A8A29E] mb-5">Takes 30 seconds — we only need the essentials.</p>
               <form onSubmit={handleStep1} className="space-y-4">
                 <Input
                   id="restaurant-name"
@@ -176,7 +182,8 @@ export default function OnboardingPage() {
                     value={cuisineType}
                     onChange={(e) => setCuisineType(e.target.value)}
                     required
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] hover:border-[#CEC8C1] text-[#111] text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] transition-all duration-150"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] hover:border-[#CEC8C1] text-[#111] text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] transition-all duration-150 appearance-none"
+                    style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23A8A29E' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\")", backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center' }}
                   >
                     <option value="" disabled>Select cuisine type</option>
                     {CUISINE_OPTIONS.map((c) => (
@@ -193,13 +200,16 @@ export default function OnboardingPage() {
                   required
                 />
                 {error && (
-                  <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3">
+                  <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 flex items-start gap-2.5">
+                    <svg className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                     <p className="text-[13px] text-red-600">{error}</p>
                   </div>
                 )}
                 <button
                   type="submit"
-                  className="w-full h-11 rounded-xl bg-[#111] hover:bg-[#1E1E1E] text-white font-semibold text-[14px] transition-all duration-150 mt-1"
+                  className="w-full h-11 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white font-semibold text-[14px] transition-all duration-150 mt-1 shadow-[0_2px_12px_rgba(224,90,40,0.25)]"
                 >
                   Continue →
                 </button>
@@ -211,10 +221,10 @@ export default function OnboardingPage() {
           {step === 2 && (
             <>
               <h2 className="text-[18px] font-bold text-[#111] tracking-[-0.02em] mb-1">Your voice</h2>
-              <p className="text-[13px] text-[#7C7672] mb-5">How should your replies feel?</p>
+              <p className="text-[13px] text-[#A8A29E] mb-5">This shapes how all your replies will sound.</p>
               <form onSubmit={handleStep2} className="space-y-5">
                 <div>
-                  <p className="text-[13px] font-semibold text-[#111] mb-2">Restaurant vibe</p>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.10em] text-[#A8A29E] mb-2.5">Restaurant vibe</p>
                   <div className="grid grid-cols-2 gap-2">
                     {VIBE_OPTIONS.map((opt) => (
                       <OptionButton key={opt.value} selected={vibe === opt.value} onClick={() => setVibe(opt.value)}>
@@ -224,7 +234,7 @@ export default function OnboardingPage() {
                   </div>
                 </div>
                 <div>
-                  <p className="text-[13px] font-semibold text-[#111] mb-2">Reply tone</p>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.10em] text-[#A8A29E] mb-2.5">Reply tone</p>
                   <div className="grid grid-cols-2 gap-2">
                     {TONE_OPTIONS.map((opt) => (
                       <OptionButton key={opt.value} selected={replyTone === opt.value} onClick={() => setReplyTone(opt.value)}>
@@ -234,21 +244,24 @@ export default function OnboardingPage() {
                   </div>
                 </div>
                 {error && (
-                  <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3">
+                  <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 flex items-start gap-2.5">
+                    <svg className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                     <p className="text-[13px] text-red-600">{error}</p>
                   </div>
                 )}
-                <div className="flex gap-3">
+                <div className="flex gap-3 pt-1">
                   <button
                     type="button"
                     onClick={() => { setStep(1); setError('') }}
-                    className="flex-1 h-11 rounded-xl border border-[#E4DED8] bg-white hover:bg-[#F8F6F3] text-[#333] font-medium text-[13px] transition-all duration-150"
+                    className="flex-1 h-11 rounded-xl border border-[#E4DED8] bg-white hover:bg-[#F8F6F3] text-[#555] font-medium text-[13px] transition-all duration-150"
                   >
                     Back
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 h-11 rounded-xl bg-[#111] hover:bg-[#1E1E1E] text-white font-semibold text-[14px] transition-all duration-150"
+                    className="flex-[2] h-11 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white font-semibold text-[14px] transition-all duration-150 shadow-[0_2px_12px_rgba(224,90,40,0.25)]"
                   >
                     Continue →
                   </button>
@@ -260,12 +273,12 @@ export default function OnboardingPage() {
           {/* Step 3 */}
           {step === 3 && (
             <>
-              <h2 className="text-[18px] font-bold text-[#111] tracking-[-0.02em] mb-1">
-                Train your voice
-                <span className="text-[#A8A29E] font-normal text-[13px] ml-2">optional</span>
-              </h2>
-              <p className="text-[13px] text-[#7C7672] mb-5">
-                Paste 3–5 of your past review replies. TableReply will match your exact writing style.
+              <div className="flex items-start justify-between mb-1">
+                <h2 className="text-[18px] font-bold text-[#111] tracking-[-0.02em]">Train your voice</h2>
+                <span className="text-[11px] font-medium text-[#A8A29E] bg-[#F3F0EC] px-2 py-0.5 rounded-full mt-0.5">optional</span>
+              </div>
+              <p className="text-[13px] text-[#A8A29E] mb-5">
+                Paste 3–5 of your past review replies and we'll match your exact writing style.
               </p>
               <div className="space-y-4">
                 <textarea
@@ -276,7 +289,10 @@ export default function OnboardingPage() {
                   className="w-full px-3.5 py-3 rounded-xl border border-[#E4DED8] hover:border-[#CEC8C1] text-[#111] text-[13px] placeholder:text-[#C4BEB8] bg-[#F8F6F3] hover:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] transition-all duration-150 resize-none leading-relaxed"
                 />
                 {error && (
-                  <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3">
+                  <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 flex items-start gap-2.5">
+                    <svg className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                     <p className="text-[13px] text-red-600">{error}</p>
                   </div>
                 )}
@@ -293,7 +309,7 @@ export default function OnboardingPage() {
                     type="button"
                     onClick={() => handleFinish(false)}
                     disabled={loading}
-                    className="flex-1 h-11 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] text-white font-semibold text-[14px] transition-all duration-150 disabled:opacity-40 flex items-center justify-center gap-2"
+                    className="flex-[2] h-11 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white font-semibold text-[14px] transition-all duration-150 disabled:opacity-40 flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(224,90,40,0.25)]"
                   >
                     {loading && (
                       <svg className="animate-spin h-4 w-4 opacity-80" fill="none" viewBox="0 0 24 24">
@@ -301,7 +317,7 @@ export default function OnboardingPage() {
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                       </svg>
                     )}
-                    Finish setup →
+                    {loading ? 'Setting up…' : 'Finish setup →'}
                   </button>
                 </div>
               </div>

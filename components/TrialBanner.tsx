@@ -26,17 +26,17 @@ export default function TrialBanner({ daysRemaining, trialExpired, onUpgrade }: 
 
   if (!trialExpired && daysRemaining > 0) {
     return (
-      <div className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-[#111] border border-white/[0.06] animate-fade-in">
-        <div className="flex items-center gap-3">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#E05A28] flex-shrink-0" />
-          <p className="text-[13px] text-white/60">
+      <div className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-[#111] border border-[#E05A28]/20 animate-fade-in">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#E05A28] flex-shrink-0 animate-pulse" />
+          <p className="text-[13px] text-white/60 truncate">
             <span className="font-semibold text-white">{daysRemaining} {daysRemaining === 1 ? 'day' : 'days'}</span>
-            {' '}remaining in your free trial
+            {' '}left in your free trial
           </p>
         </div>
         <button
           onClick={onUpgrade}
-          className="text-[13px] font-semibold text-[#E05A28] hover:text-[#F07040] transition-colors ml-6 whitespace-nowrap"
+          className="text-[13px] font-semibold text-[#E05A28] hover:text-[#F07040] transition-colors ml-4 whitespace-nowrap flex-shrink-0"
         >
           Upgrade — $29/mo →
         </button>
@@ -46,11 +46,11 @@ export default function TrialBanner({ daysRemaining, trialExpired, onUpgrade }: 
 
   if (trialExpired && !dismissed) {
     return (
-      <div className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-[#111] border border-white/[0.06] gap-4 animate-fade-in">
-        <div className="flex items-center gap-3 min-w-0">
+      <div className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-red-950/40 border border-red-900/40 gap-4 animate-fade-in">
+        <div className="flex items-center gap-2.5 min-w-0">
           <span className="w-1.5 h-1.5 rounded-full bg-red-400 flex-shrink-0" />
           <p className="text-[13px] truncate">
-            <span className="font-semibold text-white">Your free trial has ended</span>
+            <span className="font-semibold text-white">Trial ended</span>
             <span className="text-white/45 hidden sm:inline"> — upgrade to keep generating replies</span>
           </p>
         </div>
@@ -63,7 +63,7 @@ export default function TrialBanner({ daysRemaining, trialExpired, onUpgrade }: 
           </button>
           <button
             onClick={handleDismiss}
-            className="text-white/25 hover:text-white/55 transition-colors p-1"
+            className="text-white/25 hover:text-white/55 transition-colors p-1 rounded"
             aria-label="Dismiss"
           >
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

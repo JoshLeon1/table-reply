@@ -61,8 +61,8 @@ export default async function SettingsPage() {
     <div className="space-y-6 sm:space-y-8 max-w-2xl pb-12">
       {/* Header */}
       <div>
-        <h1 className="text-xl sm:text-2xl font-semibold text-[#111]">Settings</h1>
-        <p className="text-[13px] text-[#57534E] mt-0.5">Manage your restaurant profile and subscription.</p>
+        <h1 className="text-[22px] font-semibold text-[#111]">Settings</h1>
+        <p className="text-[13px] text-[#57534E] mt-1">Manage your restaurant profile and subscription.</p>
       </div>
 
       {/* Subscription */}

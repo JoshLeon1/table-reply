@@ -71,7 +71,7 @@ export default async function TemplatesPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-xl font-semibold text-[#111]">Review request templates</h1>
+        <h1 className="text-[22px] font-semibold text-[#111]">Review Request Templates</h1>
         <p className="text-[13px] text-[#888] mt-0.5">
           Ready-to-send messages to get more Google reviews from happy guests. Replace{' '}
           <code className="font-mono text-[12px] bg-[#EDE9E4] text-[#57534E] px-1.5 py-0.5 rounded">
@@ -89,7 +89,7 @@ export default async function TemplatesPage() {
             {/* Section label */}
             <div className="flex items-center gap-2 mb-3">
               <span className={`w-2 h-2 rounded-full ${meta.dot}`} />
-              <span className="text-[12px] font-semibold text-[#888] uppercase tracking-widest">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E]">
                 {category}
               </span>
             </div>

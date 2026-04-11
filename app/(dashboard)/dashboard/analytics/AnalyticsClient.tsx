@@ -71,7 +71,7 @@ function Stars({ rating }: { rating: number }) {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#E05A28] mb-6">{children}</p>
+    <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-5">{children}</p>
   )
 }
 

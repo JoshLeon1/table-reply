@@ -434,8 +434,8 @@ export default function HomeClient({
 
                 {quickReply && (
                   <div className="border-t border-[#EDE9E4] p-4 space-y-3">
-                    <div className="bg-[#FEF0E8] border border-[#F5C9AD] rounded-xl px-4 py-3">
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-[#E05A28] mb-1.5">Generated reply</p>
+                    <div className="bg-[#F8F6F3] border border-[#E4DED8] rounded-xl px-4 py-3">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-1.5">Generated reply</p>
                       <p className="text-[12px] text-[#57534E] leading-relaxed">{quickReply}</p>
                     </div>
                     <button

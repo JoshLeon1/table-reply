@@ -157,8 +157,8 @@ export default function SettingsClient({
       <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden">
         <div className="px-6 py-5 border-b border-[#EDE9E4] flex items-center justify-between">
           <div>
-            <h2 className="text-[13px] font-semibold text-[#111] uppercase tracking-wide">Reply Preferences</h2>
-            <p className="text-[12px] text-[#888] mt-0.5">Applied to every generated reply.</p>
+            <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E]">Reply Preferences</h2>
+            <p className="text-[12px] text-[#57534E] mt-1">Applied to every generated reply.</p>
           </div>
           {prefsToast && (
             <span
@@ -216,8 +216,8 @@ export default function SettingsClient({
       <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden">
         <div className="px-6 py-5 border-b border-[#EDE9E4] flex items-center justify-between">
           <div>
-            <h2 className="text-[13px] font-semibold text-[#111] uppercase tracking-wide">Email Notifications</h2>
-            <p className="text-[12px] text-[#888] mt-0.5">Sent to {userEmail}</p>
+            <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E]">Email Notifications</h2>
+            <p className="text-[12px] text-[#57534E] mt-1">Sent to {userEmail}</p>
           </div>
           {emailToast && (
             <span
@@ -248,8 +248,8 @@ export default function SettingsClient({
       {/* Danger zone */}
       <div className="bg-white rounded-2xl border border-red-200 overflow-hidden">
         <div className="px-6 py-5 border-b border-red-100">
-          <h2 className="text-[13px] font-semibold text-red-600 uppercase tracking-wide">Danger Zone</h2>
-          <p className="text-[12px] text-[#888] mt-0.5">These actions are permanent and cannot be undone.</p>
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-red-400">Danger Zone</h2>
+          <p className="text-[12px] text-[#57534E] mt-1">These actions are permanent and cannot be undone.</p>
         </div>
 
         <div className="divide-y divide-[#EDE9E4]">

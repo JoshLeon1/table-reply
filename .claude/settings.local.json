@@ -6,7 +6,13 @@
       "Bash(npm install:*)",
       "Bash(node -e ':*)",
       "Bash(curl -s -X POST http://localhost:3000/api/generate-graphic -H 'Content-Type: application/json' -d '{\"reviewText\":\"Amazing food\",\"reviewerName\":\"Sarah\",\"starRating\":5,\"restaurantName\":\"Test\",\"style\":\"Dark & moody\"}')",
-      "Bash(npx next:*)"
+      "Bash(npx next:*)",
+      "Bash(sed -i '' 's/bg-\\\\[#FAFAF8\\\\]/bg-[#F3F0EC]/g' \"app/\\(dashboard\\)/settings/page.tsx\")",
+      "Bash(sed -i '' 's/bg-\\\\[#FAFAF8\\\\]/bg-[#F3F0EC]/g' \"app/\\(dashboard\\)/dashboard/analytics/AnalyticsClient.tsx\")",
+      "Bash(sed -i '' 's/hover:bg-\\\\[#FAFAF8\\\\]/hover:bg-[#F3F0EC]/g' \"components/ui/Button.tsx\")",
+      "Bash(npm run:*)",
+      "Bash(find \"/Users/joshleon/Table Reply\" -name \"*.tsx\" ! -path \"*/node_modules/*\" ! -path \"*/.next/*\" -exec sed -i '' 's/#F0EDE8/#EDE9E4/g' {} \\\\;)",
+      "WebSearch"
     ]
   }
 }

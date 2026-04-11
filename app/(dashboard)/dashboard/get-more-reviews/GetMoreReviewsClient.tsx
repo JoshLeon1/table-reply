@@ -47,12 +47,23 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
           ownerName: restaurantProfile.owner_name,
         }),
       })
-      if (!res.ok) throw new Error('Failed to generate messages')
-      const data: ReviewMessages = await res.json()
-      setMessages(data)
-      setEditedMessages(data)
+      const data = await res.json()
+      if (!res.ok) {
+        console.error('generate-review-requests error:', data)
+        throw new Error(data?.error ?? 'Failed to generate messages')
+      }
+      // Validate all 4 keys are present and non-empty strings
+      const result: ReviewMessages = {
+        sms: typeof data.sms === 'string' && data.sms ? data.sms : '',
+        email: typeof data.email === 'string' && data.email ? data.email : '',
+        receipt: typeof data.receipt === 'string' && data.receipt ? data.receipt : '',
+        tablecard: typeof data.tablecard === 'string' && data.tablecard ? data.tablecard : '',
+      }
+      setMessages(result)
+      setEditedMessages(result)
     } catch (err) {
-      setGenerateError('Something went wrong. Please try again.')
+      console.error('handleGenerateMessages error:', err)
+      setGenerateError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
     } finally {
       setGenerating(false)
     }

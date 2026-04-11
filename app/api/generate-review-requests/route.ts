@@ -23,39 +23,53 @@ export async function POST(request: NextRequest) {
 
   const systemPrompt = `You are a marketing copywriter for ${restaurantName}, a ${cuisineType ?? 'restaurant'}${vibe ? ` with a ${vibe} vibe` : ''}. The owner's name is ${ownerName ?? 'the owner'}. Voice: ${voiceStyle ?? 'warm and genuine'}. Write in a warm, genuine tone that matches the restaurant's personality.`
 
-  const userPrompt = `Generate 4 review request messages for ${restaurantName}. Return as JSON with these keys:
-- "sms": A short SMS (under 160 chars). Include [REVIEW LINK] as a placeholder. Casual and warm.
-- "email": A friendly email (3-4 sentences). Include [REVIEW LINK]. Slightly more personal.
-- "receipt": Very short receipt footer (under 80 chars). Just the ask + [REVIEW LINK].
-- "tablecard": Short table card text (under 100 chars). Inviting and warm.
+  const userPrompt = `Generate 4 short review request messages for ${restaurantName}.
 
-JSON only, no explanation.`
+You MUST respond with ONLY a valid JSON object — no markdown, no explanation, no code fences.
+
+Required format:
+{"sms":"...","email":"...","receipt":"...","tablecard":"..."}
+
+Rules:
+- sms: under 160 characters, casual and warm, include [REVIEW LINK]
+- email: 2-3 sentences, friendly, include [REVIEW LINK]
+- receipt: under 80 characters, just the ask + [REVIEW LINK]
+- tablecard: under 100 characters, inviting, include [REVIEW LINK]`
 
   try {
     const rawText = (await callClaude({
-      maxTokens: 1200,
+      maxTokens: 800,
       system: systemPrompt,
       userMessage: userPrompt,
     })).trim()
 
-    // Strip markdown code fences if present
-    const stripped = rawText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim()
+    console.log('[generate-review-requests] raw response:', rawText.slice(0, 300))
 
-    // Extract the JSON object (handles extra text before/after)
+    // Strip markdown code fences if present
+    const stripped = rawText
+      .replace(/^```(?:json)?\s*/i, '')
+      .replace(/\s*```\s*$/i, '')
+      .trim()
+
+    // Extract the JSON object — handles any extra text before/after
     const jsonMatch = stripped.match(/\{[\s\S]*\}/)
-    if (!jsonMatch) throw new Error('No JSON object found in response')
+    if (!jsonMatch) {
+      console.error('[generate-review-requests] no JSON found in:', stripped)
+      throw new Error('No JSON found in Claude response')
+    }
+
     const parsed = JSON.parse(jsonMatch[0])
 
     const result = {
-      sms: typeof parsed.sms === 'string' ? parsed.sms : '',
-      email: typeof parsed.email === 'string' ? parsed.email : '',
-      receipt: typeof parsed.receipt === 'string' ? parsed.receipt : '',
-      tablecard: typeof parsed.tablecard === 'string' ? parsed.tablecard : '',
+      sms:       typeof parsed.sms === 'string'       ? parsed.sms       : `Loved dining at ${restaurantName}? We'd be so grateful for a quick Google review! [REVIEW LINK]`,
+      email:     typeof parsed.email === 'string'     ? parsed.email     : `Thanks for visiting ${restaurantName}! If you enjoyed your experience, a quick Google review would mean the world to us. [REVIEW LINK]`,
+      receipt:   typeof parsed.receipt === 'string'   ? parsed.receipt   : `Enjoyed your meal? Leave us a review! [REVIEW LINK]`,
+      tablecard: typeof parsed.tablecard === 'string' ? parsed.tablecard : `Love ${restaurantName}? Share your experience! [REVIEW LINK]`,
     }
 
     return NextResponse.json(result)
   } catch (error) {
-    console.error('Error generating review requests:', error)
-    return NextResponse.json({ error: 'Failed to generate review requests' }, { status: 500 })
+    console.error('[generate-review-requests] error:', error)
+    return NextResponse.json({ error: String(error instanceof Error ? error.message : error) }, { status: 500 })
   }
 }

@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { callClaude } from '@/lib/anthropic'
 
 export async function POST(request: NextRequest) {
   const supabase = createClient()
@@ -31,8 +32,19 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
   }
 
-  // Truncate review to fit nicely in the graphic
-  const shortReview = reviewText.length > 140 ? reviewText.slice(0, 137) + '…' : reviewText
+  // Paraphrase review into a short, punchy quote that fits the graphic (max ~120 chars)
+  let shortReview = reviewText
+  if (reviewText.length > 100) {
+    try {
+      shortReview = (await callClaude({
+        maxTokens: 80,
+        system: 'You are a copywriter turning customer reviews into short, punchy pull-quotes for social media graphics. Return ONLY the paraphrased quote text, no quotes, no explanation. Keep it under 100 characters.',
+        userMessage: `Paraphrase this review into a short, memorable 1-sentence quote (max 100 chars): "${reviewText}"`,
+      })).trim().replace(/^"|"$/g, '').trim()
+    } catch {
+      shortReview = reviewText.length > 120 ? reviewText.slice(0, 117) + '…' : reviewText
+    }
+  }
   const stars = '★'.repeat(starRating)
 
   const themes: Record<string, { bg: string; text: string; accent: string; sub: string }> = {

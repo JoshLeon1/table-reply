@@ -32,13 +32,19 @@ export async function POST(request: NextRequest) {
 JSON only, no explanation.`
 
   try {
-    const raw = (await callClaude({
-      maxTokens: 800,
+    const rawText = (await callClaude({
+      maxTokens: 1200,
       system: systemPrompt,
       userMessage: userPrompt,
-    })).trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '')
+    })).trim()
 
-    const parsed = JSON.parse(raw)
+    // Strip markdown code fences if present
+    const stripped = rawText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim()
+
+    // Extract the JSON object (handles extra text before/after)
+    const jsonMatch = stripped.match(/\{[\s\S]*\}/)
+    if (!jsonMatch) throw new Error('No JSON object found in response')
+    const parsed = JSON.parse(jsonMatch[0])
 
     const result = {
       sms: typeof parsed.sms === 'string' ? parsed.sms : '',

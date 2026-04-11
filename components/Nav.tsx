@@ -179,7 +179,6 @@ export default function Nav() {
     { href: '/dashboard/social',           label: 'Social',          icon: (a) => <IconShare active={a} /> },
     { href: '/dashboard/competitors',      label: 'Competitors',     icon: (a) => <IconUsers active={a} /> },
     { href: '/dashboard/get-more-reviews', label: 'Get Reviews',     icon: (a) => <IconStar active={a} /> },
-    { href: '/settings',                   label: 'Settings',        icon: (a) => <IconSettings active={a} /> },
   ]
 
   return (
@@ -226,14 +225,26 @@ export default function Nav() {
                 )
               })}
 
-              <div className="w-px h-4 bg-white/[0.08] mx-1" />
+              <div className="w-px h-4 bg-white/[0.08] mx-1.5" />
+
+              <Link
+                href="/settings"
+                className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-150 active:scale-[0.97] ${
+                  pathname === '/settings'
+                    ? 'text-[#E05A28] bg-white/[0.08]'
+                    : 'text-white/35 hover:text-white/70 hover:bg-white/[0.05]'
+                }`}
+                title="Settings"
+              >
+                <IconSettings active={pathname === '/settings'} />
+              </Link>
 
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium text-white/35 hover:text-white/70 hover:bg-white/[0.05] transition-all duration-150 active:scale-[0.97]"
+                className="w-8 h-8 flex items-center justify-center rounded-lg text-white/35 hover:text-white/70 hover:bg-white/[0.05] transition-all duration-150 active:scale-[0.97]"
+                title="Log Out"
               >
                 <IconLogout />
-                Logout
               </button>
             </div>
 
@@ -289,13 +300,24 @@ export default function Nav() {
                 )
               })}
             </div>
-            <div className="px-3 pb-3 pt-1 border-t border-white/[0.05]">
+            <div className="px-3 pb-3 pt-1 border-t border-white/[0.05] space-y-0.5">
+              <Link
+                href="/settings"
+                className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl text-[13px] font-medium transition-all duration-150 ${
+                  pathname === '/settings'
+                    ? 'bg-white/[0.08] text-white border-l-2 border-[#E05A28]'
+                    : 'text-white/50 hover:text-white/90 hover:bg-white/[0.05]'
+                }`}
+              >
+                <span className={pathname === '/settings' ? 'text-[#E05A28]' : 'opacity-60'}><IconSettings active={pathname === '/settings'} /></span>
+                Settings
+              </Link>
               <button
                 onClick={handleLogout}
                 className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-[13px] font-medium text-white/40 hover:text-white/70 hover:bg-white/[0.05] transition-all"
               >
                 <IconLogout />
-                Logout
+                Log Out
               </button>
             </div>
           </div>

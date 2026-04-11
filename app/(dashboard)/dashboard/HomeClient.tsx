@@ -149,7 +149,7 @@ function PendingCard({ review, onAction }: { review: ScrapedReview; onAction: (i
             <svg className={`w-3.5 h-3.5 transition-transform duration-150 ${expanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
-            {expanded ? 'Hide reply' : 'View reply'}
+            {expanded ? 'Hide Reply' : 'View Reply'}
           </button>
           {expanded && (
             <div className="mt-2.5 bg-[#F8F6F3] rounded-xl px-4 py-3 border border-[#E4DED8] text-[12px] text-[#57534E] leading-relaxed">
@@ -303,7 +303,7 @@ export default function HomeClient({
               <svg className={`w-3.5 h-3.5 ${syncing ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
-              {syncing ? 'Syncing…' : 'Sync now'}
+              {syncing ? 'Syncing…' : 'Sync Now'}
             </button>
             {syncMsg && (
               <span className={`text-[11px] font-medium animate-fade-in ${syncMsg.type === 'success' ? 'text-emerald-400' : 'text-red-400'}`}>
@@ -446,14 +446,14 @@ export default function HomeClient({
                           : 'bg-white text-[#57534E] border-[#E4DED8] hover:border-[#CEC8C1] hover:text-[#111]'
                       }`}
                     >
-                      {quickCopied ? '✓ Copied to clipboard' : 'Copy reply'}
+                      {quickCopied ? '✓ Copied to Clipboard' : 'Copy Reply'}
                     </button>
                   </div>
                 )}
 
                 <div className="px-4 py-2.5 border-t border-[#EDE9E4] bg-[#F8F6F3]">
                   <Link href="/dashboard/generate" className="text-[11px] text-[#A8A29E] hover:text-[#57534E] transition-colors font-medium">
-                    More options in full generator →
+                    More options in Full Generator →
                   </Link>
                 </div>
               </div>

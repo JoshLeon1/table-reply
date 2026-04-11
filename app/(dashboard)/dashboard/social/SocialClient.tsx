@@ -409,7 +409,7 @@ export default function SocialClient({ reviews, restaurantProfile }: Props) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold text-[#111]">Social posts</h1>
+        <h1 className="text-xl font-semibold text-[#111]">Social Posts</h1>
         <p className="text-[13px] text-[#6B6B6B] mt-0.5">
           Turn your best reviews into captions and shareable graphics.
         </p>

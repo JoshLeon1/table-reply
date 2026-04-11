@@ -38,8 +38,8 @@ export default function LandingPage() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
         </svg>
       ),
-      title: 'Auto-sync reviews',
-      desc: 'New reviews from Google and Yelp appear in your dashboard automatically — no manual checking.',
+      title: 'Auto-Sync Reviews',
+      desc: 'New Google reviews sync to your dashboard daily, automatically — no manual checking, no copy-pasting.',
     },
     {
       icon: (
@@ -47,35 +47,8 @@ export default function LandingPage() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
         </svg>
       ),
-      title: 'AI-generated replies',
-      desc: "Every reply is tailored to your restaurant voice, the reviewer's tone, and the star rating.",
-    },
-    {
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-        </svg>
-      ),
-      title: 'Keyword alerts',
-      desc: 'Get notified when reviewers mention specific words — food safety, staff names, wait times.',
-    },
-    {
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
-      ),
-      title: 'Staff mention tracking',
-      desc: 'Surface every review that praises or criticizes a team member — so you can act on it.',
-    },
-    {
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
-        </svg>
-      ),
-      title: 'Multi-language replies',
-      desc: 'Replies are written in the same language as the review — no configuration needed.',
+      title: 'AI-Powered Replies',
+      desc: "Every reply is crafted to match your restaurant's voice, the reviewer's tone, and the star rating — sounds like you wrote it.",
     },
     {
       icon: (
@@ -83,8 +56,26 @@ export default function LandingPage() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
         </svg>
       ),
-      title: 'Analytics & insights',
-      desc: 'Track your reply rate, average rating trends, and which review topics come up most.',
+      title: 'Deep Analytics Dashboard',
+      desc: 'Track rating trends, response rates, peak review days, top keywords, language breakdown, and monthly volume — all in one place. Export to PDF or CSV.',
+    },
+    {
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+        </svg>
+      ),
+      title: 'Keyword Alerts',
+      desc: 'Get instant notifications when reviews mention specific words — food safety issues, staff names, wait times, or anything you care about.',
+    },
+    {
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+      ),
+      title: 'Staff Mention Tracking',
+      desc: 'Surface every review that names a team member — catch both praise and problems before they become patterns.',
     },
     {
       icon: (
@@ -92,8 +83,17 @@ export default function LandingPage() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
         </svg>
       ),
-      title: 'Social post generator',
-      desc: 'Turn 5-star reviews into ready-to-post Instagram and Facebook content with one click.',
+      title: 'Social Post Generator',
+      desc: 'Turn your best 5-star reviews into polished Instagram, Facebook, TikTok, and Twitter/X posts — captions and shareable graphics in one click.',
+    },
+    {
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+        </svg>
+      ),
+      title: 'Review Request Templates',
+      desc: 'Ready-to-send SMS, email, and table card messages personalized to your restaurant — to help you earn more 5-star reviews from happy guests.',
     },
     {
       icon: (
@@ -101,8 +101,17 @@ export default function LandingPage() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
         </svg>
       ),
-      title: 'Competitor tracking',
-      desc: "Monitor your competitors' ratings and review trends — see how you stack up in your market.",
+      title: 'Competitor Tracking',
+      desc: "Auto-find and monitor up to 3 nearby competitors' ratings and review counts — see exactly where you stand in your market.",
+    },
+    {
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+        </svg>
+      ),
+      title: 'Multi-Language Replies',
+      desc: 'Replies are automatically written in the same language as the review — English, Spanish, French, and more. No configuration needed.',
     },
   ]
 
@@ -768,14 +777,14 @@ export default function LandingPage() {
               <p className="text-white text-xs font-semibold uppercase tracking-wider mb-4">Legal</p>
               <ul className="space-y-2.5">
                 {[
-                  { label: 'Privacy Policy', href: '#' },
-                  { label: 'Terms of Service', href: '#' },
-                  { label: 'Contact us', href: 'mailto:hello@tablereply.com' },
+                  { label: 'Privacy Policy', href: '/privacy' },
+                  { label: 'Terms of Service', href: '/terms' },
+                  { label: 'Contact Us', href: '/contact' },
                 ].map(({ label, href }) => (
                   <li key={label}>
-                    <a href={href} style={{ fontSize: '14px', color: '#6b6b6b' }} className="hover:text-white transition-colors duration-200">
+                    <Link href={href} style={{ fontSize: '14px', color: '#6b6b6b' }} className="hover:text-white transition-colors duration-200">
                       {label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>

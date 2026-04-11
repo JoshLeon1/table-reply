@@ -39,10 +39,39 @@ function formatRating(val: number | null) {
 
 // ─── Setup Flow ────────────────────────────────────────────────────────────────
 
+type SuggestedPlace = { placeId: string; name: string; address: string; rating?: number; mapsUrl: string }
+
 function SetupFlow({ restaurantName }: { restaurantName: string }) {
   const [urls, setUrls] = useState(['', '', ''])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [suggestions, setSuggestions] = useState<SuggestedPlace[]>([])
+  const [suggesting, setSuggesting] = useState(false)
+  const [suggestError, setSuggestError] = useState<string | null>(null)
+
+  async function handleFindCompetitors() {
+    setSuggesting(true)
+    setSuggestError(null)
+    setSuggestions([])
+    try {
+      const res = await fetch('/api/competitors/suggest')
+      const data = await res.json()
+      if (data.apiError) {
+        setSuggestError(data.apiError)
+        return
+      }
+      const found: SuggestedPlace[] = data.results ?? []
+      setSuggestions(found)
+      // Pre-fill the URL inputs
+      const nextUrls = ['', '', '']
+      found.slice(0, 3).forEach((s, i) => { nextUrls[i] = s.mapsUrl })
+      setUrls(nextUrls)
+    } catch {
+      setSuggestError('Could not find competitors. Enter URLs manually.')
+    } finally {
+      setSuggesting(false)
+    }
+  }
 
   async function handleSubmit() {
     const nonEmpty = urls.filter((u) => u.trim())
@@ -80,8 +109,57 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
           </div>
-          <h2 className="text-[18px] font-semibold text-[#111] mb-1">Track up to 3 competitors</h2>
+          <h2 className="text-[18px] font-semibold text-[#111] mb-1">Track Up To 3 Competitors</h2>
           <p className="text-[13px] text-[#888]">See how you stack up against nearby restaurants</p>
+        </div>
+
+        {/* Auto-find button */}
+        <button
+          onClick={handleFindCompetitors}
+          disabled={suggesting}
+          className="w-full flex items-center justify-center gap-2 mb-5 px-4 py-2.5 rounded-xl bg-[#FEF0E8] border border-[#F5C9AD] text-[#E05A28] text-[13px] font-semibold hover:bg-[#FCDFC7] transition disabled:opacity-50"
+        >
+          {suggesting ? (
+            <><svg className="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/></svg>Finding nearby competitors…</>
+          ) : (
+            <><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>Find My Competitors Automatically</>
+          )}
+        </button>
+
+        {suggestError && (
+          <p className="text-[12px] text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-4">{suggestError}</p>
+        )}
+
+        {suggestions.length > 0 && (
+          <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
+            <p className="text-[11px] font-semibold text-emerald-700 mb-2">Found {suggestions.length} nearby competitors — review and confirm below</p>
+            <div className="space-y-1">
+              {suggestions.map((s, i) => (
+                <div key={s.placeId} className="flex items-center gap-2 text-[12px]">
+                  <span className="text-emerald-500 font-bold">{i + 1}.</span>
+                  <span className="font-medium text-[#111]">{s.name}</span>
+                  {s.rating && <span className="text-amber-500">{s.rating.toFixed(1)}★</span>}
+                  <button
+                    onClick={() => {
+                      const next = [...urls]
+                      next[i] = ''
+                      setUrls(next)
+                      setSuggestions(prev => prev.filter((_, j) => j !== i))
+                    }}
+                    className="ml-auto text-[#A8A29E] hover:text-red-500 transition text-[11px]"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="relative flex items-center gap-3 mb-5">
+          <div className="flex-1 h-px bg-[#E4DED8]" />
+          <span className="text-[11px] text-[#C4BEB8] font-medium">or enter manually</span>
+          <div className="flex-1 h-px bg-[#E4DED8]" />
         </div>
 
         <div className="space-y-4 mb-6">
@@ -114,7 +192,7 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
           disabled={loading}
           className="w-full px-4 py-2.5 rounded-xl bg-[#111] text-white text-[13px] font-medium hover:bg-[#222] transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? 'Adding competitors…' : 'Add Competitors'}
+          {loading ? 'Adding Competitors…' : 'Add Competitors'}
         </button>
       </div>
     </div>
@@ -616,7 +694,7 @@ export default function CompetitorsClient({
               onClick={() => setShowAddMore(true)}
               className="px-4 py-2 rounded-xl border border-[#E4DED8] bg-white text-[13px] font-medium text-[#111] hover:bg-[#F3F0EC] transition"
             >
-              + Add more competitors
+              + Add More Competitors
             </button>
           )}
         </div>

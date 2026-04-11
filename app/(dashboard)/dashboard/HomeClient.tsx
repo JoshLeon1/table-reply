@@ -76,10 +76,10 @@ function StarRow({ rating }: { rating: number }) {
 
 function SectionLabel({ children, badge }: { children: React.ReactNode; badge?: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-2.5 mb-3">
-      <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] whitespace-nowrap">{children}</span>
+    <div className="flex items-center gap-2.5 mb-3 min-w-0">
+      <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] whitespace-nowrap flex-shrink-0">{children}</span>
       {badge}
-      <div className="flex-1 h-px bg-[#EDE9E4]" />
+      <div className="flex-1 h-px bg-[#EDE9E4] min-w-0" />
     </div>
   )
 }
@@ -277,15 +277,15 @@ export default function HomeClient({
         />
       )}
 
-      <div className="space-y-7 pb-12">
+      <div className="space-y-5 sm:space-y-7 pb-12">
 
         {/* ── Header ─────────────────────────────────────────────── */}
-        <div className="rounded-2xl px-5 py-6 sm:px-7 sm:py-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5" style={{ background: 'linear-gradient(135deg, #E05A28 0%, #B03A18 100%)' }}>
+        <div className="rounded-2xl px-4 py-5 sm:px-7 sm:py-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-5" style={{ background: 'linear-gradient(135deg, #E05A28 0%, #B03A18 100%)' }}>
           <div>
-            <h1 className="text-[21px] sm:text-[26px] font-bold text-white tracking-[-0.03em] leading-tight">
+            <h1 className="text-[19px] sm:text-[26px] font-bold text-white tracking-[-0.03em] leading-tight">
               {greeting}, {ownerName}
             </h1>
-            <div className="flex items-center gap-2 mt-2">
+            <div className="flex items-center gap-2 mt-1.5 flex-wrap">
               <span className="text-[13px] font-medium text-white/80">{restaurantName}</span>
               <span className="w-1 h-1 rounded-full bg-white/30" />
               <span className="text-[12px] text-white/60">
@@ -294,11 +294,11 @@ export default function HomeClient({
             </div>
           </div>
 
-          <div className="flex flex-col items-start sm:items-end gap-1.5">
+          <div className="flex flex-row sm:flex-col items-center sm:items-end gap-2 sm:gap-1.5">
             <button
               onClick={handleSync}
               disabled={syncing}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.15] hover:bg-white/[0.25] border border-white/[0.20] text-[13px] font-medium text-white/90 hover:text-white disabled:opacity-40 transition-all duration-150 active:scale-[0.97]"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/[0.15] hover:bg-white/[0.25] border border-white/[0.20] text-[13px] font-medium text-white/90 hover:text-white disabled:opacity-40 transition-all duration-150 active:scale-[0.97] min-h-[42px]"
             >
               <svg className={`w-3.5 h-3.5 ${syncing ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -314,7 +314,7 @@ export default function HomeClient({
         </div>
 
         {/* ── Stats ──────────────────────────────────────────────── */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
           {[
             {
               label: 'Reviews this month',
@@ -324,7 +324,7 @@ export default function HomeClient({
             },
             {
               label: 'Average rating',
-              value: <span className="text-amber-400">{avgRating.toFixed(1)}<span className="text-[14px] sm:text-[16px] ml-0.5">★</span></span>,
+              value: <span className="text-amber-400">{avgRating.toFixed(1)}<span className="text-[13px] sm:text-[16px] ml-0.5">★</span></span>,
               sub: <StarRow rating={Math.round(avgRating)} />,
               delay: 'stagger-2',
             },
@@ -336,14 +336,14 @@ export default function HomeClient({
             },
             {
               label: 'Response rate',
-              value: <span className={rateColor}>{responseRate}<span className="text-[14px] sm:text-[16px]">%</span></span>,
-              sub: <span className="text-[11px] text-[#A8A29E]">{totalReviews} total reviews</span>,
+              value: <span className={rateColor}>{responseRate}<span className="text-[13px] sm:text-[16px]">%</span></span>,
+              sub: <span className="text-[11px] text-[#A8A29E]">{totalReviews} total</span>,
               delay: 'stagger-4',
             },
           ].map(({ label, value, sub, delay }) => (
-            <div key={label} className={`bg-white rounded-2xl p-4 sm:p-5 border border-[#E4DED8] shadow-card card-hover animate-fade-up ${delay}`}>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.11em] text-[#A8A29E] mb-2.5 leading-tight">{label}</p>
-              <p className="text-[24px] sm:text-[30px] font-bold text-[#111] leading-none tracking-[-0.035em] mb-2.5">{value}</p>
+            <div key={label} className={`bg-white rounded-2xl p-3.5 sm:p-5 border border-[#E4DED8] shadow-card card-hover animate-fade-up ${delay}`}>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.10em] text-[#A8A29E] mb-2 leading-tight">{label}</p>
+              <p className="text-[22px] sm:text-[30px] font-bold text-[#111] leading-none tracking-[-0.03em] mb-2">{value}</p>
               {sub}
             </div>
           ))}
@@ -409,7 +409,7 @@ export default function HomeClient({
                     onKeyDown={e => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') handleQuickGenerate() }}
                     placeholder="Paste a review…"
                     rows={4}
-                    className="w-full resize-none px-3.5 py-3 rounded-xl border border-[#E4DED8] bg-[#F8F6F3] hover:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] text-[13px] text-[#111] placeholder-[#C4BEB8] transition-all duration-200 leading-relaxed"
+                    className="w-full resize-none px-3.5 py-3 rounded-xl border border-[#E4DED8] bg-[#F8F6F3] hover:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] text-[14px] text-[#111] placeholder-[#C4BEB8] transition-all duration-200 leading-relaxed"
                   />
                   <button
                     onClick={handleQuickGenerate}

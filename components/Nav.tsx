@@ -273,49 +273,59 @@ export default function Nav() {
           />
 
           <div className="lg:hidden fixed top-14 left-0 right-0 z-40 bg-[#0D0D0D] border-b border-white/[0.06] animate-slide-down shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
-            <div className="px-3 py-3 space-y-0.5">
+            {/* Branding strip */}
+            <div className="flex items-center gap-3 px-5 py-3.5 border-b border-white/[0.05]">
+              <LogoMark size={22} />
+              <span className="text-[12px] font-semibold text-white/60 tracking-tight">TableReply</span>
+            </div>
+
+            <div className="px-3 py-2 space-y-0.5">
               {links.map((link) => {
                 const active = pathname === link.href
                 return (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-[13px] font-medium transition-all duration-150 ${
+                    className={`flex items-center gap-3 px-4 rounded-xl text-[14px] font-medium transition-all duration-150 min-h-[48px] ${
                       active
-                        ? 'bg-white/[0.08] text-white border-l-2 border-[#E05A28]'
-                        : 'text-white/50 hover:text-white/90 hover:bg-white/[0.05]'
+                        ? 'bg-white/[0.08] text-white'
+                        : 'text-white/55 hover:text-white/90 hover:bg-white/[0.05]'
                     }`}
                   >
+                    {/* Active left-border accent */}
+                    <span className={`w-0.5 h-5 rounded-full flex-shrink-0 transition-all ${active ? 'bg-[#E05A28]' : 'bg-transparent'}`} />
                     <span className={active ? 'text-[#E05A28]' : 'opacity-60'}>{link.icon(active)}</span>
                     <span className="flex-1">{link.label}</span>
                     {link.badge != null && (
-                      <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-[#E05A28] text-white text-[10px] font-bold flex items-center justify-center">
+                      <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-[#E05A28] text-white text-[10px] font-bold flex items-center justify-center shadow-[0_0_8px_rgba(224,90,40,0.4)]">
                         {link.badge > 99 ? '99+' : link.badge}
                       </span>
                     )}
                     {link.dot && !link.badge && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#E05A28]" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#E05A28] shadow-[0_0_6px_rgba(224,90,40,0.6)]" />
                     )}
                   </Link>
                 )
               })}
             </div>
-            <div className="px-3 pb-3 pt-1 border-t border-white/[0.05] space-y-0.5">
+            <div className="px-3 pb-4 pt-1 border-t border-white/[0.05] space-y-0.5">
               <Link
                 href="/settings"
-                className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl text-[13px] font-medium transition-all duration-150 ${
+                className={`flex items-center gap-3 w-full px-4 rounded-xl text-[14px] font-medium transition-all duration-150 min-h-[48px] ${
                   pathname === '/settings'
-                    ? 'bg-white/[0.08] text-white border-l-2 border-[#E05A28]'
-                    : 'text-white/50 hover:text-white/90 hover:bg-white/[0.05]'
+                    ? 'bg-white/[0.08] text-white'
+                    : 'text-white/55 hover:text-white/90 hover:bg-white/[0.05]'
                 }`}
               >
+                <span className={`w-0.5 h-5 rounded-full flex-shrink-0 ${pathname === '/settings' ? 'bg-[#E05A28]' : 'bg-transparent'}`} />
                 <span className={pathname === '/settings' ? 'text-[#E05A28]' : 'opacity-60'}><IconSettings active={pathname === '/settings'} /></span>
                 Settings
               </Link>
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-[13px] font-medium text-white/40 hover:text-white/70 hover:bg-white/[0.05] transition-all"
+                className="flex items-center gap-3 w-full px-4 min-h-[48px] rounded-xl text-[14px] font-medium text-white/40 hover:text-white/70 hover:bg-white/[0.05] transition-all"
               >
+                <span className="w-0.5 h-5 rounded-full flex-shrink-0 bg-transparent" />
                 <IconLogout />
                 Log Out
               </button>

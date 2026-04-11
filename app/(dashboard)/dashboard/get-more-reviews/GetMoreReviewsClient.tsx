@@ -126,7 +126,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
 
         {/* Page Header */}
         <div>
-          <h1 className="text-xl sm:text-2xl font-semibold text-[#111]">Get More Reviews</h1>
+          <h1 className="text-[20px] sm:text-2xl font-semibold text-[#111]">Get More Reviews</h1>
           <p className="text-[13px] text-[#57534E] mt-1">Generate personalized messages and tools to earn more 5-star reviews.</p>
         </div>
 
@@ -253,33 +253,37 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
               )}
 
               {qrDataUrl && (
-                <div className="flex flex-col items-center gap-4">
-                  <div className="p-4 bg-white rounded-2xl border border-[#E4DED8] inline-block">
+                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
+                  <div className="p-4 bg-white rounded-2xl border border-[#E4DED8] flex-shrink-0">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={qrDataUrl}
                       alt="Google Review QR Code"
-                      width={256}
-                      height={256}
-                      className="block"
+                      width={180}
+                      height={180}
+                      className="block w-40 h-40 sm:w-[180px] sm:h-[180px]"
                     />
                   </div>
-                  <button
-                    onClick={handleDownloadQr}
-                    className="flex items-center gap-2 bg-[#111] hover:bg-[#222] text-white font-medium text-sm px-4 py-2.5 rounded-xl transition-colors"
-                  >
-                    Download QR Code
-                  </button>
-                  <button
-                    onClick={() => setQrDataUrl(null)}
-                    className="text-xs text-[#888] hover:text-[#111] transition-colors"
-                  >
-                    Regenerate
-                  </button>
-                  <p className="text-[#888] text-xs text-center max-w-sm">
-                    Print this QR code and add it to your menu, receipt, or table tent card to collect
-                    more reviews.
-                  </p>
+                  <div className="flex flex-col items-center sm:items-start gap-3 text-center sm:text-left">
+                    <p className="text-[13px] text-[#57534E] leading-relaxed max-w-[280px]">
+                      Print this QR code and add it to your menu, receipt, or table tent card to collect more reviews.
+                    </p>
+                    <button
+                      onClick={handleDownloadQr}
+                      className="flex items-center gap-2 bg-[#111] hover:bg-[#222] text-white font-semibold text-[13px] px-4 py-2.5 rounded-xl transition-colors min-h-[44px]"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      </svg>
+                      Download QR Code
+                    </button>
+                    <button
+                      onClick={() => setQrDataUrl(null)}
+                      className="text-[12px] text-[#A8A29E] hover:text-[#57534E] transition-colors"
+                    >
+                      Regenerate
+                    </button>
+                  </div>
                 </div>
               )}
             </div>

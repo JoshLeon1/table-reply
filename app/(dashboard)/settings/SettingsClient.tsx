@@ -155,14 +155,14 @@ export default function SettingsClient({
     <div className="space-y-6">
       {/* Reply preferences */}
       <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden">
-        <div className="px-6 py-5 border-b border-[#EDE9E4] flex items-center justify-between">
+        <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-[#EDE9E4] flex items-center justify-between gap-3">
           <div>
             <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E]">Reply Preferences</h2>
             <p className="text-[12px] text-[#57534E] mt-1">Applied to every generated reply.</p>
           </div>
           {prefsToast && (
             <span
-              className={`text-[11px] font-medium px-2.5 py-1 rounded-full ${
+              className={`text-[11px] font-medium px-2.5 py-1 rounded-full flex-shrink-0 ${
                 prefsToast === 'saved'
                   ? 'bg-emerald-50 text-emerald-700'
                   : 'bg-red-50 text-red-600'
@@ -174,10 +174,10 @@ export default function SettingsClient({
         </div>
 
         <div className="divide-y divide-[#EDE9E4]">
-          <div className="px-6 py-4 flex items-center justify-between gap-4">
-            <div>
+          <div className="px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+            <div className="min-w-0 flex-1">
               <p className="text-[13px] font-medium text-[#111]">End reply with owner name</p>
-              <p className="text-[12px] text-[#999] mt-0.5">Sign off each reply with your name (e.g. — Maria)</p>
+              <p className="text-[12px] text-[#999] mt-0.5 leading-snug">Sign off each reply with your name (e.g. — Maria)</p>
             </div>
             <Toggle
               checked={replyPrefs.endWithOwnerName}
@@ -186,10 +186,10 @@ export default function SettingsClient({
             />
           </div>
 
-          <div className="px-6 py-4 flex items-center justify-between gap-4">
-            <div>
+          <div className="px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+            <div className="min-w-0 flex-1">
               <p className="text-[13px] font-medium text-[#111]">Include restaurant name</p>
-              <p className="text-[12px] text-[#999] mt-0.5">Mention your restaurant name naturally in the reply</p>
+              <p className="text-[12px] text-[#999] mt-0.5 leading-snug">Mention your restaurant name naturally in the reply</p>
             </div>
             <Toggle
               checked={replyPrefs.includeRestaurantName}
@@ -198,10 +198,10 @@ export default function SettingsClient({
             />
           </div>
 
-          <div className="px-6 py-4 flex items-center justify-between gap-4">
-            <div>
+          <div className="px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+            <div className="min-w-0 flex-1">
               <p className="text-[13px] font-medium text-[#111]">Invite customer back</p>
-              <p className="text-[12px] text-[#999] mt-0.5">End positive replies with an invitation to return</p>
+              <p className="text-[12px] text-[#999] mt-0.5 leading-snug">End positive replies with an invitation to return</p>
             </div>
             <Toggle
               checked={replyPrefs.inviteBack}
@@ -214,14 +214,14 @@ export default function SettingsClient({
 
       {/* Email notifications */}
       <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden">
-        <div className="px-6 py-5 border-b border-[#EDE9E4] flex items-center justify-between">
+        <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-[#EDE9E4] flex items-center justify-between gap-3">
           <div>
             <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E]">Email Notifications</h2>
-            <p className="text-[12px] text-[#57534E] mt-1">Sent to {userEmail}</p>
+            <p className="text-[12px] text-[#57534E] mt-1 truncate max-w-[200px] sm:max-w-none">Sent to {userEmail}</p>
           </div>
           {emailToast && (
             <span
-              className={`text-[11px] font-medium px-2.5 py-1 rounded-full ${
+              className={`text-[11px] font-medium px-2.5 py-1 rounded-full flex-shrink-0 ${
                 emailToast === 'saved'
                   ? 'bg-emerald-50 text-emerald-700'
                   : 'bg-red-50 text-red-600'
@@ -232,10 +232,10 @@ export default function SettingsClient({
           )}
         </div>
 
-        <div className="px-6 py-4 flex items-center justify-between gap-4">
-          <div>
+        <div className="px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+          <div className="min-w-0 flex-1">
             <p className="text-[13px] font-medium text-[#111]">New reviews scraped</p>
-            <p className="text-[12px] text-[#999] mt-0.5">Get notified when your Auto Review sync pulls in new reviews</p>
+            <p className="text-[12px] text-[#999] mt-0.5 leading-snug">Get notified when your Auto Review sync pulls in new reviews</p>
           </div>
           <Toggle
             checked={emailNotifs.newReviewsScrapped}
@@ -247,32 +247,32 @@ export default function SettingsClient({
 
       {/* Danger zone */}
       <div className="bg-white rounded-2xl border border-red-200 overflow-hidden">
-        <div className="px-6 py-5 border-b border-red-100">
+        <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-red-100">
           <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-red-400">Danger Zone</h2>
           <p className="text-[12px] text-[#57534E] mt-1">These actions are permanent and cannot be undone.</p>
         </div>
 
         <div className="divide-y divide-[#EDE9E4]">
           {/* Export */}
-          <div className="px-6 py-5 flex items-center justify-between gap-4">
-            <div>
+          <div className="px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between gap-4">
+            <div className="min-w-0 flex-1">
               <p className="text-[13px] font-medium text-[#111]">Export my data</p>
-              <p className="text-[12px] text-[#999] mt-0.5">Download all your reviews and replies as a JSON file</p>
+              <p className="text-[12px] text-[#999] mt-0.5 leading-snug">Download all your reviews and replies as a JSON file</p>
             </div>
             <button
               onClick={handleExport}
               disabled={exportLoading}
-              className="flex-shrink-0 px-4 py-2 rounded-xl border border-[#E4DED8] hover:border-[#D4CFC6] bg-white text-[13px] font-medium text-[#555] hover:text-[#111] transition-all duration-150 disabled:opacity-50"
+              className="flex-shrink-0 px-3.5 py-2 rounded-xl border border-[#E4DED8] hover:border-[#D4CFC6] bg-white text-[13px] font-medium text-[#555] hover:text-[#111] transition-all duration-150 disabled:opacity-50 min-h-[40px]"
             >
               {exportLoading ? 'Exporting…' : 'Export JSON'}
             </button>
           </div>
 
           {/* Delete */}
-          <div className="px-6 py-5 space-y-3">
+          <div className="px-4 sm:px-6 py-4 sm:py-5 space-y-3">
             <div>
               <p className="text-[13px] font-medium text-[#111]">Delete all my data</p>
-              <p className="text-[12px] text-[#999] mt-0.5">
+              <p className="text-[12px] text-[#999] mt-0.5 leading-snug">
                 Permanently deletes your account, restaurant profile, all reviews, and generated replies. Type{' '}
                 <code className="font-mono text-red-500 bg-red-50 px-1 rounded">DELETE</code> to confirm.
               </p>
@@ -284,18 +284,18 @@ export default function SettingsClient({
               </p>
             )}
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
               <input
                 type="text"
                 value={deleteInput}
                 onChange={(e) => setDeleteInput(e.target.value)}
                 placeholder="Type DELETE to confirm"
-                className="flex-1 min-w-0 px-3 py-2 rounded-xl border border-[#E4DED8] focus:border-red-300 focus:ring-2 focus:ring-red-100 text-[13px] font-mono text-[#111] placeholder-[#CCC] outline-none transition-all"
+                className="flex-1 min-w-0 px-3 py-2.5 rounded-xl border border-[#E4DED8] focus:border-red-300 focus:ring-2 focus:ring-red-100 text-[13px] font-mono text-[#111] placeholder-[#CCC] outline-none transition-all min-h-[42px]"
               />
               <button
                 onClick={handleDeleteData}
                 disabled={deleteInput !== 'DELETE' || deleteLoading}
-                className="flex-shrink-0 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 disabled:bg-red-300 disabled:cursor-not-allowed text-white text-[13px] font-medium transition-all duration-150"
+                className="sm:flex-shrink-0 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 disabled:bg-red-300 disabled:cursor-not-allowed text-white text-[13px] font-medium transition-all duration-150 min-h-[42px]"
               >
                 {deleteLoading ? 'Deleting…' : 'Delete everything'}
               </button>

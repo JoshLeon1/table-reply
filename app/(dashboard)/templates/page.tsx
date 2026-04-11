@@ -101,21 +101,25 @@ export default async function TemplatesPage() {
                   className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden"
                 >
                   {/* Card header */}
-                  <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#EDE9E4]">
-                    <div className="flex items-center gap-2.5">
-                      <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${meta.bg} ${meta.text}`}>
-                        {category}
-                      </span>
-                      <span className="text-[13px] font-semibold text-[#111]">{template.title}</span>
+                  <div className="flex items-start justify-between gap-3 px-4 sm:px-5 py-3.5 border-b border-[#EDE9E4]">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2.5 min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0 ${meta.bg} ${meta.text}`}>
+                          {category}
+                        </span>
+                        <span className="text-[13px] font-semibold text-[#111]">{template.title}</span>
+                      </div>
                       {'subject' in template && template.subject && (
-                        <span className="text-[12px] text-[#AAA]">· {template.subject}</span>
+                        <span className="text-[12px] text-[#AAA] truncate">· {template.subject}</span>
                       )}
                     </div>
-                    <CopyButton text={template.content} />
+                    <div className="flex-shrink-0 mt-0.5">
+                      <CopyButton text={template.content} />
+                    </div>
                   </div>
 
                   {/* Card body */}
-                  <div className="px-5 py-4">
+                  <div className="px-4 sm:px-5 py-4">
                     <p className="text-[13px] text-[#555] whitespace-pre-wrap leading-relaxed">
                       {template.content}
                     </p>

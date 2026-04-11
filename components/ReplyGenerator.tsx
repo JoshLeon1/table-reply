@@ -199,7 +199,7 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
             />
           </div>
 
-          <div className="flex flex-wrap items-end gap-x-8 gap-y-4">
+          <div className="flex flex-col gap-4">
             <div>
               <label className="block text-[13px] font-semibold text-[#111] mb-2">Rating</label>
               <StarRating value={starRating} onChange={setStarRating} />
@@ -212,7 +212,7 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
                   <button
                     key={p}
                     onClick={() => setPlatform(p)}
-                    className={`px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all duration-150 ${
+                    className={`px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150 min-h-[38px] ${
                       platform === p
                         ? 'bg-[#111] text-white'
                         : 'bg-[#F3F0EC] text-[#57534E] hover:bg-[#EDE9E4] border border-[#E4DED8]'
@@ -223,8 +223,8 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
                 ))}
               </div>
               {PLATFORM_TIPS[platform] && (
-                <p className="text-[11px] text-[#A8A29E] mt-2 flex items-center gap-1.5">
-                  <svg className="w-3 h-3 flex-shrink-0 text-[#E05A28]" fill="currentColor" viewBox="0 0 20 20">
+                <p className="text-[11px] text-[#A8A29E] mt-2 flex items-start gap-1.5">
+                  <svg className="w-3 h-3 flex-shrink-0 text-[#E05A28] mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"/>
                   </svg>
                   {PLATFORM_TIPS[platform]}
@@ -242,7 +242,7 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
           <button
             onClick={() => handleGenerate(null)}
             disabled={!reviewText.trim() || loading}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#111] hover:bg-[#1E1E1E] text-white text-[14px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 min-h-[44px]"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#111] hover:bg-[#1E1E1E] text-white text-[14px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 min-h-[44px]"
           >
             {loading ? (
               <>
@@ -267,25 +267,29 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
       {/* Output card */}
       {generatedReply && (
         <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-card overflow-hidden animate-fade-up">
-          <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-[#EDE9E4]">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="w-2 h-2 rounded-full bg-[#E05A28] flex-shrink-0" />
-              <span className="text-[13px] font-semibold text-[#111]">Generated reply</span>
+          <div className="px-4 sm:px-6 py-3.5 border-b border-[#EDE9E4]">
+            <div className="flex items-center justify-between gap-2 mb-2">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#E05A28] flex-shrink-0" />
+                <span className="text-[13px] font-semibold text-[#111]">Generated reply</span>
+              </div>
+              <div className="flex items-center gap-1.5 flex-shrink-0">
+                <button
+                  onClick={() => handleGenerate(activeTone)}
+                  disabled={loading}
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[12px] font-medium text-[#57534E] hover:text-[#111] hover:bg-[#F3F0EC] border border-transparent hover:border-[#E4DED8] disabled:opacity-40 transition-all min-h-[34px]"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                  </svg>
+                  <span className="hidden sm:inline">Regenerate</span>
+                </button>
+                <CopyButton text={generatedReply} />
+              </div>
+            </div>
+            <div className="flex items-center gap-1.5 flex-wrap">
               {personalization && <PersonalizationBadge score={personalization} />}
               <WordCountBadge count={replyWords} />
-            </div>
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <button
-                onClick={() => handleGenerate(activeTone)}
-                disabled={loading}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium text-[#57534E] hover:text-[#111] hover:bg-[#F3F0EC] border border-transparent hover:border-[#E4DED8] disabled:opacity-40 transition-all"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                </svg>
-                Regenerate
-              </button>
-              <CopyButton text={generatedReply} />
             </div>
           </div>
 
@@ -294,17 +298,17 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
           </div>
 
           {/* Tone picker */}
-          <div className="px-5 sm:px-6 py-4 border-t border-[#EDE9E4]">
+          <div className="px-4 sm:px-6 py-4 border-t border-[#EDE9E4]">
             <p className="text-[10px] font-semibold text-[#A8A29E] uppercase tracking-[0.12em] mb-3">
               Adjust tone
             </p>
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex gap-1.5 flex-wrap">
               {TONES.map(({ value, label }) => (
                 <button
                   key={value}
                   onClick={() => handleGenerate(value)}
                   disabled={loading}
-                  className={`px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all disabled:opacity-40 ${
+                  className={`px-3.5 py-2 rounded-lg text-[12px] font-medium transition-all disabled:opacity-40 min-h-[38px] ${
                     activeTone === value
                       ? 'bg-[#111] text-white'
                       : 'bg-[#F3F0EC] text-[#57534E] hover:bg-[#EDE9E4] border border-[#E4DED8]'

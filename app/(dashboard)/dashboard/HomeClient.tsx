@@ -280,15 +280,15 @@ export default function HomeClient({
       <div className="space-y-7 pb-12">
 
         {/* ── Header ─────────────────────────────────────────────── */}
-        <div className="rounded-2xl px-5 py-6 sm:px-7 sm:py-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5" style={{ background: 'linear-gradient(135deg, #0A0A0A 0%, #141414 100%)' }}>
+        <div className="rounded-2xl px-5 py-6 sm:px-7 sm:py-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5" style={{ background: 'linear-gradient(135deg, #E05A28 0%, #B03A18 100%)' }}>
           <div>
             <h1 className="text-[21px] sm:text-[26px] font-bold text-white tracking-[-0.03em] leading-tight">
               {greeting}, {ownerName}
             </h1>
             <div className="flex items-center gap-2 mt-2">
-              <span className="text-[13px] font-medium text-white/55">{restaurantName}</span>
-              <span className="w-1 h-1 rounded-full bg-white/20" />
-              <span className="text-[12px] text-white/35">
+              <span className="text-[13px] font-medium text-white/80">{restaurantName}</span>
+              <span className="w-1 h-1 rounded-full bg-white/30" />
+              <span className="text-[12px] text-white/60">
                 {lastScrapedAt ? `Synced ${formatTimeAgo(lastScrapedAt)}` : 'Not synced'}
               </span>
             </div>
@@ -298,7 +298,7 @@ export default function HomeClient({
             <button
               onClick={handleSync}
               disabled={syncing}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.07] hover:bg-white/[0.12] border border-white/[0.08] text-[13px] font-medium text-white/65 hover:text-white/90 disabled:opacity-40 transition-all duration-150 active:scale-[0.97]"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.15] hover:bg-white/[0.25] border border-white/[0.20] text-[13px] font-medium text-white/90 hover:text-white disabled:opacity-40 transition-all duration-150 active:scale-[0.97]"
             >
               <svg className={`w-3.5 h-3.5 ${syncing ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />

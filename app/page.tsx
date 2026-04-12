@@ -513,46 +513,39 @@ export default function LandingPage() {
 
       {/* ── FEATURES ─────────────────────────────────────────────────────── */}
       <section className="py-20 px-5 sm:px-6 bg-white">
-        <div
-          ref={featuresAnim.ref}
-          className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start"
-        >
+        <div ref={featuresAnim.ref} className="max-w-6xl mx-auto">
 
-          {/* Left — headline */}
-          <div className={`lg:sticky lg:top-32 transition-all duration-700 ${featuresAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28] mb-4">Features</p>
+          {/* Header */}
+          <div className={`text-center mb-12 transition-all duration-700 ${featuresAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28] mb-3">Features</p>
             <h2
               className="font-bold text-[#111111]"
-              style={{
-                fontSize: 'clamp(28px, 4vw, 44px)',
-                lineHeight: 1.12,
-                letterSpacing: '-0.02em',
-              }}
+              style={{ fontSize: 'clamp(26px, 3.5vw, 40px)', lineHeight: 1.12, letterSpacing: '-0.02em' }}
             >
               Everything you need to protect and grow your reputation
             </h2>
-            <p className="mt-4 text-[15px] text-[#888] leading-relaxed">
+            <p className="mt-3 text-[15px] text-[#888] max-w-xl mx-auto leading-relaxed">
               One platform. Every tool an independent restaurant needs to stay ahead of reviews.
             </p>
           </div>
 
-          {/* Right — feature rows */}
-          <div className="border-l-2 border-[#E05A28]/20 pl-7 sm:pl-8">
+          {/* 3-col card grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {features.map(({ icon, title, desc }, i) => (
               <div
                 key={title}
-                className="flex gap-4 mb-7 last:mb-0 group transition-all duration-500"
+                className="group bg-[#fafaf8] hover:bg-white border border-[#E4DED8] hover:border-[#D0C9C1] rounded-2xl p-5 transition-all duration-300 hover:shadow-[0_4px_20px_rgba(0,0,0,0.07)] hover:-translate-y-0.5"
                 style={{
-                  transitionDelay: featuresAnim.inView ? `${i * 60}ms` : '0ms',
+                  transitionDelay: featuresAnim.inView ? `${i * 45}ms` : '0ms',
                   opacity: featuresAnim.inView ? 1 : 0,
-                  transform: featuresAnim.inView ? 'translateY(0)' : 'translateY(16px)',
+                  transform: featuresAnim.inView ? 'translateY(0)' : 'translateY(20px)',
                 }}
               >
-                <div className="w-10 h-10 rounded-xl bg-[#FEF0E8] border border-[#F5C9AD] flex items-center justify-center text-[#E05A28] flex-shrink-0 mt-0.5 group-hover:bg-[#FCDCCA] group-hover:scale-110 transition-all duration-200">{icon}</div>
-                <div>
-                  <p className="font-semibold text-[#111111] text-[14px] mb-1.5 tracking-tight">{title}</p>
-                  <p className="text-[14px] leading-relaxed text-[#6b6b6b]">{desc}</p>
+                <div className="w-9 h-9 rounded-xl bg-[#FEF0E8] border border-[#F5C9AD] flex items-center justify-center text-[#E05A28] mb-3 group-hover:scale-110 group-hover:bg-[#FCDCCA] transition-all duration-200">
+                  {icon}
                 </div>
+                <p className="font-semibold text-[#111111] text-[13px] mb-1.5 tracking-tight">{title}</p>
+                <p className="text-[13px] leading-relaxed text-[#6b6b6b]">{desc}</p>
               </div>
             ))}
           </div>

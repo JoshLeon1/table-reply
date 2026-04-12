@@ -44,6 +44,56 @@ export default function LandingPage() {
   const [annual, setAnnual] = useState(false)
   const [notifDismissed, setNotifDismissed] = useState(false)
 
+  // Typing animation state for hero mockup
+  const [typedReview, setTypedReview] = useState('')
+  const [typedReply, setTypedReply] = useState('')
+  const [animPhase, setAnimPhase] = useState<'typing' | 'generating' | 'revealing'>('typing')
+
+  useEffect(() => {
+    const REVIEW = 'Food was cold and service was slow. Very disappointed.'
+    const REPLY   = "We're truly sorry your experience didn't match our standards. We'd love to make this right—please email us directly."
+    const WORDS   = REPLY.split(' ')
+    let charIdx = 0
+    let wordIdx = 0
+    let t: ReturnType<typeof setTimeout>
+
+    function typeChar() {
+      charIdx++
+      setTypedReview(REVIEW.slice(0, charIdx))
+      if (charIdx < REVIEW.length) {
+        t = setTimeout(typeChar, 44 + Math.random() * 22)
+      } else {
+        t = setTimeout(() => {
+          setAnimPhase('generating')
+          t = setTimeout(() => {
+            setAnimPhase('revealing')
+            revealWord()
+          }, 2200)
+        }, 350)
+      }
+    }
+
+    function revealWord() {
+      wordIdx++
+      setTypedReply(WORDS.slice(0, wordIdx).join(' '))
+      if (wordIdx < WORDS.length) {
+        t = setTimeout(revealWord, 65 + Math.random() * 30)
+      } else {
+        t = setTimeout(reset, 3000)
+      }
+    }
+
+    function reset() {
+      charIdx = 0; wordIdx = 0
+      setTypedReview(''); setTypedReply('')
+      setAnimPhase('typing')
+      t = setTimeout(typeChar, 700)
+    }
+
+    t = setTimeout(typeChar, 1100)
+    return () => clearTimeout(t)
+  }, [])
+
   // Section animation refs
   const trustBarAnim   = useInView(0.2)
   const problemAnim    = useInView(0.1)
@@ -394,24 +444,54 @@ export default function LandingPage() {
                       </div>
                     </div>
 
-                    {/* Review 2 — pending */}
+                    {/* Review 2 — live typing animation */}
                     <div>
                       <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[11px] font-bold text-white/40 flex-shrink-0">MR</div>
+                        <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[11px] font-bold text-white/40 flex-shrink-0">DK</div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between mb-1">
-                            <span className="text-white text-[13px] font-semibold">Mike R.</span>
-                            <span className="text-white/25 text-[11px]">5h ago</span>
+                            <span className="text-white text-[13px] font-semibold">David K.</span>
+                            <span className="text-white/25 text-[11px]">just now</span>
                           </div>
-                          <div className="text-amber-400/60 text-[12px] mb-2">★★★<span className="text-white/15">★★</span></div>
-                          <p className="text-white/50 text-[12px] leading-relaxed">"Good food but the wait was longer than expected on a Tuesday."</p>
+                          <div className="mb-2 text-[12px]">
+                            <span className="text-amber-400/70">★</span>
+                            <span className="text-white/15">★★★★</span>
+                          </div>
+                          {/* Typing review text */}
+                          <p className="text-white/50 text-[12px] leading-relaxed min-h-[34px]">
+                            &ldquo;{typedReview}
+                            {animPhase === 'typing' && (
+                              <span className="inline-block w-[1.5px] h-[0.9em] bg-white/40 ml-px align-text-bottom" style={{ animation: 'blink 0.8s step-end infinite' }} />
+                            )}
+                            {animPhase !== 'typing' && typedReview && '…"'}
+                          </p>
                         </div>
                       </div>
-                      {/* Generating indicator */}
-                      <div className="mt-3 ml-11 flex items-center gap-2 text-[11px] text-white/30">
-                        <svg className="animate-spin w-3 h-3 text-[#E05A28]" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                        Crafting reply…
-                      </div>
+
+                      {/* Generating dots */}
+                      {animPhase === 'generating' && (
+                        <div className="mt-3 ml-11 flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#E05A28]/10 border border-[#E05A28]/20 w-fit">
+                          {[0, 1, 2].map((i) => (
+                            <span
+                              key={i}
+                              className="w-1.5 h-1.5 rounded-full bg-[#E05A28]"
+                              style={{ animation: `typingBounce 1.2s ease-in-out ${i * 0.2}s infinite` }}
+                            />
+                          ))}
+                          <span className="text-[11px] text-[#E05A28]/80 ml-1">Generating reply…</span>
+                        </div>
+                      )}
+
+                      {/* AI reply reveal */}
+                      {animPhase === 'revealing' && (
+                        <div className="mt-3 ml-11 bg-[#E05A28]/10 border border-[#E05A28]/20 rounded-xl p-3">
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-[#E05A28] mb-1.5">AI Reply</p>
+                          <p className="text-white/70 text-[12px] leading-relaxed min-h-[2.5em]">
+                            {typedReply}
+                            <span className="inline-block w-[1.5px] h-[0.9em] bg-[#E05A28]/60 ml-px align-text-bottom" style={{ animation: 'blink 0.8s step-end infinite' }} />
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -421,6 +501,27 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* ── MARQUEE ──────────────────────────────────────────────────────── */}
+      <div className="bg-[#0D0D0D] border-b border-white/[0.06] py-4 overflow-hidden relative select-none">
+        {/* Fade edges */}
+        <div className="absolute left-0 top-0 bottom-0 w-20 z-10 pointer-events-none" style={{ background: 'linear-gradient(to right, #0D0D0D, transparent)' }} />
+        <div className="absolute right-0 top-0 bottom-0 w-20 z-10 pointer-events-none" style={{ background: 'linear-gradient(to left, #0D0D0D, transparent)' }} />
+
+        <div className="flex" style={{ animation: 'marqueeScroll 28s linear infinite' }}>
+          {/* Two copies for seamless loop */}
+          {[0, 1].map((set) => (
+            <div key={set} className="flex items-center gap-0 flex-shrink-0" aria-hidden={set === 1}>
+              {['Italian', 'BBQ & Smokehouse', 'Café', 'Fine Dining', 'Food Truck', 'Bakery', 'Sushi Bar', 'Mexican', 'Farm-to-Table', 'Gastropub', 'Pizza', 'Steakhouse'].map((item) => (
+                <span key={item} className="flex items-center gap-5 px-6 text-[12px] font-medium text-white/30 whitespace-nowrap">
+                  {item}
+                  <span className="w-1 h-1 rounded-full bg-white/15 flex-shrink-0" />
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* ── TRUST BAR ────────────────────────────────────────────────────── */}
       <section className="bg-white border-b border-[#e5e5e0] py-5 px-5 sm:px-6">

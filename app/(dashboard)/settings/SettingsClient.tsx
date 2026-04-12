@@ -40,8 +40,8 @@ function Toggle({
       }`}
     >
       <span
-        className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ${
-          checked ? 'translate-x-4' : 'translate-x-0'
+        className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white ring-0 transition duration-200 ${
+          checked ? 'translate-x-4 shadow-[0_1px_3px_rgba(0,0,0,0.15)]' : 'translate-x-0 shadow-sm'
         }`}
       />
     </button>
@@ -162,7 +162,7 @@ export default function SettingsClient({
           </div>
           {prefsToast && (
             <span
-              className={`text-[11px] font-medium px-2.5 py-1 rounded-full flex-shrink-0 ${
+              className={`text-[11px] font-medium px-2.5 py-1 rounded-full flex-shrink-0 animate-scale-in ${
                 prefsToast === 'saved'
                   ? 'bg-emerald-50 text-emerald-700'
                   : 'bg-red-50 text-red-600'
@@ -221,7 +221,7 @@ export default function SettingsClient({
           </div>
           {emailToast && (
             <span
-              className={`text-[11px] font-medium px-2.5 py-1 rounded-full flex-shrink-0 ${
+              className={`text-[11px] font-medium px-2.5 py-1 rounded-full flex-shrink-0 animate-scale-in ${
                 emailToast === 'saved'
                   ? 'bg-emerald-50 text-emerald-700'
                   : 'bg-red-50 text-red-600'

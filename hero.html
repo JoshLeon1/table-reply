@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TableReply — Reply to Every Review in Seconds</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #F5F1E8;
+      --card-bg:   #FFFDF9;
+      --accent:    #8B2635;
+      --accent-hover: #6E1C28;
+      --text:      #2C2C2C;
+      --muted:     #7A7068;
+      --border:    #E8E0D4;
+      --surface:   #EDE8DF;
+      --success:   #2D7A4F;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    /* ── Hero ──────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 80px 24px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Warm radial glow top-left */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -120px;
+      left: -120px;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(ellipse at center, rgba(139,38,53,0.07) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    /* Subtle grain texture overlay */
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      opacity: 0.4;
+    }
+
+    .hero-inner {
+      max-width: 1160px;
+      width: 100%;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 60% 40%;
+      gap: 64px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Left ──────────────────────────────────────────── */
+    .hero-left { display: flex; flex-direction: column; gap: 0; }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+      animation: fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .eyebrow-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    .hero-headline {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: clamp(36px, 4.5vw, 58px);
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 22px;
+      animation: fadeUp 0.55s 80ms cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .hero-headline em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--muted);
+      max-width: 480px;
+      margin-bottom: 36px;
+      animation: fadeUp 0.55s 160ms cubic-bezier(0.16,1,0.3,1) both;
+    }
+
+    .hero-ctas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+      animation: fadeUp 0.55s 240ms cubic-bezier(0.16,1,0.3,1) both;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 20px rgba(139,38,53,0.3);
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 28px rgba(139,38,53,0.4);
+    }
+    .btn-primary:active { transform: scale(0.98); }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 24px;
+      background: transparent;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 12px;
+      border: 1.5px solid var(--accent);
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .btn-secondary:hover {
+      background: rgba(139,38,53,0.05);
+      transform: translateY(-1px);
+    }
+    .btn-secondary:active { transform: scale(0.98); }
+
+    .play-icon {
+      width: 18px; height: 18px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .play-icon svg { margin-left: 2px; }
+
+    .trust-line {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      animation: fadeUp 0.5s 320ms cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .trust-check {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: rgba(45,122,79,0.12);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .trust-dot { color: var(--border); }
+
+    /* ── Right — Mockup ────────────────────────────────── */
+    .hero-right {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: fadeUp 0.65s 200ms cubic-bezier(0.16,1,0.3,1) both;
+    }
+
+    .mockup-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    /* Depth shadow card behind */
+    .mockup-shadow {
+      position: absolute;
+      bottom: -10px;
+      left: 12px;
+      right: 12px;
+      height: 100%;
+      background: var(--surface);
+      border-radius: 20px;
+      border: 1px solid var(--border);
+    }
+
+    .mockup-card {
+      position: relative;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(44,28,20,0.12), 0 4px 16px rgba(44,28,20,0.06);
+      transform: perspective(900px) rotateY(-4deg) rotateX(2deg);
+      transition: transform 0.4s ease;
+    }
+    .mockup-card:hover {
+      transform: perspective(900px) rotateY(-1deg) rotateX(1deg);
+    }
+
+    /* Card chrome bar */
+    .card-chrome {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 11px 16px;
+      background: #F0EBE3;
+      border-bottom: 1px solid var(--border);
+    }
+    .chrome-dot {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+    }
+    .chrome-title {
+      margin-left: 8px;
+      font-size: 11px;
+      color: #A89880;
+      font-weight: 500;
+    }
+    .live-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #2D7A4F;
+      margin-left: auto;
+      animation: livePulse 2s ease-in-out infinite;
+    }
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(45,122,79,0.4); }
+      50%       { opacity: 0.8; box-shadow: 0 0 0 4px rgba(45,122,79,0); }
+    }
+
+    .card-body { padding: 16px; }
+
+    /* Review row */
+    .review-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .reviewer-avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .reviewer-info { flex: 1; min-width: 0; }
+    .reviewer-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+    .stars { display: flex; gap: 1px; margin-bottom: 5px; }
+    .star { width: 11px; height: 11px; }
+    .review-text {
+      font-size: 11.5px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .review-divider { height: 1px; background: var(--border); margin: 12px 0; }
+
+    /* AI Reply block */
+    .reply-block {
+      background: rgba(139,38,53,0.05);
+      border: 1px solid rgba(139,38,53,0.15);
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-top: 10px;
+      position: relative;
+    }
+    .reply-label {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .approved-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--success);
+      background: rgba(45,122,79,0.1);
+      border-radius: 20px;
+      padding: 2px 7px;
+    }
+    .reply-text {
+      font-size: 11.5px;
+      color: #4A3828;
+      line-height: 1.6;
+    }
+
+    /* Action buttons row */
+    .action-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+    }
+    .action-btn-primary {
+      background: var(--text);
+      color: #fff;
+    }
+    .action-btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    /* Second review — animated sequence */
+    .review-row-2 { opacity: 0.85; }
+
+    /* Typing cursor */
+    .typing-cursor {
+      display: inline-block;
+      width: 1.5px;
+      height: 1em;
+      background: var(--muted);
+      vertical-align: text-bottom;
+      margin-left: 1px;
+      animation: cursorBlink 0.8s step-end infinite;
+    }
+    @keyframes cursorBlink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+
+    /* Generating state */
+    .generating-row {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      padding: 7px 10px;
+      background: rgba(139,38,53,0.05);
+      border: 1px solid rgba(139,38,53,0.12);
+      border-radius: 8px;
+    }
+    .generating-row.visible { display: flex; }
+    .typing-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: typingBounce 1.2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingBounce {
+      0%, 100% { transform: translateY(0); opacity: 0.4; }
+      50%       { transform: translateY(-4px); opacity: 1; }
+    }
+    .generating-label {
+      font-size: 10.5px;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    /* AI reply reveal */
+    .anim-reply-block {
+      display: none;
+      background: rgba(139,38,53,0.05);
+      border: 1px solid rgba(139,38,53,0.15);
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-top: 8px;
+    }
+    .anim-reply-block.visible { display: block; }
+    .anim-reply-label {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 5px;
+    }
+    .anim-reply-text {
+      font-size: 11.5px;
+      color: #4A3828;
+      line-height: 1.6;
+      min-height: 1.6em;
+    }
+    .word-span {
+      display: inline;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+    .word-span.shown { opacity: 1; }
+
+    /* ── Marquee ───────────────────────────────────────── */
+    .marquee-section {
+      width: 100%;
+      padding: 18px 0;
+      background: transparent;
+      position: relative;
+      overflow: hidden;
+    }
+    .marquee-section::before,
+    .marquee-section::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 80px;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .marquee-section::before {
+      left: 0;
+      background: linear-gradient(to right, var(--bg), transparent);
+    }
+    .marquee-section::after {
+      right: 0;
+      background: linear-gradient(to left, var(--bg), transparent);
+    }
+    .marquee-track {
+      display: flex;
+      overflow: hidden;
+    }
+    .marquee-inner {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      animation: marqueeScroll 22s linear infinite;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .marquee-track:hover .marquee-inner {
+      animation-play-state: paused;
+    }
+    @keyframes marqueeScroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    .marquee-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 28px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+    .marquee-item::after {
+      content: '·';
+      color: var(--border);
+      font-size: 16px;
+      line-height: 1;
+    }
+    .marquee-item:last-child::after { display: none; }
+
+    /* Floating badges outside the card */
+    .badge-float {
+      position: absolute;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 16px rgba(44,28,20,0.1);
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      animation: floatBadge 3.5s ease-in-out infinite;
+    }
+    @keyframes floatBadge {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-5px); }
+    }
+    .badge-float-rating {
+      top: -18px;
+      right: -20px;
+      animation-delay: 0.4s;
+    }
+    .badge-float-replied {
+      bottom: 20px;
+      left: -24px;
+      animation-delay: 1.2s;
+    }
+    .badge-icon {
+      width: 24px; height: 24px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .badge-sub {
+      font-size: 10px;
+      font-weight: 400;
+      color: var(--muted);
+      display: block;
+      line-height: 1.2;
+    }
+
+    /* ── Animations ────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Modal ─────────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(20,10,8,0.75);
+      backdrop-filter: blur(8px);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .modal-box {
+      background: #1A1210;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 720px;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+      transform: scale(0.95) translateY(16px);
+      transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+    }
+    .modal-overlay.open .modal-box {
+      transform: scale(1) translateY(0);
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .modal-title { font-size: 14px; font-weight: 600; color: #fff; }
+    .modal-close {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: transparent;
+      color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, color 0.15s;
+    }
+    .modal-close:hover { background: rgba(255,255,255,0.07); color: #fff; }
+    .modal-video {
+      aspect-ratio: 16/9;
+      background: #111;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .modal-video iframe { width: 100%; height: 100%; border: none; display: block; }
+    .video-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      color: rgba(255,255,255,0.3);
+    }
+    .video-play-btn {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: rgba(139,38,53,0.3);
+      border: 2px solid rgba(139,38,53,0.5);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ── Responsive ────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .hero { padding: 100px 20px 60px; }
+      .hero-inner {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+      .hero-right { order: 2; }
+      .hero-left  { order: 1; }
+      .mockup-card { transform: none; }
+      .badge-float-rating { right: -8px; }
+      .badge-float-replied { left: -8px; }
+    }
+
+    @media (max-width: 540px) {
+      .hero-headline { font-size: 32px; }
+      .hero-sub { font-size: 15px; }
+      .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+      .hero-ctas { flex-direction: column; }
+      .badge-float { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HERO ─────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-inner">
+
+    <!-- Left -->
+    <div class="hero-left">
+      <span class="eyebrow">
+        <span class="eyebrow-dot"></span>
+        Built for independent restaurants
+      </span>
+
+      <h1 class="hero-headline">
+        Reply to Every Review<br />
+        in Seconds—Without<br />
+        <em>Losing Your Voice</em>
+      </h1>
+
+      <p class="hero-sub">
+        TableReply crafts personalized responses that sound exactly like you.
+        Built for independent restaurants who care about every guest.
+      </p>
+
+      <div class="hero-ctas">
+        <a href="/signup" class="btn-primary">
+          Start Free 7-Day Trial
+          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+          </svg>
+        </a>
+        <button class="btn-secondary" onclick="openModal()">
+          <span class="play-icon">
+            <svg width="8" height="9" viewBox="0 0 8 9" fill="white">
+              <path d="M1 1.5l6 3-6 3V1.5z"/>
+            </svg>
+          </span>
+          See How It Works
+        </button>
+      </div>
+
+      <div class="trust-line">
+        <span class="trust-item">
+          <span class="trust-check">
+            <svg width="8" height="8" fill="none" stroke="#2D7A4F" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+            </svg>
+          </span>
+          No credit card required
+        </span>
+        <span class="trust-dot">·</span>
+        <span class="trust-item">
+          <span class="trust-check">
+            <svg width="8" height="8" fill="none" stroke="#2D7A4F" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+            </svg>
+          </span>
+          200+ restaurants trust TableReply
+        </span>
+        <span class="trust-dot">·</span>
+        <span class="trust-item">
+          <span class="trust-check">
+            <svg width="8" height="8" fill="none" stroke="#2D7A4F" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+            </svg>
+          </span>
+          Set up in 2 minutes
+        </span>
+      </div>
+    </div>
+
+    <!-- Right — Dashboard Mockup -->
+    <div class="hero-right">
+      <div class="mockup-wrap">
+        <!-- Depth shadow layer -->
+        <div class="mockup-shadow"></div>
+
+        <!-- Floating badge: rating -->
+        <div class="badge-float badge-float-rating">
+          <span class="badge-icon" style="background:#FEF3C7;">
+            <svg width="13" height="13" viewBox="0 0 20 20" fill="#D97706">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+            </svg>
+          </span>
+          <div>
+            <span>4.8 avg rating</span>
+            <span class="badge-sub">↑ 0.4 vs last month</span>
+          </div>
+        </div>
+
+        <!-- Floating badge: replied -->
+        <div class="badge-float badge-float-replied">
+          <span class="badge-icon" style="background:#D1FAE5;">
+            <svg width="12" height="12" fill="none" stroke="#2D7A4F" viewBox="0 0 24 24" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+          </span>
+          <div>
+            <span>94% replied</span>
+            <span class="badge-sub">Industry avg: 15%</span>
+          </div>
+        </div>
+
+        <!-- Main card -->
+        <div class="mockup-card">
+          <!-- Chrome bar -->
+          <div class="card-chrome">
+            <span class="chrome-dot" style="background:#FF5F56;"></span>
+            <span class="chrome-dot" style="background:#FFBD2E;"></span>
+            <span class="chrome-dot" style="background:#27C93F;"></span>
+            <span class="chrome-title">TableReply — Reviews</span>
+            <span class="live-dot"></span>
+          </div>
+
+          <!-- Reviews -->
+          <div class="card-body">
+
+            <!-- Review 1 — with reply -->
+            <div class="review-row">
+              <div class="reviewer-avatar" style="background:#FDE8E0; color:#8B2635;">SJ</div>
+              <div class="reviewer-info">
+                <div class="reviewer-name">Sarah Johnson</div>
+                <div class="stars">
+                  <!-- 5 filled stars -->
+                  <svg class="star" viewBox="0 0 20 20" fill="#D97706"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                  <svg class="star" viewBox="0 0 20 20" fill="#D97706"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                  <svg class="star" viewBox="0 0 20 20" fill="#D97706"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                  <svg class="star" viewBox="0 0 20 20" fill="#D97706"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                  <svg class="star" viewBox="0 0 20 20" fill="#D97706"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                </div>
+                <p class="review-text">"Best Italian outside of Naples. Chef came out to greet us — truly a special experience."</p>
+
+                <!-- AI Reply -->
+                <div class="reply-block">
+                  <div class="reply-label">
+                    AI Reply
+                    <span class="approved-badge">
+                      <svg width="8" height="8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                      Approved
+                    </span>
+                  </div>
+                  <p class="reply-text">Thank you so much, Sarah! Chef Marco loves connecting with our guests — we're so glad that warmth came through. See you again soon! 🙏</p>
+                </div>
+
+                <div class="action-row">
+                  <button class="action-btn action-btn-primary">
+                    <svg width="10" height="10" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                    Copy &amp; Approve
+                  </button>
+                  <button class="action-btn action-btn-ghost">Dismiss</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="review-divider"></div>
+
+            <!-- Review 2 — animated typing sequence -->
+            <div class="review-row review-row-2">
+              <div class="reviewer-avatar" style="background:#EDE8DF; color:#9A8C7E;">DK</div>
+              <div class="reviewer-info">
+                <div class="reviewer-name">David K.</div>
+                <div class="stars">
+                  <svg class="star" viewBox="0 0 20 20" fill="#D97706"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                  <svg class="star" viewBox="0 0 20 20" fill="#E8E0D4"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                  <svg class="star" viewBox="0 0 20 20" fill="#E8E0D4"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                  <svg class="star" viewBox="0 0 20 20" fill="#E8E0D4"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                  <svg class="star" viewBox="0 0 20 20" fill="#E8E0D4"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                </div>
+                <!-- Animated review text -->
+                <p class="review-text" id="animReviewText"><span class="typing-cursor"></span></p>
+
+                <!-- Generating state -->
+                <div class="generating-row" id="animGenerating">
+                  <span class="typing-dot"></span>
+                  <span class="typing-dot"></span>
+                  <span class="typing-dot"></span>
+                  <span class="generating-label">Generating reply…</span>
+                </div>
+
+                <!-- AI Reply reveal -->
+                <div class="anim-reply-block" id="animReplyBlock">
+                  <div class="anim-reply-label">AI Reply</div>
+                  <p class="anim-reply-text" id="animReplyText"></p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── MARQUEE ──────────────────────────────────────── -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <div class="marquee-inner" aria-hidden="true">
+      <!-- Set A -->
+      <span class="marquee-item">Italian</span>
+      <span class="marquee-item">BBQ &amp; Smokehouse</span>
+      <span class="marquee-item">Café</span>
+      <span class="marquee-item">Fine Dining</span>
+      <span class="marquee-item">Food Truck</span>
+      <span class="marquee-item">Bakery</span>
+      <span class="marquee-item">Sushi Bar</span>
+      <span class="marquee-item">Mexican</span>
+      <span class="marquee-item">Farm-to-Table</span>
+      <span class="marquee-item">Gastropub</span>
+      <span class="marquee-item">Pizza</span>
+      <span class="marquee-item">Steakhouse</span>
+      <!-- Set B (duplicate for seamless loop) -->
+      <span class="marquee-item">Italian</span>
+      <span class="marquee-item">BBQ &amp; Smokehouse</span>
+      <span class="marquee-item">Café</span>
+      <span class="marquee-item">Fine Dining</span>
+      <span class="marquee-item">Food Truck</span>
+      <span class="marquee-item">Bakery</span>
+      <span class="marquee-item">Sushi Bar</span>
+      <span class="marquee-item">Mexican</span>
+      <span class="marquee-item">Farm-to-Table</span>
+      <span class="marquee-item">Gastropub</span>
+      <span class="marquee-item">Pizza</span>
+      <span class="marquee-item">Steakhouse</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── VIDEO MODAL ─────────────────────────────────── -->
+<div class="modal-overlay" id="videoModal" onclick="handleOverlayClick(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title">See TableReply in action</span>
+      <button class="modal-close" onclick="closeModal()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-video">
+      <!-- Replace src with your real video embed URL -->
+      <div class="video-placeholder">
+        <div class="video-play-btn">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="rgba(139,38,53,0.9)">
+            <path d="M5 3l14 9-14 9V3z"/>
+          </svg>
+        </div>
+        <p style="font-size:13px;">Replace with your video embed</p>
+        <p style="font-size:11px; opacity:0.5;">e.g. YouTube or Loom embed URL</p>
+      </div>
+      <!-- Uncomment and replace URL to use a real embed:
+      <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID?autoplay=1" allow="autoplay; fullscreen" allowfullscreen></iframe>
+      -->
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ── Modal ─────────────────────────────────── */
+  function openModal() {
+    document.getElementById('videoModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    document.getElementById('videoModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function handleOverlayClick(e) {
+    if (e.target === e.currentTarget) closeModal();
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  /* ── Typing Animation Loop ──────────────────── */
+  (function() {
+    const REVIEW   = 'Food was cold and service was slow. Very disappointed.';
+    const REPLY    = "We're truly sorry your experience didn't match our standards. We'd love to make this right—please email us directly.";
+
+    const reviewEl    = document.getElementById('animReviewText');
+    const generatingEl= document.getElementById('animGenerating');
+    const replyBlockEl= document.getElementById('animReplyBlock');
+    const replyTextEl = document.getElementById('animReplyText');
+
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    function reset() {
+      reviewEl.innerHTML    = '<span class="typing-cursor"></span>';
+      generatingEl.classList.remove('visible');
+      replyBlockEl.classList.remove('visible');
+      replyTextEl.innerHTML = '';
+    }
+
+    async function typeReview() {
+      reviewEl.innerHTML = '';
+      const cursor = document.createElement('span');
+      cursor.className = 'typing-cursor';
+
+      // Type each character
+      for (let i = 0; i < REVIEW.length; i++) {
+        reviewEl.textContent = '"' + REVIEW.slice(0, i + 1);
+        reviewEl.appendChild(cursor);
+        await sleep(i === 0 ? 400 : 42 + Math.random() * 20);
+      }
+      // Add closing quote, remove cursor
+      reviewEl.textContent = '"' + REVIEW + '"';
+      await sleep(320);
+    }
+
+    async function showGenerating() {
+      generatingEl.classList.add('visible');
+      await sleep(2200);
+    }
+
+    async function revealReply() {
+      generatingEl.classList.remove('visible');
+      replyBlockEl.classList.add('visible');
+
+      const words = REPLY.split(' ');
+      words.forEach(w => {
+        const span = document.createElement('span');
+        span.className = 'word-span';
+        span.textContent = w + ' ';
+        replyTextEl.appendChild(span);
+      });
+
+      const spans = replyTextEl.querySelectorAll('.word-span');
+      for (let i = 0; i < spans.length; i++) {
+        spans[i].classList.add('shown');
+        await sleep(60 + Math.random() * 30);
+      }
+
+      await sleep(2800); // hold so user can read
+    }
+
+    async function runLoop() {
+      await sleep(800); // initial delay before first cycle
+      while (true) {
+        reset();
+        await sleep(600);
+        await typeReview();
+        await showGenerating();
+        await revealReply();
+        await sleep(400); // brief pause before reset
+      }
+    }
+
+    runLoop();
+  })();
+</script>
+
+</body>
+</html>

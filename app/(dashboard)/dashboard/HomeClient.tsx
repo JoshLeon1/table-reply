@@ -97,7 +97,7 @@ function PendingCard({ review, onAction }: { review: ScrapedReview; onAction: (i
       await navigator.clipboard.writeText(review.generated_reply).catch(() => {})
       setCopied(true)
       await supabase.from('scraped_reviews').update({ reply_status: 'approved' }).eq('id', review.id)
-      setTimeout(() => onAction(review.id, 'approved'), 600)
+      setTimeout(() => onAction(review.id, 'approved'), 1500)
     } finally { setActioning(false) }
   }
 
@@ -163,10 +163,14 @@ function PendingCard({ review, onAction }: { review: ScrapedReview; onAction: (i
         <button
           onClick={handleApprove}
           disabled={actioning || !review.generated_reply}
-          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-[12px] font-semibold disabled:opacity-40 transition-all duration-150 active:scale-[0.97]"
+          className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-white text-[12px] font-semibold disabled:opacity-40 transition-all duration-150 active:scale-[0.97] ${
+            copied
+              ? 'bg-emerald-500 hover:bg-emerald-600'
+              : 'bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419]'
+          }`}
         >
           {copied ? (
-            <><svg className="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied</>
+            <><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied!</>
           ) : (
             <><svg className="w-3.5 h-3.5 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Copy &amp; Approve</>
           )}
@@ -321,30 +325,49 @@ export default function HomeClient({
               value: reviewsThisMonth,
               sub: <TrendBadge current={reviewsThisMonth} prev={reviewsLastMonth} />,
               delay: 'stagger-1',
+              extra: null,
             },
             {
               label: 'Average rating',
               value: <span className="text-amber-400">{avgRating.toFixed(1)}<span className="text-[13px] sm:text-[16px] ml-0.5">★</span></span>,
               sub: <StarRow rating={Math.round(avgRating)} />,
               delay: 'stagger-2',
+              extra: null,
             },
             {
               label: 'Approved replies',
               value: approvedThisMonth,
               sub: <TrendBadge current={approvedThisMonth} prev={approvedLastMonth} />,
               delay: 'stagger-3',
+              extra: null,
             },
             {
               label: 'Response rate',
               value: <span className={rateColor}>{responseRate}<span className="text-[13px] sm:text-[16px]">%</span></span>,
               sub: <span className="text-[11px] text-[#A8A29E]">{totalReviews} total</span>,
               delay: 'stagger-4',
+              extra: (
+                <svg viewBox="0 0 36 36" className="w-10 h-10 flex-shrink-0 -rotate-90">
+                  <circle cx="18" cy="18" r="15.9" fill="none" stroke="#EDE9E4" strokeWidth="2.5" />
+                  <circle
+                    cx="18" cy="18" r="15.9" fill="none"
+                    stroke="#E05A28" strokeWidth="2.5"
+                    strokeDasharray={`${(Math.min(responseRate, 100) / 100) * 100} 100`}
+                    strokeLinecap="round"
+                  />
+                </svg>
+              ),
             },
-          ].map(({ label, value, sub, delay }) => (
+          ].map(({ label, value, sub, delay, extra }) => (
             <div key={label} className={`bg-white rounded-2xl p-3.5 sm:p-5 border border-[#E4DED8] shadow-card card-hover animate-fade-up ${delay}`}>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-2 leading-tight">{label}</p>
-              <p className="text-[22px] sm:text-[30px] font-bold text-[#111] leading-none tracking-[-0.03em] mb-2">{value}</p>
-              {sub}
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-2 leading-tight">{label}</p>
+                  <p className="text-[22px] sm:text-[30px] font-bold text-[#111] leading-none tracking-[-0.03em] mb-2">{value}</p>
+                  {sub}
+                </div>
+                {extra && <div className="flex-shrink-0 mt-0.5">{extra}</div>}
+              </div>
             </div>
           ))}
         </div>
@@ -451,7 +474,7 @@ export default function HomeClient({
                   </div>
                 )}
 
-                <div className="px-4 py-2.5 border-t border-[#EDE9E4]">
+                <div className="px-4 py-2.5 border-t border-[#EDE9E4] bg-[#FAFAF9]">
                   <Link href="/dashboard/generate" className="inline-flex items-center gap-1 text-[12px] font-medium text-[#A8A29E] hover:text-[#57534E] transition-colors group">
                     More options in Full Generator
                     <svg className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -468,8 +491,8 @@ export default function HomeClient({
               <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-card overflow-hidden">
                 {recentApproved.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-9 px-4 text-center">
-                    <div className="w-9 h-9 rounded-full bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mb-3">
-                      <svg className="w-4 h-4 text-[#C4BEB8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="w-10 h-10 rounded-2xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mb-3">
+                      <svg className="w-4.5 h-4.5 text-[#C4BEB8]" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{width: 18, height: 18}}>
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                       </svg>
                     </div>
@@ -523,13 +546,13 @@ export default function HomeClient({
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {([
-                { label: 'Customers love', value: themes?.praised?.[0], fallback: 'Run analytics to see what resonates most.', dot: 'bg-emerald-400', tint: 'from-white to-emerald-50/40' },
-                { label: 'Needs attention', value: themes?.complaints?.[0], fallback: 'No recurring complaints — great sign.', dot: 'bg-[#E05A28]', tint: 'from-white to-[#FEF0E8]/60' },
-                { label: 'Top opportunity', value: themes?.opportunities?.[0], fallback: 'Run analytics to find your growth lever.', dot: 'bg-blue-400', tint: 'from-white to-blue-50/40' },
-              ] as const).map(({ label, value, fallback, dot, tint }) => (
-                <div key={label} className={`bg-gradient-to-br ${tint} rounded-2xl px-5 py-5 border border-[#E4DED8] shadow-card card-hover`}>
+                { label: 'Customers love', value: themes?.praised?.[0], fallback: 'Run analytics to see what resonates most.', dot: 'bg-emerald-400', tint: 'from-white to-emerald-50/40', pulse: false },
+                { label: 'Needs attention', value: themes?.complaints?.[0], fallback: 'No recurring complaints — great sign.', dot: 'bg-[#E05A28]', tint: 'from-white to-[#FEF0E8]/60', pulse: true },
+                { label: 'Top opportunity', value: themes?.opportunities?.[0], fallback: 'Run analytics to find your growth lever.', dot: 'bg-blue-400', tint: 'from-white to-blue-50/40', pulse: false },
+              ] as const).map(({ label, value, fallback, dot, tint, pulse }) => (
+                <div key={label} className={`bg-gradient-to-br ${tint} rounded-2xl px-5 py-5 border border-[#E4DED8] shadow-card hover:shadow-md hover:-translate-y-0.5 transition-all duration-200`}>
                   <div className="flex items-center gap-2 mb-3">
-                    <span className={`w-2.5 h-2.5 rounded-full ${dot} flex-shrink-0`} />
+                    <span className={`w-2.5 h-2.5 rounded-full ${dot} flex-shrink-0 ${pulse ? 'animate-pulse' : ''}`} />
                     <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#A8A29E]">{label}</p>
                   </div>
                   <p className={`text-[13px] leading-snug ${value ? 'font-semibold text-[#111]' : 'text-[#C4BEB8]'}`}>

@@ -82,6 +82,14 @@ export default async function SettingsPage() {
               {isPaid ? 'Pro' : daysRemaining > 0 ? `Trial · ${daysRemaining}d left` : 'Trial expired'}
             </span>
           </div>
+          {!isPaid && daysRemaining > 0 && (
+            <div className="w-full h-1 bg-[#EDE9E4] rounded-full mt-3">
+              <div
+                className="h-full bg-[#E05A28] rounded-full transition-all duration-500"
+                style={{ width: `${Math.round((daysRemaining / 7) * 100)}%` }}
+              />
+            </div>
+          )}
         </div>
 
         <div className="px-4 sm:px-6 py-4 sm:py-5 space-y-2">
@@ -116,8 +124,9 @@ export default async function SettingsPage() {
                   </div>
                   <p className="text-white/50 text-[11px]">$239/yr · save $109 · under $20/month</p>
                 </div>
-                <span className="text-[#E05A28] text-[13px] font-semibold group-hover:text-[#F07040] transition-colors">
-                  $239/yr →
+                <span className="text-[#E05A28] text-[13px] font-semibold group-hover:text-[#F07040] transition-colors flex items-center gap-0.5">
+                  $239/yr
+                  <span className="inline-block group-hover:translate-x-0.5 transition-transform duration-150">→</span>
                 </span>
               </Link>
 

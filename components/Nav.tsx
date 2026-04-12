@@ -183,7 +183,7 @@ export default function Nav() {
 
   return (
     <>
-      <nav className="bg-[#0A0A0A] sticky top-0 z-40 border-b border-white/[0.05]">
+      <nav className="backdrop-blur-md bg-[#0A0A0A]/90 sticky top-0 z-40 border-b border-white/[0.05]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-14">
 
@@ -203,14 +203,10 @@ export default function Nav() {
                     href={link.href}
                     className={`relative flex items-center gap-2 px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all duration-150 active:scale-[0.97] ${
                       active
-                        ? 'text-white bg-white/[0.08]'
-                        : 'text-white/45 hover:text-white/85 hover:bg-white/[0.05]'
+                        ? 'text-[#111] bg-[#F3F0EC] border border-[#E4DED8] shadow-sm'
+                        : 'text-white/45 hover:text-white/75 hover:bg-white/[0.07]'
                     }`}
                   >
-                    {/* Active indicator dot */}
-                    {active && (
-                      <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3.5 h-0.5 rounded-full bg-[#E05A28]" />
-                    )}
                     <span className={active ? 'text-[#E05A28]' : ''}>{link.icon(active)}</span>
                     {link.label}
                     {link.badge != null && (
@@ -229,10 +225,10 @@ export default function Nav() {
 
               <Link
                 href="/settings"
-                className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-150 active:scale-[0.97] ${
+                className={`w-9 h-9 flex items-center justify-center rounded-xl transition-all duration-150 active:scale-[0.97] ${
                   pathname === '/settings'
-                    ? 'text-[#E05A28] bg-white/[0.08]'
-                    : 'text-white/35 hover:text-white/70 hover:bg-white/[0.05]'
+                    ? 'text-[#E05A28] bg-[#F3F0EC]'
+                    : 'text-white/35 hover:text-white/70 hover:bg-[#F3F0EC]/10'
                 }`}
                 title="Settings"
               >
@@ -241,7 +237,7 @@ export default function Nav() {
 
               <button
                 onClick={handleLogout}
-                className="w-8 h-8 flex items-center justify-center rounded-lg text-white/35 hover:text-white/70 hover:bg-white/[0.05] transition-all duration-150 active:scale-[0.97]"
+                className="w-9 h-9 flex items-center justify-center rounded-xl text-white/35 hover:text-white/70 hover:bg-[#F3F0EC]/10 transition-all duration-150 active:scale-[0.97]"
                 title="Log Out"
               >
                 <IconLogout />
@@ -265,14 +261,13 @@ export default function Nav() {
       </nav>
 
       {/* Mobile overlay + drawer */}
-      {mobileOpen && (
-        <>
+      <>
           <div
-            className="lg:hidden fixed inset-0 z-30 bg-black/60 backdrop-blur-sm animate-fade-in"
+            className={`lg:hidden fixed inset-0 z-30 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
             onClick={() => setMobileOpen(false)}
           />
 
-          <div className="lg:hidden fixed top-14 left-0 right-0 z-40 bg-[#0D0D0D] border-b border-white/[0.06] animate-slide-down shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
+          <div className={`lg:hidden fixed top-14 left-0 right-0 z-40 bg-[#0D0D0D] border-b border-white/[0.06] shadow-[0_20px_50px_rgba(0,0,0,0.6)] transition-transform duration-300 ease-out ${mobileOpen ? 'translate-y-0' : '-translate-y-full'}`}>
             {/* Branding strip */}
             <div className="flex items-center gap-3 px-5 py-3.5 border-b border-white/[0.05]">
               <LogoMark size={22} />
@@ -331,8 +326,7 @@ export default function Nav() {
               </button>
             </div>
           </div>
-        </>
-      )}
+      </>
     </>
   )
 }

@@ -79,6 +79,9 @@ export default async function TemplatesPage() {
           </code>{' '}
           with your actual link.
         </p>
+        <p className="text-[13px] text-[#57534E] mt-1.5 max-w-xl">
+          Use these to follow up with happy guests. Replace <span className="font-mono text-[12px] bg-[#EDE9E4] text-[#57534E] px-1 rounded">[YOUR GOOGLE REVIEW LINK]</span> with your actual link before sending.
+        </p>
       </div>
 
       {/* Grouped sections */}
@@ -89,6 +92,21 @@ export default async function TemplatesPage() {
             {/* Section label */}
             <div className="flex items-center gap-2 mb-3">
               <span className={`w-2 h-2 rounded-full ${meta.dot}`} />
+              {category === 'SMS' && (
+                <svg className="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                </svg>
+              )}
+              {category === 'Email' && (
+                <svg className="w-3.5 h-3.5 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                </svg>
+              )}
+              {category === 'In-Person' && (
+                <svg className="w-3.5 h-3.5 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                </svg>
+              )}
               <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E]">
                 {category}
               </span>
@@ -120,9 +138,11 @@ export default async function TemplatesPage() {
 
                   {/* Card body */}
                   <div className="px-4 sm:px-5 py-4">
-                    <p className="text-[13px] text-[#555] whitespace-pre-wrap leading-relaxed">
-                      {template.content}
-                    </p>
+                    <div className="bg-[#FAFAF9] rounded-xl p-4 border border-[#EDE9E4]">
+                      <p className="text-[13px] text-[#555] whitespace-pre-wrap leading-relaxed">
+                        {template.content}
+                      </p>
+                    </div>
                   </div>
                 </div>
               ))}

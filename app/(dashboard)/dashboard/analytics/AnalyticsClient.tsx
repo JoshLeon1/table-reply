@@ -175,9 +175,18 @@ function StaffMentionsSection({ reviews }: { reviews: ScrapedReview[] }) {
     <div>
       <SectionLabel>Your team in customers' words</SectionLabel>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
-        {staff.map((member) => (
+        {staff.map((member) => {
+          const avatarStyles = [
+            'bg-[#FEF0E8] text-[#E05A28]',
+            'bg-blue-50 text-blue-600',
+            'bg-violet-50 text-violet-600',
+            'bg-emerald-50 text-emerald-600',
+            'bg-amber-50 text-amber-600',
+          ]
+          const avatarClass = avatarStyles[member.name.charCodeAt(0) % 5]
+          return (
           <div key={member.name} className="bg-white rounded-2xl border border-[#E4DED8] p-5 shadow-card">
-            <div className="w-10 h-10 rounded-full bg-[#FEF0E8] border border-[#F5C9AD] flex items-center justify-center text-[#E05A28] font-bold text-[16px] mb-3">
+            <div className={`w-10 h-10 rounded-full ${avatarClass} border border-current/10 flex items-center justify-center font-bold text-[16px] mb-3`}>
               {member.name.charAt(0)}
             </div>
             <p className="text-[14px] font-semibold text-[#111] mb-1">{member.name}</p>
@@ -188,7 +197,7 @@ function StaffMentionsSection({ reviews }: { reviews: ScrapedReview[] }) {
             </div>
             {member.quote && <p className="text-[11px] text-[#A8A29E] italic leading-relaxed line-clamp-3">"{member.quote}…"</p>}
           </div>
-        ))}
+        )})}
       </div>
     </div>
   )
@@ -1131,7 +1140,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                 return (
                   <span
                     key={word}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#F3F0EC] border border-[#E4DED8] font-medium"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#F3F0EC] border border-[#E4DED8] font-medium hover:bg-[#FEF0E8] hover:border-[#F5C9AD] hover:text-[#E05A28] cursor-default transition-all duration-150"
                     style={{ fontSize: `${Math.round(11 + size * 4)}px`, opacity, color: i < 3 ? '#E05A28' : '#57534E' }}
                   >
                     {word}
@@ -1182,7 +1191,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                   <span className="text-[11px] text-[#CCC] ml-auto">{formatDate(bestReview.review_datetime_utc)}</span>
                 </div>
                 <div className="relative">
-                  <span className="absolute -top-3 -left-1 text-[#E05A28]/10 select-none pointer-events-none text-7xl leading-none">"</span>
+                  <span className="absolute -top-4 -left-1 text-[#E05A28]/10 select-none pointer-events-none text-[120px] leading-none">"</span>
                   <p className="relative text-[#333] text-[14px] leading-relaxed italic">{bestReview.review_text}</p>
                 </div>
               </div>
@@ -1201,7 +1210,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                   <span className="text-[11px] text-[#CCC] ml-auto">{formatDate(worstReview.review_datetime_utc)}</span>
                 </div>
                 <div className="relative">
-                  <span className="absolute -top-3 -left-1 text-red-300/20 select-none pointer-events-none text-7xl leading-none">"</span>
+                  <span className="absolute -top-4 -left-1 text-red-300/20 select-none pointer-events-none text-[120px] leading-none">"</span>
                   <p className="relative text-[#777] text-[14px] leading-relaxed italic">{worstReview.review_text}</p>
                 </div>
               </div>

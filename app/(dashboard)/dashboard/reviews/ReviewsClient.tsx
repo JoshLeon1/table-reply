@@ -272,7 +272,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
     : review.review_text
 
   return (
-    <div className={`bg-white rounded-2xl overflow-hidden border border-[#E4DED8] ${starTopBorder(review.star_rating)} shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.04)] transition-all duration-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08),0_12px_40px_rgba(0,0,0,0.06)] hover:-translate-y-px ${noText ? 'opacity-50' : ''}`}>
+    <div className={`bg-white rounded-2xl overflow-hidden border border-[#E4DED8] ${starTopBorder(review.star_rating)} shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.04)] transition-all duration-200 hover:shadow-[0_2px_16px_rgba(0,0,0,0.07)] hover:border-[#D0C9C1] hover:-translate-y-px ${noText ? 'opacity-50' : ''}`}>
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-[#EDE9E4]">
         <div className="flex items-center gap-3">
@@ -336,12 +336,12 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
             {review.generated_reply ? (
               /* AI reply card */
               <div className="rounded-xl bg-[#FAFAF9] border border-[#EDE9E4] px-4 py-3">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-2">AI reply</p>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-2 tracking-[0.12em]">AI reply</p>
                 <p className="text-[13px] text-[#57534E] leading-relaxed">{review.generated_reply}</p>
               </div>
             ) : (
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-2">AI reply</p>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-2 tracking-[0.12em]">AI reply</p>
                 {generating ? (
                   <div className="flex items-center gap-2.5 text-[13px] text-[#6B6B6B] py-1">
                     <svg className="animate-spin w-3.5 h-3.5 text-[#E05A28] flex-shrink-0" fill="none" viewBox="0 0 24 24">
@@ -562,7 +562,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
               onClick={() => setActiveTab(tab.key)}
               className={`flex items-center gap-2 px-4 py-2.5 text-[13px] font-semibold transition-all duration-150 whitespace-nowrap border-b-2 -mb-px ${
                 activeTab === tab.key
-                  ? 'border-[#E05A28] text-[#111]'
+                  ? 'border-[#E05A28] text-[#111] font-semibold'
                   : 'border-transparent text-[#A8A29E] hover:text-[#57534E]'
               }`}
             >
@@ -593,8 +593,10 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
       {/* Pending tab */}
       {!scraping && activeTab === 'pending' && (pending.length > 0 ? (
         <div className="space-y-3">
-          {pending.map((r) => (
-            <ReviewCard key={r.id} review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore}/>
+          {pending.map((r, i) => (
+            <div key={r.id} className={i < 5 ? `animate-fade-up stagger-${i + 1}` : ''}>
+              <ReviewCard review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore}/>
+            </div>
           ))}
         </div>
       ) : (

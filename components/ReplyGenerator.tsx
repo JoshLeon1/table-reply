@@ -214,7 +214,7 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
                     onClick={() => setPlatform(p)}
                     className={`px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150 min-h-[38px] ${
                       platform === p
-                        ? 'bg-[#111] text-white'
+                        ? 'bg-white shadow-sm border border-[#E4DED8] text-[#111] font-semibold ring-1 ring-[#E05A28]/20'
                         : 'bg-[#F3F0EC] text-[#57534E] hover:bg-[#EDE9E4] border border-[#E4DED8]'
                     }`}
                   >
@@ -239,6 +239,7 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
             </p>
           )}
 
+          <div className="flex items-center gap-3">
           <button
             onClick={() => handleGenerate(null)}
             disabled={!reviewText.trim() || loading}
@@ -261,6 +262,10 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
               </>
             )}
           </button>
+          <kbd className="hidden sm:inline-flex items-center gap-0.5 bg-[#F3F0EC] border border-[#E4DED8] text-[#A8A29E] text-[10px] font-mono px-1.5 py-0.5 rounded-md select-none">
+            ⌘ Enter
+          </kbd>
+          </div>
         </div>
       </div>
 

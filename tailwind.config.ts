@@ -35,11 +35,16 @@ const config: Config = {
         'slide-down':  'slideDown 280ms cubic-bezier(0.16,1,0.3,1) both',
         'float':       'float 3.5s ease-in-out infinite',
         'fade-up':     'fadeUp 380ms cubic-bezier(0.16,1,0.3,1) both',
+        'fade-in':     'fadeIn 220ms ease-out both',
       },
       keyframes: {
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%':      { transform: 'translateY(-6px)' },
+        },
+        fadeIn: {
+          from: { opacity: '0' },
+          to:   { opacity: '1' },
         },
         fadeUp: {
           from: { opacity: '0', transform: 'translateY(14px)' },
@@ -71,9 +76,9 @@ const config: Config = {
         },
       },
       boxShadow: {
-        'card':  '0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04)',
-        'card-hover': '0 2px 8px rgba(0,0,0,0.05), 0 8px 24px rgba(0,0,0,0.07)',
-        'modal': '0 8px 32px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.08)',
+        'card':       '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03)',
+        'card-hover': '0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04)',
+        'modal':      '0 20px 60px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.08)',
       },
     },
   },

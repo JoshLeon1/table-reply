@@ -115,7 +115,7 @@ function PendingCard({ review, onAction }: { review: ScrapedReview; onAction: (i
     <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-card overflow-hidden transition-all duration-200 hover:border-[#D0C9C1] hover:shadow-card-hover">
       <div className="px-4 pt-4 pb-3">
         <div className="flex items-start gap-3">
-          <div className="w-8 h-8 rounded-full bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center text-[11px] font-semibold text-[#7C7672] flex-shrink-0 mt-0.5">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FEF0E8] to-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center text-[11px] font-semibold text-[#7C7672] flex-shrink-0 mt-0.5">
             {initials}
           </div>
           <div className="flex-1 min-w-0">
@@ -152,7 +152,7 @@ function PendingCard({ review, onAction }: { review: ScrapedReview; onAction: (i
             {expanded ? 'Hide Reply' : 'View Reply'}
           </button>
           {expanded && (
-            <div className="mt-2.5 bg-[#F8F6F3] rounded-xl px-4 py-3 border border-[#E4DED8] text-[12px] text-[#57534E] leading-relaxed">
+            <div className="mt-2.5 bg-[#F3F0EC] rounded-xl px-4 py-3 border border-[#EDE9E4] text-[12px] text-[#57534E] leading-relaxed">
               {review.generated_reply}
             </div>
           )}
@@ -342,7 +342,7 @@ export default function HomeClient({
             },
           ].map(({ label, value, sub, delay }) => (
             <div key={label} className={`bg-white rounded-2xl p-3.5 sm:p-5 border border-[#E4DED8] shadow-card card-hover animate-fade-up ${delay}`}>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.10em] text-[#A8A29E] mb-2 leading-tight">{label}</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-2 leading-tight">{label}</p>
               <p className="text-[22px] sm:text-[30px] font-bold text-[#111] leading-none tracking-[-0.03em] mb-2">{value}</p>
               {sub}
             </div>

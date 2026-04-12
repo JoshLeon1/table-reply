@@ -105,12 +105,12 @@ export default async function SettingsPage() {
               {/* Annual — best value */}
               <Link
                 href="/api/stripe/create-checkout?plan=annual"
-                className="flex items-center justify-between px-5 py-3.5 rounded-xl bg-[#111] hover:bg-[#2a2a2a] text-white transition-all duration-150 group"
+                className="flex items-center justify-between px-5 py-3.5 rounded-xl bg-[#111] hover:bg-[#2a2a2a] text-white transition-all duration-150 group ring-2 ring-[#E05A28]/20"
               >
                 <div>
                   <div className="flex items-center gap-2 mb-0.5">
                     <span className="text-[13px] font-semibold">Annual plan</span>
-                    <span className="px-1.5 py-0.5 rounded bg-[#E05A28] text-[#111] text-[9px] font-bold uppercase tracking-wide leading-none">
+                    <span className="px-1.5 py-0.5 rounded bg-[#E05A28] text-white text-[9px] font-bold uppercase tracking-wide leading-none">
                       Best value
                     </span>
                   </div>

@@ -110,7 +110,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8F6F3] flex items-center justify-center px-4 py-10 sm:py-12">
+    <div className="min-h-screen bg-[#F8F6F3] flex items-center justify-center px-4 py-10 sm:py-12 relative" style={{ backgroundImage: 'radial-gradient(circle, #E4DED8 1px, transparent 1px)', backgroundSize: '24px 24px' }}>
       <div className="w-full max-w-[400px] animate-fade-up">
 
         {/* Logo */}

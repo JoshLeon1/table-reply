@@ -749,7 +749,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
 
       {/* ── CRITICAL ALERT ─────────────────────────────────────────────────── */}
       {criticalUnanswered > 0 && (
-        <div className="flex items-center gap-3 px-4 py-3.5 bg-red-50 border border-red-200 rounded-xl animate-fade-in">
+        <div className="flex items-center gap-3 px-4 py-3.5 bg-red-50 border border-red-200 rounded-2xl animate-fade-in">
           <svg className="w-5 h-5 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
@@ -866,7 +866,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
           },
         ].map((stat, i) => (
           <div key={i} className={`bg-white rounded-2xl border border-[#E4DED8] p-3.5 sm:p-4 shadow-card stagger-${i + 1} animate-fade-up`}>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.10em] text-[#A8A29E] mb-2 leading-tight">{stat.label}</p>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-2 leading-tight">{stat.label}</p>
             <p className={`text-[18px] sm:text-2xl font-bold leading-none mb-1 ${stat.color}`}>{stat.value}</p>
             <p className="text-[11px] text-[#A8A29E] leading-tight">{stat.sub}</p>
           </div>
@@ -1036,6 +1036,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                 emptyText: 'Sync more reviews',
                 itemClass: 'text-[#444]',
                 bullet: <svg className="w-3 h-3 text-[#E05A28] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>,
+                topBorder: 'border-t-2 border-t-emerald-200',
               },
               {
                 icon: <svg className="w-4 h-4 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>,
@@ -1044,6 +1045,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                 emptyText: 'No recurring topics found',
                 itemClass: 'text-[#888]',
                 bullet: <span className="w-1.5 h-1.5 rounded-full bg-[#E4DED8] mt-1.5 flex-shrink-0 inline-block" />,
+                topBorder: 'border-t-2 border-t-[#E4DED8]',
               },
               {
                 icon: <svg className="w-4 h-4 text-[#888]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>,
@@ -1052,9 +1054,10 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                 emptyText: 'No opportunities found',
                 itemClass: 'text-[#555]',
                 bullet: null,
+                topBorder: 'border-t-2 border-t-[#E05A28]/30',
               },
-            ].map(({ icon, title, items, emptyText, itemClass, bullet }) => (
-              <div key={title} className="bg-white rounded-2xl border border-[#E4DED8] p-5 shadow-card">
+            ].map(({ icon, title, items, emptyText, itemClass, bullet, topBorder }) => (
+              <div key={title} className={`bg-white rounded-2xl border border-[#E4DED8] p-5 shadow-card ${topBorder}`}>
                 <div className="flex items-center gap-2 mb-4">
                   {icon}
                   <span className="text-[13px] font-semibold text-[#111]">{title}</span>
@@ -1212,8 +1215,8 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
         <div>
           <SectionLabel>Quick win</SectionLabel>
           <div className="bg-gradient-to-r from-[#FEF0E8] to-white rounded-2xl border border-[#F5C9AD] px-6 py-5 flex items-start gap-4">
-            <div className="w-9 h-9 rounded-xl bg-[#E05A28] flex items-center justify-center flex-shrink-0 mt-0.5">
-              <svg className="w-[18px] h-[18px] text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-10 h-10 rounded-xl bg-[#FEF0E8] border border-[#F5C9AD] flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg className="w-5 h-5 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/>
               </svg>
             </div>

@@ -24,6 +24,10 @@
   --accent-border: #F5C9AD;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 html, body {
   overflow-x: hidden;
   max-width: 100vw;
@@ -33,11 +37,12 @@ html, body {
 
 @layer base {
   html { font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
   * { box-sizing: border-box; }
-  ::-webkit-scrollbar { width: 4px; height: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #CEC8C1; border-radius: 99px; }
-  ::-webkit-scrollbar-thumb:hover { background: #B8B0A7; }
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: #E4DED8; }
+  ::-webkit-scrollbar-thumb { background: #C4BEB8; border-radius: 99px; }
+  ::-webkit-scrollbar-thumb:hover { background: #B0A9A2; }
 }
 
 /* ── Animations ──────────────────────────────────── */

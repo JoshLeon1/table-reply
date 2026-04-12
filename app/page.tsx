@@ -256,8 +256,8 @@ export default function LandingPage() {
               </div>
 
               <h1
-                className="text-white font-bold mb-5 sm:mb-6"
-                style={{ fontSize: 'clamp(30px, 4.5vw, 52px)', lineHeight: 1.12, letterSpacing: '-0.025em' }}
+                className="text-white mb-5 sm:mb-6"
+                style={{ fontSize: 'clamp(36px, 6vw, 72px)', fontWeight: 800, lineHeight: 1.08, letterSpacing: '-0.03em' }}
               >
                 Your reviews deserve a reply.{' '}
                 <span style={{ color: '#E05A28' }}>Now every single one gets one.</span>
@@ -483,7 +483,7 @@ export default function LandingPage() {
           <div className="border-l-2 border-[#E05A28]/20 pl-7 sm:pl-8">
             {features.map(({ icon, title, desc }) => (
               <div key={title} className="flex gap-4 mb-7 last:mb-0 group">
-                <div className="text-[#E05A28] mt-0.5 flex-shrink-0 opacity-80 group-hover:opacity-100 transition-opacity">{icon}</div>
+                <div className="w-10 h-10 rounded-xl bg-[#FEF0E8] border border-[#F5C9AD] flex items-center justify-center text-[#E05A28] flex-shrink-0 mt-0.5 group-hover:bg-[#FCDCCA] transition-colors">{icon}</div>
                 <div>
                   <p className="font-semibold text-[#111111] text-[14px] mb-1.5 tracking-tight">{title}</p>
                   <p className="text-[14px] leading-relaxed text-[#6b6b6b]">{desc}</p>
@@ -515,7 +515,7 @@ export default function LandingPage() {
 
             {steps.map(({ num, title, desc }) => (
               <div key={num} className="flex flex-col items-center gap-4 px-6 py-7 sm:py-8 text-center">
-                <div className="w-10 h-10 rounded-xl bg-[#E05A28] text-white flex items-center justify-center flex-shrink-0 font-bold text-[15px] shadow-[0_4px_16px_rgba(224,90,40,0.35)] relative z-10">
+                <div className="w-8 h-8 rounded-full bg-[#E05A28] text-white flex items-center justify-center flex-shrink-0 font-bold text-[14px] shadow-[0_4px_16px_rgba(224,90,40,0.35)] relative z-10">
                   {num}
                 </div>
                 <div>
@@ -786,7 +786,7 @@ export default function LandingPage() {
 
           <div className="border-t border-[#1E1E1E] pt-7 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <p className="text-[13px] text-[#444]">
-              &copy; 2026 TableReply · Austin, TX
+              &copy; 2025 TableReply · Austin, TX
             </p>
             <p className="text-[12px] text-[#333]">Made with care for independent restaurants everywhere</p>
           </div>

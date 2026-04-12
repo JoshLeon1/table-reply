@@ -2,13 +2,61 @@
 
 export const dynamic = 'force-dynamic'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+
+// ── Scroll-triggered animation hook ──────────────────────────────────────────
+function useInView(threshold = 0.12) {
+  const [inView, setInView] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setInView(true) },
+      { threshold }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [threshold])
+  return { ref, inView }
+}
+
+// ── Animated counter hook ─────────────────────────────────────────────────────
+function useCounter(target: number, duration = 1200, active = false) {
+  const [val, setVal] = useState(0)
+  useEffect(() => {
+    if (!active) return
+    const start = performance.now()
+    const tick = (now: number) => {
+      const p = Math.min((now - start) / duration, 1)
+      const eased = 1 - Math.pow(1 - p, 3)
+      setVal(Math.round(eased * target))
+      if (p < 1) requestAnimationFrame(tick)
+    }
+    requestAnimationFrame(tick)
+  }, [active, target, duration])
+  return val
+}
 
 export default function LandingPage() {
   const [scrollY, setScrollY] = useState(0)
   const [annual, setAnnual] = useState(false)
   const [notifDismissed, setNotifDismissed] = useState(false)
+
+  // Section animation refs
+  const trustBarAnim   = useInView(0.2)
+  const problemAnim    = useInView(0.1)
+  const featuresAnim   = useInView(0.08)
+  const howItWorksAnim = useInView(0.1)
+  const testimonialsAnim = useInView(0.08)
+  const pricingAnim    = useInView(0.15)
+  const ctaAnim        = useInView(0.2)
+
+  // Stat counters (fire when problem section is visible)
+  const stat1 = useCounter(63, 1000, problemAnim.inView)
+  const stat2 = useCounter(45, 1200, problemAnim.inView)
+  const stat3 = useCounter(97, 1100, problemAnim.inView)
 
   useEffect(() => {
     const fn = () => setScrollY(window.scrollY)
@@ -250,27 +298,27 @@ export default function LandingPage() {
 
             {/* Left — text */}
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#E05A28]/10 border border-[#E05A28]/20 mb-6 sm:mb-7">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#E05A28]" />
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#E05A28]/10 border border-[#E05A28]/20 mb-6 sm:mb-7 animate-fade-in" style={{ animationDelay: '100ms' }}>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#E05A28] animate-pulse" />
                 <span className="text-[#E05A28] text-[12px] font-semibold tracking-wide">Built for independent restaurants</span>
               </div>
 
               <h1
-                className="text-white mb-5 sm:mb-6"
-                style={{ fontSize: 'clamp(36px, 6vw, 72px)', fontWeight: 800, lineHeight: 1.08, letterSpacing: '-0.03em' }}
+                className="text-white mb-5 sm:mb-6 animate-fade-up"
+                style={{ fontSize: 'clamp(36px, 6vw, 72px)', fontWeight: 800, lineHeight: 1.08, letterSpacing: '-0.03em', animationDelay: '180ms' }}
               >
                 Your reviews deserve a reply.{' '}
                 <span style={{ color: '#E05A28' }}>Now every single one gets one.</span>
               </h1>
 
-              <p className="text-[#777] mb-8 sm:mb-10 max-w-[440px]" style={{ fontSize: '15px', lineHeight: '1.7' }}>
+              <p className="text-[#777] mb-8 sm:mb-10 max-w-[440px] animate-fade-up" style={{ fontSize: '15px', lineHeight: '1.7', animationDelay: '280ms' }}>
                 TableReply generates thoughtful, on-brand responses to your Google and Yelp reviews in seconds — matched to the reviewer's tone, your voice, and the star rating.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-3 mb-7 sm:mb-8">
+              <div className="flex flex-col sm:flex-row gap-3 mb-7 sm:mb-8 animate-fade-up" style={{ animationDelay: '360ms' }}>
                 <Link
                   href="/signup"
-                  className="inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-3.5 bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-sm font-bold rounded-xl transition-all duration-150 active:scale-[0.98] shadow-[0_4px_20px_rgba(224,90,40,0.35)]"
+                  className="inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-3.5 bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-sm font-bold rounded-xl transition-all duration-150 active:scale-[0.98] shadow-[0_4px_20px_rgba(224,90,40,0.35)] hover:shadow-[0_6px_28px_rgba(224,90,40,0.5)] hover:-translate-y-0.5"
                 >
                   Start free — no card needed
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -285,7 +333,7 @@ export default function LandingPage() {
                 </a>
               </div>
 
-              <div className="flex flex-wrap items-center gap-4 sm:gap-5">
+              <div className="flex flex-wrap items-center gap-4 sm:gap-5 animate-fade-up" style={{ animationDelay: '440ms' }}>
                 {['7 days free', 'Cancel anytime', 'Google & Yelp'].map((item) => (
                   <div key={item} className="flex items-center gap-1.5">
                     <svg className="w-3.5 h-3.5 text-[#E05A28] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>
@@ -296,7 +344,7 @@ export default function LandingPage() {
             </div>
 
             {/* Right — product mockup */}
-            <div className="hidden lg:flex justify-center items-center">
+            <div className="hidden lg:flex justify-center items-center animate-fade-up" style={{ animationDelay: '300ms' }}>
               <div className="relative w-full max-w-[420px]">
                 {/* Glow behind card */}
                 <div
@@ -377,7 +425,10 @@ export default function LandingPage() {
       {/* ── TRUST BAR ────────────────────────────────────────────────────── */}
       <section className="bg-white border-b border-[#e5e5e0] py-5 px-5 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
+          <div
+            ref={trustBarAnim.ref}
+            className={`flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 transition-all duration-700 ${trustBarAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+          >
             <p className="text-[12px] text-[#A8A29E] whitespace-nowrap font-medium uppercase tracking-[0.08em]">Trusted by restaurants across the US</p>
             <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
               {restaurantNames.map((name) => (
@@ -396,10 +447,13 @@ export default function LandingPage() {
 
       {/* ── PROBLEM / SOLUTION ───────────────────────────────────────────── */}
       <section className="py-20 px-5 sm:px-6 bg-[#fafaf8]">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_110px_1fr] items-start gap-10 lg:gap-0">
+        <div
+          ref={problemAnim.ref}
+          className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_110px_1fr] items-start gap-10 lg:gap-0"
+        >
 
           {/* Left — The problem */}
-          <div className="lg:pr-10">
+          <div className={`lg:pr-10 transition-all duration-700 ${problemAnim.inView ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'}`}>
             <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28] mb-4">
               The problem
             </p>
@@ -421,14 +475,14 @@ export default function LandingPage() {
           <div className="hidden lg:flex flex-col items-center self-stretch py-2">
             <div className="flex-1 w-px bg-[#e5e5e0]" />
             {[
-              { stat: '63%', label: 'reviews unanswered' },
-              { stat: '45%', label: 'guests read replies' },
-              { stat: '97%', label: 'time saved' },
-            ].map(({ stat, label }, i) => (
-              <div key={stat} className="flex flex-col items-center">
+              { val: stat1, suffix: '%', label: 'reviews unanswered' },
+              { val: stat2, suffix: '%', label: 'guests read replies' },
+              { val: stat3, suffix: '%', label: 'time saved' },
+            ].map(({ val, suffix, label }, i) => (
+              <div key={label} className="flex flex-col items-center">
                 {i > 0 && <div className="w-px h-5 bg-[#e5e5e0]" />}
                 <div className="flex flex-col items-center py-4 px-1">
-                  <p className="font-bold text-[#E05A28] text-[20px] leading-none" style={{ letterSpacing: '-0.03em' }}>{stat}</p>
+                  <p className="font-bold text-[#E05A28] text-[20px] leading-none tabular-nums" style={{ letterSpacing: '-0.03em' }}>{val}{suffix}</p>
                   <p className="text-[#bbb] text-[10px] text-center mt-1 leading-tight" style={{ maxWidth: '65px' }}>{label}</p>
                 </div>
               </div>
@@ -437,7 +491,7 @@ export default function LandingPage() {
           </div>
 
           {/* Right — The solution */}
-          <div className="lg:pl-10">
+          <div className={`lg:pl-10 transition-all duration-700 delay-200 ${problemAnim.inView ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'}`}>
             <p className="text-[11px] font-semibold uppercase tracking-[0.12em] mb-4 text-emerald-600">
               The solution
             </p>
@@ -459,10 +513,13 @@ export default function LandingPage() {
 
       {/* ── FEATURES ─────────────────────────────────────────────────────── */}
       <section className="py-20 px-5 sm:px-6 bg-white">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+        <div
+          ref={featuresAnim.ref}
+          className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start"
+        >
 
           {/* Left — headline */}
-          <div className="lg:sticky lg:top-32">
+          <div className={`lg:sticky lg:top-32 transition-all duration-700 ${featuresAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
             <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28] mb-4">Features</p>
             <h2
               className="font-bold text-[#111111]"
@@ -481,9 +538,17 @@ export default function LandingPage() {
 
           {/* Right — feature rows */}
           <div className="border-l-2 border-[#E05A28]/20 pl-7 sm:pl-8">
-            {features.map(({ icon, title, desc }) => (
-              <div key={title} className="flex gap-4 mb-7 last:mb-0 group">
-                <div className="w-10 h-10 rounded-xl bg-[#FEF0E8] border border-[#F5C9AD] flex items-center justify-center text-[#E05A28] flex-shrink-0 mt-0.5 group-hover:bg-[#FCDCCA] transition-colors">{icon}</div>
+            {features.map(({ icon, title, desc }, i) => (
+              <div
+                key={title}
+                className="flex gap-4 mb-7 last:mb-0 group transition-all duration-500"
+                style={{
+                  transitionDelay: featuresAnim.inView ? `${i * 60}ms` : '0ms',
+                  opacity: featuresAnim.inView ? 1 : 0,
+                  transform: featuresAnim.inView ? 'translateY(0)' : 'translateY(16px)',
+                }}
+              >
+                <div className="w-10 h-10 rounded-xl bg-[#FEF0E8] border border-[#F5C9AD] flex items-center justify-center text-[#E05A28] flex-shrink-0 mt-0.5 group-hover:bg-[#FCDCCA] group-hover:scale-110 transition-all duration-200">{icon}</div>
                 <div>
                   <p className="font-semibold text-[#111111] text-[14px] mb-1.5 tracking-tight">{title}</p>
                   <p className="text-[14px] leading-relaxed text-[#6b6b6b]">{desc}</p>
@@ -497,7 +562,10 @@ export default function LandingPage() {
       {/* ── HOW IT WORKS ─────────────────────────────────────────────────── */}
       <section id="how-it-works" className="py-20 px-5 sm:px-6 bg-[#fafaf8] border-t border-[#e5e5e0]">
         <div className="max-w-6xl mx-auto">
-          <div className="mb-12 text-center">
+          <div
+            ref={howItWorksAnim.ref}
+            className={`mb-12 text-center transition-all duration-600 ${howItWorksAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
+          >
             <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28] mb-3">
               How it works
             </p>
@@ -510,12 +578,23 @@ export default function LandingPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-0 relative">
-            {/* Connector line (desktop only) */}
-            <div className="hidden md:block absolute top-5 left-[calc(16.66%+18px)] right-[calc(16.66%+18px)] h-px bg-gradient-to-r from-[#E05A28]/30 via-[#E05A28]/50 to-[#E05A28]/30" />
+            {/* Connector line (desktop only) — animates width */}
+            <div
+              className="hidden md:block absolute top-5 left-[calc(16.66%+18px)] right-[calc(16.66%+18px)] h-px bg-gradient-to-r from-[#E05A28]/30 via-[#E05A28]/50 to-[#E05A28]/30 origin-left transition-all duration-1000"
+              style={{ transform: howItWorksAnim.inView ? 'scaleX(1)' : 'scaleX(0)', transitionDelay: '300ms' }}
+            />
 
-            {steps.map(({ num, title, desc }) => (
-              <div key={num} className="flex flex-col items-center gap-4 px-6 py-7 sm:py-8 text-center">
-                <div className="w-8 h-8 rounded-full bg-[#E05A28] text-white flex items-center justify-center flex-shrink-0 font-bold text-[14px] shadow-[0_4px_16px_rgba(224,90,40,0.35)] relative z-10">
+            {steps.map(({ num, title, desc }, i) => (
+              <div
+                key={num}
+                className="flex flex-col items-center gap-4 px-6 py-7 sm:py-8 text-center transition-all duration-500"
+                style={{
+                  transitionDelay: howItWorksAnim.inView ? `${i * 120}ms` : '0ms',
+                  opacity: howItWorksAnim.inView ? 1 : 0,
+                  transform: howItWorksAnim.inView ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.95)',
+                }}
+              >
+                <div className="w-8 h-8 rounded-full bg-[#E05A28] text-white flex items-center justify-center flex-shrink-0 font-bold text-[14px] shadow-[0_4px_16px_rgba(224,90,40,0.35)] relative z-10 transition-transform duration-200 hover:scale-110">
                   {num}
                 </div>
                 <div>
@@ -535,7 +614,10 @@ export default function LandingPage() {
       {/* ── SOCIAL PROOF ─────────────────────────────────────────────────── */}
       <section className="py-24 px-6" style={{ background: '#111111' }}>
         <div className="max-w-6xl mx-auto">
-          <div className="mb-14 text-center">
+          <div
+            ref={testimonialsAnim.ref}
+            className={`mb-14 text-center transition-all duration-700 ${testimonialsAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
+          >
             <p className="text-[#E05A28] text-xs font-semibold uppercase tracking-wider mb-3">What owners say</p>
             <h2
               className="font-bold text-white"
@@ -546,8 +628,16 @@ export default function LandingPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/[0.06] rounded-2xl overflow-hidden">
-            {testimonials.map(({ initials, name, role, restaurant, quote }) => (
-              <div key={name} className="bg-[#111111] px-7 py-8 flex flex-col">
+            {testimonials.map(({ initials, name, role, restaurant, quote }, i) => (
+              <div
+                key={name}
+                className="bg-[#111111] px-7 py-8 flex flex-col transition-all duration-600"
+                style={{
+                  transitionDelay: testimonialsAnim.inView ? `${i * 100}ms` : '0ms',
+                  opacity: testimonialsAnim.inView ? 1 : 0,
+                  transform: testimonialsAnim.inView ? 'translateY(0)' : 'translateY(24px)',
+                }}
+              >
                 {/* Stars */}
                 <div className="text-amber-400 text-[13px] mb-5">★★★★★</div>
 
@@ -574,21 +664,24 @@ export default function LandingPage() {
 
       {/* ── PRICING ──────────────────────────────────────────────────────── */}
       <section id="pricing" className="py-24 px-6 bg-[#fafaf8] border-t border-[#e5e5e0]">
-        <div className="max-w-6xl mx-auto flex flex-col items-center">
+        <div
+          ref={pricingAnim.ref}
+          className="max-w-6xl mx-auto flex flex-col items-center"
+        >
 
           {/* Header */}
           <h2
-            className="font-bold text-[#111111] mb-3 text-center"
+            className={`font-bold text-[#111111] mb-3 text-center transition-all duration-700 ${pricingAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
             style={{ fontSize: 'clamp(28px, 3.5vw, 40px)', lineHeight: 1.15, letterSpacing: '-0.02em' }}
           >
             One plan. Everything included.
           </h2>
-          <p className="text-center mb-10" style={{ fontSize: '16px', color: '#6b6b6b' }}>
+          <p className={`text-center mb-10 transition-all duration-700 delay-100 ${pricingAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ fontSize: '16px', color: '#6b6b6b' }}>
             No caps. No tiers. No surprises.
           </p>
 
           {/* Toggle */}
-          <div className="flex items-center gap-1 p-1 rounded-full bg-[#e8e8e3] mb-10">
+          <div className={`flex items-center gap-1 p-1 rounded-full bg-[#e8e8e3] mb-10 transition-all duration-700 delay-150 ${pricingAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
             <button
               onClick={() => setAnnual(false)}
               className={`px-5 py-2 rounded-full text-[13px] font-medium transition-all duration-200 ${
@@ -612,12 +705,14 @@ export default function LandingPage() {
 
           {/* Single card */}
           <div
-            className="w-full rounded-2xl overflow-hidden transition-all duration-300"
+            className={`w-full rounded-2xl overflow-hidden transition-all duration-500 delay-200`}
             style={{
               maxWidth: '480px',
               background: '#111111',
               border: '1px solid rgba(224,90,40,0.35)',
-              boxShadow: '0 0 0 0 rgba(224,90,40,0)',
+              boxShadow: pricingAnim.inView ? '0 0 0 0 rgba(224,90,40,0)' : '0 0 0 0 rgba(224,90,40,0)',
+              opacity: pricingAnim.inView ? 1 : 0,
+              transform: pricingAnim.inView ? 'translateY(0) scale(1)' : 'translateY(24px) scale(0.97)',
             }}
             onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 0 40px rgba(224,90,40,0.15)')}
             onMouseLeave={e => (e.currentTarget.style.boxShadow = '0 0 0 0 rgba(224,90,40,0)')}
@@ -687,7 +782,10 @@ export default function LandingPage() {
 
       {/* ── CTA SECTION ──────────────────────────────────────────────────── */}
       <section className="py-16 px-5 sm:px-6 bg-[#111111]">
-        <div className="max-w-2xl mx-auto">
+        <div
+          ref={ctaAnim.ref}
+          className={`max-w-2xl mx-auto transition-all duration-700 ${ctaAnim.inView ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-[0.97]'}`}
+        >
           <div className="relative rounded-3xl overflow-hidden px-8 sm:px-12 py-12 sm:py-14 text-center"
             style={{ background: 'linear-gradient(145deg, #E05A28 0%, #B84018 100%)' }}>
             {/* Dot pattern overlay */}

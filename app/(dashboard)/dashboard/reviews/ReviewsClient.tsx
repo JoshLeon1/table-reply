@@ -29,6 +29,17 @@ function formatDate(utcStr: string) {
   } catch { return utcStr }
 }
 
+function getInitials(name: string) {
+  return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+}
+
+function starTopBorder(rating: number) {
+  if (rating >= 5) return 'border-t-2 border-t-emerald-300'
+  if (rating >= 4) return 'border-t-2 border-t-amber-300'
+  if (rating >= 3) return 'border-t-2 border-t-yellow-200'
+  return 'border-t-2 border-t-red-300'
+}
+
 // ── Scraping progress indicator ───────────────────────────────────────────────
 
 const SCRAPE_MESSAGES = [
@@ -106,13 +117,22 @@ function SetupPanel({ profile, onSaved }: { profile: RestaurantProfile; onSaved:
           value={url}
           onChange={(e) => { setUrl(e.target.value); setError('') }}
           onKeyDown={(e) => e.key === 'Enter' && handleSave()}
-          className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] text-[#111] text-sm placeholder:text-[#C0BDB8] bg-white focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] transition-all"
+          className="w-full px-3.5 py-3.5 rounded-xl border border-[#E4DED8] text-[15px] text-[#111] placeholder:text-[#C0BDB8] bg-white focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] transition-all"
         />
+        <p className="text-[11px] text-[#A8A29E] mt-1.5">e.g. maps.google.com/maps/place/your-restaurant...</p>
         {error && <p className="text-[12px] text-red-500">{error}</p>}
+
+        {/* Helper bullets */}
+        <div className="space-y-1.5 pt-1">
+          <p className="flex items-center gap-2 text-[12px] text-[#57534E]"><span>📍</span> Go to Google Maps</p>
+          <p className="flex items-center gap-2 text-[12px] text-[#57534E]"><span>🔍</span> Search for your restaurant</p>
+          <p className="flex items-center gap-2 text-[12px] text-[#57534E]"><span>🔗</span> Copy the URL from address bar</p>
+        </div>
+
         <button
           onClick={handleSave}
           disabled={saving || !url.trim()}
-          className="w-full py-2.5 rounded-xl bg-[#111] hover:bg-[#1C1C1C] text-white text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+          className="w-full min-h-[52px] rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.98] text-white text-[15px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-[0_2px_12px_rgba(224,90,40,0.25)]"
         >
           {saving ? 'Saving…' : 'Connect & Start Syncing'}
         </button>
@@ -165,10 +185,14 @@ function SkeletonCard() {
   )
 }
 
-function ReviewCard({ review: initialReview, onApprove, onDismiss }: {
+const REVIEW_TRUNCATE_LENGTH = 200
+
+function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, showStatus }: {
   review: ScrapedReview
   onApprove: (id: string) => void
   onDismiss: (id: string) => void
+  onRestore?: (id: string) => void
+  showStatus?: boolean
 }) {
   const supabase = createClient()
   const [review, setReview] = useState(initialReview)
@@ -176,7 +200,9 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss }: {
   const [actioning, setActioning] = useState(false)
   const [generating, setGenerating] = useState(false)
   const [genError, setGenError] = useState('')
+  const [expanded, setExpanded] = useState(false)
   const noText = !review.review_text?.trim()
+  const isLong = (review.review_text?.length ?? 0) > REVIEW_TRUNCATE_LENGTH
 
   const handleGenerateReply = async () => {
     setGenerating(true)
@@ -194,7 +220,6 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss }: {
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? 'Generation failed')
       const reply: string = data.reply
-      // Save to DB
       await supabase
         .from('scraped_reviews')
         .update({ generated_reply: reply })
@@ -222,18 +247,43 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss }: {
     onDismiss(review.id)
   }
 
+  const handleRestore = () => {
+    if (onRestore) {
+      setActioning(true)
+      onRestore(review.id)
+    }
+  }
+
+  const status = review.reply_status
+
+  // Status badge
+  const statusBadge = showStatus ? (
+    status === 'pending' ? (
+      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#FEF0E8] text-[#C94E21] border border-[#F5C9AD]">Pending</span>
+    ) : status === 'approved' ? (
+      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Approved</span>
+    ) : (
+      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#F3F0EC] text-[#A8A29E] border border-[#E4DED8]">Dismissed</span>
+    )
+  ) : null
+
+  const displayText = isLong && !expanded
+    ? review.review_text.slice(0, REVIEW_TRUNCATE_LENGTH) + '…'
+    : review.review_text
+
   return (
-    <div className={`bg-white rounded-2xl overflow-hidden border border-[#E4DED8] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.04)] transition-all duration-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08),0_12px_40px_rgba(0,0,0,0.06)] hover:-translate-y-px ${noText ? 'opacity-50' : ''}`}>
+    <div className={`bg-white rounded-2xl overflow-hidden border border-[#E4DED8] ${starTopBorder(review.star_rating)} shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.04)] transition-all duration-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08),0_12px_40px_rgba(0,0,0,0.06)] hover:-translate-y-px ${noText ? 'opacity-50' : ''}`}>
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-[#EDE9E4]">
         <div className="flex items-center gap-3">
-          {/* Avatar */}
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#2A2A2A] to-[#111] flex items-center justify-center text-[13px] font-bold text-white flex-shrink-0 shadow-sm">
-            {review.reviewer_name.charAt(0).toUpperCase()}
+          {/* Initials avatar */}
+          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#FEF0E8] to-[#F3F0EC] border border-[#F5C9AD]/40 flex items-center justify-center text-[12px] font-bold text-[#C94E21] flex-shrink-0 shadow-sm">
+            {getInitials(review.reviewer_name)}
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-[13px] font-semibold text-[#111]">{review.reviewer_name}</span>
+              {statusBadge}
               {noText ? (
                 <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#F3F0EC] text-[#A8A29E] border border-[#E4DED8]">Rating only</span>
               ) : review.star_rating >= 4 ? (
@@ -250,7 +300,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss }: {
             </div>
             <div className="flex items-center gap-2 mt-0.5">
               <StarRow rating={review.star_rating}/>
-              <span className="text-[11px] text-[#C0BDB8]">{formatDate(review.review_datetime_utc)}</span>
+              <span className="text-[11px] text-[#A8A29E]">{formatDate(review.review_datetime_utc)}</span>
               {review.language && review.language !== 'English' && (
                 <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-blue-50 text-blue-600 border border-blue-100">{review.language}</span>
               )}
@@ -262,22 +312,36 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss }: {
       <div className="divide-y divide-[#EDE9E4]">
         {/* Review text */}
         <div className="px-5 py-4">
-          <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#C4BEB8] mb-2">Their review</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-2">Their review</p>
           {noText ? (
             <p className="text-[13px] text-[#C4BEB8] italic">Rating only — no written review</p>
           ) : (
-            <p className="text-[13px] text-[#57534E] leading-relaxed">&ldquo;{review.review_text}&rdquo;</p>
+            <>
+              <p className="text-[13px] text-[#57534E] leading-relaxed">&ldquo;{displayText}&rdquo;</p>
+              {isLong && (
+                <button
+                  onClick={() => setExpanded(!expanded)}
+                  className="text-[12px] text-[#E05A28] hover:text-[#C94E21] font-medium mt-1.5 transition-colors"
+                >
+                  {expanded ? 'Show less' : 'Read more'}
+                </button>
+              )}
+            </>
           )}
         </div>
 
         {/* Reply section */}
         {!noText && (
           <div className="px-5 py-4">
-            <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#E05A28]/80 mb-2">Your reply</p>
             {review.generated_reply ? (
-              <p className="text-[13px] text-[#111] leading-relaxed">{review.generated_reply}</p>
+              /* AI reply card */
+              <div className="rounded-xl bg-[#FAFAF9] border border-[#EDE9E4] px-4 py-3">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-2">AI reply</p>
+                <p className="text-[13px] text-[#57534E] leading-relaxed">{review.generated_reply}</p>
+              </div>
             ) : (
               <div>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-2">AI reply</p>
                 {generating ? (
                   <div className="flex items-center gap-2.5 text-[13px] text-[#6B6B6B] py-1">
                     <svg className="animate-spin w-3.5 h-3.5 text-[#E05A28] flex-shrink-0" fill="none" viewBox="0 0 24 24">
@@ -311,26 +375,57 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss }: {
       <div className="flex flex-wrap items-center gap-2 px-4 sm:px-5 py-3.5 bg-[#FAFAF9] border-t border-[#EDE9E4]">
         {noText ? (
           <span className="text-[12px] text-[#C4BEB8] italic flex-1">No reply needed</span>
-        ) : (
+        ) : status === 'approved' ? (
+          <>
+            <button
+              onClick={handleApprove}
+              disabled={actioning}
+              className="flex items-center justify-center gap-1.5 px-4 min-h-[44px] rounded-xl bg-white border border-[#E4DED8] hover:border-[#CEC8C1] text-[#57534E] text-[13px] font-medium active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
+            >
+              {copied ? (
+                <><svg className="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied!</>
+              ) : (
+                <><svg className="w-3.5 h-3.5 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>View Reply</>
+              )}
+            </button>
+            <button
+              onClick={handleDismiss}
+              disabled={actioning}
+              className="px-3.5 min-h-[44px] rounded-xl text-[13px] font-medium text-[#A8A29E] hover:text-[#333] hover:bg-[#EDE9E4] active:scale-[0.97] disabled:opacity-40 transition-all duration-150"
+            >
+              Undo
+            </button>
+          </>
+        ) : status === 'dismissed' ? (
           <button
-            onClick={handleApprove}
-            disabled={actioning || !review.generated_reply}
-            className="flex items-center justify-center gap-1.5 px-4 min-h-[44px] rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.97] text-white text-[13px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 shadow-[0_1px_3px_rgba(224,90,40,0.3)]"
+            onClick={handleRestore}
+            disabled={actioning}
+            className="flex items-center justify-center gap-1.5 px-4 min-h-[44px] rounded-xl bg-white border border-[#E4DED8] hover:border-[#CEC8C1] text-[#57534E] text-[13px] font-medium active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
           >
-            {copied ? (
-              <><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied!</>
-            ) : (
-              <><svg className="w-3.5 h-3.5 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Copy &amp; Approve</>
-            )}
+            Restore
           </button>
+        ) : (
+          <>
+            <button
+              onClick={handleApprove}
+              disabled={actioning || !review.generated_reply}
+              className="flex items-center justify-center gap-1.5 px-4 min-h-[44px] rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.97] text-white text-[13px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 shadow-[0_1px_3px_rgba(224,90,40,0.3)]"
+            >
+              {copied ? (
+                <><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied!</>
+              ) : (
+                <><svg className="w-3.5 h-3.5 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Copy &amp; Approve</>
+              )}
+            </button>
+            <button
+              onClick={handleDismiss}
+              disabled={actioning}
+              className="px-3.5 min-h-[44px] rounded-xl text-[13px] font-medium text-[#A8A29E] hover:text-[#333] hover:bg-[#EDE9E4] active:scale-[0.97] disabled:opacity-40 transition-all duration-150"
+            >
+              Dismiss
+            </button>
+          </>
         )}
-        <button
-          onClick={handleDismiss}
-          disabled={actioning}
-          className="px-3.5 min-h-[44px] rounded-xl text-[13px] font-medium text-[#A8A29E] hover:text-[#333] hover:bg-[#EDE9E4] active:scale-[0.97] disabled:opacity-40 transition-all duration-150"
-        >
-          Dismiss
-        </button>
       </div>
     </div>
   )
@@ -338,13 +433,14 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss }: {
 
 // ── Connected panel ───────────────────────────────────────────────────────────
 
-type ReviewTab = 'pending' | 'approved'
+type ReviewTab = 'pending' | 'approved' | 'dismissed'
 
-function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onScrapeNow, onTestMode, scraping, scrapeError, onDismissError, lastScrapedAt }: {
+function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onScrapeNow, onTestMode, scraping, scrapeError, onDismissError, lastScrapedAt }: {
   profile: RestaurantProfile
   reviews: ScrapedReview[]
   onApprove: (id: string) => void
   onDismiss: (id: string) => void
+  onRestore: (id: string) => void
   onScrapeNow: () => void
   onTestMode: () => void
   scraping: boolean
@@ -356,6 +452,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onScrapeNow, o
     .filter((r) => r.reply_status === 'pending')
     .sort((a, b) => (b.alert_triggered ? 1 : 0) - (a.alert_triggered ? 1 : 0))
   const approved  = reviews.filter((r) => r.reply_status === 'approved')
+  const dismissed = reviews.filter((r) => r.reply_status === 'dismissed')
   const [activeTab, setActiveTab] = useState<ReviewTab>('pending')
   const [copiedAll, setCopiedAll] = useState(false)
 
@@ -372,6 +469,12 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onScrapeNow, o
     setCopiedAll(true)
     setTimeout(() => setCopiedAll(false), 2500)
   }
+
+  const tabs: { key: ReviewTab; label: string; count: number }[] = [
+    { key: 'pending',  label: 'Pending',  count: pending.length  },
+    { key: 'approved', label: 'Approved', count: approved.length  },
+    { key: 'dismissed', label: 'Dismissed', count: dismissed.length },
+  ]
 
   return (
     <div>
@@ -450,42 +553,34 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onScrapeNow, o
         </div>
       )}
 
-      {/* Tab selector */}
-      <div className="flex items-center gap-1 p-1 bg-[#F3F0EC] rounded-xl mb-5 w-full sm:w-auto sm:inline-flex">
-        <button
-          onClick={() => setActiveTab('pending')}
-          className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-[13px] font-semibold transition-all duration-150 ${
-            activeTab === 'pending'
-              ? 'bg-white text-[#111] shadow-sm'
-              : 'text-[#A8A29E] hover:text-[#57534E]'
-          }`}
-        >
-          Pending
-          {pending.length > 0 && (
-            <span className={`min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-bold flex items-center justify-center leading-none ${
-              activeTab === 'pending' ? 'bg-[#E05A28] text-white' : 'bg-[#E4DED8] text-[#A8A29E]'
-            }`}>
-              {pending.length}
-            </span>
-          )}
-        </button>
-        <button
-          onClick={() => setActiveTab('approved')}
-          className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-[13px] font-semibold transition-all duration-150 ${
-            activeTab === 'approved'
-              ? 'bg-white text-[#111] shadow-sm'
-              : 'text-[#A8A29E] hover:text-[#57534E]'
-          }`}
-        >
-          Approved
-          {approved.length > 0 && (
-            <span className={`min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-bold flex items-center justify-center leading-none ${
-              activeTab === 'approved' ? 'bg-emerald-500 text-white' : 'bg-[#E4DED8] text-[#A8A29E]'
-            }`}>
-              {approved.length}
-            </span>
-          )}
-        </button>
+      {/* Tab bar — horizontal scrollable on mobile */}
+      <div className="overflow-x-auto scrollbar-hide mb-5">
+        <div className="flex border-b border-[#EDE9E4] min-w-max sm:min-w-0">
+          {tabs.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`flex items-center gap-2 px-4 py-2.5 text-[13px] font-semibold transition-all duration-150 whitespace-nowrap border-b-2 -mb-px ${
+                activeTab === tab.key
+                  ? 'border-[#E05A28] text-[#111]'
+                  : 'border-transparent text-[#A8A29E] hover:text-[#57534E]'
+              }`}
+            >
+              {tab.label}
+              {tab.count > 0 && (
+                <span className={`min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-bold flex items-center justify-center leading-none ${
+                  activeTab === tab.key
+                    ? tab.key === 'pending' ? 'bg-[#E05A28] text-white'
+                    : tab.key === 'approved' ? 'bg-emerald-500 text-white'
+                    : 'bg-[#A8A29E] text-white'
+                    : 'bg-[#E4DED8] text-[#A8A29E]'
+                }`}>
+                  {tab.count}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Skeleton loading */}
@@ -499,7 +594,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onScrapeNow, o
       {!scraping && activeTab === 'pending' && (pending.length > 0 ? (
         <div className="space-y-3">
           {pending.map((r) => (
-            <ReviewCard key={r.id} review={r} onApprove={onApprove} onDismiss={onDismiss}/>
+            <ReviewCard key={r.id} review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore}/>
           ))}
         </div>
       ) : (
@@ -509,8 +604,8 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onScrapeNow, o
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/>
             </svg>
           </div>
-          <p className="text-[14px] font-semibold text-[#111]">All caught up</p>
-          <p className="text-[12px] text-[#A8A29E] mt-1 max-w-[200px] mx-auto leading-relaxed">New reviews will appear here after the next sync.</p>
+          <p className="text-[14px] font-semibold text-[#111]">You&apos;re all caught up!</p>
+          <p className="text-[12px] text-[#A8A29E] mt-1 max-w-[220px] mx-auto leading-relaxed">New reviews will appear here after your next sync.</p>
         </div>
       ))}
 
@@ -535,7 +630,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onScrapeNow, o
               )}
               <div className="space-y-3">
                 {approved.map((r) => (
-                  <ReviewCard key={r.id} review={r} onApprove={onApprove} onDismiss={onDismiss}/>
+                  <ReviewCard key={r.id} review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore}/>
                 ))}
               </div>
             </>
@@ -547,7 +642,30 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onScrapeNow, o
                 </svg>
               </div>
               <p className="text-[14px] font-semibold text-[#111]">No approved replies yet</p>
-              <p className="text-[12px] text-[#A8A29E] mt-1 max-w-[220px] mx-auto leading-relaxed">Approved reviews will show up here once you copy &amp; approve them.</p>
+              <p className="text-[12px] text-[#A8A29E] mt-1 max-w-[220px] mx-auto leading-relaxed">Approve a reply to see it here.</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Dismissed tab */}
+      {!scraping && activeTab === 'dismissed' && (
+        <div>
+          {dismissed.length > 0 ? (
+            <div className="space-y-3">
+              {dismissed.map((r) => (
+                <ReviewCard key={r.id} review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} showStatus/>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-14 bg-white rounded-2xl border border-[#E4DED8]">
+              <div className="w-11 h-11 rounded-2xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mx-auto mb-4 shadow-sm">
+                <svg className="w-5 h-5 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                </svg>
+              </div>
+              <p className="text-[14px] font-semibold text-[#111]">Nothing dismissed</p>
+              <p className="text-[12px] text-[#A8A29E] mt-1 max-w-[220px] mx-auto leading-relaxed">Dismissed reviews will appear here.</p>
             </div>
           )}
         </div>
@@ -592,7 +710,7 @@ export default function ReviewsClient({ profile, initialReviews, userId }: Props
         const { data: fresh } = await supabase
           .from('scraped_reviews').select('*')
           .eq('user_id', userId)
-          .in('reply_status', ['pending', 'approved'])
+          .in('reply_status', ['pending', 'approved', 'dismissed'])
           .order('review_datetime_utc', { ascending: false })
           .limit(50)
         if (fresh) setReviews(fresh as ScrapedReview[])
@@ -621,8 +739,13 @@ export default function ReviewsClient({ profile, initialReviews, userId }: Props
   }
 
   const handleDismiss = async (id: string) => {
-    setReviews((prev) => prev.filter((r) => r.id !== id))
+    setReviews((prev) => prev.map((r) => r.id === id ? { ...r, reply_status: 'dismissed' as const } : r))
     await supabase.from('scraped_reviews').update({ reply_status: 'dismissed' }).eq('id', id).eq('user_id', userId)
+  }
+
+  const handleRestore = async (id: string) => {
+    setReviews((prev) => prev.map((r) => r.id === id ? { ...r, reply_status: 'pending' as const } : r))
+    await supabase.from('scraped_reviews').update({ reply_status: 'pending' }).eq('id', id).eq('user_id', userId)
   }
 
   return !mapsUrl ? (
@@ -633,6 +756,7 @@ export default function ReviewsClient({ profile, initialReviews, userId }: Props
       reviews={reviews}
       onApprove={handleApprove}
       onDismiss={handleDismiss}
+      onRestore={handleRestore}
       onScrapeNow={() => handleScrapeNow()}
       onTestMode={() => handleScrapeNow(true)}
       scraping={scraping}

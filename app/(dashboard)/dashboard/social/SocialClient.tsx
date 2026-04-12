@@ -272,11 +272,13 @@ function CreatePostModal({
               <button
                 onClick={generateCaption}
                 disabled={captionLoading}
-                className="w-full h-[44px] rounded-xl bg-[#111] hover:bg-[#1C1C1C] text-white text-[13px] font-semibold disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                className="w-full min-h-[52px] rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.98] text-white text-[13px] font-semibold disabled:opacity-50 transition-all flex items-center justify-center gap-2 shadow-[0_1px_3px_rgba(224,90,40,0.3)]"
               >
                 {captionLoading ? (
-                  <><svg className="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/></svg>Writing…</>
-                ) : caption ? 'Regenerate' : 'Generate Caption'}
+                  <><svg className="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/></svg>Generating…</>
+                ) : (
+                  <><svg className="w-4 h-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M5 3l3 6-3 6h14l-3-6 3-6H5zM5 9h14"/></svg>{caption ? 'Regenerate Caption' : 'Generate Caption'}</>
+                )}
               </button>
 
               {captionError && (
@@ -356,11 +358,13 @@ function CreatePostModal({
               <button
                 onClick={generateGraphic}
                 disabled={graphicLoading}
-                className="w-full h-[44px] rounded-xl bg-[#111] hover:bg-[#1C1C1C] text-white text-[13px] font-semibold disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                className="w-full min-h-[52px] rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.98] text-white text-[13px] font-semibold disabled:opacity-50 transition-all flex items-center justify-center gap-2 shadow-[0_1px_3px_rgba(224,90,40,0.3)]"
               >
                 {graphicLoading ? (
                   <><svg className="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/></svg>Building graphic…</>
-                ) : graphicHtml ? 'Regenerate' : 'Generate Graphic'}
+                ) : (
+                  <><svg className="w-4 h-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>{graphicHtml ? 'Regenerate Graphic' : 'Generate Graphic'}</>
+                )}
               </button>
 
               {graphicError && (
@@ -420,25 +424,36 @@ export default function SocialClient({ reviews, restaurantProfile }: Props) {
       </div>
 
       {goodReviews.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-[#E4DED8] px-6 py-10 sm:p-12 text-center">
-          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mx-auto mb-3 shadow-sm">
-            <svg className="w-5 h-5 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        <div className="bg-white rounded-2xl border border-[#E4DED8] px-6 py-12 sm:p-14 text-center">
+          <div className="w-14 h-14 rounded-2xl bg-[#FEF0E8] border border-[#F5C9AD] flex items-center justify-center mx-auto mb-4 shadow-sm">
+            <svg className="w-7 h-7 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/>
             </svg>
           </div>
-          <p className="text-[14px] font-medium text-[#666]">No 4★ or 5★ reviews yet</p>
-          <p className="text-[13px] text-[#A8A29E] mt-1">Sync your reviews to unlock social post creation.</p>
+          <p className="text-[15px] font-semibold text-[#111] mb-1">Create your first social post</p>
+          <p className="text-[13px] text-[#A8A29E] mt-1 max-w-[260px] mx-auto leading-relaxed">Turn your best reviews into ready-to-post captions and shareable graphics.</p>
+          <p className="text-[12px] text-[#A8A29E] mt-3">Sync some reviews first to unlock social post creation.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {goodReviews.map((review) => (
             <div
               key={review.id}
-              className="bg-white rounded-2xl border border-[#E4DED8] p-4 sm:p-5 flex flex-col gap-3 hover:border-[#D4CFC6] hover:shadow-[0_2px_12px_rgba(0,0,0,0.05)] transition-all duration-150"
+              className="bg-white rounded-2xl border border-[#E4DED8] p-4 sm:p-5 flex flex-col gap-3 hover:border-[#D4CFC6] hover:shadow-[0_4px_16px_rgba(0,0,0,0.07)] transition-all duration-150"
             >
-              {/* Header row: avatar + name + stars */}
+              {/* Header row: platform badge + timestamp */}
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#F3F0EC] border border-[#E4DED8] text-[#A8A29E]">Google</span>
+                <span className="text-[11px] text-[#A8A29E]">
+                  {review.review_datetime_utc
+                    ? new Date(review.review_datetime_utc).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                    : ''}
+                </span>
+              </div>
+
+              {/* Reviewer: avatar + name + stars */}
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#2A2A2A] to-[#111] flex items-center justify-center text-[12px] font-bold text-white flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FEF0E8] to-[#F3F0EC] border border-[#F5C9AD]/40 flex items-center justify-center text-[11px] font-bold text-[#C94E21] flex-shrink-0">
                   {review.reviewer_name.charAt(0).toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -447,22 +462,21 @@ export default function SocialClient({ reviews, restaurantProfile }: Props) {
                     <Stars rating={review.star_rating} />
                   </div>
                 </div>
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#F3F0EC] border border-[#E4DED8] text-[#A8A29E] flex-shrink-0">Google</span>
               </div>
 
-              {/* Review snippet */}
-              <p className="text-[13px] text-[#666] leading-relaxed flex-1">
-                &ldquo;{review.review_text.length > 100
-                  ? review.review_text.slice(0, 100) + '…'
+              {/* Review text */}
+              <p className="text-[14px] text-[#57534E] leading-relaxed flex-1">
+                &ldquo;{review.review_text.length > 110
+                  ? review.review_text.slice(0, 110) + '…'
                   : review.review_text}&rdquo;
               </p>
 
               {/* CTA */}
               <button
                 onClick={() => setActiveReview(review)}
-                className="mt-auto w-full h-[44px] rounded-xl bg-[#E05A28] hover:bg-[#C94E21] text-white text-[13px] font-semibold transition-all duration-150 flex items-center justify-center gap-1.5 active:scale-[0.97]"
+                className="mt-auto w-full h-[44px] rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-[13px] font-semibold transition-all duration-150 flex items-center justify-center gap-1.5 active:scale-[0.97] shadow-[0_1px_3px_rgba(224,90,40,0.25)]"
               >
-                <svg className="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                 </svg>
                 Create Post

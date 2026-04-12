@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import Input from '@/components/ui/Input'
 
 const CUISINE_OPTIONS = [
   'American', 'Italian', 'Mexican', 'Japanese', 'Chinese', 'Thai', 'Indian',
@@ -126,7 +125,14 @@ export default function OnboardingPage() {
 
         {/* Progress bar + step labels */}
         <div className="mb-5">
-          <div className="flex items-center justify-between mb-2">
+          {/* Full-width progress bar */}
+          <div className="h-1.5 bg-[#EDE9E4] rounded-full overflow-hidden mb-4">
+            <div
+              className="h-full bg-[#E05A28] rounded-full transition-all duration-500 ease-out"
+              style={{ width: `${((step - 1) / (stepLabels.length - 1)) * 100}%` }}
+            />
+          </div>
+          <div className="flex items-center justify-between">
             {stepLabels.map((label, i) => {
               const s = i + 1
               const done = step > s
@@ -147,13 +153,6 @@ export default function OnboardingPage() {
               )
             })}
           </div>
-          {/* Progress bar */}
-          <div className="h-1 bg-[#E4DED8] rounded-full overflow-hidden">
-            <div
-              className="h-full bg-[#E05A28] rounded-full transition-all duration-500 ease-out"
-              style={{ width: `${((step - 1) / (stepLabels.length - 1)) * 100}%` }}
-            />
-          </div>
         </div>
 
         {/* Card */}
@@ -165,14 +164,32 @@ export default function OnboardingPage() {
               <h2 className="text-[18px] font-bold text-[#111] tracking-[-0.02em] mb-1">Restaurant basics</h2>
               <p className="text-[13px] text-[#A8A29E] mb-5">Takes 30 seconds — we only need the essentials.</p>
               <form onSubmit={handleStep1} className="space-y-4">
-                <Input
-                  id="restaurant-name"
-                  label="Restaurant name"
-                  value={restaurantName}
-                  onChange={(e) => setRestaurantName(e.target.value)}
-                  placeholder="The Golden Fork"
-                  required
-                />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="restaurant-name" className="block text-[13px] font-medium text-[#111] mb-1.5">Restaurant name</label>
+                    <input
+                      id="restaurant-name"
+                      type="text"
+                      value={restaurantName}
+                      onChange={(e) => setRestaurantName(e.target.value)}
+                      placeholder="The Golden Fork"
+                      required
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] hover:border-[#CEC8C1] text-[#111] text-sm placeholder:text-[#C4BEB8] bg-white focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] transition-all duration-150"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="owner-name" className="block text-[13px] font-medium text-[#111] mb-1.5">Your first name</label>
+                    <input
+                      id="owner-name"
+                      type="text"
+                      value={ownerName}
+                      onChange={(e) => setOwnerName(e.target.value)}
+                      placeholder="Alex"
+                      required
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] hover:border-[#CEC8C1] text-[#111] text-sm placeholder:text-[#C4BEB8] bg-white focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] transition-all duration-150"
+                    />
+                  </div>
+                </div>
                 <div className="w-full">
                   <label htmlFor="cuisine-type" className="block text-[13px] font-medium text-[#111] mb-1.5">
                     Cuisine type
@@ -191,14 +208,6 @@ export default function OnboardingPage() {
                     ))}
                   </select>
                 </div>
-                <Input
-                  id="owner-name"
-                  label="Your first name"
-                  value={ownerName}
-                  onChange={(e) => setOwnerName(e.target.value)}
-                  placeholder="Alex"
-                  required
-                />
                 {error && (
                   <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 flex items-start gap-2.5">
                     <svg className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -209,7 +218,7 @@ export default function OnboardingPage() {
                 )}
                 <button
                   type="submit"
-                  className="w-full h-11 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white font-semibold text-[14px] transition-all duration-150 mt-1 shadow-[0_2px_12px_rgba(224,90,40,0.25)]"
+                  className="w-full min-h-[48px] rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.98] text-white font-semibold text-[14px] transition-all duration-150 mt-1 shadow-[0_2px_12px_rgba(224,90,40,0.25)]"
                 >
                   Continue →
                 </button>
@@ -255,13 +264,13 @@ export default function OnboardingPage() {
                   <button
                     type="button"
                     onClick={() => { setStep(1); setError('') }}
-                    className="flex-1 h-11 rounded-xl border border-[#E4DED8] bg-white hover:bg-[#F8F6F3] text-[#555] font-medium text-[13px] transition-all duration-150"
+                    className="flex-1 min-h-[48px] rounded-xl border border-[#E4DED8] bg-white hover:bg-[#F8F6F3] text-[#555] font-medium text-[13px] transition-all duration-150"
                   >
                     Back
                   </button>
                   <button
                     type="submit"
-                    className="flex-[2] h-11 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white font-semibold text-[14px] transition-all duration-150 shadow-[0_2px_12px_rgba(224,90,40,0.25)]"
+                    className="flex-[2] min-h-[48px] rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.98] text-white font-semibold text-[14px] transition-all duration-150 shadow-[0_2px_12px_rgba(224,90,40,0.25)]"
                   >
                     Continue →
                   </button>
@@ -301,7 +310,7 @@ export default function OnboardingPage() {
                     type="button"
                     onClick={() => handleFinish(true)}
                     disabled={loading}
-                    className="flex-1 h-11 rounded-xl border border-[#E4DED8] bg-white hover:bg-[#F8F6F3] text-[#57534E] font-medium text-[13px] transition-all duration-150 disabled:opacity-40"
+                    className="flex-1 min-h-[48px] rounded-xl border border-[#E4DED8] bg-white hover:bg-[#F8F6F3] text-[#57534E] font-medium text-[13px] transition-all duration-150 disabled:opacity-40"
                   >
                     Skip for now
                   </button>
@@ -309,7 +318,7 @@ export default function OnboardingPage() {
                     type="button"
                     onClick={() => handleFinish(false)}
                     disabled={loading}
-                    className="flex-[2] h-11 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white font-semibold text-[14px] transition-all duration-150 disabled:opacity-40 flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(224,90,40,0.25)]"
+                    className="flex-[2] min-h-[52px] rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.98] text-white font-semibold text-[15px] transition-all duration-150 disabled:opacity-40 flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(224,90,40,0.25)]"
                   >
                     {loading && (
                       <svg className="animate-spin h-4 w-4 opacity-80" fill="none" viewBox="0 0 24 24">
@@ -317,7 +326,7 @@ export default function OnboardingPage() {
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                       </svg>
                     )}
-                    {loading ? 'Setting up…' : 'Finish setup →'}
+                    {loading ? 'Setting up…' : 'Complete Setup →'}
                   </button>
                 </div>
               </div>

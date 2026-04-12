@@ -156,31 +156,34 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
 
         {/* Section 1: Review Request Messages */}
         <div className="bg-white rounded-2xl border border-[#E4DED8] p-4 sm:p-6 space-y-5">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div>
-              <h2 className="text-[14px] font-semibold text-[#111]">Review Request Messages</h2>
-              <p className="text-[12px] text-[#A8A29E] mt-0.5">
-                Personalized messages to send via SMS, email, receipt, or table card
-              </p>
-            </div>
-            <button
-              onClick={handleGenerateMessages}
-              disabled={generating}
-              className="flex items-center justify-center gap-2 bg-[#E05A28] hover:bg-[#C94E21] disabled:opacity-60 text-white font-semibold text-[13px] px-4 py-2.5 rounded-xl transition-colors min-h-[44px] sm:min-h-0 flex-shrink-0"
-            >
-              {generating ? (
-                <>
-                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                  </svg>
-                  Generating…
-                </>
-              ) : (
-                'Generate Messages'
-              )}
-            </button>
+          <div>
+            <h2 className="text-[14px] font-semibold text-[#111]">Review Request Messages</h2>
+            <p className="text-[12px] text-[#A8A29E] mt-0.5">
+              Personalized messages to send via SMS, email, receipt, or table card
+            </p>
           </div>
+          <button
+            onClick={handleGenerateMessages}
+            disabled={generating}
+            className="w-full flex items-center justify-center gap-2.5 bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.98] disabled:opacity-60 text-white font-semibold text-[14px] px-4 rounded-xl transition-all min-h-[52px] shadow-[0_2px_12px_rgba(224,90,40,0.25)]"
+          >
+            {generating ? (
+              <>
+                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                </svg>
+                Generating…
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                </svg>
+                Generate Messages
+              </>
+            )}
+          </button>
 
           {generateError && (
             <p className="text-red-500 text-sm">{generateError}</p>
@@ -209,43 +212,93 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
           {/* Message cards */}
           {showCards && messages && editedMessages && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              {CHANNELS.map((ch) => (
-                <div key={ch.key} className="rounded-xl border border-[#E4DED8] bg-white p-4 space-y-3 hover:border-[#D4CFC6] transition-colors">
-                  <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-lg bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center flex-shrink-0 text-[#57534E]">
-                      <ChannelIcon channel={ch.key} className="w-3.5 h-3.5" />
+              {CHANNELS.map((ch) => {
+                const isSms = ch.key === 'sms'
+                const isEmail = ch.key === 'email'
+                const isReceipt = ch.key === 'receipt'
+                const isCard = ch.key === 'tablecard'
+                return (
+                  <div key={ch.key} className="rounded-xl border border-[#E4DED8] bg-white p-4 space-y-3 hover:border-[#D4CFC6] transition-colors">
+                    {/* Channel header */}
+                    <div className="flex items-center gap-2">
+                      <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                        isSms ? 'bg-blue-50 border border-blue-100 text-blue-500'
+                        : isEmail ? 'bg-violet-50 border border-violet-100 text-violet-500'
+                        : 'bg-[#F3F0EC] border border-[#E4DED8] text-[#57534E]'
+                      }`}>
+                        <ChannelIcon channel={ch.key} className="w-3.5 h-3.5" />
+                      </div>
+                      <span className="text-[13px] font-semibold text-[#111]">{ch.label}</span>
+                      <span className="text-[11px] text-[#A8A29E] ml-auto">{ch.desc}</span>
                     </div>
-                    <span className="text-[13px] font-semibold text-[#111]">{ch.label}</span>
-                    <span className="text-[11px] text-[#A8A29E] ml-auto">{ch.desc}</span>
+
+                    {/* SMS speech bubble preview */}
+                    {isSms && (
+                      <div className="flex items-start gap-2">
+                        <div className="w-6 h-6 rounded-full bg-[#E4DED8] flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <svg className="w-3 h-3 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                          </svg>
+                        </div>
+                        <div className="bg-[#E9EFFD] rounded-2xl rounded-tl-sm px-4 py-3 flex-1">
+                          <p className="text-[12px] text-[#1A1A2E] leading-relaxed whitespace-pre-wrap">{editedMessages[ch.key]}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Email mini preview */}
+                    {isEmail && (
+                      <div className="rounded-xl border border-[#E4DED8] overflow-hidden">
+                        <div className="bg-[#F3F0EC] border-b border-[#EDE9E4] px-3 py-2 space-y-0.5">
+                          <p className="text-[11px] text-[#A8A29E]"><span className="font-medium text-[#57534E]">From:</span> {restaurantProfile?.restaurant_name ?? 'Your restaurant'}</p>
+                          <p className="text-[11px] text-[#A8A29E]"><span className="font-medium text-[#57534E]">Subject:</span> We&apos;d love your feedback!</p>
+                        </div>
+                        <div className="px-3 py-2.5">
+                          <p className="text-[12px] text-[#57534E] leading-relaxed whitespace-pre-wrap">{editedMessages[ch.key]}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Receipt / Table card dashed paper preview */}
+                    {(isReceipt || isCard) && (
+                      <div className="rounded-xl border-2 border-dashed border-[#E4DED8] bg-[#FAFAF9] px-4 py-3">
+                        <p className="text-[12px] text-[#57534E] leading-relaxed whitespace-pre-wrap font-mono">{editedMessages[ch.key]}</p>
+                      </div>
+                    )}
+
+                    {/* Edit textarea */}
+                    <div>
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.10em] text-[#A8A29E] mb-1.5">Edit message</p>
+                      <textarea
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] bg-[#F8F6F3] text-[13px] text-[#111] focus:bg-white focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] focus:outline-none resize-none transition-all"
+                        rows={ch.key === 'email' ? 5 : 3}
+                        value={editedMessages[ch.key]}
+                        onChange={(e) =>
+                          setEditedMessages((prev) =>
+                            prev ? { ...prev, [ch.key]: e.target.value } : prev
+                          )
+                        }
+                      />
+                    </div>
+                    <div className="flex justify-end">
+                      <button
+                        onClick={() => handleCopy(ch.key)}
+                        className={`text-[12px] font-semibold px-3.5 min-h-[36px] rounded-xl border transition-all flex items-center gap-1.5 ${
+                          copiedChannel === ch.key
+                            ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                            : 'border-[#E4DED8] hover:bg-[#F3F0EC] hover:border-[#CEC8C1] text-[#57534E] hover:text-[#111]'
+                        }`}
+                      >
+                        {copiedChannel === ch.key ? (
+                          <><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied!</>
+                        ) : (
+                          <><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Copy</>
+                        )}
+                      </button>
+                    </div>
                   </div>
-                  <textarea
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] bg-[#F8F6F3] text-[13px] text-[#111] focus:bg-white focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] focus:outline-none resize-none transition-all"
-                    rows={ch.key === 'email' ? 5 : 3}
-                    value={editedMessages[ch.key]}
-                    onChange={(e) =>
-                      setEditedMessages((prev) =>
-                        prev ? { ...prev, [ch.key]: e.target.value } : prev
-                      )
-                    }
-                  />
-                  <div className="flex justify-end">
-                    <button
-                      onClick={() => handleCopy(ch.key)}
-                      className={`text-[12px] font-semibold px-3.5 min-h-[36px] rounded-xl border transition-all flex items-center gap-1.5 ${
-                        copiedChannel === ch.key
-                          ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
-                          : 'border-[#E4DED8] hover:bg-[#F3F0EC] hover:border-[#CEC8C1] text-[#57534E] hover:text-[#111]'
-                      }`}
-                    >
-                      {copiedChannel === ch.key ? (
-                        <><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied!</>
-                      ) : (
-                        <><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Copy</>
-                      )}
-                    </button>
-                  </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           )}
 

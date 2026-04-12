@@ -271,7 +271,7 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
               <div>
                 <h2 className="text-[17px] font-bold text-[#111] leading-tight">Connect your Google listing</h2>
                 <p className="text-[13px] text-[#6B6B6B] mt-0.5 leading-snug">
-                  Find your restaurant so we can pull in your latest reviews automatically.
+                  We need your Google Maps listing to automatically sync and reply to reviews.
                 </p>
               </div>
             </div>
@@ -324,38 +324,56 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
                 </ol>
               </div>
               <div>
+                <label className="block text-[13px] font-medium text-[#111] mb-1.5">Google Maps URL</label>
                 <input
                   ref={manualRef}
                   type="url"
                   value={manualUrl}
                   onChange={e => { setManualUrl(e.target.value); setManualUrlError('') }}
                   placeholder="https://www.google.com/maps/place/Your+Restaurant/..."
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] text-sm text-[#111] placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/40 focus:border-[#E05A28] transition-all"
+                  className="w-full px-3.5 py-3 rounded-xl border border-[#E4DED8] text-[15px] text-[#111] placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/40 focus:border-[#E05A28] transition-all"
                   disabled={isBusy}
                 />
-                {manualUrlError && <p className="text-[12px] text-red-500 mt-1.5">{manualUrlError}</p>}
+                <p className="text-[11px] text-[#A8A29E] mt-1.5">e.g. google.com/maps/place/your-restaurant...</p>
+                {manualUrlError && <p className="text-[12px] text-red-500 mt-1">{manualUrlError}</p>}
               </div>
               {connectError && (
                 <div className="px-4 py-3 bg-red-50 border border-red-200 rounded-xl">
                   <p className="text-[13px] text-red-600">{connectError}</p>
                 </div>
               )}
-              <div className="flex gap-3">
-                <button type="button" onClick={() => { setShowManual(false); setManualUrlError(''); setConnectError('') }}
-                  disabled={isBusy}
-                  className="flex-1 h-[44px] rounded-full border border-[#E4DED8] bg-white hover:bg-[#F3F0EC] text-[#666] text-sm font-medium disabled:opacity-40 transition-all">
-                  ← Back to search
-                </button>
+              <div className="space-y-2.5">
                 <button type="button" onClick={handleManualConnect}
                   disabled={isBusy || !manualUrl.trim()}
-                  className="flex-1 h-[44px] rounded-full bg-[#E05A28] hover:bg-[#C94E21] text-white text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all">
-                  Connect & sync →
+                  className="w-full min-h-[52px] rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.98] text-white text-[15px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-[0_2px_12px_rgba(224,90,40,0.25)]">
+                  Connect &amp; Sync Reviews →
+                </button>
+                <button type="button" onClick={() => { setShowManual(false); setManualUrlError(''); setConnectError('') }}
+                  disabled={isBusy}
+                  className="w-full h-[40px] rounded-xl border border-[#E4DED8] bg-white hover:bg-[#F3F0EC] text-[#A8A29E] text-[13px] font-medium disabled:opacity-40 transition-all">
+                  ← Back to search
                 </button>
               </div>
             </div>
           ) : (
             /* ── Search ── */
             <>
+              {/* Numbered steps */}
+              <div className="flex items-start gap-4 mb-4 px-1">
+                {[
+                  { n: '1', text: 'Search your restaurant name' },
+                  { n: '2', text: 'Select your listing' },
+                  { n: '3', text: 'We sync your reviews' },
+                ].map(step => (
+                  <div key={step.n} className="flex-1 flex flex-col items-center gap-1.5 text-center">
+                    <div className="w-6 h-6 rounded-full bg-[#FEF0E8] border border-[#F5C9AD] text-[#C94E21] text-[11px] font-bold flex items-center justify-center flex-shrink-0">
+                      {step.n}
+                    </div>
+                    <p className="text-[11px] text-[#A8A29E] leading-snug">{step.text}</p>
+                  </div>
+                ))}
+              </div>
+
               <div className="relative mb-3">
                 <div className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
                   {searching ? (
@@ -375,7 +393,7 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
                   value={query}
                   onChange={e => handleQueryChange(e.target.value)}
                   placeholder="Search restaurant name and city…"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#E4DED8] text-sm text-[#111] placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/40 focus:border-[#E05A28] transition-all"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#E4DED8] text-[15px] text-[#111] placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/40 focus:border-[#E05A28] transition-all"
                 />
               </div>
 
@@ -428,15 +446,15 @@ export default function ConnectRestaurantModal({ userId, restaurantName, onClose
                 </div>
               )}
 
-              <div className="flex gap-3 mt-1">
-                <button type="button" onClick={onClose}
-                  className="flex-1 h-[44px] rounded-full border border-[#E4DED8] bg-white hover:bg-[#F3F0EC] text-[#666] text-sm font-medium transition-all">
-                  Skip for now
-                </button>
+              <div className="space-y-2.5 mt-1">
                 <button type="button" onClick={handleConnect}
                   disabled={!selected || isBusy}
-                  className="flex-1 h-[44px] rounded-full bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all">
-                  Connect & sync →
+                  className="w-full min-h-[52px] rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.98] text-white text-[15px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-[0_2px_12px_rgba(224,90,40,0.25)]">
+                  Connect &amp; Sync Reviews →
+                </button>
+                <button type="button" onClick={onClose}
+                  className="w-full h-[40px] rounded-xl border border-[#E4DED8] bg-white hover:bg-[#F3F0EC] text-[#A8A29E] text-[13px] font-medium transition-all">
+                  Skip for now
                 </button>
               </div>
 

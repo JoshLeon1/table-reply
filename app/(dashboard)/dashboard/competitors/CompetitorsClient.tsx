@@ -196,9 +196,9 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
         <button
           onClick={handleSubmit}
           disabled={loading}
-          className="w-full h-11 rounded-xl bg-[#111] text-white text-[13px] font-semibold hover:bg-[#1E1E1E] active:bg-[#0A0A0A] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full h-11 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.97] text-white text-[13px] font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_1px_3px_rgba(224,90,40,0.25)]"
         >
-          {loading ? 'Adding competitors…' : 'Add competitors'}
+          {loading ? 'Adding competitors…' : 'Add competitors →'}
         </button>
       </div>
     </div>
@@ -276,7 +276,7 @@ function AddMoreForm({
         <button
           onClick={handleSubmit}
           disabled={loading}
-          className="h-9 px-4 rounded-xl bg-[#111] text-white text-[13px] font-medium hover:bg-[#1E1E1E] transition-all disabled:opacity-50"
+          className="h-9 px-4 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] text-white text-[13px] font-semibold transition-all disabled:opacity-50"
         >
           {loading ? 'Adding…' : 'Add'}
         </button>
@@ -576,7 +576,7 @@ function InsightCallout({
     const multiple = Math.round(bigReviewComp.review_count! / userReviewProxy!)
     insights.push({
       key: 'reviews',
-      text: `⚠️ ${bigReviewComp.name ?? 'A competitor'} has ${multiple}x more reviews — consider adding a review request to your receipts.`,
+      text: `${bigReviewComp.name ?? 'A competitor'} has ${multiple}x more reviews — consider adding a review request to your receipts.`,
     })
   }
 
@@ -636,7 +636,7 @@ function CompetitorCard({
         <button
           onClick={handleRemove}
           disabled={removing}
-          className="flex-shrink-0 px-4 py-2 rounded-xl border border-[#E4DED8] text-[13px] font-medium text-[#888] hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition disabled:opacity-50"
+          className="flex-shrink-0 px-3.5 min-h-[36px] rounded-xl border border-[#E4DED8] bg-white text-[12px] font-medium text-[#A8A29E] hover:bg-red-50 hover:text-red-500 hover:border-red-100 active:scale-[0.97] transition-all disabled:opacity-50"
         >
           {removing ? 'Removing…' : 'Remove'}
         </button>

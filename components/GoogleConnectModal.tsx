@@ -96,7 +96,7 @@ export default function GoogleConnectModal({
             <p className="text-[#7C7672] text-sm mb-8">We&apos;ll be in touch soon.</p>
             <button
               onClick={onClose}
-              className="w-full px-6 py-3 bg-[#C94E21] hover:bg-[#B34419] text-white font-semibold rounded-lg transition-colors text-sm"
+              className="w-full px-6 min-h-[44px] bg-[#E05A28] hover:bg-[#C94E21] text-white font-semibold rounded-xl transition-colors text-[14px]"
             >
               Close
             </button>
@@ -170,12 +170,12 @@ export default function GoogleConnectModal({
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
                 required
-                className="w-full px-3 py-2.5 border border-[#E4DED8] rounded-lg text-[#111] placeholder:text-[#C4BEB8] bg-white focus:outline-none focus:ring-2 focus:ring-[#E05A28] focus:border-transparent text-sm"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] bg-[#F8F6F3] text-[#111] placeholder:text-[#C4BEB8] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] transition-all text-[14px]"
               />
               <button
                 type="submit"
                 disabled={status === 'loading' || status === 'exists'}
-                className="w-full px-6 py-3 bg-[#C94E21] hover:bg-[#B34419] disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors text-sm flex items-center justify-center gap-2"
+                className="w-full px-6 min-h-[44px] bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-colors text-[14px] flex items-center justify-center gap-2"
               >
                 {status === 'loading' ? (
                   <>

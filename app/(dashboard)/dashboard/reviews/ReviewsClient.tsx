@@ -137,6 +137,34 @@ function SetupPanel({ profile, onSaved }: { profile: RestaurantProfile; onSaved:
 
 // ── Review card ───────────────────────────────────────────────────────────────
 
+function SkeletonCard() {
+  return (
+    <div className="bg-white rounded-2xl overflow-hidden border border-[#E4DED8] animate-pulse">
+      <div className="flex items-center gap-3 px-5 py-4 border-b border-[#EDE9E4]">
+        <div className="w-8 h-8 rounded-full bg-[#EDE9E4] flex-shrink-0" />
+        <div className="flex-1 space-y-1.5">
+          <div className="h-3 w-28 bg-[#EDE9E4] rounded-full" />
+          <div className="h-2.5 w-20 bg-[#EDE9E4] rounded-full" />
+        </div>
+      </div>
+      <div className="px-5 py-4 border-b border-[#EDE9E4] space-y-2">
+        <div className="h-2.5 w-16 bg-[#EDE9E4] rounded-full" />
+        <div className="h-3 w-full bg-[#EDE9E4] rounded-full" />
+        <div className="h-3 w-[85%] bg-[#EDE9E4] rounded-full" />
+      </div>
+      <div className="px-5 py-4 space-y-2">
+        <div className="h-2.5 w-16 bg-[#EDE9E4] rounded-full" />
+        <div className="h-3 w-full bg-[#EDE9E4] rounded-full" />
+        <div className="h-3 w-[70%] bg-[#EDE9E4] rounded-full" />
+      </div>
+      <div className="flex gap-2 px-5 py-3.5 border-t border-[#EDE9E4]">
+        <div className="h-9 w-32 bg-[#EDE9E4] rounded-xl" />
+        <div className="h-9 w-20 bg-[#EDE9E4] rounded-xl" />
+      </div>
+    </div>
+  )
+}
+
 function ReviewCard({ review: initialReview, onApprove, onDismiss }: {
   review: ScrapedReview
   onApprove: (id: string) => void
@@ -195,30 +223,34 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss }: {
   }
 
   return (
-    <div className={`bg-white rounded-2xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.05),0_4px_16px_rgba(0,0,0,0.05)] transition-all duration-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.07),0_12px_32px_rgba(0,0,0,0.07)] ${noText ? 'opacity-60' : ''}`}>
+    <div className={`bg-white rounded-2xl overflow-hidden border border-[#E4DED8] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.04)] transition-all duration-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08),0_12px_40px_rgba(0,0,0,0.06)] hover:-translate-y-px ${noText ? 'opacity-50' : ''}`}>
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-[#EDE9E4]">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-[#111] flex items-center justify-center text-[12px] font-semibold text-white flex-shrink-0">
+          {/* Avatar */}
+          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#2A2A2A] to-[#111] flex items-center justify-center text-[13px] font-bold text-white flex-shrink-0 shadow-sm">
             {review.reviewer_name.charAt(0).toUpperCase()}
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-[13px] font-semibold text-[#111]">{review.reviewer_name}</span>
               {noText ? (
-                <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-[#F3F0EC] text-[#A8A29E] border border-[#E4DED8]">Rating only</span>
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#F3F0EC] text-[#A8A29E] border border-[#E4DED8]">Rating only</span>
               ) : review.star_rating >= 4 ? (
-                <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Positive</span>
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/80">Positive</span>
               ) : review.star_rating <= 2 ? (
-                <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-red-50 text-red-600 border border-red-200">Critical</span>
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-red-50 text-red-600 border border-red-200/80">Critical</span>
               ) : null}
               {review.alert_triggered && (
-                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-red-50 text-red-600 border border-red-200">⚠️ Alert</span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-50 text-red-600 border border-red-200/80 flex items-center gap-1">
+                  <svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd"/></svg>
+                  Alert
+                </span>
               )}
             </div>
             <div className="flex items-center gap-2 mt-0.5">
               <StarRow rating={review.star_rating}/>
-              <span className="text-[11px] text-[#A8A29E]">{formatDate(review.review_datetime_utc)}</span>
+              <span className="text-[11px] text-[#C0BDB8]">{formatDate(review.review_datetime_utc)}</span>
               {review.language && review.language !== 'English' && (
                 <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-blue-50 text-blue-600 border border-blue-100">{review.language}</span>
               )}
@@ -230,43 +262,43 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss }: {
       <div className="divide-y divide-[#EDE9E4]">
         {/* Review text */}
         <div className="px-5 py-4">
-          <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#C0BDB8] mb-1.5">Their review</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#C4BEB8] mb-2">Their review</p>
           {noText ? (
-            <p className="text-[13px] text-[#BEBCB8] italic">Rating only — no text</p>
+            <p className="text-[13px] text-[#C4BEB8] italic">Rating only — no written review</p>
           ) : (
-            <p className="text-[13px] text-[#666] leading-relaxed">"{review.review_text}"</p>
+            <p className="text-[13px] text-[#57534E] leading-relaxed">&ldquo;{review.review_text}&rdquo;</p>
           )}
         </div>
 
         {/* Reply section */}
         {!noText && (
           <div className="px-5 py-4">
-            <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#E05A28] mb-1.5">Your reply</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#E05A28]/80 mb-2">Your reply</p>
             {review.generated_reply ? (
               <p className="text-[13px] text-[#111] leading-relaxed">{review.generated_reply}</p>
             ) : (
               <div>
                 {generating ? (
-                  <div className="flex items-center gap-2 text-[13px] text-[#6B6B6B]">
-                    <svg className="animate-spin w-3.5 h-3.5 text-[#E05A28]" fill="none" viewBox="0 0 24 24">
+                  <div className="flex items-center gap-2.5 text-[13px] text-[#6B6B6B] py-1">
+                    <svg className="animate-spin w-3.5 h-3.5 text-[#E05A28] flex-shrink-0" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
                     </svg>
-                    Writing reply…
+                    <span>Writing reply…</span>
                   </div>
                 ) : (
                   <div>
-                    <p className="text-[13px] text-[#BEBCB8] italic mb-2">Reply not generated yet.</p>
+                    <p className="text-[12px] text-[#C4BEB8] italic mb-3">No reply generated yet.</p>
                     <button
                       onClick={handleGenerateReply}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent-50 hover:bg-accent-100 border border-accent-border text-accent-700 text-[12px] font-semibold transition-all"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#FEF0E8] hover:bg-[#FCDCCA]/50 border border-[#F5C9AD] text-[#C94E21] text-[12px] font-semibold transition-all duration-150 active:scale-[0.98]"
                     >
                       <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/>
                       </svg>
                       Generate Reply
                     </button>
-                    {genError && <p className="text-[12px] text-red-500 mt-1.5">{genError}</p>}
+                    {genError && <p className="text-[12px] text-red-500 mt-2">{genError}</p>}
                   </div>
                 )}
               </div>
@@ -276,26 +308,26 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss }: {
       </div>
 
       {/* Actions */}
-      <div className="flex flex-wrap items-center gap-2 px-4 sm:px-5 py-3.5 bg-white border-t border-[#EDE9E4]">
+      <div className="flex flex-wrap items-center gap-2 px-4 sm:px-5 py-3.5 bg-[#FAFAF9] border-t border-[#EDE9E4]">
         {noText ? (
-          <span className="text-[12px] text-[#BEBCB8] italic flex-1">No reply needed</span>
+          <span className="text-[12px] text-[#C4BEB8] italic flex-1">No reply needed</span>
         ) : (
           <button
             onClick={handleApprove}
             disabled={actioning || !review.generated_reply}
-            className="flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-[13px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all min-h-[40px]"
+            className="flex items-center justify-center gap-1.5 px-4 min-h-[44px] rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.97] text-white text-[13px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 shadow-[0_1px_3px_rgba(224,90,40,0.3)]"
           >
             {copied ? (
-              <><svg className="w-3.5 h-3.5 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied!</>
+              <><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied!</>
             ) : (
-              <><svg className="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Copy &amp; Approve</>
+              <><svg className="w-3.5 h-3.5 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Copy &amp; Approve</>
             )}
           </button>
         )}
         <button
           onClick={handleDismiss}
           disabled={actioning}
-          className="px-3.5 py-2 rounded-xl text-[13px] font-medium text-[#A8A29E] hover:text-[#333] hover:bg-[#EDE9E4] disabled:opacity-40 transition-all min-h-[40px]"
+          className="px-3.5 min-h-[44px] rounded-xl text-[13px] font-medium text-[#A8A29E] hover:text-[#333] hover:bg-[#EDE9E4] active:scale-[0.97] disabled:opacity-40 transition-all duration-150"
         >
           Dismiss
         </button>
@@ -305,6 +337,8 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss }: {
 }
 
 // ── Connected panel ───────────────────────────────────────────────────────────
+
+type ReviewTab = 'pending' | 'approved'
 
 function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onScrapeNow, onTestMode, scraping, scrapeError, onDismissError, lastScrapedAt }: {
   profile: RestaurantProfile
@@ -322,7 +356,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onScrapeNow, o
     .filter((r) => r.reply_status === 'pending')
     .sort((a, b) => (b.alert_triggered ? 1 : 0) - (a.alert_triggered ? 1 : 0))
   const approved  = reviews.filter((r) => r.reply_status === 'approved')
-  const [showHistory, setShowHistory] = useState(false)
+  const [activeTab, setActiveTab] = useState<ReviewTab>('pending')
   const [copiedAll, setCopiedAll] = useState(false)
 
   const totalWithText  = reviews.filter((r) => r.review_text?.trim()).length
@@ -403,9 +437,6 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onScrapeNow, o
         </div>
       )}
 
-      {/* Scraping progress */}
-      {scraping && <ScrapeProgress/>}
-
       {/* Pending banner */}
       {pending.length > 0 && !scraping && (
         <div className="mb-5 flex items-center gap-3 px-4 py-3 rounded-xl bg-[#FEF0E8] border border-[#F5C9AD]">
@@ -419,58 +450,104 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onScrapeNow, o
         </div>
       )}
 
-      {/* Pending reviews */}
-      {!scraping && (pending.length > 0 ? (
+      {/* Tab selector */}
+      <div className="flex items-center gap-1 p-1 bg-[#F3F0EC] rounded-xl mb-5 w-full sm:w-auto sm:inline-flex">
+        <button
+          onClick={() => setActiveTab('pending')}
+          className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-[13px] font-semibold transition-all duration-150 ${
+            activeTab === 'pending'
+              ? 'bg-white text-[#111] shadow-sm'
+              : 'text-[#A8A29E] hover:text-[#57534E]'
+          }`}
+        >
+          Pending
+          {pending.length > 0 && (
+            <span className={`min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-bold flex items-center justify-center leading-none ${
+              activeTab === 'pending' ? 'bg-[#E05A28] text-white' : 'bg-[#E4DED8] text-[#A8A29E]'
+            }`}>
+              {pending.length}
+            </span>
+          )}
+        </button>
+        <button
+          onClick={() => setActiveTab('approved')}
+          className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-[13px] font-semibold transition-all duration-150 ${
+            activeTab === 'approved'
+              ? 'bg-white text-[#111] shadow-sm'
+              : 'text-[#A8A29E] hover:text-[#57534E]'
+          }`}
+        >
+          Approved
+          {approved.length > 0 && (
+            <span className={`min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-bold flex items-center justify-center leading-none ${
+              activeTab === 'approved' ? 'bg-emerald-500 text-white' : 'bg-[#E4DED8] text-[#A8A29E]'
+            }`}>
+              {approved.length}
+            </span>
+          )}
+        </button>
+      </div>
+
+      {/* Skeleton loading */}
+      {scraping && (
         <div className="space-y-3 mb-8">
+          {[1, 2, 3].map((i) => <SkeletonCard key={i} />)}
+        </div>
+      )}
+
+      {/* Pending tab */}
+      {!scraping && activeTab === 'pending' && (pending.length > 0 ? (
+        <div className="space-y-3">
           {pending.map((r) => (
             <ReviewCard key={r.id} review={r} onApprove={onApprove} onDismiss={onDismiss}/>
           ))}
         </div>
       ) : (
-        <div className="text-center py-16 mb-8 bg-white rounded-2xl border border-[#E4DED8]">
-          <div className="w-10 h-10 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center mx-auto mb-3">
+        <div className="text-center py-14 bg-white rounded-2xl border border-[#E4DED8]">
+          <div className="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center mx-auto mb-4 shadow-sm">
             <svg className="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/>
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/>
             </svg>
           </div>
-          <p className="text-[13px] font-semibold text-[#111]">All caught up</p>
-          <p className="text-[12px] text-[#A8A29E] mt-1">New reviews will appear here after the next sync.</p>
+          <p className="text-[14px] font-semibold text-[#111]">All caught up</p>
+          <p className="text-[12px] text-[#A8A29E] mt-1 max-w-[200px] mx-auto leading-relaxed">New reviews will appear here after the next sync.</p>
         </div>
       ))}
 
-      {/* History */}
-      {approved.length > 0 && (
+      {/* Approved tab */}
+      {!scraping && activeTab === 'approved' && (
         <div>
-          <div className="flex items-center justify-between mb-3">
-            <button
-              onClick={() => setShowHistory((p) => !p)}
-              className="flex items-center gap-1.5 text-[13px] font-medium text-[#888] hover:text-[#333] transition-colors"
-            >
-              <svg className={`w-3 h-3 transition-transform ${showHistory ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>
-              </svg>
-              {showHistory ? 'Hide' : 'Show'} approved history ({approved.length})
-            </button>
-
-            {showHistory && approved.some((r) => r.generated_reply) && (
-              <button
-                onClick={handleCopyAll}
-                className="flex items-center gap-1.5 text-[12px] font-medium text-[#666] hover:text-[#111] px-3 py-1.5 rounded-lg border border-[#E4DED8] hover:border-[#D4CFC6] bg-white transition-all"
-              >
-                {copiedAll ? (
-                  <><svg className="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied all</>
-                ) : (
-                  <><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>Copy all approved</>
-                )}
-              </button>
-            )}
-          </div>
-
-          {showHistory && (
-            <div className="space-y-3 opacity-60">
-              {approved.map((r) => (
-                <ReviewCard key={r.id} review={r} onApprove={onApprove} onDismiss={onDismiss}/>
-              ))}
+          {approved.length > 0 ? (
+            <>
+              {approved.some((r) => r.generated_reply) && (
+                <div className="flex justify-end mb-3">
+                  <button
+                    onClick={handleCopyAll}
+                    className="flex items-center gap-1.5 text-[12px] font-medium text-[#666] hover:text-[#111] px-3 py-1.5 rounded-lg border border-[#E4DED8] hover:border-[#D4CFC6] bg-white transition-all"
+                  >
+                    {copiedAll ? (
+                      <><svg className="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied all</>
+                    ) : (
+                      <><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>Copy all</>
+                    )}
+                  </button>
+                </div>
+              )}
+              <div className="space-y-3">
+                {approved.map((r) => (
+                  <ReviewCard key={r.id} review={r} onApprove={onApprove} onDismiss={onDismiss}/>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-14 bg-white rounded-2xl border border-[#E4DED8]">
+              <div className="w-11 h-11 rounded-2xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mx-auto mb-4 shadow-sm">
+                <svg className="w-5 h-5 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+              </div>
+              <p className="text-[14px] font-semibold text-[#111]">No approved replies yet</p>
+              <p className="text-[12px] text-[#A8A29E] mt-1 max-w-[220px] mx-auto leading-relaxed">Approved reviews will show up here once you copy &amp; approve them.</p>
             </div>
           )}
         </div>

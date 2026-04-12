@@ -11,11 +11,35 @@ interface ReviewMessages {
   tablecard: string
 }
 
+function ChannelIcon({ channel, className = 'w-4 h-4' }: { channel: string; className?: string }) {
+  if (channel === 'sms') return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-4 4v-4z"/>
+    </svg>
+  )
+  if (channel === 'email') return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+    </svg>
+  )
+  if (channel === 'receipt') return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+    </svg>
+  )
+  // tablecard
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 10h18M3 14h18M7 6h.01M7 18h.01M17 6h.01M17 18h.01M5 4h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/>
+    </svg>
+  )
+}
+
 const CHANNELS = [
-  { key: 'sms' as const, icon: '📱', label: 'SMS' },
-  { key: 'email' as const, icon: '📧', label: 'Email' },
-  { key: 'receipt' as const, icon: '🧾', label: 'Receipt' },
-  { key: 'tablecard' as const, icon: '📋', label: 'Table Card' },
+  { key: 'sms' as const, label: 'SMS', desc: 'Text message', rows: 3 },
+  { key: 'email' as const, label: 'Email', desc: 'Email body', rows: 5 },
+  { key: 'receipt' as const, label: 'Receipt', desc: 'Printed note', rows: 3 },
+  { key: 'tablecard' as const, label: 'Table Card', desc: 'Card insert', rows: 3 },
 ]
 
 interface Props {
@@ -126,7 +150,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
 
         {/* Page Header */}
         <div>
-          <h1 className="text-[20px] sm:text-2xl font-semibold text-[#111]">Get More Reviews</h1>
+          <h1 className="text-[22px] font-semibold text-[#111] tracking-tight">Get More Reviews</h1>
           <p className="text-[13px] text-[#57534E] mt-1">Generate personalized messages and tools to earn more 5-star reviews.</p>
         </div>
 
@@ -186,13 +210,16 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
           {showCards && messages && editedMessages && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               {CHANNELS.map((ch) => (
-                <div key={ch.key} className="rounded-xl border border-[#E4DED8] p-4 space-y-3">
+                <div key={ch.key} className="rounded-xl border border-[#E4DED8] bg-white p-4 space-y-3 hover:border-[#D4CFC6] transition-colors">
                   <div className="flex items-center gap-2">
-                    <span className="text-base">{ch.icon}</span>
+                    <div className="w-7 h-7 rounded-lg bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center flex-shrink-0 text-[#57534E]">
+                      <ChannelIcon channel={ch.key} className="w-3.5 h-3.5" />
+                    </div>
                     <span className="text-[13px] font-semibold text-[#111]">{ch.label}</span>
+                    <span className="text-[11px] text-[#A8A29E] ml-auto">{ch.desc}</span>
                   </div>
                   <textarea
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] text-[13px] text-[#111] focus:ring-2 focus:ring-[#E05A28]/40 focus:outline-none resize-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] bg-[#F8F6F3] text-[13px] text-[#111] focus:bg-white focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] focus:outline-none resize-none transition-all"
                     rows={ch.key === 'email' ? 5 : 3}
                     value={editedMessages[ch.key]}
                     onChange={(e) =>
@@ -204,9 +231,17 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
                   <div className="flex justify-end">
                     <button
                       onClick={() => handleCopy(ch.key)}
-                      className="text-[12px] font-semibold px-3.5 py-2 rounded-xl border border-[#E4DED8] hover:bg-[#F3F0EC] hover:border-[#CEC8C1] text-[#57534E] hover:text-[#111] transition-all min-h-[36px]"
+                      className={`text-[12px] font-semibold px-3.5 min-h-[36px] rounded-xl border transition-all flex items-center gap-1.5 ${
+                        copiedChannel === ch.key
+                          ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                          : 'border-[#E4DED8] hover:bg-[#F3F0EC] hover:border-[#CEC8C1] text-[#57534E] hover:text-[#111]'
+                      }`}
                     >
-                      {copiedChannel === ch.key ? 'Copied!' : 'Copy'}
+                      {copiedChannel === ch.key ? (
+                        <><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied!</>
+                      ) : (
+                        <><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Copy</>
+                      )}
                     </button>
                   </div>
                 </div>
@@ -216,9 +251,16 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
 
           {/* Empty state before generating */}
           {!showSkeletons && !showCards && (
-            <div className="text-center py-10 text-[#888] text-sm">
-              Click &ldquo;Generate Messages&rdquo; to create personalized review request messages for{' '}
-              <span className="text-[#111] font-medium">{restaurantProfile.restaurant_name}</span>.
+            <div className="text-center py-10">
+              <div className="w-10 h-10 rounded-2xl bg-[#FEF0E8] border border-[#F5C9AD] flex items-center justify-center mx-auto mb-3">
+                <svg className="w-5 h-5 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-4 4v-4z"/>
+                </svg>
+              </div>
+              <p className="text-[14px] font-medium text-[#111]">Generate your message templates</p>
+              <p className="text-[13px] text-[#A8A29E] mt-1 max-w-[280px] mx-auto leading-relaxed">
+                AI-crafted messages for <span className="text-[#111] font-medium">{restaurantProfile.restaurant_name}</span> — ready to copy and send.
+              </p>
             </div>
           )}
         </div>
@@ -236,7 +278,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
                 <button
                   onClick={handleGenerateQr}
                   disabled={generatingQr}
-                  className="flex items-center gap-2 bg-[#111] hover:bg-[#222] disabled:opacity-60 text-white font-medium text-sm px-4 py-2.5 rounded-xl transition-colors"
+                  className="flex items-center gap-2 bg-[#E05A28] hover:bg-[#C94E21] disabled:opacity-60 text-white font-semibold text-sm px-4 py-2.5 rounded-xl transition-colors min-h-[44px]"
                 >
                   {generatingQr ? (
                     <>

@@ -242,7 +242,7 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
           <button
             onClick={() => handleGenerate(null)}
             disabled={!reviewText.trim() || loading}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#111] hover:bg-[#1E1E1E] text-white text-[14px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 min-h-[44px]"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.97] text-white text-[14px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 min-h-[44px] shadow-[0_1px_3px_rgba(224,90,40,0.25)]"
           >
             {loading ? (
               <>
@@ -266,7 +266,7 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
 
       {/* Output card */}
       {generatedReply && (
-        <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-card overflow-hidden animate-fade-up">
+        <div className="bg-white rounded-2xl border border-[#E4DED8] border-l-[3px] border-l-[#E05A28] shadow-card overflow-hidden animate-fade-up">
           <div className="px-4 sm:px-6 py-3.5 border-b border-[#EDE9E4]">
             <div className="flex items-center justify-between gap-2 mb-2">
               <div className="flex items-center gap-2">
@@ -299,7 +299,7 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
 
           {/* Tone picker */}
           <div className="px-4 sm:px-6 py-4 border-t border-[#EDE9E4]">
-            <p className="text-[10px] font-semibold text-[#A8A29E] uppercase tracking-[0.12em] mb-3">
+            <p className="text-[10px] font-semibold text-[#A8A29E] uppercase tracking-[0.12em] mb-2.5">
               Adjust tone
             </p>
             <div className="flex gap-1.5 flex-wrap">
@@ -308,10 +308,10 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
                   key={value}
                   onClick={() => handleGenerate(value)}
                   disabled={loading}
-                  className={`px-3.5 py-2 rounded-lg text-[12px] font-medium transition-all disabled:opacity-40 min-h-[38px] ${
+                  className={`px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all active:scale-[0.97] disabled:opacity-40 ${
                     activeTone === value
-                      ? 'bg-[#111] text-white'
-                      : 'bg-[#F3F0EC] text-[#57534E] hover:bg-[#EDE9E4] border border-[#E4DED8]'
+                      ? 'bg-[#111] text-white border border-[#111]'
+                      : 'bg-white text-[#57534E] hover:bg-[#F3F0EC] border border-[#E4DED8] hover:border-[#CEC8C1]'
                   }`}
                 >
                   {label}

@@ -32,8 +32,12 @@ interface Props {
 
 function Stars({ rating }: { rating: number }) {
   return (
-    <span className="text-[#E05A28] text-[13px] tracking-tight">
-      {'★'.repeat(rating)}{'☆'.repeat(5 - rating)}
+    <span className="flex items-center gap-0.5">
+      {[1,2,3,4,5].map((i) => (
+        <svg key={i} className={`w-3 h-3 ${i <= rating ? 'text-[#E05A28]' : 'text-[#E4DED8]'}`} fill="currentColor" viewBox="0 0 20 20">
+          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+        </svg>
+      ))}
     </span>
   )
 }
@@ -409,7 +413,7 @@ export default function SocialClient({ reviews, restaurantProfile }: Props) {
   return (
     <div className="space-y-5 sm:space-y-6">
       <div>
-        <h1 className="text-[20px] sm:text-xl font-semibold text-[#111]">Social Posts</h1>
+        <h1 className="text-[22px] font-semibold text-[#111] tracking-tight">Social Posts</h1>
         <p className="text-[13px] text-[#6B6B6B] mt-0.5">
           Turn your best reviews into captions and shareable graphics.
         </p>
@@ -432,25 +436,31 @@ export default function SocialClient({ reviews, restaurantProfile }: Props) {
               key={review.id}
               className="bg-white rounded-2xl border border-[#E4DED8] p-4 sm:p-5 flex flex-col gap-3 hover:border-[#D4CFC6] hover:shadow-[0_2px_12px_rgba(0,0,0,0.05)] transition-all duration-150"
             >
-              {/* Header */}
-              <div className="flex items-center justify-between gap-2">
-                <span className="font-semibold text-[#111] text-[13px] truncate">
-                  {review.reviewer_name}
-                </span>
-                <Stars rating={review.star_rating} />
+              {/* Header row: avatar + name + stars */}
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#2A2A2A] to-[#111] flex items-center justify-center text-[12px] font-bold text-white flex-shrink-0">
+                  {review.reviewer_name.charAt(0).toUpperCase()}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-[#111] text-[13px] truncate leading-tight">{review.reviewer_name}</p>
+                  <div className="mt-0.5">
+                    <Stars rating={review.star_rating} />
+                  </div>
+                </div>
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#F3F0EC] border border-[#E4DED8] text-[#A8A29E] flex-shrink-0">Google</span>
               </div>
 
               {/* Review snippet */}
               <p className="text-[13px] text-[#666] leading-relaxed flex-1">
-                {review.review_text.length > 110
-                  ? review.review_text.slice(0, 110) + '…'
-                  : review.review_text}
+                &ldquo;{review.review_text.length > 100
+                  ? review.review_text.slice(0, 100) + '…'
+                  : review.review_text}&rdquo;
               </p>
 
               {/* CTA */}
               <button
                 onClick={() => setActiveReview(review)}
-                className="mt-auto w-full h-[44px] rounded-xl bg-[#E05A28] hover:bg-[#C94E21] text-white text-[13px] font-semibold transition-all duration-150 flex items-center justify-center gap-1.5 active:scale-[0.98]"
+                className="mt-auto w-full h-[44px] rounded-xl bg-[#E05A28] hover:bg-[#C94E21] text-white text-[13px] font-semibold transition-all duration-150 flex items-center justify-center gap-1.5 active:scale-[0.97]"
               >
                 <svg className="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />

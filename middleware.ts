@@ -1,11 +1,11 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 
-const protectedRoutes = ['/dashboard', '/templates', '/settings']
+const protectedRoutes = ['/dashboard', '/templates', '/settings', '/onboarding']
+const authRoutes = ['/login', '/signup']
 
 export async function middleware(request: NextRequest) {
-  // If Supabase env vars are missing (e.g. misconfigured deployment), fail open
-  // rather than returning a 500 for every request
+  // If Supabase env vars are missing, fail open rather than 500ing every request
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     const pathname = request.nextUrl.pathname
     const isProtected = protectedRoutes.some((route) => pathname.startsWith(route))
@@ -20,14 +20,17 @@ export async function middleware(request: NextRequest) {
 
     const pathname = request.nextUrl.pathname
     const isProtected = protectedRoutes.some((route) => pathname.startsWith(route))
-    const isAuthRoute = ['/login', '/signup'].includes(pathname)
+    const isAuthRoute = authRoutes.includes(pathname)
 
+    // Not logged in → redirect to login (with return URL)
     if (isProtected && !user) {
       const loginUrl = new URL('/login', request.url)
       loginUrl.searchParams.set('redirectTo', pathname)
       return NextResponse.redirect(loginUrl)
     }
 
+    // Logged-in user hitting login/signup → redirect to dashboard
+    // (The onboarding page itself will redirect to /onboarding if profile is incomplete)
     if (isAuthRoute && user) {
       return NextResponse.redirect(new URL('/dashboard', request.url))
     }

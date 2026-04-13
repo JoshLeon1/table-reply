@@ -153,3 +153,13 @@ $$;
 create or replace trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
+
+-- ─── Onboarding schema fix (run if columns were originally NOT NULL) ───────────
+-- voice_style stores the reply tone selected during onboarding
+-- description stores optional voice training text pasted during onboarding
+alter table restaurant_profiles alter column voice_style set default '';
+alter table restaurant_profiles alter column description set default '';
+-- Allow empty strings (NOT NULL is fine, we always provide at least '')
+-- If your DB threw errors on insert, run these two lines:
+-- alter table restaurant_profiles alter column voice_style drop not null;
+-- alter table restaurant_profiles alter column description drop not null;

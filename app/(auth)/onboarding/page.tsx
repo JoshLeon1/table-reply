@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
@@ -45,6 +45,7 @@ export default function OnboardingPage() {
   const router = useRouter()
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
+  const [checking, setChecking] = useState(true)
   const [error, setError] = useState('')
 
   const [restaurantName, setRestaurantName] = useState('')
@@ -53,6 +54,34 @@ export default function OnboardingPage() {
   const [vibe, setVibe] = useState('')
   const [replyTone, setReplyTone] = useState('')
   const [voiceTrainingText, setVoiceTrainingText] = useState('')
+
+  // ── Auth guard: redirect to login if no session, or to dashboard if already onboarded ──
+  useEffect(() => {
+    const checkAuth = async () => {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+
+      if (!user) {
+        router.replace('/login')
+        return
+      }
+
+      // If they've already completed onboarding, send to dashboard
+      const { data: profile } = await supabase
+        .from('restaurant_profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle()
+
+      if (profile) {
+        router.replace('/dashboard')
+        return
+      }
+
+      setChecking(false)
+    }
+    checkAuth()
+  }, [router])
 
   const handleStep1 = (e: React.FormEvent) => {
     e.preventDefault()
@@ -78,35 +107,65 @@ export default function OnboardingPage() {
     setLoading(true)
     setError('')
 
-    const supabase = createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { router.push('/login'); return }
+    try {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        router.replace('/login')
+        return
+      }
 
-    const { error: upsertError } = await supabase.from('restaurant_profiles').upsert(
-      {
-        user_id: user.id,
-        restaurant_name: restaurantName,
-        cuisine_type: cuisineType,
-        owner_name: ownerName,
-        vibe,
-        reply_tone: replyTone,
-        voice_training_text: skip ? null : (voiceTrainingText.trim() || null),
-      },
-      { onConflict: 'user_id' }
-    )
+      // Save to restaurant_profiles using the correct column names from the DB schema:
+      // - voice_style  = the reply tone the user selected
+      // - description  = their voice training text (optional)
+      const { error: upsertError } = await supabase.from('restaurant_profiles').upsert(
+        {
+          user_id: user.id,
+          restaurant_name: restaurantName.trim(),
+          cuisine_type: cuisineType,
+          owner_name: ownerName.trim(),
+          vibe,
+          voice_style: replyTone,
+          description: skip ? '' : (voiceTrainingText.trim() || ''),
+        },
+        { onConflict: 'user_id' }
+      )
 
-    if (upsertError) {
-      setError(upsertError.message)
+      if (upsertError) {
+        console.error('[TableReply] Onboarding upsert error:', upsertError)
+        setError(upsertError.message || 'Failed to save your profile. Please try again.')
+        setLoading(false)
+        return
+      }
+
+      // Set trial start timestamp on the profile (best-effort, no error check needed)
+      await supabase
+        .from('profiles')
+        .update({ trial_started_at: new Date().toISOString() })
+        .eq('id', user.id)
+
+      router.push('/dashboard')
+      router.refresh()
+    } catch (err) {
+      console.error('[TableReply] Unexpected onboarding error:', err)
+      setError('Something went wrong. Please try again.')
       setLoading(false)
-      return
     }
-
-    await supabase.from('profiles').update({ onboarding_complete: true }).eq('id', user.id)
-    router.push('/dashboard')
-    router.refresh()
   }
 
   const stepLabels = ['Basics', 'Voice', 'Training']
+
+  // Show nothing while we check auth status
+  if (checking) {
+    return (
+      <div className="min-h-screen bg-[#F8F6F3] flex items-center justify-center">
+        <svg className="animate-spin h-6 w-6 text-[#E05A28]" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+        </svg>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-[#F8F6F3] flex flex-col items-center justify-center px-4 py-10 sm:py-12">
@@ -125,7 +184,6 @@ export default function OnboardingPage() {
 
         {/* Progress bar + step labels */}
         <div className="mb-5">
-          {/* Full-width progress bar */}
           <div className="h-1.5 bg-[#EDE9E4] rounded-full overflow-hidden mb-4">
             <div
               className="h-full bg-[#E05A28] rounded-full transition-all duration-500 ease-out"
@@ -174,6 +232,7 @@ export default function OnboardingPage() {
                       onChange={(e) => setRestaurantName(e.target.value)}
                       placeholder="The Golden Fork"
                       required
+                      autoFocus
                       className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] hover:border-[#CEC8C1] text-[#111] text-sm placeholder:text-[#C4BEB8] bg-white focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] transition-all duration-150"
                     />
                   </div>
@@ -208,14 +267,7 @@ export default function OnboardingPage() {
                     ))}
                   </select>
                 </div>
-                {error && (
-                  <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 flex items-start gap-2.5">
-                    <svg className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <p className="text-[13px] text-red-600">{error}</p>
-                  </div>
-                )}
+                {error && <ErrorBox message={error} />}
                 <button
                   type="submit"
                   className="w-full min-h-[48px] rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.98] text-white font-semibold text-[14px] transition-all duration-150 mt-1 shadow-[0_2px_12px_rgba(224,90,40,0.25)]"
@@ -252,14 +304,7 @@ export default function OnboardingPage() {
                     ))}
                   </div>
                 </div>
-                {error && (
-                  <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 flex items-start gap-2.5">
-                    <svg className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <p className="text-[13px] text-red-600">{error}</p>
-                  </div>
-                )}
+                {error && <ErrorBox message={error} />}
                 <div className="flex gap-3 pt-1">
                   <button
                     type="button"
@@ -287,7 +332,7 @@ export default function OnboardingPage() {
                 <span className="text-[11px] font-medium text-[#A8A29E] bg-[#F3F0EC] px-2 py-0.5 rounded-full mt-0.5">optional</span>
               </div>
               <p className="text-[13px] text-[#A8A29E] mb-5">
-                Paste 3–5 of your past review replies and we'll match your exact writing style.
+                Paste 3–5 of your past review replies and we&apos;ll match your exact writing style.
               </p>
               <div className="space-y-4">
                 <textarea
@@ -297,14 +342,7 @@ export default function OnboardingPage() {
                   rows={6}
                   className="w-full px-3.5 py-3 rounded-xl border border-[#E4DED8] hover:border-[#CEC8C1] text-[#111] text-[13px] placeholder:text-[#C4BEB8] bg-[#F8F6F3] hover:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] transition-all duration-150 resize-none leading-relaxed"
                 />
-                {error && (
-                  <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 flex items-start gap-2.5">
-                    <svg className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <p className="text-[13px] text-red-600">{error}</p>
-                  </div>
-                )}
+                {error && <ErrorBox message={error} />}
                 <div className="flex gap-3">
                   <button
                     type="button"
@@ -334,6 +372,17 @@ export default function OnboardingPage() {
           )}
         </div>
       </div>
+    </div>
+  )
+}
+
+function ErrorBox({ message }: { message: string }) {
+  return (
+    <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 flex items-start gap-2.5">
+      <svg className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <p className="text-[13px] text-red-600">{message}</p>
     </div>
   )
 }

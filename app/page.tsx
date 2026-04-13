@@ -139,8 +139,8 @@ export default function LandingPage() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
         </svg>
       ),
-      title: 'Google + Yelp Auto-Sync',
-      desc: 'Google and Yelp reviews sync to your dashboard automatically every day — no manual checking, no copy-pasting.',
+      title: 'Google, Yelp & TripAdvisor Auto-Sync',
+      desc: 'Reviews from all three platforms sync to your dashboard automatically every day — no manual checking, no copy-pasting.',
     },
     {
       icon: (
@@ -225,12 +225,12 @@ export default function LandingPage() {
     {
       num: '2',
       title: 'Reviews come to you',
-      desc: 'Google and Yelp reviews appear in your dashboard automatically every day. For TripAdvisor or other platforms, just paste the review text.',
+      desc: 'Google, Yelp, and TripAdvisor reviews appear in your dashboard automatically every day — just connect each platform once in Settings.',
     },
     {
       num: '3',
       title: 'Copy your reply in seconds',
-      desc: 'Get a personalized, on-brand reply instantly. Copy it and paste it back into Google or Yelp. Done.',
+      desc: 'Get a personalized, on-brand reply instantly. Copy it and paste it back into Google, Yelp, or TripAdvisor. Done.',
     },
   ]
 
@@ -267,7 +267,7 @@ export default function LandingPage() {
 
   const proFeatures = [
     'Unlimited AI replies',
-    'Google + Yelp auto-sync (TripAdvisor paste-in)',
+    'Google + Yelp + TripAdvisor auto-sync',
     'Keyword alerts',
     'Staff mention tracking',
     'Multi-language replies',
@@ -282,8 +282,8 @@ export default function LandingPage() {
       a: 'Yes, always. TableReply generates a draft — you review it, edit if needed, then copy and paste it into Google or Yelp yourself. Nothing posts automatically.',
     },
     {
-      q: 'Does this connect to Yelp automatically?',
-      a: "Yes — both Google and Yelp sync automatically every day. Connect your Yelp business page in Settings and reviews will start appearing in your dashboard. For TripAdvisor and other platforms, you can paste the review text in manually.",
+      q: 'Does this connect to Google, Yelp, and TripAdvisor automatically?',
+      a: "Yes — Google, Yelp, and TripAdvisor all sync automatically every day. Connect each platform once in Settings and reviews will start appearing in your dashboard.",
     },
     {
       q: 'Will replies sound robotic or generic?',
@@ -388,7 +388,7 @@ export default function LandingPage() {
               </h1>
 
               <p className="text-[#777] mb-8 sm:mb-10 max-w-[440px] animate-fade-up" style={{ fontSize: '15px', lineHeight: '1.7', animationDelay: '280ms' }}>
-                Google and Yelp reviews sync automatically every day. Get a thoughtful, on-brand reply in seconds — matched to your voice and their tone.
+                Google, Yelp, and TripAdvisor reviews sync automatically every day. Get a thoughtful, on-brand reply in seconds — matched to your voice and their tone.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 mb-7 sm:mb-8 animate-fade-up" style={{ animationDelay: '360ms' }}>
@@ -991,7 +991,7 @@ export default function LandingPage() {
                 Start your free week →
               </Link>
               <p className="text-center mt-3 text-[#6b6b6b] text-[12px]">
-                Google + Yelp auto-sync daily · cancel anytime
+                Google + Yelp + TripAdvisor auto-sync daily · cancel anytime
               </p>
             </div>
           </div>

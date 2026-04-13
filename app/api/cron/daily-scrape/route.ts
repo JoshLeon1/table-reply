@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
   // Fetch all restaurant profiles (we'll filter per platform below)
   const { data: profiles, error } = await supabaseAdmin
     .from('restaurant_profiles')
-    .select('id, user_id, google_maps_url, yelp_url')
+    .select('id, user_id, google_maps_url, yelp_url, tripadvisor_url')
 
   if (error) {
     console.error('[daily-scrape] Failed to fetch profiles:', error)
@@ -95,6 +95,35 @@ export async function GET(request: NextRequest) {
         const msg = err instanceof Error ? err.message : String(err)
         console.error(`[daily-scrape] Yelp failed for profile ${profile.id}:`, msg)
         errors.push(`Yelp profile ${profile.id}: ${msg}`)
+      }
+    }
+
+    // ── TripAdvisor scrape ───────────────────────────────────────────────
+    if (profile.tripadvisor_url) {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/scrape-tripadvisor-reviews`, {
+          method:  'POST',
+          headers: {
+            'Content-Type':  'application/json',
+            'x-cron-secret': process.env.CRON_SECRET!,
+          },
+          body: JSON.stringify({
+            userId:              profile.user_id,
+            restaurantProfileId: profile.id,
+          }),
+        })
+
+        if (res.ok) {
+          const result = await res.json()
+          totalNewReplies += result.newReviews ?? 0
+        } else {
+          const err = await res.json().catch(() => ({}))
+          errors.push(`TripAdvisor profile ${profile.id}: ${err.error ?? res.statusText}`)
+        }
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err)
+        console.error(`[daily-scrape] TripAdvisor failed for profile ${profile.id}:`, msg)
+        errors.push(`TripAdvisor profile ${profile.id}: ${msg}`)
       }
     }
   }

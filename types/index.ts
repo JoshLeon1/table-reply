@@ -21,6 +21,8 @@ export interface RestaurantProfile {
   last_scraped_at: string | null
   yelp_url: string | null
   yelp_last_scraped_at: string | null
+  tripadvisor_url: string | null
+  tripadvisor_last_scraped_at: string | null
 }
 
 export interface Reply {

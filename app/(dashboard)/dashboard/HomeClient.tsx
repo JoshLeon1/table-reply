@@ -350,11 +350,6 @@ export default function HomeClient({
 }: Props) {
   const [showConnectModal, setShowConnectModal] = useState(false)
   const [pendingList, setPendingList] = useState<ScrapedReview[]>(initialPendingReviews)
-  const [quickReview, setQuickReview] = useState('')
-  const [quickReply, setQuickReply] = useState('')
-  const [quickLoading, setQuickLoading] = useState(false)
-  const [quickError, setQuickError] = useState('')
-  const [quickCopied, setQuickCopied] = useState(false)
 
   const router = useRouter()
   const [syncing, setSyncing] = useState(false)
@@ -367,34 +362,6 @@ export default function HomeClient({
   const animRate     = useCountUp(responseRate, 900, 400)
 
   const handlePendingAction = (id: string) => setPendingList(prev => prev.filter(r => r.id !== id))
-
-  const handleQuickGenerate = async () => {
-    if (!quickReview.trim()) return
-    setQuickLoading(true)
-    setQuickError('')
-    setQuickReply('')
-    try {
-      const res = await fetch('/api/generate-reply', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reviewText: quickReview, starRating: 3, platform: 'Google' }),
-      })
-      if (!res.ok) throw new Error()
-      const data = await res.json()
-      setQuickReply(data.reply ?? data.generated_reply ?? '')
-    } catch {
-      setQuickError('Something went wrong. Please try again.')
-    } finally {
-      setQuickLoading(false)
-    }
-  }
-
-  const handleQuickCopy = async () => {
-    if (!quickReply) return
-    await navigator.clipboard.writeText(quickReply)
-    setQuickCopied(true)
-    setTimeout(() => setQuickCopied(false), 2000)
-  }
 
   const handleSync = async () => {
     setSyncing(true)
@@ -485,24 +452,55 @@ export default function HomeClient({
               </p>
             </div>
 
-            {/* Right — sync button */}
-            <div className="flex items-center gap-2.5 flex-wrap">
-              <button
-                onClick={handleSync}
-                disabled={syncing}
-                className="group flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/[0.14] hover:bg-white/[0.24] border border-white/[0.20] text-[13px] font-semibold text-white/90 hover:text-white disabled:opacity-40 transition-all duration-200 active:scale-[0.97] backdrop-blur-sm flex-shrink-0"
-              >
-                <svg
-                  className={`w-3.5 h-3.5 transition-transform duration-700 ${syncing ? 'animate-spin' : 'group-hover:rotate-180'}`}
-                  fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            {/* Right — single dominant CTA */}
+            <div className="flex flex-col items-start sm:items-end gap-2 flex-shrink-0">
+              {!lastScrapedAt ? (
+                /* ── NOT YET SYNCED: primary action is Sync ── */
+                <button
+                  onClick={handleSync}
+                  disabled={syncing}
+                  className="group flex items-center gap-2.5 px-6 py-3 rounded-xl bg-white text-[#C94E21] text-[14px] font-bold shadow-[0_4px_20px_rgba(0,0,0,0.20)] hover:shadow-[0_6px_28px_rgba(0,0,0,0.30)] active:scale-[0.97] disabled:opacity-50 transition-all duration-200 whitespace-nowrap"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-                {syncing ? 'Syncing…' : 'Sync Now'}
-              </button>
+                  <svg
+                    className={`w-4 h-4 flex-shrink-0 transition-transform duration-700 ${syncing ? 'animate-spin' : 'group-hover:rotate-180'}`}
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.25} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  {syncing ? 'Syncing…' : 'Sync Reviews'}
+                </button>
+              ) : (
+                /* ── ALREADY SYNCED: primary action is Generate ── */
+                <>
+                  <Link
+                    href="/dashboard/generate"
+                    className="flex items-center gap-2.5 px-6 py-3 rounded-xl bg-white text-[#C94E21] text-[14px] font-bold shadow-[0_4px_20px_rgba(0,0,0,0.20)] hover:shadow-[0_6px_28px_rgba(0,0,0,0.30)] active:scale-[0.97] transition-all duration-200 whitespace-nowrap"
+                  >
+                    <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+                    </svg>
+                    Generate Replies
+                  </Link>
+
+                  {/* Secondary: sync (demoted, not competing) */}
+                  <button
+                    onClick={handleSync}
+                    disabled={syncing}
+                    className="group flex items-center gap-1.5 text-[12px] font-medium text-white/45 hover:text-white/80 disabled:opacity-40 transition-colors duration-150"
+                  >
+                    <svg
+                      className={`w-3 h-3 transition-transform duration-700 ${syncing ? 'animate-spin' : 'group-hover:rotate-180'}`}
+                      fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    {syncing ? 'Syncing…' : 'Sync reviews'}
+                  </button>
+                </>
+              )}
 
               {syncMsg && (
-                <span className={`text-[12px] font-semibold animate-fade-in ${syncMsg.type === 'success' ? 'text-emerald-300' : 'text-red-300'}`}>
+                <span className={`text-[11px] font-semibold animate-fade-in ${syncMsg.type === 'success' ? 'text-emerald-300' : 'text-red-300'}`}>
                   {syncMsg.type === 'success' ? '✓ ' : '✕ '}{syncMsg.text}
                 </span>
               )}
@@ -637,86 +635,8 @@ export default function HomeClient({
           {/* Right column ─ 2/5 */}
           <div className="lg:col-span-2 space-y-6">
 
-            {/* Quick reply */}
-            <div className="animate-fade-up" style={{ animationDelay: '120ms' }}>
-              <SectionLabel>Quick reply</SectionLabel>
-              <div className="bg-[#111111] rounded-2xl border border-white/[0.07] shadow-[0_1px_4px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.04)] overflow-hidden">
-                <div className="p-4">
-                  <textarea
-                    value={quickReview}
-                    onChange={e => setQuickReview(e.target.value)}
-                    onKeyDown={e => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') handleQuickGenerate() }}
-                    placeholder="Paste a review to get an instant reply…"
-                    rows={4}
-                    className="w-full resize-none px-3.5 py-3 rounded-xl border border-white/[0.10] bg-[#1A1A1A] hover:bg-[#1E1E1E] focus:bg-[#1E1E1E] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] text-[13px] text-white placeholder:text-white/25 transition-all duration-200 leading-relaxed"
-                  />
-                  <button
-                    onClick={handleQuickGenerate}
-                    disabled={quickLoading || !quickReview.trim()}
-                    className="mt-3 w-full py-2.5 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-[13px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2 shadow-[0_2px_8px_rgba(224,90,40,0.2)] hover:shadow-[0_4px_14px_rgba(224,90,40,0.3)]"
-                  >
-                    {quickLoading ? (
-                      <>
-                        <svg className="animate-spin w-3.5 h-3.5 opacity-70" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                        </svg>
-                        Generating…
-                      </>
-                    ) : (
-                      <>
-                        <svg className="w-3.5 h-3.5 opacity-70" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
-                        </svg>
-                        Generate Reply
-                      </>
-                    )}
-                  </button>
-                </div>
-
-                {quickError && (
-                  <p className="px-4 pb-3 text-[12px] text-red-400 animate-fade-in">{quickError}</p>
-                )}
-
-                {quickReply && (
-                  <div className="border-t border-white/[0.07] p-4 space-y-3 animate-fade-up">
-                    <div className="bg-[#E05A28]/[0.08] border border-[#E05A28]/20 rounded-xl px-4 py-3.5">
-                      <div className="flex items-center gap-1.5 mb-2">
-                        <div className="w-4 h-4 rounded-md bg-[#E05A28]/10 flex items-center justify-center">
-                          <svg className="w-2.5 h-2.5 text-[#E05A28]" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
-                          </svg>
-                        </div>
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-[#E05A28]/70">Generated Reply</p>
-                      </div>
-                      <p className="text-[12px] text-white/60 leading-relaxed">{quickReply}</p>
-                    </div>
-                    <button
-                      onClick={handleQuickCopy}
-                      className={`w-full py-2 rounded-xl text-[12px] font-semibold border transition-all duration-200 active:scale-[0.98] ${
-                        quickCopied
-                          ? 'bg-emerald-950/40 text-emerald-400 border-emerald-900/30'
-                          : 'bg-white/[0.06] text-white/55 border-white/[0.10] hover:border-white/[0.20] hover:text-white hover:shadow-sm'
-                      }`}
-                    >
-                      {quickCopied ? '✓ Copied to clipboard' : 'Copy Reply'}
-                    </button>
-                  </div>
-                )}
-
-                <div className="px-4 py-2.5 border-t border-white/[0.07] bg-white/[0.02]">
-                  <Link href="/dashboard/generate" className="inline-flex items-center gap-1 text-[12px] font-medium text-[#A8A29E] hover:text-[#E05A28] transition-colors duration-150 group">
-                    More options in Full Generator
-                    <svg className="w-3 h-3 group-hover:translate-x-0.5 transition-transform duration-150" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </Link>
-                </div>
-              </div>
-            </div>
-
             {/* Recent activity */}
-            <div className="animate-fade-up" style={{ animationDelay: '180ms' }}>
+            <div className="animate-fade-up" style={{ animationDelay: '120ms' }}>
               <SectionLabel>Recent activity</SectionLabel>
               <div className="bg-[#111111] rounded-2xl border border-white/[0.07] shadow-[0_1px_4px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.04)] overflow-hidden">
                 {recentApproved.length === 0 ? (

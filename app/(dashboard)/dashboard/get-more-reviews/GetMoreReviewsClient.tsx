@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import QRCode from 'qrcode'
 import { createClient } from '@/lib/supabase/client'
 import type { RestaurantProfile } from '@/types'
@@ -93,8 +93,17 @@ function PlatformCard({
   const [syncResult, setSyncResult] = useState<{ ok: boolean; message: string } | null>(null)
   const [error, setError] = useState('')
   const [lastSynced, setLastSynced] = useState(lastScrapedAt)
+  const [inputHighlighted, setInputHighlighted] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const isConnected = !!savedUrl
+
+  const focusInput = () => {
+    inputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    inputRef.current?.focus()
+    setInputHighlighted(true)
+    setTimeout(() => setInputHighlighted(false), 1800)
+  }
 
   const handleSave = async () => {
     const trimmed = url.trim()
@@ -172,11 +181,16 @@ function PlatformCard({
       {/* URL input + save */}
       <div className="flex gap-2">
         <input
+          ref={inputRef}
           type="url"
           value={url}
           onChange={(e) => { setUrl(e.target.value); setError(''); setSyncResult(null) }}
           placeholder={placeholder}
-          className="flex-1 min-w-0 text-[13px] px-3.5 py-2.5 rounded-xl border border-white/[0.10] bg-[#1A1A1A] text-white placeholder:text-white/25 focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] transition-all"
+          className={`flex-1 min-w-0 text-[13px] px-3.5 py-2.5 rounded-xl border bg-[#1A1A1A] text-white placeholder:text-white/25 focus:outline-none focus:ring-2 focus:border-[#E05A28] transition-all ${
+            inputHighlighted
+              ? 'border-[#E05A28] ring-2 ring-[#E05A28]/30'
+              : 'border-white/[0.10] focus:ring-[#E05A28]/20'
+          }`}
         />
         <button
           onClick={handleSave}
@@ -200,12 +214,14 @@ function PlatformCard({
         </p>
       )}
 
-      {/* Sync row — only show when URL is saved */}
-      {isConnected && (
-        <div className="flex items-center justify-between pt-3 border-t border-white/[0.07]">
-          <p className="text-[12px] text-white/30">
-            {lastSynced ? `Last synced ${formatRelativeTime(lastSynced)}` : 'Never synced'}
-          </p>
+      {/* Sync row — always visible */}
+      <div className="flex items-center justify-between pt-3 border-t border-white/[0.07]">
+        <p className="text-[12px] text-white/30">
+          {isConnected
+            ? (lastSynced ? `Last synced ${formatRelativeTime(lastSynced)}` : 'Never synced')
+            : 'Not connected yet'}
+        </p>
+        {isConnected ? (
           <button
             onClick={handleSyncNow}
             disabled={syncing}
@@ -213,8 +229,18 @@ function PlatformCard({
           >
             {syncing ? <><SpinIcon />Syncing…</> : <><SyncIcon />Sync now</>}
           </button>
-        </div>
-      )}
+        ) : (
+          <button
+            onClick={focusInput}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-white/[0.10] hover:border-[#E05A28] hover:text-[#E05A28] text-[12px] font-medium text-white/40 transition-all duration-150"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+            Connect to sync →
+          </button>
+        )}
+      </div>
 
       {syncResult && (
         <p className={`text-[12px] font-medium flex items-center gap-1.5 ${syncResult.ok ? 'text-emerald-400' : 'text-red-400'}`}>

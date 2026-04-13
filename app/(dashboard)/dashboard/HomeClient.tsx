@@ -186,7 +186,7 @@ function PendingCard({
         </div>
 
         {/* Review text */}
-        <p className="text-[13px] text-[#57534E] leading-relaxed mt-3 pl-12 line-clamp-3">
+        <p className="text-[13px] text-[#57534E] leading-relaxed mt-3 pl-10 sm:pl-12 line-clamp-3">
           {review.review_text || <span className="italic text-[#C4BEB8]">No review text</span>}
         </p>
       </div>
@@ -282,20 +282,20 @@ function StatCard({
 }) {
   return (
     <div
-      className="animate-fade-up bg-white rounded-2xl p-4 sm:p-5 border border-[#E4DED8] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] hover:-translate-y-0.5 transition-all duration-200"
+      className="animate-fade-up bg-white rounded-2xl p-3.5 sm:p-5 border border-[#E4DED8] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] hover:-translate-y-0.5 transition-all duration-200"
       style={{ animationDelay: `${delay}ms` }}
     >
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
           {/* Icon + label */}
-          <div className="flex items-center gap-2 mb-3">
-            <div className={`w-7 h-7 rounded-lg ${iconBg} flex items-center justify-center flex-shrink-0`}>
+          <div className="flex items-center gap-1.5 mb-2.5">
+            <div className={`w-6 h-6 sm:w-7 sm:h-7 rounded-lg ${iconBg} flex items-center justify-center flex-shrink-0`}>
               {icon}
             </div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.11em] text-[#A8A29E] leading-tight">{label}</p>
+            <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.08em] sm:tracking-[0.11em] text-[#A8A29E] leading-tight line-clamp-2">{label}</p>
           </div>
           {/* Number */}
-          <p className="text-[26px] sm:text-[30px] font-bold text-[#111] leading-none tracking-[-0.03em] mb-2.5">{value}</p>
+          <p className="text-[22px] sm:text-[28px] font-bold text-[#111] leading-none tracking-[-0.03em] mb-2">{value}</p>
           {/* Sub */}
           {sub}
         </div>
@@ -472,11 +472,11 @@ export default function HomeClient({
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5 flex-wrap">
               <button
                 onClick={handleSync}
                 disabled={syncing}
-                className="group flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/[0.12] hover:bg-white/[0.22] border border-white/[0.18] text-[13px] font-semibold text-white/90 hover:text-white disabled:opacity-40 transition-all duration-200 active:scale-[0.97] backdrop-blur-sm"
+                className="group flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/[0.12] hover:bg-white/[0.22] border border-white/[0.18] text-[13px] font-semibold text-white/90 hover:text-white disabled:opacity-40 transition-all duration-200 active:scale-[0.97] backdrop-blur-sm flex-shrink-0"
               >
                 <svg
                   className={`w-3.5 h-3.5 transition-transform duration-700 ${syncing ? 'animate-spin' : 'group-hover:rotate-180'}`}
@@ -555,7 +555,7 @@ export default function HomeClient({
             }
             extra={
               <div className="relative mt-0.5">
-                <svg viewBox="0 0 36 36" className="w-11 h-11 -rotate-90">
+                <svg viewBox="0 0 36 36" className="w-9 h-9 sm:w-11 sm:h-11 -rotate-90">
                   <circle cx="18" cy="18" r="15.9" fill="none" stroke="#EDE9E4" strokeWidth="3" />
                   <circle
                     cx="18" cy="18" r="15.9" fill="none"
@@ -759,7 +759,7 @@ export default function HomeClient({
               </div>
               <Link
                 href="/dashboard/analytics"
-                className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-[13px] font-semibold transition-all duration-150 active:scale-[0.97] shadow-[0_2px_8px_rgba(224,90,40,0.2)] hover:shadow-[0_4px_14px_rgba(224,90,40,0.3)]"
+                className="flex-shrink-0 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-[13px] font-semibold transition-all duration-150 active:scale-[0.97] shadow-[0_2px_8px_rgba(224,90,40,0.2)] hover:shadow-[0_4px_14px_rgba(224,90,40,0.3)] w-full sm:w-auto"
               >
                 Run analysis
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

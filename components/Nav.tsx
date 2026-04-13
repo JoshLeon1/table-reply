@@ -271,11 +271,11 @@ export default function Nav() {
       {/* Mobile overlay + drawer */}
       <>
           <div
-            className={`lg:hidden fixed inset-0 z-30 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+            className={`lg:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
             onClick={() => setMobileOpen(false)}
           />
 
-          <div className={`lg:hidden fixed top-14 left-0 right-0 z-40 bg-[#0D0D0D] border-b border-white/[0.06] shadow-[0_20px_50px_rgba(0,0,0,0.6)] transition-transform duration-300 ease-out ${mobileOpen ? 'translate-y-0' : '-translate-y-full'}`}>
+          <div className={`lg:hidden fixed top-14 left-0 right-0 z-50 bg-[#0D0D0D] border-b border-white/[0.06] shadow-[0_20px_50px_rgba(0,0,0,0.6)] transition-transform duration-300 ease-out overflow-y-auto max-h-[calc(100dvh-56px)] ${mobileOpen ? 'translate-y-0' : '-translate-y-[110%]'}`}>
             {/* Branding strip */}
             <div className="flex items-center gap-3 px-5 py-3.5 border-b border-white/[0.05]">
               <LogoMark size={22} />

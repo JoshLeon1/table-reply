@@ -286,7 +286,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
   return (
     <div className={`bg-white rounded-2xl overflow-hidden border border-[#E4DED8] ${starTopBorder(review.star_rating)} shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.04)] transition-all duration-200 hover:shadow-[0_2px_16px_rgba(0,0,0,0.07)] hover:border-[#D0C9C1] hover:-translate-y-px ${noText ? 'opacity-50' : ''}`}>
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-[#EDE9E4]">
+      <div className="flex items-center justify-between px-4 sm:px-5 py-3.5 sm:py-4 border-b border-[#EDE9E4]">
         <div className="flex items-center gap-3">
           {/* Initials avatar */}
           <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#FEF0E8] to-[#F3F0EC] border border-[#F5C9AD]/40 flex items-center justify-center text-[12px] font-bold text-[#C94E21] flex-shrink-0 shadow-sm">
@@ -324,7 +324,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
 
       <div className="divide-y divide-[#EDE9E4]">
         {/* Review text */}
-        <div className="px-5 py-4">
+        <div className="px-4 sm:px-5 py-3.5 sm:py-4">
           <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-2">Their review</p>
           {noText ? (
             <p className="text-[13px] text-[#C4BEB8] italic">Rating only — no written review</p>
@@ -345,7 +345,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
 
         {/* Reply section */}
         {!noText && (
-          <div className="px-5 py-4">
+          <div className="px-4 sm:px-5 py-3.5 sm:py-4">
             {review.generated_reply ? (
               /* AI reply card */
               <div className="rounded-xl bg-gradient-to-br from-[#FEF8F5] to-[#F8F4F1] border border-[#EEE5DF] px-4 py-3.5">
@@ -530,7 +530,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
           <button onClick={onTestMode} disabled={scraping}
-            className="px-3 py-2 rounded-xl text-[12px] font-medium text-[#A8A29E] hover:text-[#444] border border-dashed border-[#E4DED8] hover:border-[#C4BEB8] disabled:opacity-40 transition-all min-h-[38px]"
+            className="hidden sm:flex px-3 py-2 rounded-xl text-[12px] font-medium text-[#A8A29E] hover:text-[#444] border border-dashed border-[#E4DED8] hover:border-[#C4BEB8] disabled:opacity-40 transition-all min-h-[38px]"
             title="Inject fake reviews to test the UI">
             Test data
           </button>
@@ -581,12 +581,12 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
       )}
 
       {/* Tab bar */}
-      <div className="flex gap-1 p-1 bg-[#EDE9E4]/60 rounded-xl mb-5 w-fit">
+      <div className="flex gap-1 p-1 bg-[#EDE9E4]/60 rounded-xl mb-5 w-full sm:w-fit">
         {tabs.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`flex items-center gap-2 px-4 py-2 text-[13px] font-semibold rounded-lg transition-all duration-200 whitespace-nowrap ${
+            className={`flex flex-1 sm:flex-none items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2 text-[12px] sm:text-[13px] font-semibold rounded-lg transition-all duration-200 whitespace-nowrap ${
               activeTab === tab.key
                 ? 'bg-white text-[#111] shadow-[0_1px_3px_rgba(0,0,0,0.08),0_1px_2px_rgba(0,0,0,0.06)]'
                 : 'text-[#A8A29E] hover:text-[#57534E]'

@@ -229,20 +229,47 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
   // ── Trend / sparkline ──────────────────────────────────────────────────────
   const now = new Date()
   const trendData = useMemo(() => {
+    // Find the earliest review date so we only show months with actual data
+    const datedReviews = reviews.filter((r) => r.review_datetime_utc)
+    if (!datedReviews.length) return []
+
+    const earliest = datedReviews.reduce((min, r) =>
+      r.review_datetime_utc < min ? r.review_datetime_utc : min,
+      datedReviews[0].review_datetime_utc
+    )
+    const startDate = new Date(earliest)
+    const startYear = startDate.getFullYear()
+    const startMonth = startDate.getMonth()
+
     const months: Record<string, number[]> = {}
-    for (let i = 11; i >= 0; i--) {
-      const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
-      months[`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`] = []
+    let y = startYear, m = startMonth
+    while (y < now.getFullYear() || (y === now.getFullYear() && m <= now.getMonth())) {
+      months[`${y}-${String(m + 1).padStart(2, '0')}`] = []
+      m++
+      if (m > 11) { m = 0; y++ }
     }
+
     for (const r of reviews) {
       const key = getMonthKey(r.review_datetime_utc)
       if (key in months) months[key].push(r.star_rating)
     }
-    return Object.entries(months).map(([key, ratings]) => ({
-      month: new Date(key + '-01').toLocaleDateString('en-US', { month: 'short' }),
-      rating: ratings.length ? parseFloat(avg(ratings).toFixed(2)) : null,
-      count: ratings.length,
-    }))
+    const keys = Object.keys(months)
+    const spansMultipleYears = new Set(keys.map(k => k.split('-')[0])).size > 1
+    return keys.map((key, i) => {
+      const ratings = months[key]
+      const d = new Date(key + '-01')
+      // Show year on first entry or whenever the year changes
+      const prevKey = keys[i - 1]
+      const yearChanged = !prevKey || prevKey.split('-')[0] !== key.split('-')[0]
+      const label = spansMultipleYears && yearChanged
+        ? d.toLocaleDateString('en-US', { month: 'short', year: '2-digit' })
+        : d.toLocaleDateString('en-US', { month: 'short' })
+      return {
+        month: label,
+        rating: ratings.length ? parseFloat(avg(ratings).toFixed(2)) : null,
+        count: ratings.length,
+      }
+    })
   }, [reviews])
 
   const hasEnoughTrend = trendData.filter((d) => d.rating !== null).length >= 2

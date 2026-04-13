@@ -306,52 +306,71 @@ function StatCard({
 }
 
 // ── Setup banner ──────────────────────────────────────────────────────────────
+const SKIP_KEY = 'tr_skipped_platforms'
+
+type PlatformKey = 'google' | 'yelp' | 'tripadvisor'
+
 function SetupBanner({
-  step1Done,
+  googleMapsUrl,
+  yelpUrl,
+  tripadvisorUrl,
   step2Done,
   ownerName,
 }: {
-  step1Done: boolean
+  googleMapsUrl: string | null
+  yelpUrl: string | null
+  tripadvisorUrl: string | null
   step2Done: boolean
   ownerName: string
 }) {
   const [dismissed, setDismissed] = useState(false)
+  // Read skipped platforms from localStorage (client-only)
+  const [skipped, setSkipped] = useState<PlatformKey[]>([])
+  const [hydrated, setHydrated] = useState(false)
 
-  // Auto-dismissed once both steps complete
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(SKIP_KEY)
+      if (stored) setSkipped(JSON.parse(stored))
+    } catch { /* ignore */ }
+    setHydrated(true)
+  }, [])
+
+  const skipPlatform = (key: PlatformKey) => {
+    const next = [...skipped, key]
+    setSkipped(next)
+    try { localStorage.setItem(SKIP_KEY, JSON.stringify(next)) } catch { /* ignore */ }
+  }
+
+  const unskipPlatform = (key: PlatformKey) => {
+    const next = skipped.filter(k => k !== key)
+    setSkipped(next)
+    try { localStorage.setItem(SKIP_KEY, JSON.stringify(next)) } catch { /* ignore */ }
+  }
+
+  if (!hydrated) return null // Avoid hydration mismatch
+
+  const platforms: { key: PlatformKey; label: string; url: string | null; color: string; colorBg: string; colorBorder: string }[] = [
+    { key: 'google',      label: 'Google Maps',  url: googleMapsUrl,  color: 'text-blue-400',    colorBg: 'bg-blue-950/30',    colorBorder: 'border-blue-900/30' },
+    { key: 'yelp',        label: 'Yelp',         url: yelpUrl,        color: 'text-red-400',     colorBg: 'bg-red-950/30',     colorBorder: 'border-red-900/30'  },
+    { key: 'tripadvisor', label: 'TripAdvisor',  url: tripadvisorUrl, color: 'text-emerald-400', colorBg: 'bg-emerald-950/30', colorBorder: 'border-emerald-900/30' },
+  ]
+
+  // Step 1 is done when every platform is either connected or explicitly skipped
+  const step1Done = platforms.every(p => !!p.url || skipped.includes(p.key))
   const allDone = step1Done && step2Done
   if (allDone || dismissed) return null
 
   const completedCount = [step1Done, step2Done].filter(Boolean).length
 
-  const steps = [
-    {
-      num: 1,
-      done: step1Done,
-      label: 'Connect a review platform',
-      sub: 'Link Google Maps, Yelp, or TripAdvisor',
-      href: '/dashboard/get-more-reviews',
-    },
-    {
-      num: 2,
-      done: step2Done,
-      label: 'Generate your first reply',
-      sub: 'Let AI draft a response in seconds',
-      href: '/dashboard/generate',
-    },
-  ]
-
-  // CTA goes to first incomplete step
-  const nextStep = steps.find(s => !s.done)!
-
   return (
     <div className="relative animate-fade-up rounded-2xl border border-[#E05A28]/25 bg-gradient-to-br from-[#1A0F09] to-[#110A05] overflow-hidden shadow-[0_2px_20px_rgba(224,90,40,0.10)]">
-      {/* Top accent line */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#E05A28]/50 to-transparent" />
 
       <div className="px-5 py-5 sm:px-7 sm:py-6">
         <div className="flex items-start justify-between gap-4">
-          {/* Left */}
           <div className="flex-1 min-w-0">
+
             {/* Eyebrow */}
             <div className="flex items-center gap-2 mb-3">
               <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#E05A28]/15 border border-[#E05A28]/25">
@@ -362,75 +381,120 @@ function SetupBanner({
               </div>
             </div>
 
-            <h2 className="text-[15px] sm:text-[17px] font-bold text-white tracking-[-0.02em] mb-1">
+            <h2 className="text-[15px] sm:text-[17px] font-bold text-white tracking-[-0.02em] mb-0.5">
               Hey {ownerName}, finish setup to see replies roll in
             </h2>
-            <p className="text-[12px] sm:text-[13px] text-white/45 leading-snug mb-5">
-              Two quick steps — takes under a minute.
-            </p>
+            <p className="text-[12px] text-white/40 mb-5">Two quick steps — takes under a minute.</p>
 
-            {/* Steps */}
-            <div className="flex flex-col sm:flex-row gap-3 mb-5">
-              {steps.map((step) => (
-                <div
-                  key={step.num}
-                  className={`flex items-center gap-3 flex-1 rounded-xl px-3.5 py-3 border transition-all duration-200 ${
-                    step.done
-                      ? 'bg-emerald-950/20 border-emerald-900/25'
-                      : 'bg-white/[0.04] border-white/[0.08]'
-                  }`}
-                >
-                  {/* Step circle */}
-                  <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
-                    step.done
-                      ? 'bg-emerald-500 shadow-[0_0_12px_rgba(52,211,153,0.4)]'
-                      : 'bg-[#E05A28]/20 border border-[#E05A28]/40'
-                  }`}>
-                    {step.done ? (
-                      <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                      </svg>
-                    ) : (
-                      <span className="text-[11px] font-bold text-[#E05A28]">{step.num}</span>
-                    )}
-                  </div>
-                  <div className="min-w-0">
-                    <p className={`text-[12px] font-semibold leading-tight ${step.done ? 'text-emerald-300 line-through decoration-emerald-600' : 'text-white/80'}`}>
-                      {step.label}
-                    </p>
-                    <p className="text-[11px] text-white/30 mt-0.5 leading-tight">{step.sub}</p>
-                  </div>
+            {/* ── Step 1: Platforms ── */}
+            <div className={`rounded-xl border p-4 mb-3 transition-all duration-300 ${step1Done ? 'border-emerald-900/25 bg-emerald-950/15' : 'border-white/[0.08] bg-white/[0.03]'}`}>
+              <div className="flex items-center gap-2.5 mb-3">
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 ${step1Done ? 'bg-emerald-500 shadow-[0_0_10px_rgba(52,211,153,0.4)]' : 'border border-[#E05A28]/40 bg-[#E05A28]/10'}`}>
+                  {step1Done
+                    ? <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+                    : <span className="text-[10px] font-bold text-[#E05A28]">1</span>
+                  }
                 </div>
-              ))}
+                <p className={`text-[13px] font-semibold ${step1Done ? 'text-emerald-300 line-through decoration-emerald-700' : 'text-white/80'}`}>
+                  Connect your review platforms
+                </p>
+              </div>
+
+              {/* Per-platform rows */}
+              <div className="space-y-2 pl-8">
+                {platforms.map((p) => {
+                  const isConnected = !!p.url
+                  const isSkipped = skipped.includes(p.key)
+
+                  if (isConnected) {
+                    return (
+                      <div key={p.key} className="flex items-center gap-2">
+                        <svg className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span className={`text-[12px] font-semibold ${p.color}`}>{p.label}</span>
+                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${p.colorBg} ${p.colorBorder} border ${p.color}`}>Connected</span>
+                      </div>
+                    )
+                  }
+
+                  if (isSkipped) {
+                    return (
+                      <div key={p.key} className="flex items-center gap-2">
+                        <svg className="w-3.5 h-3.5 text-white/20 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        <span className="text-[12px] text-white/30 line-through">{p.label}</span>
+                        <button
+                          onClick={() => unskipPlatform(p.key)}
+                          className="text-[11px] text-white/30 hover:text-[#E05A28] underline underline-offset-2 transition-colors ml-1"
+                        >
+                          Connect now
+                        </button>
+                      </div>
+                    )
+                  }
+
+                  // Pending — not connected, not skipped
+                  return (
+                    <div key={p.key} className="flex items-center gap-2 flex-wrap">
+                      <span className="w-3.5 h-3.5 flex-shrink-0" /> {/* Spacer */}
+                      <span className="text-[12px] font-medium text-white/55">{p.label}</span>
+                      <Link
+                        href="/dashboard/get-more-reviews"
+                        className={`text-[11px] font-semibold ${p.color} underline underline-offset-2 hover:opacity-80 transition-opacity`}
+                      >
+                        Connect →
+                      </Link>
+                      <button
+                        onClick={() => skipPlatform(p.key)}
+                        className="text-[11px] text-white/25 hover:text-white/50 transition-colors"
+                      >
+                        Set up later
+                      </button>
+                    </div>
+                  )
+                })}
+              </div>
             </div>
 
-            {/* CTA */}
-            <Link
-              href={nextStep.href}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.97] text-white text-[13px] font-bold shadow-[0_2px_12px_rgba(224,90,40,0.35)] hover:shadow-[0_4px_20px_rgba(224,90,40,0.50)] transition-all duration-200"
-            >
-              {step1Done ? (
-                <>
-                  <svg className="w-3.5 h-3.5 opacity-80" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
-                  </svg>
-                  Generate Your First Reply →
-                </>
-              ) : (
-                <>
-                  <svg className="w-3.5 h-3.5 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                  </svg>
-                  Connect a Platform →
-                </>
-              )}
-            </Link>
+            {/* ── Step 2: Generate ── */}
+            <div className={`rounded-xl border p-4 mb-5 transition-all duration-300 ${step2Done ? 'border-emerald-900/25 bg-emerald-950/15' : 'border-white/[0.08] bg-white/[0.03]'}`}>
+              <div className="flex items-center gap-2.5">
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 ${step2Done ? 'bg-emerald-500 shadow-[0_0_10px_rgba(52,211,153,0.4)]' : 'border border-[#E05A28]/40 bg-[#E05A28]/10'}`}>
+                  {step2Done
+                    ? <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+                    : <span className="text-[10px] font-bold text-[#E05A28]">2</span>
+                  }
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className={`text-[13px] font-semibold ${step2Done ? 'text-emerald-300 line-through decoration-emerald-700' : 'text-white/80'}`}>
+                    Generate your first reply
+                  </p>
+                  {!step2Done && (
+                    <p className="text-[11px] text-white/30 mt-0.5">Let AI draft a response in seconds</p>
+                  )}
+                </div>
+                {!step2Done && (
+                  <Link
+                    href="/dashboard/generate"
+                    className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#E05A28]/15 hover:bg-[#E05A28]/25 border border-[#E05A28]/25 text-[12px] font-semibold text-[#E05A28] transition-all duration-150"
+                  >
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+                    </svg>
+                    Generate →
+                  </Link>
+                )}
+              </div>
+            </div>
+
           </div>
 
           {/* Dismiss */}
           <button
             onClick={() => setDismissed(true)}
-            className="flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-white/25 hover:text-white/60 hover:bg-white/[0.08] transition-all duration-150 mt-0.5"
+            className="flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-white/20 hover:text-white/55 hover:bg-white/[0.07] transition-all duration-150 mt-0.5"
             aria-label="Dismiss"
           >
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -546,7 +610,9 @@ export default function HomeClient({
         {/* ── Onboarding checklist ────────────────────────────────────────── */}
         <SetupBanner
           ownerName={ownerName}
-          step1Done={!!(googleMapsUrl || yelpUrl || tripadvisorUrl)}
+          googleMapsUrl={googleMapsUrl}
+          yelpUrl={yelpUrl}
+          tripadvisorUrl={tripadvisorUrl}
           step2Done={hasGeneratedReply}
         />
 

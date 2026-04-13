@@ -202,7 +202,7 @@ export default function LandingPage() {
               Sign in
             </Link>
             <Link href="/signup" className="px-3.5 sm:px-4 py-2 bg-[#E05A28] hover:bg-[#C94E21] text-white text-[13px] sm:text-sm font-semibold rounded-lg transition-colors duration-200 whitespace-nowrap">
-              Start free
+              Try Free
             </Link>
           </div>
         </div>
@@ -226,12 +226,11 @@ export default function LandingPage() {
                 className="text-white mb-4 sm:mb-5 animate-fade-up"
                 style={{ fontSize: 'clamp(30px, 6vw, 68px)', fontWeight: 800, lineHeight: 1.08, letterSpacing: '-0.03em', animationDelay: '160ms' }}
               >
-                Your reviews deserve a reply.{' '}
-                <span style={{ color: '#E05A28' }}>Every single one.</span>
+                Reply to Every Review in Seconds—<span style={{ color: '#E05A28' }}>Without Losing Your Voice.</span>
               </h1>
 
-              <p className="text-[#888] mb-7 animate-fade-up" style={{ fontSize: 'clamp(14px, 2vw, 16px)', lineHeight: '1.65', animationDelay: '260ms', maxWidth: '440px' }}>
-                Google, Yelp, and TripAdvisor reviews sync automatically every day. Get a thoughtful, on-brand reply in seconds.
+              <p className="text-[#888] mb-7 animate-fade-up" style={{ fontSize: 'clamp(14px, 2vw, 16px)', lineHeight: '1.65', animationDelay: '260ms', maxWidth: '460px' }}>
+                TableReply crafts personalized responses that sound exactly like you. Built for independent restaurants who care about every guest.
               </p>
 
               {/* CTAs */}
@@ -240,20 +239,20 @@ export default function LandingPage() {
                   href="/signup"
                   className="flex items-center justify-center gap-2 px-6 py-3.5 bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-[14px] font-bold rounded-xl transition-all duration-150 active:scale-[0.98] shadow-[0_4px_20px_rgba(224,90,40,0.35)]"
                 >
-                  Start free — no card needed
+                  Start Free 7-Day Trial
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
                 </Link>
                 <a
                   href="#how-it-works"
                   className="flex items-center justify-center px-6 py-3.5 border border-white/10 hover:border-white/25 text-white/60 hover:text-white text-[14px] font-medium rounded-xl transition-all duration-200"
                 >
-                  See how it works
+                  See How It Works
                 </a>
               </div>
 
               {/* Trust signals */}
               <div className="flex items-center gap-4 sm:gap-5 flex-wrap animate-fade-up" style={{ animationDelay: '420ms' }}>
-                {['7 days free', 'Cancel anytime', 'Google & Yelp & TA'].map((item) => (
+                {['Free 7-day trial', 'No card needed', 'Cancel anytime'].map((item) => (
                   <div key={item} className="flex items-center gap-1.5">
                     <svg className="w-3 h-3 text-[#E05A28] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>
                     <span className="text-[#555] text-[12px]">{item}</span>
@@ -499,35 +498,91 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── FEATURES ─────────────────────────────────────────────────────── */}
+      {/* ── CORE BENEFITS ────────────────────────────────────────────────── */}
       <section className="py-12 sm:py-20 px-4 sm:px-6 bg-[#fafaf8] border-t border-[#e5e5e0]">
-        <div ref={featuresAnim.ref} className="max-w-6xl mx-auto">
+        <div ref={featuresAnim.ref} className="max-w-5xl mx-auto">
           <div className={`text-center mb-8 sm:mb-12 transition-all duration-700 ${featuresAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28] mb-2.5">Features</p>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28] mb-2.5">Why it works</p>
             <h2 className="font-bold text-[#111111]" style={{ fontSize: 'clamp(22px, 3.5vw, 36px)', lineHeight: 1.12, letterSpacing: '-0.02em' }}>
-              Everything you need to grow your reputation
+              Three things done right
             </h2>
           </div>
 
-          {/* 2-col on mobile, 4-col on desktop */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
-            {features.map(({ icon, title, desc }, i) => (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
+            {[
+              {
+                num: '01',
+                title: 'Replies that sound like you',
+                desc: "Set your restaurant's name, cuisine, and tone once. Every reply matches your voice — warm, professional, or straight-talking. Guests can't tell it wasn't written by you.",
+                icon: (
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
+                ),
+                color: '#E05A28',
+                bg: '#FEF0E8',
+                border: '#F5C9AD',
+              },
+              {
+                num: '02',
+                title: 'Every platform, hands-free',
+                desc: 'Google, Yelp, and TripAdvisor reviews sync to your dashboard every day — automatically. No browser tabs, no logging in. Just open TableReply and everything is waiting for you.',
+                icon: (
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                ),
+                color: '#0070F3',
+                bg: '#EBF4FF',
+                border: '#BFDBFE',
+              },
+              {
+                num: '03',
+                title: 'From review to reply in seconds',
+                desc: "Click a review. Get a draft. Copy it. That's the whole workflow. No prompts, no editing required — just a thoughtful reply ready to paste wherever you need it.",
+                icon: (
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                ),
+                color: '#059669',
+                bg: '#ECFDF5',
+                border: '#A7F3D0',
+              },
+            ].map(({ num, title, desc, icon, color, bg, border }, i) => (
               <div
-                key={title}
-                className="group bg-white hover:bg-[#FEFCFB] border border-[#E4DED8] hover:border-[#D0C9C1] rounded-xl sm:rounded-2xl p-3.5 sm:p-5 transition-all duration-250 hover:shadow-[0_4px_16px_rgba(0,0,0,0.07)] hover:-translate-y-0.5"
+                key={num}
+                className="bg-white border border-[#E4DED8] rounded-2xl p-6 sm:p-7 transition-all duration-500 hover:shadow-[0_4px_20px_rgba(0,0,0,0.07)] hover:-translate-y-0.5"
                 style={{
-                  transitionDelay: featuresAnim.inView ? `${i * 35}ms` : '0ms',
+                  transitionDelay: featuresAnim.inView ? `${i * 80}ms` : '0ms',
                   opacity: featuresAnim.inView ? 1 : 0,
-                  transform: featuresAnim.inView ? 'translateY(0)' : 'translateY(16px)',
+                  transform: featuresAnim.inView ? 'translateY(0)' : 'translateY(20px)',
                 }}
               >
-                <div className="w-8 h-8 rounded-lg bg-[#FEF0E8] border border-[#F5C9AD]/60 flex items-center justify-center text-[#E05A28] mb-2.5 sm:mb-3 group-hover:scale-110 transition-transform duration-200 flex-shrink-0">
-                  {icon}
+                <div className="flex items-start justify-between mb-5">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: bg, border: `1px solid ${border}`, color }}>
+                    {icon}
+                  </div>
+                  <span className="font-bold tabular-nums" style={{ fontSize: '13px', color: '#E4DED8', letterSpacing: '-0.02em' }}>{num}</span>
                 </div>
-                <p className="font-semibold text-[#111111] text-[12px] sm:text-[13px] mb-1 sm:mb-1.5 leading-snug">{title}</p>
-                <p className="text-[12px] sm:text-[13px] leading-relaxed text-[#777] hidden sm:block">{desc}</p>
+                <h3 className="font-bold text-[#111111] text-[16px] sm:text-[17px] mb-2.5 leading-snug tracking-tight">{title}</h3>
+                <p className="text-[13px] sm:text-[14px] leading-relaxed text-[#666]">{desc}</p>
               </div>
             ))}
+          </div>
+
+          {/* Bonus features compact strip */}
+          <div className={`mt-8 sm:mt-10 rounded-2xl border border-[#E4DED8] bg-white px-5 sm:px-7 py-4 sm:py-5 transition-all duration-700 delay-300 ${featuresAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-3">Also included</p>
+            <div className="flex flex-wrap gap-x-5 gap-y-2.5">
+              {[
+                'Deep analytics & rating trends',
+                'Keyword alerts',
+                'Staff mention tracking',
+                'Multi-language replies',
+                'Social post generator',
+                'Competitor rating tracker',
+              ].map((f) => (
+                <div key={f} className="flex items-center gap-1.5">
+                  <svg className="w-3 h-3 text-[#E05A28] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>
+                  <span className="text-[12px] sm:text-[13px] text-[#555]">{f}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -660,7 +715,7 @@ export default function LandingPage() {
                 href={annual ? '/signup?plan=annual' : '/signup'}
                 className="block w-full text-center font-bold text-white bg-[#E05A28] hover:bg-[#C94E21] rounded-xl transition-colors duration-200 py-3.5 sm:py-4 text-[15px]"
               >
-                Start your free week →
+                Start Free 7-Day Trial →
               </Link>
               <p className="text-center mt-3 text-[#555] text-[11px]">Cancel anytime · no credit card to start</p>
             </div>
@@ -683,9 +738,9 @@ export default function LandingPage() {
                 <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/30">200+ restaurants</span>
               </div>
               <h2 className="font-bold text-white mb-1.5" style={{ fontSize: 'clamp(20px, 3vw, 28px)', lineHeight: 1.2, letterSpacing: '-0.025em' }}>
-                Every review replied to.<br className="hidden sm:block" /> Every guest heard.
+                Start replying to every review today.
               </h2>
-              <p className="text-white/40 text-[13px]">7 days free · no card needed · cancel anytime</p>
+              <p className="text-white/40 text-[13px]">Free 7-day trial · no card needed · cancel anytime</p>
             </div>
 
             {/* Right — CTA */}
@@ -695,7 +750,7 @@ export default function LandingPage() {
                 className="group inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl font-bold text-[14px] text-white transition-all duration-200 active:scale-[0.97]"
                 style={{ background: 'linear-gradient(135deg, #E05A28 0%, #C44A1E 100%)', boxShadow: '0 4px 16px rgba(224,90,40,0.35), inset 0 1px 0 rgba(255,255,255,0.12)' }}
               >
-                Start your free week
+                Start Free 7-Day Trial
                 <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-150" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7"/>
                 </svg>

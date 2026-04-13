@@ -11,18 +11,20 @@ const CUISINE_OPTIONS = [
   'Bakery', 'Vegan & Vegetarian', 'Food Truck', 'Bar & Grill', 'Fine Dining', 'Other',
 ]
 
+// Values must match RestaurantProfileForm options exactly so Settings shows
+// the correct selection for profiles created via onboarding.
 const VIBE_OPTIONS = [
-  { value: 'casual_relaxed',    label: 'Casual & Relaxed' },
-  { value: 'upscale_refined',   label: 'Upscale & Refined' },
-  { value: 'family_friendly',   label: 'Family-Friendly' },
-  { value: 'trendy_modern',     label: 'Trendy & Modern' },
+  { value: 'casual',          label: 'Casual & Relaxed' },
+  { value: 'upscale',         label: 'Upscale & Refined' },
+  { value: 'family_friendly', label: 'Family-Friendly' },
+  { value: 'trendy',          label: 'Trendy & Modern' },
 ]
 
 const TONE_OPTIONS = [
-  { value: 'warm_personal',         label: 'Warm & Personal' },
-  { value: 'professional_polished', label: 'Professional & Polished' },
-  { value: 'fun_playful',           label: 'Fun & Playful' },
-  { value: 'formal_reserved',       label: 'Formal & Reserved' },
+  { value: 'warm and personal',         label: 'Warm & Personal' },
+  { value: 'professional and polished', label: 'Professional & Polished' },
+  { value: 'fun and playful',           label: 'Fun & Playful' },
+  { value: 'formal and reserved',       label: 'Formal & Reserved' },
 ]
 
 function OptionButton({ selected, onClick, children }: { selected: boolean; onClick: () => void; children: React.ReactNode }) {

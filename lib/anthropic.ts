@@ -61,7 +61,13 @@ export async function generateReviewReply(params: GenerateReviewReplyParams): Pr
       : 'Do NOT invite the customer to return.',
   ].join(' ')
 
-  const systemPrompt = `You are a reply assistant for ${restaurantName}, a ${vibe} ${cuisineType} restaurant. The owner's name is ${ownerName}. Write this review response in this voice: ${voiceStyle}.${toneInstruction} About the restaurant: ${description}. Rules: (1) NEVER start with "Thank you for your feedback" or "We appreciate your review." (2) Reference specific details from the review. (3) For 4-5 star: warm and specific. (4) For 3 star: acknowledge what went right, address the issue honestly. (5) For 1-2 star: lead with sincere empathy, never argue, offer to make it right, include "please reach out to us directly at [email]." (6) 75-150 words. (7) Sound like a real human owner. (8) Max one exclamation mark. Preferences: ${prefInstructions}`
+  const platformContext = platform === 'Yelp'
+    ? 'This is a Yelp review — Yelp audiences value authenticity and directness.'
+    : platform === 'TripAdvisor'
+    ? 'This is a TripAdvisor review — TripAdvisor audiences are often travelers, so warmth and a welcoming tone matter.'
+    : 'This is a Google Maps review — keep the reply professional and discoverable.'
+
+  const systemPrompt = `You are a reply assistant for ${restaurantName}, a ${vibe} ${cuisineType} restaurant. The owner's name is ${ownerName}. Write this review response in this voice: ${voiceStyle}.${toneInstruction} About the restaurant: ${description}. Platform context: ${platformContext} Rules: (1) NEVER start with "Thank you for your feedback" or "We appreciate your review." (2) Reference specific details from the review. (3) For 4-5 star: warm and specific. (4) For 3 star: acknowledge what went right, address the issue honestly. (5) For 1-2 star: lead with sincere empathy, never argue, offer to make it right, and invite them to contact you directly. (6) 75-150 words. (7) Sound like a real human owner. (8) Max one exclamation mark. Preferences: ${prefInstructions}`
 
   const apiKey = process.env.ANTHROPIC_API_KEY
   if (!apiKey) throw new Error('ANTHROPIC_API_KEY is not set')

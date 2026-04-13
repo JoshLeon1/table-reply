@@ -119,7 +119,7 @@ function SetupPanel({ profile, onSaved }: { profile: RestaurantProfile; onSaved:
       </div>
       <h1 className="text-xl font-semibold text-white mb-2">Put your review replies on autopilot</h1>
       <p className="text-[13px] text-white/50 max-w-[280px] sm:max-w-sm mb-8 leading-relaxed">
-        Connect your Google Maps listing and TableReply will scrape new reviews every morning, generate personalised replies, and queue them for your approval.
+        Connect Google Maps, Yelp, or TripAdvisor and TableReply will sync new reviews every morning, generate personalised replies, and queue them for your approval.
       </p>
       <div className="w-full sm:max-w-lg text-left space-y-3">
         <label className="block text-[13px] font-medium text-white">Google Maps URL</label>
@@ -146,8 +146,12 @@ function SetupPanel({ profile, onSaved }: { profile: RestaurantProfile; onSaved:
           disabled={saving || !url.trim()}
           className="w-full min-h-[52px] rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.98] text-white text-[15px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-[0_2px_12px_rgba(224,90,40,0.25)]"
         >
-          {saving ? 'Saving…' : 'Connect & Start Syncing'}
+          {saving ? 'Saving…' : 'Connect Google Maps'}
         </button>
+        <p className="text-[12px] text-white/30 text-center pt-1">
+          Also connect{' '}
+          <a href="/settings" className="text-white/50 hover:text-[#E05A28] underline underline-offset-2 transition-colors">Yelp &amp; TripAdvisor in Settings →</a>
+        </p>
       </div>
       <details className="mt-8 text-left w-full sm:max-w-lg group">
         <summary className="text-[12px] text-white/35 cursor-pointer hover:text-white/70 select-none list-none flex items-center gap-1.5 transition-colors">
@@ -226,7 +230,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
         body: JSON.stringify({
           reviewText: review.review_text,
           starRating: review.star_rating,
-          platform: 'Google',
+          platform: review.source === 'yelp' ? 'Yelp' : review.source === 'tripadvisor' ? 'TripAdvisor' : 'Google',
         }),
       })
       const data = await res.json()
@@ -710,7 +714,10 @@ export default function ReviewsClient({ profile, initialReviews, userId }: Props
   const [reviews, setReviews]       = useState<ScrapedReview[]>(initialReviews)
   const [scraping, setScraping]     = useState(false)
   const [scrapeError, setScrapeError] = useState('')
-  const [lastScrapedAt, setLastScrapedAt] = useState(profile.last_scraped_at)
+  // Use the most recent sync time across all connected platforms
+  const mostRecentSync = [profile.last_scraped_at, profile.yelp_last_scraped_at, profile.tripadvisor_last_scraped_at]
+    .filter(Boolean).sort().pop() ?? null
+  const [lastScrapedAt, setLastScrapedAt] = useState(mostRecentSync)
   const supabase = createClient()
 
   // Request notification permission on mount
@@ -726,7 +733,10 @@ export default function ReviewsClient({ profile, initialReviews, userId }: Props
     setScraping(true)
     setScrapeError('')
     try {
-      const res = await fetch('/api/scrape-reviews', {
+      // testMode injects fake Google reviews for debugging — keep using Google endpoint.
+      // Normal syncs use sync-all to pull from every connected platform.
+      const endpoint = testMode ? '/api/scrape-reviews' : '/api/sync-all'
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(testMode ? { testMode: true } : {}),
@@ -777,7 +787,9 @@ export default function ReviewsClient({ profile, initialReviews, userId }: Props
     await supabase.from('scraped_reviews').update({ reply_status: 'pending' }).eq('id', id).eq('user_id', userId)
   }
 
-  return !mapsUrl ? (
+  const hasAnyPlatform = !!(mapsUrl || profile.yelp_url || profile.tripadvisor_url)
+
+  return !hasAnyPlatform ? (
     <SetupPanel profile={profile} onSaved={handleSaved}/>
   ) : (
     <ConnectedPanel

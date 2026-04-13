@@ -52,10 +52,8 @@ export default async function GeneratePage() {
       isPaid={profile?.is_paid ?? false}
       daysRemaining={daysRemaining}
       trialExpired={trialExpired}
-      userId={user.id}
-      userEmail={user.email ?? ''}
       hasGeneratedReply={(replyCount ?? 0) > 0}
-      hasAutoSync={!!restaurantProfile?.google_maps_url}
+      hasAutoSync={!!(restaurantProfile?.google_maps_url || restaurantProfile?.yelp_url || restaurantProfile?.tripadvisor_url)}
     />
   )
 }

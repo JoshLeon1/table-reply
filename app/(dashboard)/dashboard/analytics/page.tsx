@@ -23,11 +23,12 @@ export default async function AnalyticsPage() {
 
   if (!profile) redirect('/settings')
 
+  // Include skipped reviews (no reply text) — they still have star ratings
+  // that count toward averages, trends, and volume metrics.
   const { data: reviews } = await supabaseAdmin
     .from('scraped_reviews')
     .select('*')
     .eq('user_id', user.id)
-    .neq('reply_status', 'skipped')
     .order('review_datetime_utc', { ascending: false })
 
   return (

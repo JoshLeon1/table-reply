@@ -38,8 +38,9 @@ const cuisineOptions = [
 
 const vibeOptions = [
   { value: '', label: 'Select vibe...' },
-  { value: 'casual', label: 'Casual & family-friendly' },
+  { value: 'casual', label: 'Casual & relaxed' },
   { value: 'upscale', label: 'Upscale & fine dining' },
+  { value: 'family_friendly', label: 'Family-friendly' },
   { value: 'trendy', label: 'Trendy & modern' },
   { value: 'cozy', label: 'Cozy & intimate' },
   { value: 'lively', label: 'Lively & social' },
@@ -51,6 +52,8 @@ const voiceOptions = [
   { value: '', label: 'Select voice style...' },
   { value: 'warm and personal', label: 'Warm & personal' },
   { value: 'professional and polished', label: 'Professional & polished' },
+  { value: 'fun and playful', label: 'Fun & playful' },
+  { value: 'formal and reserved', label: 'Formal & reserved' },
   { value: 'friendly and casual', label: 'Friendly & casual' },
   { value: 'sincere and humble', label: 'Sincere & humble' },
   { value: 'enthusiastic and energetic', label: 'Enthusiastic & energetic' },

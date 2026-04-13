@@ -353,8 +353,15 @@ function ConnectNudge({ onExitManual }: { onExitManual: () => void }) {
 }
 
 // ── Manual reply generator ────────────────────────────────────────────────────
+const MANUAL_PLATFORMS = [
+  { value: 'Google', label: 'Google' },
+  { value: 'Yelp', label: 'Yelp' },
+  { value: 'TripAdvisor', label: 'TripAdvisor' },
+]
+
 function ManualGenerator({ prominent = false }: { prominent?: boolean }) {
   const [review, setReview] = useState('')
+  const [platform, setPlatform] = useState('Google')
   const [reply, setReply] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -365,7 +372,7 @@ function ManualGenerator({ prominent = false }: { prominent?: boolean }) {
     if (!review.trim()) return
     setLoading(true); setError(''); setReply('')
     try {
-      const res = await fetch('/api/generate-reply', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ reviewText: review, starRating: 3, platform: 'Google' }) })
+      const res = await fetch('/api/generate-reply', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ reviewText: review, starRating: 3, platform }) })
       if (!res.ok) throw new Error()
       const data = await res.json()
       setReply(data.reply ?? data.generated_reply ?? '')
@@ -396,7 +403,7 @@ function ManualGenerator({ prominent = false }: { prominent?: boolean }) {
           <div className="flex-1 h-px bg-gradient-to-l from-white/[0.10] to-transparent" />
         </button>
 
-        {open && <GeneratorBody review={review} setReview={setReview} reply={reply} loading={loading} error={error} copied={copied} onGenerate={generate} onCopy={handleCopy} prominent={false} />}
+        {open && <GeneratorBody review={review} setReview={setReview} platform={platform} setPlatform={setPlatform} reply={reply} loading={loading} error={error} copied={copied} onGenerate={generate} onCopy={handleCopy} prominent={false} />}
       </div>
     )
   }
@@ -413,29 +420,46 @@ function ManualGenerator({ prominent = false }: { prominent?: boolean }) {
           <p className="text-[11px] text-white/35">Paste any review to get an AI-crafted reply instantly</p>
         </div>
       </div>
-      <GeneratorBody review={review} setReview={setReview} reply={reply} loading={loading} error={error} copied={copied} onGenerate={generate} onCopy={handleCopy} prominent={true} />
+      <GeneratorBody review={review} setReview={setReview} platform={platform} setPlatform={setPlatform} reply={reply} loading={loading} error={error} copied={copied} onGenerate={generate} onCopy={handleCopy} prominent={true} />
     </div>
   )
 }
 
-function GeneratorBody({ review, setReview, reply, loading, error, copied, onGenerate, onCopy, prominent }: {
-  review: string; setReview: (v: string) => void; reply: string; loading: boolean; error: string; copied: boolean; onGenerate: () => void; onCopy: () => void; prominent: boolean
+function GeneratorBody({ review, setReview, platform, setPlatform, reply, loading, error, copied, onGenerate, onCopy, prominent }: {
+  review: string; setReview: (v: string) => void; platform: string; setPlatform: (v: string) => void; reply: string; loading: boolean; error: string; copied: boolean; onGenerate: () => void; onCopy: () => void; prominent: boolean
 }) {
   return (
     <div className={`bg-[#111111] rounded-2xl border border-white/[0.07] overflow-hidden ${prominent ? 'shadow-[0_2px_20px_rgba(0,0,0,0.08)]' : ''}`}>
-      <div className="p-4">
+      <div className="p-4 space-y-3">
+        {/* Platform selector */}
+        <div className="flex gap-1.5">
+          {MANUAL_PLATFORMS.map(p => (
+            <button
+              key={p.value}
+              type="button"
+              onClick={() => setPlatform(p.value)}
+              className={`px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all duration-150 ${
+                platform === p.value
+                  ? 'bg-[#E05A28]/20 text-[#E05A28] border border-[#E05A28]/30'
+                  : 'text-white/30 border border-white/[0.08] hover:text-white/55 hover:border-white/20'
+              }`}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
         <textarea
           value={review}
           onChange={e => setReview(e.target.value)}
           onKeyDown={e => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') onGenerate() }}
-          placeholder="Paste a review to generate a reply…"
+          placeholder={`Paste a ${platform} review to generate a reply…`}
           rows={prominent ? 5 : 3}
           className="w-full resize-none px-3.5 py-3 rounded-xl border border-white/[0.10] bg-[#1A1A1A] hover:bg-[#1E1E1E] focus:bg-[#1E1E1E] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] text-[13px] text-white placeholder:text-white/25 transition-all duration-200 leading-relaxed"
         />
         <button
           onClick={onGenerate}
           disabled={loading || !review.trim()}
-          className="mt-3 w-full py-2.5 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-[13px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2 shadow-[0_2px_8px_rgba(224,90,40,0.2)] hover:shadow-[0_4px_14px_rgba(224,90,40,0.3)]"
+          className="w-full py-2.5 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-[13px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2 shadow-[0_2px_8px_rgba(224,90,40,0.2)] hover:shadow-[0_4px_14px_rgba(224,90,40,0.3)]"
         >
           {loading ? <><svg className="animate-spin w-3.5 h-3.5 opacity-70" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>Generating…</> : <><svg className="w-3.5 h-3.5 opacity-70" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd"/></svg>Generate Reply</>}
         </button>
@@ -546,7 +570,7 @@ export default function HomeClient({
   const handleSync = async () => {
     setSyncing(true); setSyncMsg(null)
     try {
-      const res = await fetch('/api/scrape-reviews', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) })
+      const res = await fetch('/api/sync-all', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? 'Sync failed')
       const n: number = data.newReviews ?? 0
@@ -594,14 +618,21 @@ export default function HomeClient({
         <div className="animate-fade-up flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-5 py-3.5 rounded-xl bg-[#E05A28]/[0.08] border border-[#E05A28]/20">
           <div className="flex items-center gap-3">
             <svg className="w-4 h-4 text-[#E05A28] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-            <p className="text-[13px] text-white/65">Accounts connected! <span className="font-semibold text-white/80">Sync now</span> to pull in your latest reviews.</p>
+            <div>
+              <p className="text-[13px] text-white/65">
+                <span className="font-semibold text-white/80">
+                  {[googleMapsUrl && 'Google Maps', yelpUrl && 'Yelp', tripadvisorUrl && 'TripAdvisor'].filter(Boolean).join(', ')}
+                </span>
+                {' '}connected — run your first sync to pull in reviews.
+              </p>
+            </div>
           </div>
           <button
             onClick={handleSync}
             disabled={syncing}
             className="text-[12px] font-bold text-[#E05A28] hover:text-[#C94E21] transition-colors whitespace-nowrap pl-7 sm:pl-0 disabled:opacity-50"
           >
-            {syncing ? 'Syncing…' : 'Check reviews now →'}
+            {syncing ? 'Syncing…' : 'Sync now →'}
           </button>
         </div>
       )}

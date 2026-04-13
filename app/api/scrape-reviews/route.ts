@@ -378,6 +378,7 @@ export async function POST(request: NextRequest) {
       review_datetime_utc:   review_datetime_utc ?? null, // null is safe; '' breaks timestamptz
       generated_reply:       generatedReply,
       reply_status:          replyStatus,
+      source:                'google',
     }
 
     // Try full insert (includes new columns); fall back to base if columns not yet migrated

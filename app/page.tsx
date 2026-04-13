@@ -143,9 +143,9 @@ export default function LandingPage() {
   ]
 
   const steps = [
-    { num: '1', title: 'Set up your voice once', desc: 'Restaurant name, cuisine, vibe, and tone. Takes 2 minutes.' },
-    { num: '2', title: 'Reviews come to you', desc: 'Google, Yelp, and TripAdvisor sync to your dashboard every day.' },
-    { num: '3', title: 'Copy your reply in seconds', desc: 'Get a personalized reply instantly. Copy → paste → done.' },
+    { num: '1', title: 'Connect your restaurant', desc: 'Link your Google, Yelp, and TripAdvisor listings once. Takes under 2 minutes.' },
+    { num: '2', title: 'Your reviews appear automatically', desc: 'TableReply pulls in your latest reviews every day — no manual work, no copy-pasting.' },
+    { num: '3', title: 'Send personalized replies in seconds', desc: 'Open a review, get an AI draft in your voice, copy it, and post. Done.' },
   ]
 
   const testimonials = [
@@ -252,7 +252,7 @@ export default function LandingPage() {
 
               {/* Trust signals */}
               <div className="flex items-center gap-4 sm:gap-5 flex-wrap animate-fade-up" style={{ animationDelay: '420ms' }}>
-                {['Free 7-day trial', 'No card needed', 'Cancel anytime'].map((item) => (
+                {['7-day free trial', 'No credit card required', 'Cancel anytime'].map((item) => (
                   <div key={item} className="flex items-center gap-1.5">
                     <svg className="w-3 h-3 text-[#E05A28] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>
                     <span className="text-[#555] text-[12px]">{item}</span>
@@ -470,8 +470,11 @@ export default function LandingPage() {
           >
             <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28] mb-2.5">How it works</p>
             <h2 className="font-bold text-[#111111]" style={{ fontSize: 'clamp(22px, 3.5vw, 34px)', lineHeight: 1.2, letterSpacing: '-0.02em' }}>
-              From review to reply in 10 seconds
+              Set up once. Replies ready every morning.
             </h2>
+            <p className="text-[14px] text-[#777] mt-3 max-w-md mx-auto leading-relaxed">
+              TableReply connects to your review platforms and handles the heavy lifting automatically.
+            </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
@@ -565,23 +568,34 @@ export default function LandingPage() {
             ))}
           </div>
 
-          {/* Bonus features compact strip */}
-          <div className={`mt-8 sm:mt-10 rounded-2xl border border-[#E4DED8] bg-white px-5 sm:px-7 py-4 sm:py-5 transition-all duration-700 delay-300 ${featuresAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-3">Also included</p>
-            <div className="flex flex-wrap gap-x-5 gap-y-2.5">
-              {[
-                'Deep analytics & rating trends',
-                'Keyword alerts',
-                'Staff mention tracking',
-                'Multi-language replies',
-                'Social post generator',
-                'Competitor rating tracker',
-              ].map((f) => (
-                <div key={f} className="flex items-center gap-1.5">
-                  <svg className="w-3 h-3 text-[#E05A28] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>
-                  <span className="text-[12px] sm:text-[13px] text-[#555]">{f}</span>
-                </div>
-              ))}
+          {/* Analytics bonus strip */}
+          <div className={`mt-8 sm:mt-10 rounded-2xl border border-[#E4DED8] bg-white overflow-hidden transition-all duration-700 delay-300 ${featuresAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+            <div className="px-5 sm:px-7 py-4 sm:py-5 border-b border-[#EDE9E4]">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-[10px] font-bold uppercase tracking-[0.13em] text-[#A8A29E]">Included free</span>
+                <span className="px-2 py-0.5 rounded-full bg-[#F3F0EC] text-[10px] font-semibold text-[#A8A29E] border border-[#E4DED8]">Bonus</span>
+              </div>
+              <h3 className="font-bold text-[#111] text-[16px] sm:text-[18px] tracking-tight">Extra Insight Without Extra Cost</h3>
+              <p className="text-[13px] text-[#777] mt-1 leading-relaxed">See trends in ratings, complaints, and response performance over time.</p>
+            </div>
+            <div className="px-5 sm:px-7 py-4 sm:py-5">
+              <div className="flex flex-wrap gap-x-5 gap-y-2.5">
+                {[
+                  'Rating trends over time',
+                  'Keyword & complaint tracking',
+                  'Response rate performance',
+                  'Keyword alerts',
+                  'Staff mention tracking',
+                  'Multi-language replies',
+                  'Social post generator',
+                  'Competitor rating tracker',
+                ].map((f) => (
+                  <div key={f} className="flex items-center gap-1.5">
+                    <svg className="w-3 h-3 text-[#A8A29E] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>
+                    <span className="text-[12px] sm:text-[13px] text-[#777]">{f}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -688,7 +702,7 @@ export default function LandingPage() {
             style={{ background: '#111111', border: '1px solid rgba(224,90,40,0.3)', boxShadow: '0 20px 50px rgba(0,0,0,0.2)' }}
           >
             <div className="flex justify-center pt-6 pb-0">
-              <span className="px-3 py-1 rounded-full bg-[#E05A28]/20 text-[#E05A28] text-[10px] font-bold uppercase tracking-[0.12em]">First week free</span>
+              <span className="px-3 py-1 rounded-full bg-[#E05A28]/20 text-[#E05A28] text-[10px] font-bold uppercase tracking-[0.12em]">7-day free trial</span>
             </div>
             <div className="px-6 sm:px-8 pt-4 pb-7">
               <p className="text-center text-white font-bold text-[17px] mb-4 tracking-tight">TableReply Pro</p>
@@ -700,7 +714,7 @@ export default function LandingPage() {
               </div>
               {annual
                 ? <p className="text-center text-[#E05A28] text-[13px] mb-4">Billed $228/yr — save $120</p>
-                : <p className="text-center text-[#9a9a9a] text-[12px] mb-4">First 7 days free — no card required.</p>
+                : <p className="text-center text-[#9a9a9a] text-[12px] mb-4">7-day free trial — no credit card required.</p>
               }
               <div className="h-px bg-[#E05A28]/20 mb-5" />
               <ul className="space-y-3 mb-7">
@@ -717,7 +731,7 @@ export default function LandingPage() {
               >
                 Start Free 7-Day Trial →
               </Link>
-              <p className="text-center mt-3 text-[#555] text-[11px]">Cancel anytime · no credit card to start</p>
+              <p className="text-center mt-3 text-[#555] text-[11px]">7-day free trial · no credit card required · cancel anytime</p>
             </div>
           </div>
         </div>
@@ -740,7 +754,7 @@ export default function LandingPage() {
               <h2 className="font-bold text-white mb-1.5" style={{ fontSize: 'clamp(20px, 3vw, 28px)', lineHeight: 1.2, letterSpacing: '-0.025em' }}>
                 Start replying to every review today.
               </h2>
-              <p className="text-white/40 text-[13px]">Free 7-day trial · no card needed · cancel anytime</p>
+              <p className="text-white/40 text-[13px]">7-day free trial — no credit card required</p>
             </div>
 
             {/* Right — CTA */}

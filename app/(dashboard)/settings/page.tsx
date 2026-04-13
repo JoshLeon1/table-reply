@@ -6,6 +6,7 @@ import RestaurantProfileForm from '@/components/RestaurantProfileForm'
 import ManageBillingButton from './ManageBillingButton'
 import SettingsClient from './SettingsClient'
 import KeywordAlertsManager from '@/components/KeywordAlertsManager'
+import GoogleConnectSection from '@/components/GoogleConnectSection'
 import YelpConnectSection from '@/components/YelpConnectSection'
 import TripAdvisorConnectSection from '@/components/TripAdvisorConnectSection'
 import Link from 'next/link'
@@ -156,6 +157,22 @@ export default async function SettingsPage() {
             userId={user.id}
             existingProfile={restaurantProfile}
             redirectTo="/settings"
+          />
+        </div>
+      </div>
+
+      {/* Google Maps Auto-Sync */}
+      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden shadow-card">
+        <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-[#EDE9E4]">
+          <h2 className="text-[11px] font-semibold text-[#A8A29E] uppercase tracking-[0.12em]">Google Maps Auto-Sync</h2>
+          <p className="text-[12px] text-[#57534E] mt-0.5">Connect Google Maps to sync reviews automatically every day.</p>
+        </div>
+        <div className="px-4 sm:px-6 py-4 sm:py-5">
+          <GoogleConnectSection
+            userId={user.id}
+            restaurantProfileId={restaurantProfile.id}
+            currentGoogleUrl={restaurantProfile.google_maps_url ?? null}
+            googleLastScrapedAt={restaurantProfile.last_scraped_at ?? null}
           />
         </div>
       </div>

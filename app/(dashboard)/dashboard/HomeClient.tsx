@@ -562,21 +562,23 @@ export default function HomeClient({
 
   const rateColor = responseRate >= 70 ? 'text-emerald-400' : responseRate >= 40 ? 'text-[#E05A28]' : 'text-red-400'
 
-  // ── State A: No platform connected, not in manual mode ──────────────────────
-  if (modeHydrated && !hasAnyPlatform && !manualMode) {
+  // ── State A / B: No platform connected ─────────────────────────────────────
+  // We know this from server props — don't wait for localStorage hydration.
+  // manualMode only flips to true after hydration; until then default to panel.
+  if (!hasAnyPlatform) {
+    if (modeHydrated && manualMode) {
+      // State B — chose to skip and use manual mode
+      return (
+        <div className="space-y-6 pb-16">
+          <ConnectNudge onExitManual={exitManual} />
+          <ManualGenerator prominent />
+        </div>
+      )
+    }
+    // State A — default: show onboarding panel (also shown during pre-hydration)
     return (
       <div className="pb-16">
         <OnboardingPanel ownerName={ownerName} onEnterManual={enterManual} />
-      </div>
-    )
-  }
-
-  // ── State B: No platform, manual mode ───────────────────────────────────────
-  if (modeHydrated && !hasAnyPlatform && manualMode) {
-    return (
-      <div className="space-y-6 pb-16">
-        <ConnectNudge onExitManual={exitManual} />
-        <ManualGenerator prominent />
       </div>
     )
   }
@@ -587,16 +589,20 @@ export default function HomeClient({
   return (
     <div className="space-y-6 sm:space-y-8 pb-16">
 
-      {/* Step 2 nudge (only if platforms connected but no reply yet) */}
-      {!step2Done && (
+      {/* First-sync nudge — shown until they've synced at least once */}
+      {!lastScrapedAt && (
         <div className="animate-fade-up flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-5 py-3.5 rounded-xl bg-[#E05A28]/[0.08] border border-[#E05A28]/20">
           <div className="flex items-center gap-3">
-            <svg className="w-4 h-4 text-[#E05A28] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd"/></svg>
-            <p className="text-[13px] text-white/65">Accounts connected! <span className="font-semibold text-white/80">Generate your first reply</span> to unlock analytics.</p>
+            <svg className="w-4 h-4 text-[#E05A28] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            <p className="text-[13px] text-white/65">Accounts connected! <span className="font-semibold text-white/80">Sync now</span> to pull in your latest reviews.</p>
           </div>
-          <Link href="/dashboard/generate" className="text-[12px] font-bold text-[#E05A28] hover:text-[#C94E21] transition-colors whitespace-nowrap pl-7 sm:pl-0">
-            Generate now →
-          </Link>
+          <button
+            onClick={handleSync}
+            disabled={syncing}
+            className="text-[12px] font-bold text-[#E05A28] hover:text-[#C94E21] transition-colors whitespace-nowrap pl-7 sm:pl-0 disabled:opacity-50"
+          >
+            {syncing ? 'Syncing…' : 'Check reviews now →'}
+          </button>
         </div>
       )}
 

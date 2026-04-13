@@ -164,17 +164,21 @@ export async function POST(request: NextRequest) {
     const systemPrompt =
       `You are a reply assistant for ${profile.restaurant_name}, ` +
       `a ${profile.vibe} ${profile.cuisine_type} restaurant. ` +
-      `Owner name: ${profile.owner_name}. ` +
+      `Owner: ${profile.owner_name}. ` +
       `Voice: ${profile.voice_style ?? profile.reply_tone ?? 'warm and professional'}. ` +
-      `Rules: Never start with "Thank you for your feedback". ` +
-      `Reference specific details from the review. ` +
-      `For 4-5 stars: warm, specific, invite them back. ` +
-      `For 1-2 stars: sincere empathy, never defensive, offer to make it right. ` +
-      `IMPORTANT — match reply length to review length: ` +
-      `short review (1-2 sentences) → reply in 1-2 sentences only; ` +
-      `medium review (3-5 sentences) → reply in 2-3 sentences; ` +
-      `long review (6+ sentences or 100+ words) → reply in 3-4 sentences max. ` +
-      `Never pad with filler. Always end with — ${profile.owner_name}`
+      `Rules: (1) NEVER start with "Thank you for your feedback" or "We appreciate your review." ` +
+      `(2) Sound like a real human owner. ` +
+      `(3) For 4-5 stars: warm, genuine, reference something specific they mentioned. ` +
+      `(4) For 3 stars: acknowledge what went right, address the concern honestly. ` +
+      `(5) For 1-2 stars: sincere empathy first, never defensive, offer to make it right. ` +
+      `(6) Max one exclamation mark total. ` +
+      `(7) STRICT LENGTH — reply MUST mirror the review length (word count is provided): ` +
+      `1-10 words → 1 sentence max 20 words; ` +
+      `11-30 words → 1-2 sentences max 35 words; ` +
+      `31-75 words → 2-3 sentences max 55 words; ` +
+      `76+ words → 3-4 sentences max 80 words. ` +
+      `Do NOT exceed these limits. Do NOT pad. ` +
+      `Always end with — ${profile.owner_name}`
 
     for (const review of reviews) {
       const { review_id, author_title, review_rating, review_text, review_datetime_utc } = review

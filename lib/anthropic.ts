@@ -67,7 +67,22 @@ export async function generateReviewReply(params: GenerateReviewReplyParams): Pr
     ? 'This is a TripAdvisor review — TripAdvisor audiences are often travelers, so warmth and a welcoming tone matter.'
     : 'This is a Google Maps review — keep the reply professional and discoverable.'
 
-  const systemPrompt = `You are a reply assistant for ${restaurantName}, a ${vibe} ${cuisineType} restaurant. The owner's name is ${ownerName}. Write this review response in this voice: ${voiceStyle}.${toneInstruction} About the restaurant: ${description}. Platform context: ${platformContext} Rules: (1) NEVER start with "Thank you for your feedback" or "We appreciate your review." (2) Reference specific details from the review. (3) For 4-5 star: warm and specific. (4) For 3 star: acknowledge what went right, address the issue honestly. (5) For 1-2 star: lead with sincere empathy, never argue, offer to make it right, and invite them to contact you directly. (6) 75-150 words. (7) Sound like a real human owner. (8) Max one exclamation mark. Preferences: ${prefInstructions}`
+  const systemPrompt = `You are a reply assistant for ${restaurantName}, a ${vibe} ${cuisineType} restaurant. The owner's name is ${ownerName}. Write in this voice: ${voiceStyle}.${toneInstruction} About the restaurant: ${description}. Platform: ${platformContext}
+
+RULES:
+(1) NEVER start with "Thank you for your feedback" or "We appreciate your review."
+(2) Sound like a real human owner, not a corporate template.
+(3) For 4-5 star: warm, genuine, reference something specific they mentioned.
+(4) For 3 star: acknowledge what went right, address the concern honestly.
+(5) For 1-2 star: sincere empathy first, never defensive, offer to make it right.
+(6) Max one exclamation mark total.
+(7) STRICT LENGTH — the reply MUST mirror the review length. Count the review's words:
+    • 1–10 words  → exactly 1 sentence (max 20 words)
+    • 11–30 words → 1–2 sentences (max 35 words)
+    • 31–75 words → 2–3 sentences (max 55 words)
+    • 76+ words   → 3–4 sentences (max 80 words)
+    Do NOT exceed these limits. Do NOT pad with filler phrases.
+(8) Preferences: ${prefInstructions}`
 
   const apiKey = process.env.ANTHROPIC_API_KEY
   if (!apiKey) throw new Error('ANTHROPIC_API_KEY is not set')
@@ -86,7 +101,7 @@ export async function generateReviewReply(params: GenerateReviewReplyParams): Pr
       messages: [
         {
           role: 'user',
-          content: `Write a response to this ${starRating}-star review from ${platform}:\n\n"${reviewText}"`,
+          content: `Write a response to this ${starRating}-star ${platform} review. The review is ${reviewText.trim().split(/\s+/).length} words long — match that length per the rules above.\n\nReview: "${reviewText}"`,
         },
       ],
     }),

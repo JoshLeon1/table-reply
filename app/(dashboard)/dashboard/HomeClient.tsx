@@ -305,6 +305,144 @@ function StatCard({
   )
 }
 
+// ── Setup banner ──────────────────────────────────────────────────────────────
+function SetupBanner({
+  step1Done,
+  step2Done,
+  ownerName,
+}: {
+  step1Done: boolean
+  step2Done: boolean
+  ownerName: string
+}) {
+  const [dismissed, setDismissed] = useState(false)
+
+  // Auto-dismissed once both steps complete
+  const allDone = step1Done && step2Done
+  if (allDone || dismissed) return null
+
+  const completedCount = [step1Done, step2Done].filter(Boolean).length
+
+  const steps = [
+    {
+      num: 1,
+      done: step1Done,
+      label: 'Connect a review platform',
+      sub: 'Link Google Maps, Yelp, or TripAdvisor',
+      href: '/dashboard/get-more-reviews',
+    },
+    {
+      num: 2,
+      done: step2Done,
+      label: 'Generate your first reply',
+      sub: 'Let AI draft a response in seconds',
+      href: '/dashboard/generate',
+    },
+  ]
+
+  // CTA goes to first incomplete step
+  const nextStep = steps.find(s => !s.done)!
+
+  return (
+    <div className="relative animate-fade-up rounded-2xl border border-[#E05A28]/25 bg-gradient-to-br from-[#1A0F09] to-[#110A05] overflow-hidden shadow-[0_2px_20px_rgba(224,90,40,0.10)]">
+      {/* Top accent line */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#E05A28]/50 to-transparent" />
+
+      <div className="px-5 py-5 sm:px-7 sm:py-6">
+        <div className="flex items-start justify-between gap-4">
+          {/* Left */}
+          <div className="flex-1 min-w-0">
+            {/* Eyebrow */}
+            <div className="flex items-center gap-2 mb-3">
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#E05A28]/15 border border-[#E05A28]/25">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#E05A28] animate-pulse flex-shrink-0" />
+                <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#E05A28]/80">
+                  Get started — {completedCount}/2 done
+                </span>
+              </div>
+            </div>
+
+            <h2 className="text-[15px] sm:text-[17px] font-bold text-white tracking-[-0.02em] mb-1">
+              Hey {ownerName}, finish setup to see replies roll in
+            </h2>
+            <p className="text-[12px] sm:text-[13px] text-white/45 leading-snug mb-5">
+              Two quick steps — takes under a minute.
+            </p>
+
+            {/* Steps */}
+            <div className="flex flex-col sm:flex-row gap-3 mb-5">
+              {steps.map((step) => (
+                <div
+                  key={step.num}
+                  className={`flex items-center gap-3 flex-1 rounded-xl px-3.5 py-3 border transition-all duration-200 ${
+                    step.done
+                      ? 'bg-emerald-950/20 border-emerald-900/25'
+                      : 'bg-white/[0.04] border-white/[0.08]'
+                  }`}
+                >
+                  {/* Step circle */}
+                  <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
+                    step.done
+                      ? 'bg-emerald-500 shadow-[0_0_12px_rgba(52,211,153,0.4)]'
+                      : 'bg-[#E05A28]/20 border border-[#E05A28]/40'
+                  }`}>
+                    {step.done ? (
+                      <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                      </svg>
+                    ) : (
+                      <span className="text-[11px] font-bold text-[#E05A28]">{step.num}</span>
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <p className={`text-[12px] font-semibold leading-tight ${step.done ? 'text-emerald-300 line-through decoration-emerald-600' : 'text-white/80'}`}>
+                      {step.label}
+                    </p>
+                    <p className="text-[11px] text-white/30 mt-0.5 leading-tight">{step.sub}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* CTA */}
+            <Link
+              href={nextStep.href}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.97] text-white text-[13px] font-bold shadow-[0_2px_12px_rgba(224,90,40,0.35)] hover:shadow-[0_4px_20px_rgba(224,90,40,0.50)] transition-all duration-200"
+            >
+              {step1Done ? (
+                <>
+                  <svg className="w-3.5 h-3.5 opacity-80" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+                  </svg>
+                  Generate Your First Reply →
+                </>
+              ) : (
+                <>
+                  <svg className="w-3.5 h-3.5 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                  </svg>
+                  Connect a Platform →
+                </>
+              )}
+            </Link>
+          </div>
+
+          {/* Dismiss */}
+          <button
+            onClick={() => setDismissed(true)}
+            className="flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-white/25 hover:text-white/60 hover:bg-white/[0.08] transition-all duration-150 mt-0.5"
+            aria-label="Dismiss"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ── Props ─────────────────────────────────────────────────────────────────────
 interface Props {
   ownerName: string
@@ -313,6 +451,9 @@ interface Props {
   userId: string
   isPaid: boolean
   googleMapsUrl: string | null
+  yelpUrl: string | null
+  tripadvisorUrl: string | null
+  hasGeneratedReply: boolean
   reviewsThisMonth: number
   reviewsLastMonth: number
   avgRating: number
@@ -335,6 +476,9 @@ export default function HomeClient({
   userId,
   isPaid: _isPaid,
   googleMapsUrl,
+  yelpUrl,
+  tripadvisorUrl,
+  hasGeneratedReply,
   reviewsThisMonth,
   reviewsLastMonth,
   avgRating,
@@ -398,6 +542,13 @@ export default function HomeClient({
       )}
 
       <div className="space-y-6 sm:space-y-8 pb-16">
+
+        {/* ── Onboarding checklist ────────────────────────────────────────── */}
+        <SetupBanner
+          ownerName={ownerName}
+          step1Done={!!(googleMapsUrl || yelpUrl || tripadvisorUrl)}
+          step2Done={hasGeneratedReply}
+        />
 
         {/* ── Header ──────────────────────────────────────────────────────── */}
         <div

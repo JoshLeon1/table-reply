@@ -38,6 +38,7 @@ export default async function DashboardPage() {
     { data: pendingReviews },
     { data: recentApproved },
     { data: analyticsCache },
+    { count: approvedAllTime },
   ] = await Promise.all([
     supabase.from('profiles').select('*').eq('id', user.id).single(),
     supabase.from('restaurant_profiles').select('*').eq('user_id', user.id).single(),
@@ -50,6 +51,7 @@ export default async function DashboardPage() {
     supabase.from('scraped_reviews').select('*').eq('user_id', user.id).eq('reply_status', 'pending').order('review_datetime_utc', { ascending: false }).limit(3),
     supabase.from('scraped_reviews').select('*').eq('user_id', user.id).eq('reply_status', 'approved').order('created_at', { ascending: false }).limit(5),
     supabase.from('restaurant_analytics').select('themes, last_analyzed_at').eq('user_id', user.id).maybeSingle(),
+    supabase.from('scraped_reviews').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('reply_status', 'approved'),
   ])
 
   // Start trial if not started
@@ -80,6 +82,9 @@ export default async function DashboardPage() {
       lastScrapedAt={restaurantProfile?.last_scraped_at ?? null}
       userId={user.id}
       googleMapsUrl={restaurantProfile?.google_maps_url ?? null}
+      yelpUrl={restaurantProfile?.yelp_url ?? null}
+      tripadvisorUrl={restaurantProfile?.tripadvisor_url ?? null}
+      hasGeneratedReply={(approvedAllTime ?? 0) > 0}
       isPaid={profile?.is_paid ?? false}
       reviewsThisMonth={reviewsThisMonth ?? 0}
       reviewsLastMonth={reviewsLastMonth ?? 0}

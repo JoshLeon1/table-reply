@@ -71,7 +71,7 @@ function Stars({ rating }: { rating: number }) {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-5">{children}</p>
+    <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/35 mb-5">{children}</p>
   )
 }
 
@@ -82,9 +82,9 @@ function ThemeSkeleton() {
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16">
       {[4, 3, 4].map((lines, col) => (
         <div key={col}>
-          <div className="h-3 w-16 bg-[#E4DED8] rounded-full animate-pulse mb-5" />
+          <div className="h-3 w-16 bg-white/[0.08] rounded-full animate-pulse mb-5" />
           {Array.from({ length: lines }).map((_, i) => (
-            <div key={i} className="h-3 bg-[#E4DED8] rounded-full animate-pulse mb-3" style={{ width: `${75 - i * 10}%` }} />
+            <div key={i} className="h-3 bg-white/[0.08] rounded-full animate-pulse mb-3" style={{ width: `${75 - i * 10}%` }} />
           ))}
         </div>
       ))}
@@ -140,8 +140,8 @@ function EmptyState({ restaurantName }: { restaurantName: string }) {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
         </svg>
       </div>
-      <h2 className="text-lg font-semibold text-[#111] mb-2">No data yet</h2>
-      <p className="text-[13px] text-[#6B6B6B] max-w-sm leading-relaxed mb-6">
+      <h2 className="text-lg font-semibold text-white mb-2">No data yet</h2>
+      <p className="text-[13px] text-white/50 max-w-sm leading-relaxed mb-6">
         Connect your Google Maps listing and sync reviews to see analytics for {restaurantName}.
       </p>
       <a href="/dashboard/reviews" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#111] hover:bg-[#1C1C1C] text-white text-[13px] font-medium transition-all">
@@ -177,25 +177,25 @@ function StaffMentionsSection({ reviews }: { reviews: ScrapedReview[] }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
         {staff.map((member) => {
           const avatarStyles = [
-            'bg-[#FEF0E8] text-[#E05A28]',
-            'bg-blue-50 text-blue-600',
-            'bg-violet-50 text-violet-600',
-            'bg-emerald-50 text-emerald-600',
-            'bg-amber-50 text-amber-600',
+            'bg-[#E05A28]/15 text-[#E05A28]',
+            'bg-blue-950/40 text-blue-400',
+            'bg-violet-950/40 text-violet-400',
+            'bg-emerald-950/40 text-emerald-400',
+            'bg-amber-950/40 text-amber-400',
           ]
           const avatarClass = avatarStyles[member.name.charCodeAt(0) % 5]
           return (
-          <div key={member.name} className="bg-white rounded-2xl border border-[#E4DED8] p-5 shadow-card">
+          <div key={member.name} className="bg-[#111111] rounded-2xl border border-white/[0.07] p-5 shadow-card">
             <div className={`w-10 h-10 rounded-full ${avatarClass} border border-current/10 flex items-center justify-center font-bold text-[16px] mb-3`}>
               {member.name.charAt(0)}
             </div>
-            <p className="text-[14px] font-semibold text-[#111] mb-1">{member.name}</p>
+            <p className="text-[14px] font-semibold text-white mb-1">{member.name}</p>
             <div className="flex items-center gap-1.5 mb-2">
-              <span className="text-[12px] text-[#57534E]">{member.count} mention{member.count !== 1 ? 's' : ''}</span>
-              <span className="text-[#E4DED8]">·</span>
+              <span className="text-[12px] text-white/55">{member.count} mention{member.count !== 1 ? 's' : ''}</span>
+              <span className="text-white/20">·</span>
               <span className="text-[12px] text-[#E05A28] font-medium">{member.avgRating.toFixed(1)}★</span>
             </div>
-            {member.quote && <p className="text-[11px] text-[#A8A29E] italic leading-relaxed line-clamp-3">"{member.quote}…"</p>}
+            {member.quote && <p className="text-[11px] text-white/35 italic leading-relaxed line-clamp-3">"{member.quote}…"</p>}
           </div>
         )})}
       </div>
@@ -693,11 +693,11 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       {/* ── PAGE HEADER ────────────────────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div>
-          <h1 className="text-[22px] font-bold tracking-tight text-[#111] leading-tight">{restaurantName}</h1>
-          <p className="text-[#A8A29E] text-[13px] mt-1">
+          <h1 className="text-[22px] font-bold tracking-tight text-white leading-tight">{restaurantName}</h1>
+          <p className="text-white/35 text-[13px] mt-1">
             {totalReviews} review{totalReviews !== 1 ? 's' : ''} analysed
             {ratingDelta !== null && (
-              <span className={`ml-2 font-semibold ${ratingDelta > 0 ? 'text-emerald-500' : ratingDelta < 0 ? 'text-red-400' : 'text-[#A8A29E]'}`}>
+              <span className={`ml-2 font-semibold ${ratingDelta > 0 ? 'text-emerald-500' : ratingDelta < 0 ? 'text-red-400' : 'text-white/35'}`}>
                 {ratingDelta > 0 ? `↑ +${ratingDelta.toFixed(1)} vs last month` : ratingDelta < 0 ? `↓ ${ratingDelta.toFixed(1)} vs last month` : '→ steady vs last month'}
               </span>
             )}
@@ -706,13 +706,13 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
 
         <div className="flex items-center gap-2 flex-shrink-0 flex-wrap">
           {lastAnalyzedAt && (
-            <span className="text-[11px] text-[#CCC] hidden sm:block">Last analysed {formatDate(lastAnalyzedAt)}</span>
+            <span className="text-[11px] text-white/35 hidden sm:block">Last analysed {formatDate(lastAnalyzedAt)}</span>
           )}
 
           <button
             onClick={handleRefresh}
             disabled={refreshing}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white border border-[#E4DED8] hover:border-[#CEC8C1] text-[#57534E] hover:text-[#111] text-[12px] font-medium disabled:opacity-40 transition-all shadow-card"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/[0.06] border border-white/[0.10] text-white/45 hover:text-white text-[12px] font-medium disabled:opacity-40 transition-all"
           >
             <svg className={`w-3 h-3 ${refreshing ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -736,15 +736,15 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
               </svg>
             </button>
             {showDownloadMenu && (
-              <div className="absolute right-0 top-full mt-1.5 w-44 bg-white rounded-xl border border-[#E4DED8] shadow-modal z-20 overflow-hidden animate-scale-in" onClick={(e) => e.stopPropagation()}>
-                <button onClick={handleDownloadReport} className="w-full flex items-center gap-2.5 px-4 py-3 text-[13px] text-[#111] hover:bg-[#F3F0EC] transition-colors text-left">
+              <div className="absolute right-0 top-full mt-1.5 w-44 bg-[#1A1A1A] rounded-xl border border-white/[0.10] shadow-modal z-20 overflow-hidden animate-scale-in" onClick={(e) => e.stopPropagation()}>
+                <button onClick={handleDownloadReport} className="w-full flex items-center gap-2.5 px-4 py-3 text-[13px] text-white hover:bg-white/[0.06] transition-colors text-left">
                   <svg className="w-4 h-4 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                   Export PDF
                 </button>
-                <div className="h-px bg-[#EDE9E4]" />
-                <button onClick={handleDownloadCsv} className="w-full flex items-center gap-2.5 px-4 py-3 text-[13px] text-[#111] hover:bg-[#F3F0EC] transition-colors text-left">
+                <div className="h-px bg-white/[0.06]" />
+                <button onClick={handleDownloadCsv} className="w-full flex items-center gap-2.5 px-4 py-3 text-[13px] text-white hover:bg-white/[0.06] transition-colors text-left">
                   <svg className="w-4 h-4 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                   </svg>
@@ -758,11 +758,11 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
 
       {/* ── CRITICAL ALERT ─────────────────────────────────────────────────── */}
       {criticalUnanswered > 0 && (
-        <div className="flex items-center gap-3 px-4 py-3.5 bg-red-50 border border-red-200 rounded-2xl animate-fade-in">
-          <svg className="w-5 h-5 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="flex items-center gap-3 px-4 py-3.5 bg-red-950/30 border border-red-900/30 rounded-2xl animate-fade-in">
+          <svg className="w-5 h-5 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
-          <p className="text-[13px] text-red-700">
+          <p className="text-[13px] text-red-400">
             <span className="font-semibold">{criticalUnanswered} unanswered 1–2★ review{criticalUnanswered !== 1 ? 's' : ''}</span>
             {' '}— negative reviews with no reply hurt your search ranking.{' '}
             <a href="/dashboard/reviews" className="underline font-medium">Reply now →</a>
@@ -859,25 +859,25 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
             label: 'Last month',
             value: lastMonthReviews.length ? lastMonthAvg.toFixed(1) + ' ★' : '—',
             sub: `${lastMonthReviews.length} review${lastMonthReviews.length !== 1 ? 's' : ''}`,
-            color: 'text-[#111]',
+            color: 'text-white',
           },
           {
             label: 'Response rate',
             value: `${responseRate}%`,
             sub: `${approvedCount} of ${totalReviews} replied`,
-            color: responseRate >= 80 ? 'text-emerald-600' : responseRate >= 50 ? 'text-[#111]' : 'text-[#E05A28]',
+            color: responseRate >= 80 ? 'text-emerald-400' : responseRate >= 50 ? 'text-white' : 'text-[#E05A28]',
           },
           {
             label: 'Critical unanswered',
             value: criticalUnanswered === 0 ? '✓ None' : String(criticalUnanswered),
             sub: criticalUnanswered === 0 ? 'All addressed' : '1–2★ with no reply',
-            color: criticalUnanswered === 0 ? 'text-emerald-600' : 'text-red-500',
+            color: criticalUnanswered === 0 ? 'text-emerald-400' : 'text-red-400',
           },
         ].map((stat, i) => (
-          <div key={i} className={`bg-white rounded-2xl border border-[#E4DED8] p-3.5 sm:p-4 shadow-card stagger-${i + 1} animate-fade-up`}>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-2 leading-tight">{stat.label}</p>
+          <div key={i} className={`bg-[#111111] rounded-2xl border border-white/[0.07] p-3.5 sm:p-4 stagger-${i + 1} animate-fade-up`}>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-white/35 mb-2 leading-tight">{stat.label}</p>
             <p className={`text-[18px] sm:text-2xl font-bold leading-none mb-1 ${stat.color}`}>{stat.value}</p>
-            <p className="text-[11px] text-[#A8A29E] leading-tight">{stat.sub}</p>
+            <p className="text-[11px] text-white/35 leading-tight">{stat.sub}</p>
           </div>
         ))}
       </div>
@@ -885,24 +885,24 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       {/* ── YOUR IMPACT ────────────────────────────────────────────────────── */}
       <div>
         <SectionLabel>Your impact</SectionLabel>
-        <div className="rounded-2xl border border-[#E4DED8] bg-white p-5 sm:p-8 shadow-card">
+        <div className="rounded-2xl border border-white/[0.07] bg-[#111111] p-5 sm:p-8">
           <div className="flex flex-col sm:flex-row gap-6 sm:gap-8 mb-8">
             <div className="flex-shrink-0">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#C4BEB8] mb-1">Industry avg</p>
-              <p className="text-[#CCC] leading-none mb-1 text-4xl sm:text-5xl font-bold">~15%</p>
-              <p className="text-[11px] text-[#CCC]">respond to reviews</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-white/25 mb-1">Industry avg</p>
+              <p className="text-white/35 leading-none mb-1 text-4xl sm:text-5xl font-bold">~15%</p>
+              <p className="text-[11px] text-white/35">respond to reviews</p>
             </div>
-            <div className="w-px bg-[#EDE9E4] self-stretch hidden sm:block" />
+            <div className="w-px bg-white/[0.06] self-stretch hidden sm:block" />
             <div className="flex-1">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-1">{restaurantName}</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-white/35 mb-1">{restaurantName}</p>
               <p className="leading-none mb-2 text-4xl sm:text-5xl font-bold"
-                style={{ color: responseRate >= 80 ? '#22c55e' : responseRate >= 50 ? '#111' : '#E05A28' }}>
+                style={{ color: responseRate >= 80 ? '#22c55e' : responseRate >= 50 ? '#ffffff' : '#E05A28' }}>
                 {responseRate}%
               </p>
               {responseRate >= 80 ? (
-                <p className="text-[13px] font-semibold text-emerald-600">You're in the top tier of restaurants</p>
+                <p className="text-[13px] font-semibold text-emerald-400">You're in the top tier of restaurants</p>
               ) : responseRate >= 50 ? (
-                <p className="text-[13px] font-medium text-[#555]">Above average — keep it up</p>
+                <p className="text-[13px] font-medium text-white/55">Above average — keep it up</p>
               ) : (
                 <p className="text-[13px] font-medium text-[#E05A28]">Responding to more reviews increases profile visits by up to 16%</p>
               )}
@@ -915,24 +915,24 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
               { label: 'Top chains', pct: 60, highlight: false },
             ] as const).map(({ label, pct, highlight }) => (
               <div key={label} className="flex items-center gap-3">
-                <span className={`text-[12px] flex-shrink-0 w-24 sm:w-28 truncate ${highlight ? 'font-semibold text-[#111]' : 'text-[#AAA]'}`}>{label}</span>
-                <div className="flex-1 h-2 bg-[#F3F0EC] rounded-full overflow-hidden">
-                  <div className={`h-full rounded-full transition-all duration-700 ${highlight ? (responseRate >= 50 ? 'bg-emerald-400' : 'bg-[#E05A28]') : 'bg-[#E4DED8]'}`}
+                <span className={`text-[12px] flex-shrink-0 w-24 sm:w-28 truncate ${highlight ? 'font-semibold text-white' : 'text-white/35'}`}>{label}</span>
+                <div className="flex-1 h-2 bg-white/[0.05] rounded-full overflow-hidden">
+                  <div className={`h-full rounded-full transition-all duration-700 ${highlight ? (responseRate >= 50 ? 'bg-emerald-400' : 'bg-[#E05A28]') : 'bg-white/[0.07]'}`}
                     style={{ width: `${pct}%` }} />
                 </div>
-                <span className={`text-[12px] w-8 flex-shrink-0 text-right ${highlight ? 'font-semibold text-[#111]' : 'text-[#CCC]'}`}>{pct}%</span>
+                <span className={`text-[12px] w-8 flex-shrink-0 text-right ${highlight ? 'font-semibold text-white' : 'text-white/35'}`}>{pct}%</span>
               </div>
             ))}
           </div>
-          {responseRate < 50 && <p className="text-[10px] text-[#CCC] mt-5">Source: SOCi research</p>}
+          {responseRate < 50 && <p className="text-[10px] text-white/25 mt-5">Source: SOCi research</p>}
         </div>
       </div>
 
       {/* ── RESPONSE RATE BY RATING ─────────────────────────────────────────── */}
       <div>
         <SectionLabel>Response rate by star rating</SectionLabel>
-        <div className="bg-white rounded-2xl border border-[#E4DED8] p-5 sm:p-6 shadow-card">
-          <p className="text-[12px] text-[#A8A29E] mb-5">Are you replying to the reviews that matter most? Low-star reviews with no reply damage trust.</p>
+        <div className="bg-[#111111] rounded-2xl border border-white/[0.07] p-5 sm:p-6">
+          <p className="text-[12px] text-white/35 mb-5">Are you replying to the reviews that matter most? Low-star reviews with no reply damage trust.</p>
           <div className="space-y-4">
             {[1, 2, 3, 4, 5].reverse().map((star) => {
               const d = responseByRating[star]
@@ -948,14 +948,14 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                       </svg>
                     ))}
                   </div>
-                  <div className="flex-1 h-2.5 bg-[#F3F0EC] rounded-full overflow-hidden">
+                  <div className="flex-1 h-2.5 bg-white/[0.05] rounded-full overflow-hidden">
                     <div
                       className={`h-full rounded-full transition-all duration-700 ${pct === 100 ? 'bg-emerald-400' : isLow && pct < 50 ? 'bg-red-400' : 'bg-[#E05A28]'}`}
                       style={{ width: `${pct}%` }}
                     />
                   </div>
-                  <span className={`text-[12px] font-semibold w-10 text-right ${pct === 100 ? 'text-emerald-600' : isLow && pct < 50 ? 'text-red-500' : 'text-[#111]'}`}>{pct}%</span>
-                  <span className="text-[11px] text-[#A8A29E] w-16 sm:w-20 flex-shrink-0 tabular-nums">{d.replied}/{d.total}</span>
+                  <span className={`text-[12px] font-semibold w-10 text-right ${pct === 100 ? 'text-emerald-400' : isLow && pct < 50 ? 'text-red-400' : 'text-white'}`}>{pct}%</span>
+                  <span className="text-[11px] text-white/35 w-16 sm:w-20 flex-shrink-0 tabular-nums">{d.replied}/{d.total}</span>
                 </div>
               )
             })}
@@ -967,26 +967,26 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       <div>
         <SectionLabel>Rating &amp; volume over time</SectionLabel>
         {!hasEnoughTrend ? (
-          <div className="rounded-2xl border border-[#E4DED8] bg-[#F3F0EC] px-6 sm:px-8 py-8 sm:py-10">
+          <div className="rounded-2xl border border-white/[0.07] bg-white/[0.05] px-6 sm:px-8 py-8 sm:py-10">
             <div className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-8">
               <div className="text-center sm:text-left flex-shrink-0">
                 <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#E05A28] mb-2">
                   {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                 </p>
-                <p className="text-[#111] leading-none text-5xl sm:text-6xl font-bold">{avgRating.toFixed(1)}</p>
-                <p className="text-[12px] text-[#AAA] mt-2">avg this month · {totalReviews} review{totalReviews !== 1 ? 's' : ''}</p>
+                <p className="text-white leading-none text-5xl sm:text-6xl font-bold">{avgRating.toFixed(1)}</p>
+                <p className="text-[12px] text-white/35 mt-2">avg this month · {totalReviews} review{totalReviews !== 1 ? 's' : ''}</p>
               </div>
               <div className="flex-1">
-                <p className="text-[14px] font-semibold text-[#333] mb-1">Your trend chart will fill in over time.</p>
-                <p className="text-[13px] text-[#888] leading-relaxed">Once you have data across 2+ months, you'll see how your rating is moving. Keep responding to reviews to build momentum.</p>
+                <p className="text-[14px] font-semibold text-white/80 mb-1">Your trend chart will fill in over time.</p>
+                <p className="text-[13px] text-white/40 leading-relaxed">Once you have data across 2+ months, you'll see how your rating is moving. Keep responding to reviews to build momentum.</p>
               </div>
             </div>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl border border-[#E4DED8] p-4 sm:p-6 shadow-card space-y-6">
+          <div className="bg-[#111111] rounded-2xl border border-white/[0.07] p-4 sm:p-6 space-y-6">
             {/* Rating trend */}
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.10em] text-[#A8A29E] mb-3">Average rating per month</p>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.10em] text-white/35 mb-3">Average rating per month</p>
               <ResponsiveContainer width="100%" height={140}>
                 <AreaChart data={trendData} margin={{ top: 8, right: 4, bottom: 0, left: -20 }}>
                   <defs>
@@ -997,8 +997,8 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                   </defs>
                   <Area type="monotone" dataKey="rating" stroke="#E05A28" strokeWidth={2.5} fill="url(#ratingGrad)"
                     dot={{ fill: '#E05A28', strokeWidth: 0, r: 3.5 }} activeDot={{ r: 5, fill: '#E05A28', strokeWidth: 0 }} connectNulls />
-                  <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#BBB' }} axisLine={false} tickLine={false} />
-                  <YAxis domain={[1, 5]} tick={{ fontSize: 10, fill: '#CCC' }} axisLine={false} tickLine={false} />
+                  <XAxis dataKey="month" tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.35)' }} axisLine={false} tickLine={false} />
+                  <YAxis domain={[1, 5]} tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.20)' }} axisLine={false} tickLine={false} />
                   <Tooltip content={<LineTooltip />} />
                 </AreaChart>
               </ResponsiveContainer>
@@ -1007,15 +1007,15 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
             {/* Volume bar chart */}
             {hasVolumeData && (
               <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.10em] text-[#A8A29E] mb-3">Review volume per month</p>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.10em] text-white/35 mb-3">Review volume per month</p>
                 <ResponsiveContainer width="100%" height={120}>
                   <BarChart data={trendData} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
-                    <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#BBB' }} axisLine={false} tickLine={false} />
-                    <YAxis allowDecimals={false} tick={{ fontSize: 10, fill: '#CCC' }} axisLine={false} tickLine={false} />
+                    <XAxis dataKey="month" tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.35)' }} axisLine={false} tickLine={false} />
+                    <YAxis allowDecimals={false} tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.20)' }} axisLine={false} tickLine={false} />
                     <Tooltip content={<BarChartTooltip />} />
                     <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                       {trendData.map((entry, index) => (
-                        <Cell key={index} fill={entry.count > 0 ? '#E05A28' : '#EDE9E4'} fillOpacity={entry.count > 0 ? 0.85 : 0.5} />
+                        <Cell key={index} fill={entry.count > 0 ? '#E05A28' : '#333333'} fillOpacity={entry.count > 0 ? 0.85 : 0.5} />
                       ))}
                     </Bar>
                   </BarChart>
@@ -1033,7 +1033,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
           <ThemeSkeleton />
         ) : themes.insufficient ? (
           <div className="text-center py-12">
-            <p className="text-[#888] text-[13px]">Sync at least 5 reviews to unlock AI sentiment analysis.</p>
+            <p className="text-white/40 text-[13px]">Sync at least 5 reviews to unlock AI sentiment analysis.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -1043,41 +1043,41 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                 title: 'They love',
                 items: themes.praised,
                 emptyText: 'Sync more reviews',
-                itemClass: 'text-[#444]',
+                itemClass: 'text-white/70',
                 bullet: <svg className="w-3 h-3 text-[#E05A28] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>,
-                topBorder: 'border-t-2 border-t-emerald-200',
+                topBorder: 'border-t-2 border-t-emerald-900/50',
               },
               {
-                icon: <svg className="w-4 h-4 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>,
+                icon: <svg className="w-4 h-4 text-white/35" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>,
                 title: 'They mention',
                 items: themes.complaints,
                 emptyText: 'No recurring topics found',
-                itemClass: 'text-[#888]',
-                bullet: <span className="w-1.5 h-1.5 rounded-full bg-[#E4DED8] mt-1.5 flex-shrink-0 inline-block" />,
-                topBorder: 'border-t-2 border-t-[#E4DED8]',
+                itemClass: 'text-white/55',
+                bullet: <span className="w-1.5 h-1.5 rounded-full bg-white/[0.15] mt-1.5 flex-shrink-0 inline-block" />,
+                topBorder: 'border-t-2 border-t-white/[0.10]',
               },
               {
-                icon: <svg className="w-4 h-4 text-[#888]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>,
+                icon: <svg className="w-4 h-4 text-white/35" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>,
                 title: 'Opportunities',
                 items: themes.opportunities,
                 emptyText: 'No opportunities found',
-                itemClass: 'text-[#555]',
+                itemClass: 'text-white/65',
                 bullet: null,
                 topBorder: 'border-t-2 border-t-[#E05A28]/30',
               },
             ].map(({ icon, title, items, emptyText, itemClass, bullet, topBorder }) => (
-              <div key={title} className={`bg-white rounded-2xl border border-[#E4DED8] p-5 shadow-card ${topBorder}`}>
+              <div key={title} className={`bg-[#111111] rounded-2xl border border-white/[0.07] p-5 ${topBorder}`}>
                 <div className="flex items-center gap-2 mb-4">
                   {icon}
-                  <span className="text-[13px] font-semibold text-[#111]">{title}</span>
+                  <span className="text-[13px] font-semibold text-white">{title}</span>
                 </div>
                 {items.length === 0 ? (
-                  <p className="text-[12px] text-[#CCC]">{emptyText}</p>
+                  <p className="text-[12px] text-white/25">{emptyText}</p>
                 ) : (
                   <ul className="space-y-2.5">
                     {items.map((item, i) => (
                       <li key={i} className="flex items-start gap-2.5">
-                        {bullet ?? <span className="text-[#CCC] mt-0.5 flex-shrink-0 text-[11px] font-bold">{i + 1}.</span>}
+                        {bullet ?? <span className="text-white/25 mt-0.5 flex-shrink-0 text-[11px] font-bold">{i + 1}.</span>}
                         <span className={`text-[13px] ${itemClass} leading-snug`}>{item}</span>
                       </li>
                     ))}
@@ -1093,20 +1093,20 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       {hasDowData && (
         <div>
           <SectionLabel>When customers leave reviews</SectionLabel>
-          <div className="bg-white rounded-2xl border border-[#E4DED8] p-5 sm:p-6 shadow-card">
-            <p className="text-[12px] text-[#A8A29E] mb-5">Know your busiest review days to time your responses and identify peak experience periods.</p>
+          <div className="bg-[#111111] rounded-2xl border border-white/[0.07] p-5 sm:p-6">
+            <p className="text-[12px] text-white/35 mb-5">Know your busiest review days to time your responses and identify peak experience periods.</p>
             <div className="space-y-3">
               {[...dowData].sort((a, b) => b.count - a.count).map((d) => {
                 const pct = (d.count / maxDowCount) * 100
                 const isTop = d.count === maxDowCount
                 return (
                   <div key={d.label} className="flex items-center gap-3">
-                    <span className={`text-[12px] w-10 flex-shrink-0 font-medium ${isTop ? 'text-[#111]' : 'text-[#A8A29E]'}`}>{d.label}</span>
-                    <div className="flex-1 h-2.5 bg-[#F3F0EC] rounded-full overflow-hidden">
-                      <div className={`h-full rounded-full transition-all duration-700 ${isTop ? 'bg-[#E05A28]' : 'bg-[#E4DED8]'}`}
+                    <span className={`text-[12px] w-10 flex-shrink-0 font-medium ${isTop ? 'text-white' : 'text-white/35'}`}>{d.label}</span>
+                    <div className="flex-1 h-2.5 bg-white/[0.05] rounded-full overflow-hidden">
+                      <div className={`h-full rounded-full transition-all duration-700 ${isTop ? 'bg-[#E05A28]' : 'bg-white/[0.07]'}`}
                         style={{ width: `${Math.max(pct, 2)}%` }} />
                     </div>
-                    <span className="text-[12px] text-[#A8A29E] w-20 flex-shrink-0 text-right">
+                    <span className="text-[12px] text-white/35 w-20 flex-shrink-0 text-right">
                       {d.count} review{d.count !== 1 ? 's' : ''}
                       {d.avgRating > 0 && <span className="text-[#E05A28] ml-1.5 font-medium">{d.avgRating}★</span>}
                     </span>
@@ -1117,8 +1117,8 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
             {(() => {
               const topDay = [...dowData].sort((a, b) => b.count - a.count)[0]
               return topDay?.count > 0 ? (
-                <p className="text-[12px] text-[#A8A29E] mt-5 pt-4 border-t border-[#EDE9E4]">
-                  💡 <span className="font-medium text-[#57534E]">{topDay.label}</span> is your busiest review day. Make sure you're checking for new reviews then.
+                <p className="text-[12px] text-white/35 mt-5 pt-4 border-t border-white/[0.06]">
+                  💡 <span className="font-medium text-white/55">{topDay.label}</span> is your busiest review day. Make sure you're checking for new reviews then.
                 </p>
               ) : null
             })()}
@@ -1130,8 +1130,8 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       {topKeywords.length >= 5 && (
         <div>
           <SectionLabel>Most mentioned words</SectionLabel>
-          <div className="bg-white rounded-2xl border border-[#E4DED8] p-5 sm:p-6 shadow-card">
-            <p className="text-[12px] text-[#A8A29E] mb-5">The words customers use most in their reviews — these tell you what defines your restaurant in people's minds.</p>
+          <div className="bg-[#111111] rounded-2xl border border-white/[0.07] p-5 sm:p-6">
+            <p className="text-[12px] text-white/35 mb-5">The words customers use most in their reviews — these tell you what defines your restaurant in people's minds.</p>
             <div className="flex flex-wrap gap-2">
               {topKeywords.map(({ word, count }, i) => {
                 const maxCount = topKeywords[0].count
@@ -1140,11 +1140,11 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                 return (
                   <span
                     key={word}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#F3F0EC] border border-[#E4DED8] font-medium hover:bg-[#FEF0E8] hover:border-[#F5C9AD] hover:text-[#E05A28] cursor-default transition-all duration-150"
-                    style={{ fontSize: `${Math.round(11 + size * 4)}px`, opacity, color: i < 3 ? '#E05A28' : '#57534E' }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.05] border border-white/[0.07] font-medium hover:bg-[#E05A28]/10 hover:border-[#E05A28]/25 hover:text-[#E05A28] cursor-default transition-all duration-150"
+                    style={{ fontSize: `${Math.round(11 + size * 4)}px`, opacity, color: i < 3 ? '#E05A28' : 'rgba(255,255,255,0.55)' }}
                   >
                     {word}
-                    <span className="text-[10px] text-[#A8A29E] font-normal">{count}</span>
+                    <span className="text-[10px] text-white/25 font-normal">{count}</span>
                   </span>
                 )
               })}
@@ -1157,14 +1157,14 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       {hasMultipleLanguages && (
         <div>
           <SectionLabel>Review languages</SectionLabel>
-          <div className="bg-white rounded-2xl border border-[#E4DED8] p-5 sm:p-6 shadow-card">
-            <p className="text-[12px] text-[#A8A29E] mb-5">Your restaurant attracts international customers. TableReply auto-generates replies in each reviewer's language.</p>
+          <div className="bg-[#111111] rounded-2xl border border-white/[0.07] p-5 sm:p-6">
+            <p className="text-[12px] text-white/35 mb-5">Your restaurant attracts international customers. TableReply auto-generates replies in each reviewer's language.</p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {languageData.map(({ lang, count, pct }) => (
-                <div key={lang} className="flex flex-col gap-1 p-4 bg-[#F3F0EC] rounded-xl">
-                  <p className="text-[13px] font-semibold text-[#111]">{lang}</p>
+                <div key={lang} className="flex flex-col gap-1 p-4 bg-white/[0.05] rounded-xl">
+                  <p className="text-[13px] font-semibold text-white">{lang}</p>
                   <p className="text-[24px] font-bold text-[#E05A28] leading-none">{pct}%</p>
-                  <p className="text-[11px] text-[#A8A29E]">{count} review{count !== 1 ? 's' : ''}</p>
+                  <p className="text-[11px] text-white/35">{count} review{count !== 1 ? 's' : ''}</p>
                 </div>
               ))}
             </div>
@@ -1178,40 +1178,40 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
           <SectionLabel>Notable reviews</SectionLabel>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {bestReview && (
-              <div className="bg-white rounded-2xl border border-[#E4DED8] p-5 sm:p-6 shadow-card">
+              <div className="bg-[#111111] rounded-2xl border border-white/[0.07] p-5 sm:p-6">
                 <div className="flex items-center gap-2 mb-4">
                   <div className="flex gap-0.5">
                     {[1,2,3,4,5].map((i) => (
-                      <svg key={i} className={`w-3 h-3 ${i <= bestReview.star_rating ? 'text-[#E05A28]' : 'text-[#E4DED8]'}`} fill="currentColor" viewBox="0 0 20 20">
+                      <svg key={i} className={`w-3 h-3 ${i <= bestReview.star_rating ? 'text-[#E05A28]' : 'text-white/[0.15]'}`} fill="currentColor" viewBox="0 0 20 20">
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                       </svg>
                     ))}
                   </div>
-                  <span className="text-[13px] font-semibold text-[#111]">{bestReview.reviewer_name}</span>
-                  <span className="text-[11px] text-[#CCC] ml-auto">{formatDate(bestReview.review_datetime_utc)}</span>
+                  <span className="text-[13px] font-semibold text-white">{bestReview.reviewer_name}</span>
+                  <span className="text-[11px] text-white/25 ml-auto">{formatDate(bestReview.review_datetime_utc)}</span>
                 </div>
                 <div className="relative">
                   <span className="absolute -top-4 -left-1 text-[#E05A28]/10 select-none pointer-events-none text-[120px] leading-none">"</span>
-                  <p className="relative text-[#333] text-[14px] leading-relaxed italic">{bestReview.review_text}</p>
+                  <p className="relative text-white/70 text-[14px] leading-relaxed italic">{bestReview.review_text}</p>
                 </div>
               </div>
             )}
             {worstReview && worstReview.id !== bestReview?.id && (
-              <div className="bg-white rounded-2xl border border-[#E4DED8] p-5 sm:p-6 shadow-card">
+              <div className="bg-[#111111] rounded-2xl border border-white/[0.07] p-5 sm:p-6">
                 <div className="flex items-center gap-2 mb-4">
                   <div className="flex gap-0.5">
                     {[1,2,3,4,5].map((i) => (
-                      <svg key={i} className={`w-3 h-3 ${i <= worstReview.star_rating ? 'text-red-400' : 'text-[#E4DED8]'}`} fill="currentColor" viewBox="0 0 20 20">
+                      <svg key={i} className={`w-3 h-3 ${i <= worstReview.star_rating ? 'text-red-400' : 'text-white/[0.15]'}`} fill="currentColor" viewBox="0 0 20 20">
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                       </svg>
                     ))}
                   </div>
-                  <span className="text-[13px] font-semibold text-[#111]">{worstReview.reviewer_name}</span>
-                  <span className="text-[11px] text-[#CCC] ml-auto">{formatDate(worstReview.review_datetime_utc)}</span>
+                  <span className="text-[13px] font-semibold text-white">{worstReview.reviewer_name}</span>
+                  <span className="text-[11px] text-white/25 ml-auto">{formatDate(worstReview.review_datetime_utc)}</span>
                 </div>
                 <div className="relative">
-                  <span className="absolute -top-4 -left-1 text-red-300/20 select-none pointer-events-none text-[120px] leading-none">"</span>
-                  <p className="relative text-[#777] text-[14px] leading-relaxed italic">{worstReview.review_text}</p>
+                  <span className="absolute -top-4 -left-1 text-red-400/10 select-none pointer-events-none text-[120px] leading-none">"</span>
+                  <p className="relative text-white/50 text-[14px] leading-relaxed italic">{worstReview.review_text}</p>
                 </div>
               </div>
             )}
@@ -1223,16 +1223,16 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       {!themesLoading && !themes.insufficient && themes.opportunities.length > 0 && (
         <div>
           <SectionLabel>Quick win</SectionLabel>
-          <div className="bg-gradient-to-r from-[#FEF0E8] to-white rounded-2xl border border-[#F5C9AD] px-6 py-5 flex items-start gap-4">
-            <div className="w-10 h-10 rounded-xl bg-[#FEF0E8] border border-[#F5C9AD] flex items-center justify-center flex-shrink-0 mt-0.5">
+          <div className="bg-[#E05A28]/10 rounded-2xl border border-[#E05A28]/25 px-6 py-5 flex items-start gap-4">
+            <div className="w-10 h-10 rounded-xl bg-[#E05A28]/10 border border-[#E05A28]/25 flex items-center justify-center flex-shrink-0 mt-0.5">
               <svg className="w-5 h-5 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/>
               </svg>
             </div>
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28] mb-1.5">Your #1 opportunity right now</p>
-              <p className="text-[16px] font-semibold text-[#111] leading-snug mb-2">{themes.opportunities[0]}</p>
-              <p className="text-[12px] text-[#A8A29E]">Based on patterns across your {totalReviews} review{totalReviews !== 1 ? 's' : ''}</p>
+              <p className="text-[16px] font-semibold text-white leading-snug mb-2">{themes.opportunities[0]}</p>
+              <p className="text-[12px] text-white/35">Based on patterns across your {totalReviews} review{totalReviews !== 1 ? 's' : ''}</p>
             </div>
           </div>
         </div>

@@ -150,15 +150,15 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
 
         {/* Page Header */}
         <div>
-          <h1 className="text-[22px] font-semibold text-[#111] tracking-tight">Get More Reviews</h1>
-          <p className="text-[13px] text-[#57534E] mt-1">Generate personalized messages and tools to earn more 5-star reviews.</p>
+          <h1 className="text-[22px] font-semibold text-white tracking-tight">Get More Reviews</h1>
+          <p className="text-[13px] text-white/55 mt-1">Generate personalized messages and tools to earn more 5-star reviews.</p>
         </div>
 
         {/* Section 1: Review Request Messages */}
-        <div className="bg-white rounded-2xl border border-[#E4DED8] p-4 sm:p-6 space-y-5">
+        <div className="bg-[#111111] rounded-2xl border border-white/[0.07] p-4 sm:p-6 space-y-5">
           <div>
-            <h2 className="text-[14px] font-semibold text-[#111]">Review Request Messages</h2>
-            <p className="text-[12px] text-[#A8A29E] mt-0.5">
+            <h2 className="text-[14px] font-semibold text-white">Review Request Messages</h2>
+            <p className="text-[12px] text-white/35 mt-0.5">
               Personalized messages to send via SMS, email, receipt, or table card
             </p>
           </div>
@@ -186,24 +186,24 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
           </button>
 
           {generateError && (
-            <p className="text-red-500 text-sm">{generateError}</p>
+            <p className="text-red-400 text-sm">{generateError}</p>
           )}
 
           {/* Skeleton placeholders */}
           {showSkeletons && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {CHANNELS.map((ch) => (
-                <div key={ch.key} className="rounded-xl border border-[#E4DED8] p-4 space-y-3 animate-pulse">
+                <div key={ch.key} className="rounded-xl border border-white/[0.07] p-4 space-y-3 animate-pulse">
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 bg-[#E4DED8] rounded-md" />
-                    <div className="w-20 h-4 bg-[#E4DED8] rounded" />
+                    <div className="w-6 h-6 bg-white/[0.10] rounded-md" />
+                    <div className="w-20 h-4 bg-white/[0.10] rounded" />
                   </div>
                   <div className="space-y-2">
-                    <div className="w-full h-3 bg-[#E4DED8] rounded" />
-                    <div className="w-4/5 h-3 bg-[#E4DED8] rounded" />
-                    <div className="w-3/5 h-3 bg-[#E4DED8] rounded" />
+                    <div className="w-full h-3 bg-white/[0.10] rounded" />
+                    <div className="w-4/5 h-3 bg-white/[0.10] rounded" />
+                    <div className="w-3/5 h-3 bg-white/[0.10] rounded" />
                   </div>
-                  <div className="w-20 h-8 bg-[#E4DED8] rounded-lg ml-auto" />
+                  <div className="w-20 h-8 bg-white/[0.10] rounded-lg ml-auto" />
                 </div>
               ))}
             </div>
@@ -218,25 +218,25 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
                 const isReceipt = ch.key === 'receipt'
                 const isCard = ch.key === 'tablecard'
                 return (
-                  <div key={ch.key} className="rounded-xl border border-[#E4DED8] bg-white p-4 space-y-3 hover:border-[#D4CFC6] transition-colors">
+                  <div key={ch.key} className="rounded-xl border border-white/[0.07] bg-white/[0.04] p-4 space-y-3 hover:border-white/[0.12] transition-colors">
                     {/* Channel header */}
                     <div className="flex items-center gap-2">
                       <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${
                         isSms ? 'bg-blue-50 border border-blue-100 text-blue-500'
                         : isEmail ? 'bg-violet-50 border border-violet-100 text-violet-500'
-                        : 'bg-[#F3F0EC] border border-[#E4DED8] text-[#57534E]'
+                        : 'bg-white/[0.08] border border-white/[0.10] text-white/55'
                       }`}>
                         <ChannelIcon channel={ch.key} className="w-3.5 h-3.5" />
                       </div>
-                      <span className="text-[13px] font-semibold text-[#111]">{ch.label}</span>
-                      <span className="text-[11px] text-[#A8A29E] ml-auto">{ch.desc}</span>
+                      <span className="text-[13px] font-semibold text-white">{ch.label}</span>
+                      <span className="text-[11px] text-white/35 ml-auto">{ch.desc}</span>
                     </div>
 
                     {/* SMS speech bubble preview */}
                     {isSms && (
                       <div className="flex items-start gap-2">
-                        <div className="w-6 h-6 rounded-full bg-[#E4DED8] flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <svg className="w-3 h-3 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="w-6 h-6 rounded-full bg-white/[0.10] flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <svg className="w-3 h-3 text-white/35" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                           </svg>
                         </div>
@@ -248,29 +248,29 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
 
                     {/* Email mini preview */}
                     {isEmail && (
-                      <div className="rounded-xl border border-[#E4DED8] overflow-hidden">
-                        <div className="bg-[#F3F0EC] border-b border-[#EDE9E4] px-3 py-2 space-y-0.5">
-                          <p className="text-[11px] text-[#A8A29E]"><span className="font-medium text-[#57534E]">From:</span> {restaurantProfile?.restaurant_name ?? 'Your restaurant'}</p>
-                          <p className="text-[11px] text-[#A8A29E]"><span className="font-medium text-[#57534E]">Subject:</span> We&apos;d love your feedback!</p>
+                      <div className="rounded-xl border border-white/[0.07] overflow-hidden">
+                        <div className="bg-white/[0.06] border-b border-white/[0.07] px-3 py-2 space-y-0.5">
+                          <p className="text-[11px] text-white/35"><span className="font-medium text-white/55">From:</span> {restaurantProfile?.restaurant_name ?? 'Your restaurant'}</p>
+                          <p className="text-[11px] text-white/35"><span className="font-medium text-white/55">Subject:</span> We&apos;d love your feedback!</p>
                         </div>
                         <div className="px-3 py-2.5">
-                          <p className="text-[12px] text-[#57534E] leading-relaxed whitespace-pre-wrap">{editedMessages[ch.key]}</p>
+                          <p className="text-[12px] text-white/55 leading-relaxed whitespace-pre-wrap">{editedMessages[ch.key]}</p>
                         </div>
                       </div>
                     )}
 
                     {/* Receipt / Table card dashed paper preview */}
                     {(isReceipt || isCard) && (
-                      <div className="rounded-xl border-2 border-dashed border-[#E4DED8] bg-[#FAFAF9] px-4 py-3">
-                        <p className="text-[12px] text-[#57534E] leading-relaxed whitespace-pre-wrap font-mono">{editedMessages[ch.key]}</p>
+                      <div className="rounded-xl border-2 border-dashed border-white/[0.12] bg-white/[0.03] px-4 py-3">
+                        <p className="text-[12px] text-white/55 leading-relaxed whitespace-pre-wrap font-mono">{editedMessages[ch.key]}</p>
                       </div>
                     )}
 
                     {/* Edit textarea */}
                     <div>
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.10em] text-[#A8A29E] mb-1.5">Edit message</p>
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.10em] text-white/35 mb-1.5">Edit message</p>
                       <textarea
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] bg-[#F8F6F3] text-[13px] text-[#111] focus:bg-white focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] focus:outline-none resize-none transition-all"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-white/[0.10] bg-[#1A1A1A] text-[13px] text-white placeholder:text-white/25 focus:bg-[#1E1E1E] focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] focus:outline-none resize-none transition-all"
                         rows={ch.key === 'email' ? 5 : 3}
                         value={editedMessages[ch.key]}
                         onChange={(e) =>
@@ -285,8 +285,8 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
                         onClick={() => handleCopy(ch.key)}
                         className={`text-[12px] font-semibold px-3.5 min-h-[36px] rounded-xl border transition-all flex items-center gap-1.5 ${
                           copiedChannel === ch.key
-                            ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
-                            : 'border-[#E4DED8] hover:bg-[#F3F0EC] hover:border-[#CEC8C1] text-[#57534E] hover:text-[#111]'
+                            ? 'bg-emerald-950/40 border-emerald-900/30 text-emerald-400'
+                            : 'border-white/[0.10] hover:border-white/[0.20] bg-white/[0.06] text-white/55 hover:text-white'
                         }`}
                       >
                         {copiedChannel === ch.key ? (
@@ -310,19 +310,19 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-4 4v-4z"/>
                 </svg>
               </div>
-              <p className="text-[14px] font-medium text-[#111]">Generate your message templates</p>
-              <p className="text-[13px] text-[#A8A29E] mt-1 max-w-[280px] mx-auto leading-relaxed">
-                AI-crafted messages for <span className="text-[#111] font-medium">{restaurantProfile.restaurant_name}</span> — ready to copy and send.
+              <p className="text-[14px] font-medium text-white">Generate your message templates</p>
+              <p className="text-[13px] text-white/35 mt-1 max-w-[280px] mx-auto leading-relaxed">
+                AI-crafted messages for <span className="text-white font-medium">{restaurantProfile.restaurant_name}</span> — ready to copy and send.
               </p>
             </div>
           )}
         </div>
 
         {/* Section 2: QR Code Generator */}
-        <div className="bg-white rounded-2xl border border-[#E4DED8] p-4 sm:p-6 space-y-4">
+        <div className="bg-[#111111] rounded-2xl border border-white/[0.07] p-4 sm:p-6 space-y-4">
           <div>
-            <h2 className="text-[14px] font-semibold text-[#111]">QR Code for your Google review page</h2>
-            <p className="text-[12px] text-[#A8A29E] mt-0.5">Add this to your menu, receipt, or table card</p>
+            <h2 className="text-[14px] font-semibold text-white">QR Code for your Google review page</h2>
+            <p className="text-[12px] text-white/35 mt-0.5">Add this to your menu, receipt, or table card</p>
           </div>
 
           {restaurantProfile.google_maps_url ? (
@@ -349,7 +349,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
 
               {qrDataUrl && (
                 <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
-                  <div className="p-4 bg-white rounded-2xl border border-[#E4DED8] flex-shrink-0">
+                  <div className="p-4 bg-white rounded-2xl flex-shrink-0">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={qrDataUrl}
@@ -360,7 +360,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
                     />
                   </div>
                   <div className="flex flex-col items-center sm:items-start gap-3 text-center sm:text-left">
-                    <p className="text-[13px] text-[#57534E] leading-relaxed max-w-[280px]">
+                    <p className="text-[13px] text-white/55 leading-relaxed max-w-[280px]">
                       Print this QR code and add it to your menu, receipt, or table tent card to collect more reviews.
                     </p>
                     <button
@@ -374,7 +374,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
                     </button>
                     <button
                       onClick={() => setQrDataUrl(null)}
-                      className="text-[12px] text-[#A8A29E] hover:text-[#57534E] transition-colors"
+                      className="text-[12px] text-white/35 hover:text-white/55 transition-colors"
                     >
                       Regenerate
                     </button>
@@ -383,16 +383,16 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
               )}
             </div>
           ) : (
-            <div className="rounded-xl border border-[#E4DED8] bg-[#F3F0EC] px-4 py-5 text-sm text-[#888]">
+            <div className="rounded-xl border border-white/[0.08] bg-white/[0.06] px-4 py-5 text-sm text-white/55">
               Connect your Google Maps listing in{' '}
-              <span className="text-[#111] font-medium">Auto Reviews</span> to generate a QR code.
+              <span className="text-white font-medium">Auto Reviews</span> to generate a QR code.
             </div>
           )}
         </div>
 
         {/* Section 3: Tips */}
         <div className="space-y-3">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E]">Tips for getting more reviews</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/35">Tips for getting more reviews</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             {[
               {
@@ -410,10 +410,10 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
             ].map((tip) => (
               <div
                 key={tip.title}
-                className="bg-white rounded-2xl border border-[#E4DED8] p-4 sm:p-5"
+                className="bg-[#111111] rounded-2xl border border-white/[0.07] p-4 sm:p-5"
               >
-                <h3 className="text-[13px] font-semibold text-[#111] mb-1.5">{tip.title}</h3>
-                <p className="text-[12px] text-[#57534E] leading-relaxed">{tip.body}</p>
+                <h3 className="text-[13px] font-semibold text-white mb-1.5">{tip.title}</h3>
+                <p className="text-[12px] text-white/55 leading-relaxed">{tip.body}</p>
               </div>
             ))}
           </div>

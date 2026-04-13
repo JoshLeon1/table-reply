@@ -36,7 +36,7 @@ function Toggle({
       disabled={disabled}
       onClick={() => onChange(!checked)}
       className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E05A28] focus-visible:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed ${
-        checked ? 'bg-[#E05A28]' : 'bg-[#DDD9D3]'
+        checked ? 'bg-[#E05A28]' : 'bg-white/[0.20]'
       }`}
     >
       <span
@@ -154,18 +154,18 @@ export default function SettingsClient({
   return (
     <div className="space-y-6">
       {/* Reply preferences */}
-      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden">
-        <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-[#EDE9E4] flex items-center justify-between gap-3">
+      <div className="bg-[#111111] rounded-2xl border border-white/[0.07] overflow-hidden">
+        <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-white/[0.07] flex items-center justify-between gap-3">
           <div>
-            <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E]">Reply Preferences</h2>
-            <p className="text-[12px] text-[#57534E] mt-1">Applied to every generated reply.</p>
+            <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/35">Reply Preferences</h2>
+            <p className="text-[12px] text-white/55 mt-1">Applied to every generated reply.</p>
           </div>
           {prefsToast && (
             <span
               className={`text-[11px] font-medium px-2.5 py-1 rounded-full flex-shrink-0 animate-scale-in ${
                 prefsToast === 'saved'
-                  ? 'bg-emerald-50 text-emerald-700'
-                  : 'bg-red-50 text-red-600'
+                  ? 'bg-emerald-950/40 text-emerald-400 border border-emerald-900/30'
+                  : 'bg-red-950/30 text-red-400 border border-red-900/30'
               }`}
             >
               {prefsToast === 'saved' ? '✓ Saved' : 'Error saving'}
@@ -173,11 +173,11 @@ export default function SettingsClient({
           )}
         </div>
 
-        <div className="divide-y divide-[#EDE9E4]">
+        <div className="divide-y divide-white/[0.06]">
           <div className="px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
             <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-medium text-[#111]">End reply with owner name</p>
-              <p className="text-[12px] text-[#999] mt-0.5 leading-snug">Sign off each reply with your name (e.g. — Maria)</p>
+              <p className="text-[13px] font-medium text-white">End reply with owner name</p>
+              <p className="text-[12px] text-white/35 mt-0.5 leading-snug">Sign off each reply with your name (e.g. — Maria)</p>
             </div>
             <Toggle
               checked={replyPrefs.endWithOwnerName}
@@ -188,8 +188,8 @@ export default function SettingsClient({
 
           <div className="px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
             <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-medium text-[#111]">Include restaurant name</p>
-              <p className="text-[12px] text-[#999] mt-0.5 leading-snug">Mention your restaurant name naturally in the reply</p>
+              <p className="text-[13px] font-medium text-white">Include restaurant name</p>
+              <p className="text-[12px] text-white/35 mt-0.5 leading-snug">Mention your restaurant name naturally in the reply</p>
             </div>
             <Toggle
               checked={replyPrefs.includeRestaurantName}
@@ -200,8 +200,8 @@ export default function SettingsClient({
 
           <div className="px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
             <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-medium text-[#111]">Invite customer back</p>
-              <p className="text-[12px] text-[#999] mt-0.5 leading-snug">End positive replies with an invitation to return</p>
+              <p className="text-[13px] font-medium text-white">Invite customer back</p>
+              <p className="text-[12px] text-white/35 mt-0.5 leading-snug">End positive replies with an invitation to return</p>
             </div>
             <Toggle
               checked={replyPrefs.inviteBack}
@@ -213,18 +213,18 @@ export default function SettingsClient({
       </div>
 
       {/* Email notifications */}
-      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden">
-        <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-[#EDE9E4] flex items-center justify-between gap-3">
+      <div className="bg-[#111111] rounded-2xl border border-white/[0.07] overflow-hidden">
+        <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-white/[0.07] flex items-center justify-between gap-3">
           <div>
-            <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E]">Email Notifications</h2>
-            <p className="text-[12px] text-[#57534E] mt-1 truncate max-w-[200px] sm:max-w-none">Sent to {userEmail}</p>
+            <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/35">Email Notifications</h2>
+            <p className="text-[12px] text-white/55 mt-1 truncate max-w-[200px] sm:max-w-none">Sent to {userEmail}</p>
           </div>
           {emailToast && (
             <span
               className={`text-[11px] font-medium px-2.5 py-1 rounded-full flex-shrink-0 animate-scale-in ${
                 emailToast === 'saved'
-                  ? 'bg-emerald-50 text-emerald-700'
-                  : 'bg-red-50 text-red-600'
+                  ? 'bg-emerald-950/40 text-emerald-400 border border-emerald-900/30'
+                  : 'bg-red-950/30 text-red-400 border border-red-900/30'
               }`}
             >
               {emailToast === 'saved' ? '✓ Saved' : 'Error saving'}
@@ -234,8 +234,8 @@ export default function SettingsClient({
 
         <div className="px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
           <div className="min-w-0 flex-1">
-            <p className="text-[13px] font-medium text-[#111]">New reviews scraped</p>
-            <p className="text-[12px] text-[#999] mt-0.5 leading-snug">Get notified when your Auto Review sync pulls in new reviews</p>
+            <p className="text-[13px] font-medium text-white">New reviews scraped</p>
+            <p className="text-[12px] text-white/35 mt-0.5 leading-snug">Get notified when your Auto Review sync pulls in new reviews</p>
           </div>
           <Toggle
             checked={emailNotifs.newReviewsScrapped}
@@ -246,23 +246,23 @@ export default function SettingsClient({
       </div>
 
       {/* Danger zone */}
-      <div className="bg-white rounded-2xl border border-red-200 overflow-hidden">
-        <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-red-100">
+      <div className="bg-[#111111] rounded-2xl border border-red-900/40 overflow-hidden">
+        <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-red-900/30">
           <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-red-400">Danger Zone</h2>
-          <p className="text-[12px] text-[#57534E] mt-1">These actions are permanent and cannot be undone.</p>
+          <p className="text-[12px] text-white/55 mt-1">These actions are permanent and cannot be undone.</p>
         </div>
 
-        <div className="divide-y divide-[#EDE9E4]">
+        <div className="divide-y divide-white/[0.06]">
           {/* Export */}
           <div className="px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between gap-4">
             <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-medium text-[#111]">Export my data</p>
-              <p className="text-[12px] text-[#999] mt-0.5 leading-snug">Download all your reviews and replies as a JSON file</p>
+              <p className="text-[13px] font-medium text-white">Export my data</p>
+              <p className="text-[12px] text-white/35 mt-0.5 leading-snug">Download all your reviews and replies as a JSON file</p>
             </div>
             <button
               onClick={handleExport}
               disabled={exportLoading}
-              className="flex-shrink-0 px-3.5 py-2 rounded-xl border border-[#E4DED8] hover:border-[#D4CFC6] bg-white text-[13px] font-medium text-[#555] hover:text-[#111] transition-all duration-150 disabled:opacity-50 min-h-[40px]"
+              className="flex-shrink-0 px-3.5 py-2 rounded-xl border border-white/[0.10] hover:border-white/[0.20] bg-white/[0.06] text-[13px] font-medium text-white/55 hover:text-white transition-all duration-150 disabled:opacity-50 min-h-[40px]"
             >
               {exportLoading ? 'Exporting…' : 'Export JSON'}
             </button>
@@ -271,15 +271,15 @@ export default function SettingsClient({
           {/* Delete */}
           <div className="px-4 sm:px-6 py-4 sm:py-5 space-y-3">
             <div>
-              <p className="text-[13px] font-medium text-[#111]">Delete all my data</p>
-              <p className="text-[12px] text-[#999] mt-0.5 leading-snug">
+              <p className="text-[13px] font-medium text-white">Delete all my data</p>
+              <p className="text-[12px] text-white/35 mt-0.5 leading-snug">
                 Permanently deletes your account, restaurant profile, all reviews, and generated replies. Type{' '}
-                <code className="font-mono text-red-500 bg-red-50 px-1 rounded">DELETE</code> to confirm.
+                <code className="font-mono text-red-400 bg-red-950/30 px-1 rounded">DELETE</code> to confirm.
               </p>
             </div>
 
             {deleteError && (
-              <p className="text-[12px] text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+              <p className="text-[12px] text-red-400 bg-red-950/30 border border-red-900/30 rounded-lg px-3 py-2">
                 {deleteError}
               </p>
             )}
@@ -290,7 +290,7 @@ export default function SettingsClient({
                 value={deleteInput}
                 onChange={(e) => setDeleteInput(e.target.value)}
                 placeholder="Type DELETE to confirm"
-                className="flex-1 min-w-0 px-3 py-2.5 rounded-xl border border-[#E4DED8] focus:border-red-300 focus:ring-2 focus:ring-red-100 text-[13px] font-mono text-[#111] placeholder-[#CCC] outline-none transition-all min-h-[42px]"
+                className="flex-1 min-w-0 px-3 py-2.5 rounded-xl border border-red-900/30 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 bg-[#1A1A1A] text-[13px] font-mono text-white placeholder:text-white/25 outline-none transition-all min-h-[42px]"
               />
               <button
                 onClick={handleDeleteData}

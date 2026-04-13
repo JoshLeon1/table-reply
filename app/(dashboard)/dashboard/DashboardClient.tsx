@@ -72,10 +72,10 @@ export default function DashboardClient({
         {/* Page header */}
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-[22px] font-bold text-[#111] tracking-tight">Generate a reply</h1>
-            <p className="text-[13px] text-[#A8A29E] mt-1">
+            <h1 className="text-[22px] font-bold text-white tracking-tight">Generate a reply</h1>
+            <p className="text-[13px] text-white/40 mt-1">
               Paste any review and get a personalised response in seconds.{' '}
-              <kbd className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded border border-[#E4DED8] text-[10px] font-mono text-[#AAA] bg-[#F9F8F6]">
+              <kbd className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded border border-white/[0.12] text-[10px] font-mono text-white/35 bg-white/[0.08]">
                 ⌘ Enter
               </kbd>
             </p>
@@ -83,7 +83,7 @@ export default function DashboardClient({
 
           <button
             onClick={() => setShowGoogleModal(true)}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white border border-[#E4DED8] hover:border-[#D0C9C1] text-[13px] font-medium text-[#666] hover:text-[#111] transition-all duration-150 flex-shrink-0"
+            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/[0.06] border border-white/[0.10] hover:border-white/[0.18] text-[13px] font-medium text-white/50 hover:text-white transition-all duration-150 flex-shrink-0"
           >
             <GoogleLogo className="w-4 h-4 flex-shrink-0" />
             Auto-sync

@@ -14,11 +14,23 @@ function StarRow({ rating }: { rating: number }) {
   return (
     <div className="flex items-center gap-0.5">
       {[1,2,3,4,5].map((i) => (
-        <svg key={i} className={`w-3 h-3 ${i <= rating ? 'text-[#E05A28]' : 'text-[#E4DED8]'}`} fill="currentColor" viewBox="0 0 20 20">
+        <svg key={i} className={`w-3 h-3 ${i <= rating ? 'text-amber-400' : 'text-[#E4DED8]'}`} fill="currentColor" viewBox="0 0 20 20">
           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
         </svg>
       ))}
     </div>
+  )
+}
+
+function PlatformBadge({ source }: { source?: string | null }) {
+  if (source === 'yelp') return (
+    <span className="inline-flex items-center text-[10px] font-bold text-[#D32323] bg-red-50 border border-red-100 rounded-md px-1.5 py-0.5 leading-none">YELP</span>
+  )
+  if (source === 'tripadvisor') return (
+    <span className="inline-flex items-center text-[10px] font-bold text-[#007A5E] bg-emerald-50 border border-emerald-100 rounded-md px-1.5 py-0.5 leading-none">TA</span>
+  )
+  return (
+    <span className="inline-flex items-center text-[10px] font-bold text-[#4285F4] bg-blue-50 border border-blue-100 rounded-md px-1.5 py-0.5 leading-none">G</span>
   )
 }
 
@@ -283,6 +295,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-[13px] font-semibold text-[#111]">{review.reviewer_name}</span>
+              <PlatformBadge source={review.source} />
               {statusBadge}
               {noText ? (
                 <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#F3F0EC] text-[#A8A29E] border border-[#E4DED8]">Rating only</span>
@@ -335,8 +348,15 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
           <div className="px-5 py-4">
             {review.generated_reply ? (
               /* AI reply card */
-              <div className="rounded-xl bg-[#FAFAF9] border border-[#EDE9E4] px-4 py-3">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-2 tracking-[0.12em]">AI reply</p>
+              <div className="rounded-xl bg-gradient-to-br from-[#FEF8F5] to-[#F8F4F1] border border-[#EEE5DF] px-4 py-3.5">
+                <div className="flex items-center gap-1.5 mb-2">
+                  <div className="w-4 h-4 rounded-md bg-[#E05A28]/10 flex items-center justify-center">
+                    <svg className="w-2.5 h-2.5 text-[#E05A28]" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-[#E05A28]/70">AI Draft</p>
+                </div>
                 <p className="text-[13px] text-[#57534E] leading-relaxed">{review.generated_reply}</p>
               </div>
             ) : (
@@ -494,11 +514,14 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
       )}
 
       {/* Page header */}
-      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-[20px] sm:text-[22px] font-bold tracking-tight text-[#111]">Auto Reviews</h1>
+          <h1 className="text-[22px] sm:text-[24px] font-bold tracking-tight text-[#111]">Auto Reviews</h1>
           <div className="flex items-center gap-2 mt-1 flex-wrap">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0"/>
+            <span className="relative flex h-2 w-2 flex-shrink-0">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+            </span>
             <span className="text-[13px] text-[#57534E]">
               {profile.restaurant_name}
               {lastScrapedAt && <> · Synced {formatDate(lastScrapedAt)}</>}
@@ -507,13 +530,13 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
           <button onClick={onTestMode} disabled={scraping}
-            className="px-3 py-2 rounded-xl text-[12px] font-medium text-[#A8A29E] hover:text-[#333] border border-dashed border-[#E4DED8] hover:border-[#D4CFC6] disabled:opacity-40 transition-all min-h-[40px]"
+            className="px-3 py-2 rounded-xl text-[12px] font-medium text-[#A8A29E] hover:text-[#444] border border-dashed border-[#E4DED8] hover:border-[#C4BEB8] disabled:opacity-40 transition-all min-h-[38px]"
             title="Inject fake reviews to test the UI">
             Test data
           </button>
           <button onClick={onScrapeNow} disabled={scraping}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-[#E4DED8] hover:border-[#D4CFC6] text-[13px] font-medium text-[#57534E] hover:text-[#111] disabled:opacity-40 transition-all min-h-[40px]">
-            <svg className={`w-3.5 h-3.5 ${scraping ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            className="group flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white border border-[#E4DED8] hover:border-[#D0C9C1] hover:shadow-sm text-[13px] font-medium text-[#57534E] hover:text-[#111] disabled:opacity-40 transition-all min-h-[38px]">
+            <svg className={`w-3.5 h-3.5 transition-transform duration-500 ${scraping ? 'animate-spin' : 'group-hover:rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
             </svg>
             {scraping ? 'Syncing…' : 'Sync Now'}
@@ -523,64 +546,68 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
 
       {/* Response rate stat */}
       {reviews.length > 0 && (
-        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white border border-[#E4DED8] border-l-[3px] border-l-[#E05A28] mb-5">
-          <svg className="w-4 h-4 text-[#E05A28] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-          </svg>
-          <p className="text-[13px] text-[#666] leading-snug">
-            Responded to{' '}
-            <span className={`font-semibold ${responseRate >= 80 ? 'text-emerald-600' : responseRate >= 50 ? 'text-[#111]' : 'text-[#C94E21]'}`}>
-              {approvedCount} of {totalWithText} reviews
-            </span>
-            {' '}
-            <span className={`font-semibold ${responseRate >= 80 ? 'text-emerald-600' : responseRate >= 50 ? 'text-[#111]' : 'text-[#C94E21]'}`}>
-              ({responseRate}%)
-            </span>
-          </p>
+        <div className="flex items-center gap-4 px-5 py-4 rounded-2xl bg-white border border-[#E4DED8] shadow-[0_1px_4px_rgba(0,0,0,0.04)] mb-5">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-[12px] font-semibold text-[#A8A29E] uppercase tracking-[0.10em]">Response Rate</p>
+              <span className={`text-[13px] font-bold ${responseRate >= 80 ? 'text-emerald-600' : responseRate >= 50 ? 'text-[#111]' : 'text-[#C94E21]'}`}>
+                {approvedCount} / {totalWithText} &nbsp;·&nbsp; {responseRate}%
+              </span>
+            </div>
+            <div className="h-1.5 rounded-full bg-[#EDE9E4] overflow-hidden">
+              <div
+                className={`h-full rounded-full transition-all duration-700 ${responseRate >= 80 ? 'bg-emerald-500' : responseRate >= 50 ? 'bg-[#E05A28]' : 'bg-red-400'}`}
+                style={{ width: `${Math.min(responseRate, 100)}%` }}
+              />
+            </div>
+          </div>
         </div>
       )}
 
       {/* Pending banner */}
       {pending.length > 0 && !scraping && (
-        <div className="mb-5 flex items-center gap-3 px-4 py-3 rounded-xl bg-[#FEF0E8] border border-[#F5C9AD]">
-          <span className="w-6 h-6 rounded-full bg-[#E05A28] text-white text-[11px] font-bold flex items-center justify-center flex-shrink-0">
-            {pending.length}
+        <div className="mb-5 flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-gradient-to-r from-[#FEF0E8] to-[#FEF6F2] border border-[#F5C9AD]">
+          <span className="relative flex-shrink-0">
+            <span className="absolute inset-0 rounded-full bg-[#E05A28] animate-ping opacity-30" />
+            <span className="relative w-6 h-6 rounded-full bg-[#E05A28] text-white text-[11px] font-bold flex items-center justify-center shadow-[0_0_8px_rgba(224,90,40,0.4)]">
+              {pending.length}
+            </span>
           </span>
-          <p className="text-[13px] text-[#C94E21]">
+          <p className="text-[13px] text-[#B34419]">
             <span className="font-semibold">{pending.length} {pending.length === 1 ? 'review' : 'reviews'}</span>
-            <span className="text-[#E05A28]/70"> waiting for approval — copy the reply and paste it into Google Maps.</span>
+            <span className="opacity-80"> waiting — copy the AI reply and paste it on the review platform.</span>
           </p>
         </div>
       )}
 
-      {/* Tab bar — horizontal scrollable on mobile */}
-      <div className="overflow-x-auto scrollbar-hide mb-5">
-        <div className="flex border-b border-[#EDE9E4] min-w-max sm:min-w-0">
-          {tabs.map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`flex items-center gap-2 px-4 py-2.5 text-[13px] font-semibold transition-all duration-150 whitespace-nowrap border-b-2 -mb-px ${
+      {/* Tab bar */}
+      <div className="flex gap-1 p-1 bg-[#EDE9E4]/60 rounded-xl mb-5 w-fit">
+        {tabs.map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key)}
+            className={`flex items-center gap-2 px-4 py-2 text-[13px] font-semibold rounded-lg transition-all duration-200 whitespace-nowrap ${
+              activeTab === tab.key
+                ? 'bg-white text-[#111] shadow-[0_1px_3px_rgba(0,0,0,0.08),0_1px_2px_rgba(0,0,0,0.06)]'
+                : 'text-[#A8A29E] hover:text-[#57534E]'
+            }`}
+          >
+            {tab.label}
+            {tab.count > 0 && (
+              <span className={`min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-bold flex items-center justify-center leading-none transition-all ${
                 activeTab === tab.key
-                  ? 'border-[#E05A28] text-[#111] font-semibold'
-                  : 'border-transparent text-[#A8A29E] hover:text-[#57534E]'
-              }`}
-            >
-              {tab.label}
-              {tab.count > 0 && (
-                <span className={`min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-bold flex items-center justify-center leading-none ${
-                  activeTab === tab.key
-                    ? tab.key === 'pending' ? 'bg-[#E05A28] text-white'
-                    : tab.key === 'approved' ? 'bg-emerald-500 text-white'
+                  ? tab.key === 'pending'
+                    ? 'bg-[#E05A28] text-white shadow-[0_0_6px_rgba(224,90,40,0.4)]'
+                    : tab.key === 'approved'
+                    ? 'bg-emerald-500 text-white'
                     : 'bg-[#A8A29E] text-white'
-                    : 'bg-[#E4DED8] text-[#A8A29E]'
-                }`}>
-                  {tab.count}
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
+                  : 'bg-[#DDD8D2] text-[#A8A29E]'
+              }`}>
+                {tab.count}
+              </span>
+            )}
+          </button>
+        ))}
       </div>
 
       {/* Skeleton loading */}

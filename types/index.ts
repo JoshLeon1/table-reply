@@ -50,6 +50,7 @@ export interface ScrapedReview {
   alert_triggered?: boolean
   staff_mentions?: string[] | null
   language?: string | null
+  source?: string | null
 }
 
 export interface KeywordAlert {

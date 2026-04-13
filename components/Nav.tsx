@@ -183,13 +183,16 @@ export default function Nav() {
 
   return (
     <>
-      <nav className="backdrop-blur-md bg-[#0A0A0A]/90 sticky top-0 z-40 border-b border-white/[0.05]">
+      <nav className="sticky top-0 z-40 bg-[#0C0C0C]/95 backdrop-blur-xl border-b border-white/[0.06]" style={{ boxShadow: '0 1px 0 rgba(255,255,255,0.04), 0 4px 20px rgba(0,0,0,0.25)' }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-14">
 
             {/* Logo */}
             <Link href="/dashboard" className="flex items-center gap-2.5 flex-shrink-0 group">
-              <LogoMark size={30} />
+              <div className="relative">
+                <LogoMark size={30} />
+                <div className="absolute inset-0 rounded-[8px] bg-[#E05A28]/20 blur-md group-hover:bg-[#E05A28]/30 transition-all duration-300 -z-10" />
+              </div>
               <span className="text-[14px] font-bold text-white tracking-[-0.02em]">TableReply</span>
             </Link>
 
@@ -201,34 +204,39 @@ export default function Nav() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`relative flex items-center gap-2 px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all duration-150 active:scale-[0.97] ${
+                    className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all duration-150 active:scale-[0.97] ${
                       active
-                        ? 'text-[#111] bg-[#F3F0EC] border border-[#E4DED8] shadow-sm'
-                        : 'text-white/45 hover:text-white/75 hover:bg-white/[0.07]'
+                        ? 'text-white bg-white/[0.10] border border-white/[0.10]'
+                        : 'text-white/40 hover:text-white/70 hover:bg-white/[0.06]'
                     }`}
+                    style={active ? { boxShadow: '0 1px 0 rgba(255,255,255,0.08) inset, 0 0 0 1px rgba(255,255,255,0.05)' } : undefined}
                   >
-                    <span className={active ? 'text-[#E05A28]' : ''}>{link.icon(active)}</span>
+                    <span className={active ? 'text-[#E05A28]' : 'opacity-60'}>{link.icon(active)}</span>
                     {link.label}
+                    {/* active underline dot */}
+                    {active && (
+                      <span className="absolute -bottom-[1px] left-1/2 -translate-x-1/2 w-4 h-[2px] rounded-full bg-[#E05A28] shadow-[0_0_6px_rgba(224,90,40,0.7)]" />
+                    )}
                     {link.badge != null && (
                       <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#E05A28] text-white text-[10px] font-bold flex items-center justify-center leading-none shadow-[0_0_8px_rgba(224,90,40,0.5)]">
                         {link.badge > 99 ? '99+' : link.badge}
                       </span>
                     )}
                     {link.dot && !link.badge && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#E05A28] flex-shrink-0 shadow-[0_0_6px_rgba(224,90,40,0.6)]" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#E05A28] flex-shrink-0 shadow-[0_0_6px_rgba(224,90,40,0.6)] animate-pulse" />
                     )}
                   </Link>
                 )
               })}
 
-              <div className="w-px h-4 bg-white/[0.08] mx-1.5" />
+              <div className="w-px h-4 bg-white/[0.07] mx-2" />
 
               <Link
                 href="/settings"
-                className={`w-9 h-9 flex items-center justify-center rounded-xl transition-all duration-150 active:scale-[0.97] ${
+                className={`w-9 h-9 flex items-center justify-center rounded-lg transition-all duration-150 active:scale-[0.97] ${
                   pathname === '/settings'
-                    ? 'text-[#E05A28] bg-[#F3F0EC]'
-                    : 'text-white/35 hover:text-white/70 hover:bg-[#F3F0EC]/10'
+                    ? 'text-[#E05A28] bg-white/[0.10] border border-white/[0.08]'
+                    : 'text-white/35 hover:text-white/70 hover:bg-white/[0.06]'
                 }`}
                 title="Settings"
               >
@@ -237,7 +245,7 @@ export default function Nav() {
 
               <button
                 onClick={handleLogout}
-                className="w-9 h-9 flex items-center justify-center rounded-xl text-white/35 hover:text-white/70 hover:bg-[#F3F0EC]/10 transition-all duration-150 active:scale-[0.97]"
+                className="w-9 h-9 flex items-center justify-center rounded-lg text-white/30 hover:text-white/65 hover:bg-white/[0.06] transition-all duration-150 active:scale-[0.97]"
                 title="Log Out"
               >
                 <IconLogout />

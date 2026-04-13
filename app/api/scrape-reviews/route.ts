@@ -237,11 +237,14 @@ export async function POST(request: NextRequest) {
     `(4) For 3 stars: acknowledge what went right, address the concern honestly. ` +
     `(5) For 1-2 stars: sincere empathy first, never defensive, offer to make it right. ` +
     `(6) Max one exclamation mark total. ` +
-    `(7) STRICT LENGTH — reply MUST mirror the review length (word count is provided): ` +
+    `(7) STRICT LENGTH — scale to review length AND star rating. ` +
+    `For 4-5 star reviews: mirror review length — ` +
     `1-10 words → 1 sentence max 20 words; ` +
     `11-30 words → 1-2 sentences max 35 words; ` +
     `31-75 words → 2-3 sentences max 55 words; ` +
     `76+ words → 3-4 sentences max 80 words. ` +
+    `For 1-3 star reviews: slightly longer to address the complaint — 2-4 sentences max 65 words. ` +
+    `Must cover acknowledgment and what you will do about it. Still concise, no rambling. ` +
     `Do NOT exceed these limits. Do NOT pad. ` +
     `Always end with — ${profile.owner_name}`
 

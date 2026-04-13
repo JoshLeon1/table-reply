@@ -43,6 +43,7 @@ export default function LandingPage() {
   const [scrollY, setScrollY] = useState(0)
   const [annual, setAnnual] = useState(false)
   const [notifDismissed, setNotifDismissed] = useState(false)
+  const [openFaq, setOpenFaq] = useState<number | null>(null)
 
   // Typing animation state for hero mockup
   const [typedReview, setTypedReview] = useState('')
@@ -96,10 +97,12 @@ export default function LandingPage() {
 
   // Section animation refs
   const trustBarAnim   = useInView(0.2)
+  const proofAnim      = useInView(0.1)
   const problemAnim    = useInView(0.1)
   const featuresAnim   = useInView(0.08)
   const howItWorksAnim = useInView(0.1)
   const testimonialsAnim = useInView(0.08)
+  const faqAnim        = useInView(0.1)
   const pricingAnim    = useInView(0.15)
   const ctaAnim        = useInView(0.2)
 
@@ -221,8 +224,8 @@ export default function LandingPage() {
     },
     {
       num: '2',
-      title: 'Paste any review',
-      desc: 'Copy a review from Google, Yelp, or anywhere else and paste it in. Or let TableReply auto-sync your Google reviews daily.',
+      title: 'Reviews come to you',
+      desc: 'Google reviews appear in your dashboard automatically every day. For Yelp or other platforms, just paste the review text — takes 5 seconds.',
     },
     {
       num: '3',
@@ -264,13 +267,36 @@ export default function LandingPage() {
 
   const proFeatures = [
     'Unlimited AI replies',
-    'Google, Yelp, TripAdvisor, OpenTable',
+    'Google auto-sync + Yelp, TripAdvisor (paste-in)',
     'Keyword alerts',
     'Staff mention tracking',
     'Multi-language replies',
     'Social post generator',
     'Restaurant voice setup',
     'Cancel anytime',
+  ]
+
+  const faqs = [
+    {
+      q: 'Do I approve replies before they get posted?',
+      a: 'Yes, always. TableReply generates a draft — you review it, edit if needed, then copy and paste it into Google or Yelp yourself. Nothing posts automatically.',
+    },
+    {
+      q: 'Does this connect to Yelp automatically?',
+      a: "Google reviews sync automatically every day. For Yelp, TripAdvisor, and other platforms, you paste the review text in — it takes about 5 seconds. We're working on direct integrations.",
+    },
+    {
+      q: 'Will replies sound robotic or generic?',
+      a: "No. When you set up your profile, you tell TableReply your restaurant's name, cuisine, owner name, and tone. Every reply is written specifically for that review — it won't sound like a template.",
+    },
+    {
+      q: 'How long does setup take?',
+      a: "About 2 minutes. Enter your restaurant name, cuisine type, and a few words about your tone. That's it — you can start generating replies immediately.",
+    },
+    {
+      q: 'Can I edit the replies before I use them?',
+      a: 'Absolutely. Every reply is just a text draft. Edit it however you like before copying it to your review platform.',
+    },
   ]
 
   return (
@@ -362,7 +388,7 @@ export default function LandingPage() {
               </h1>
 
               <p className="text-[#777] mb-8 sm:mb-10 max-w-[440px] animate-fade-up" style={{ fontSize: '15px', lineHeight: '1.7', animationDelay: '280ms' }}>
-                TableReply generates thoughtful, on-brand responses to your Google and Yelp reviews in seconds — matched to the reviewer's tone, your voice, and the star rating.
+                Google reviews sync automatically every day. For Yelp and others, just paste the review. Either way, get a thoughtful, on-brand reply in seconds — matched to your voice and their tone.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 mb-7 sm:mb-8 animate-fade-up" style={{ animationDelay: '360ms' }}>
@@ -391,6 +417,13 @@ export default function LandingPage() {
                   </div>
                 ))}
               </div>
+              <a href="#example" className="inline-flex items-center gap-1.5 text-[#888] text-[13px] hover:text-[#E05A28] transition-colors duration-200 mt-2 animate-fade-up" style={{ animationDelay: '500ms' }}>
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                See a real reply example
+              </a>
             </div>
 
             {/* Right — product mockup */}
@@ -522,6 +555,62 @@ export default function LandingPage() {
           ))}
         </div>
       </div>
+
+      {/* ── PROOF SECTION ────────────────────────────────────────────────── */}
+      <section id="example" className="bg-white py-16 px-5 sm:px-6 border-b border-[#e5e5e0]">
+        <div
+          ref={proofAnim.ref}
+          className={`max-w-4xl mx-auto transition-all duration-700 ${proofAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
+        >
+          <div className="text-center mb-10">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28] mb-3">Real Example</p>
+            <h2 className="font-bold text-[#111111] mb-2" style={{ fontSize: 'clamp(24px, 3vw, 36px)', lineHeight: 1.15, letterSpacing: '-0.02em' }}>
+              See exactly what you&apos;ll get
+            </h2>
+            <p className="text-[15px] text-[#777] max-w-md mx-auto">A real 1-star review. The reply TableReply drafts in seconds.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* LEFT — The Review */}
+            <div className="rounded-2xl border bg-[#FAFAFA] border-[#E4DED8] p-6">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#888] mb-4 flex items-center gap-2">
+                <span className="text-amber-400">★</span><span className="text-[#bbb]">☆☆☆☆</span>
+                <span className="ml-1">1-star review on Google</span>
+              </p>
+              <p className="text-[13px] font-semibold text-[#111] mb-0.5">James T.</p>
+              <p className="text-[12px] text-[#aaa] mb-4">3 days ago</p>
+              <p className="text-[14px] leading-relaxed text-[#444]">
+                &ldquo;Honestly disappointed. Waited 40 minutes for a table with a reservation, then the pasta was lukewarm. Server was apologetic but the manager never came out. Won&apos;t be back.&rdquo;
+              </p>
+              <div className="mt-5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-[#ddd] bg-white text-[11px] text-[#555]">
+                <span className="w-3 h-3 rounded-full bg-[#4285F4] flex-shrink-0" />
+                Google Review
+              </div>
+            </div>
+
+            {/* RIGHT — TableReply's draft */}
+            <div className="rounded-2xl border bg-[#FEF0E8] border-[#F5C9AD] border-l-4 border-l-[#E05A28] p-6">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#E05A28] mb-4 flex items-center gap-2">
+                <svg className="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                </svg>
+                AI Reply · Generated in 4 seconds
+              </p>
+              <p className="text-[14px] leading-relaxed text-[#333]">
+                &ldquo;Hi James, thank you for sharing this — and I&apos;m genuinely sorry your experience fell short. A 40-minute wait with a reservation and a lukewarm dish is not the standard we hold ourselves to. I&apos;d love the opportunity to make this right. Please reach out to us directly at [email] and I&apos;ll personally make sure your next visit is much better. — [Owner Name], [Restaurant Name]&rdquo;
+              </p>
+              <div className="mt-5 flex flex-wrap gap-2">
+                {['✓ Sounds human', '✓ Takes accountability', '✓ Invites them back'].map((badge) => (
+                  <span key={badge} className="px-2.5 py-1 rounded-full bg-[#E05A28]/10 border border-[#E05A28]/20 text-[11px] font-medium text-[#B34419]">
+                    {badge}
+                  </span>
+                ))}
+              </div>
+              <p className="mt-4 text-[12px] text-[#888]">You review before posting. One click to copy.</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* ── TRUST BAR ────────────────────────────────────────────────────── */}
       <section className="bg-white border-b border-[#e5e5e0] py-5 px-5 sm:px-6">
@@ -756,6 +845,41 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ── FAQ ──────────────────────────────────────────────────────────── */}
+      <section className="py-20 px-5 sm:px-6 bg-white border-t border-[#e5e5e0]">
+        <div
+          ref={faqAnim.ref}
+          className={`max-w-2xl mx-auto transition-all duration-700 ${faqAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
+        >
+          <div className="text-center mb-10">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28] mb-3">FAQ</p>
+            <h2 className="font-bold text-[#111111]" style={{ fontSize: 'clamp(22px, 3vw, 32px)', lineHeight: 1.2, letterSpacing: '-0.02em' }}>
+              Common questions
+            </h2>
+          </div>
+          <div className="space-y-2">
+            {faqs.map(({ q, a }, i) => (
+              <div key={i} className="border border-[#E4DED8] rounded-xl overflow-hidden bg-white">
+                <button
+                  className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-[#fafaf8] transition-colors duration-150"
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                >
+                  <span className="text-[14px] font-semibold text-[#111] pr-4">{q}</span>
+                  <span className="text-[#E05A28] flex-shrink-0 text-[20px] font-light leading-none w-5 text-center">
+                    {openFaq === i ? '−' : '+'}
+                  </span>
+                </button>
+                {openFaq === i && (
+                  <div className="px-5 pb-5 pt-1 border-t border-[#EDE9E4]">
+                    <p className="text-[14px] text-[#555] leading-relaxed">{a}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── PRICING ──────────────────────────────────────────────────────── */}
       <section id="pricing" className="py-24 px-6 bg-[#fafaf8] border-t border-[#e5e5e0]">
         <div
@@ -867,7 +991,7 @@ export default function LandingPage() {
                 Start your free week →
               </Link>
               <p className="text-center mt-3 text-[#6b6b6b] text-[12px]">
-                Then ${annual ? '19' : '29'}/mo. Cancel anytime. No contracts.
+                Google auto-syncs daily · Yelp via paste-in · cancel anytime
               </p>
             </div>
           </div>
@@ -900,7 +1024,7 @@ export default function LandingPage() {
                 Reply to every review.<br className="hidden sm:block" /> Build a reputation that brings guests back.
               </h2>
               <p className="text-white/65 mb-8 text-[14px] sm:text-[15px] leading-relaxed max-w-[400px] mx-auto">
-                7 days free — no credit card needed. Set up takes 2 minutes.
+                No credit card. No setup fee. 7 days free — takes 2 minutes to configure.
               </p>
               <Link
                 href="/signup"
@@ -912,6 +1036,12 @@ export default function LandingPage() {
                 </svg>
               </Link>
               <p className="text-white/40 text-[12px] mt-4">Then $29/mo · cancel anytime · no contracts</p>
+              <p className="mt-2 text-white/50 text-[12px]">
+                Not ready yet?{' '}
+                <a href="#example" className="text-white/70 underline underline-offset-2 hover:text-white transition-colors duration-200">
+                  See a real example first
+                </a>
+              </p>
             </div>
           </div>
         </div>

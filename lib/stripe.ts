@@ -10,17 +10,7 @@ export async function createCheckoutSession(userId: string, email: string) {
     payment_method_types: ['card'],
     line_items: [
       {
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: 'TableReply Pro',
-            description: 'Unlimited AI-powered review replies for your restaurant',
-          },
-          unit_amount: 2900,
-          recurring: {
-            interval: 'month',
-          },
-        },
+        price: process.env.STRIPE_PRICE_ID!,
         quantity: 1,
       },
     ],
@@ -30,6 +20,8 @@ export async function createCheckoutSession(userId: string, email: string) {
     metadata: {
       userId,
     },
+    // Allow promotion codes (optional — lets you offer discounts later)
+    allow_promotion_codes: true,
   })
 
   return session

@@ -433,29 +433,70 @@ export default function LandingPage() {
       </section>
 
       {/* ── PROBLEM / SOLUTION ───────────────────────────────────────────── */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-[#fafaf8] border-t border-[#e5e5e0]">
-        <div className="max-w-6xl mx-auto">
-          <div className={`grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 transition-all duration-700 ${problemAnim.inView ? 'opacity-100' : 'opacity-0'}`}>
-            {/* Problem */}
-            <div className={`transition-all duration-700 ${problemAnim.inView ? 'translate-x-0' : '-translate-x-8'}`}>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28] mb-3">The problem</p>
-              <h2 className="font-bold text-[#111111] mb-4" style={{ fontSize: 'clamp(22px, 3vw, 32px)', lineHeight: 1.2, letterSpacing: '-0.02em' }}>
-                You know you should reply. You never have time.
-              </h2>
-              <p className="text-[14px] sm:text-[15px] leading-relaxed text-[#555]">
-                Most restaurant owners respond to fewer than 10% of their reviews — not because they don't care, but because crafting a genuine reply takes time they simply don't have.
-              </p>
+      <section className="py-12 sm:py-20 px-4 sm:px-6 border-t border-[#e5e5e0]" style={{ background: '#0A0A0A' }}>
+        <div ref={problemAnim.ref} className="max-w-5xl mx-auto">
+
+          {/* Section label */}
+          <div className={`text-center mb-10 transition-all duration-700 ${problemAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/35 mb-2">The reality</p>
+            <h2 className="font-bold text-white" style={{ fontSize: 'clamp(22px, 3vw, 32px)', lineHeight: 1.2, letterSpacing: '-0.02em' }}>
+              Most owners want to reply. Few actually do.
+            </h2>
+          </div>
+
+          {/* Before / After comparison */}
+          <div className={`grid grid-cols-1 sm:grid-cols-2 gap-4 transition-all duration-700 ${problemAnim.inView ? 'opacity-100' : 'opacity-0'}`}>
+
+            {/* Before — problem */}
+            <div className={`rounded-2xl border border-red-900/30 bg-red-950/20 p-6 transition-all duration-700 ${problemAnim.inView ? 'translate-x-0' : '-translate-x-6'}`}>
+              <div className="flex items-center gap-2 mb-5">
+                <div className="w-6 h-6 rounded-full bg-red-900/50 border border-red-800/40 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </div>
+                <span className="text-[12px] font-bold uppercase tracking-[0.12em] text-red-400">Without TableReply</span>
+              </div>
+              <ul className="space-y-3.5">
+                {[
+                  'Reviews sit unanswered for weeks',
+                  'You log in, stare at the screen, log out',
+                  'Negative reviews go ignored — damage compounds',
+                  'Copy-paste the same generic reply to everyone',
+                  'Competitors who reply get more bookings than you',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2.5 text-[13px] text-white/50 leading-snug">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500/50 flex-shrink-0 mt-1.5" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </div>
 
-            {/* Solution */}
-            <div className={`transition-all duration-700 delay-150 ${problemAnim.inView ? 'translate-x-0' : 'translate-x-8'}`}>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] mb-3 text-emerald-600">The solution</p>
-              <h2 className="font-bold text-[#111111] mb-4" style={{ fontSize: 'clamp(22px, 3vw, 32px)', lineHeight: 1.2, letterSpacing: '-0.02em' }}>
-                Thoughtful replies, in seconds, hands-free.
-              </h2>
-              <p className="text-[14px] sm:text-[15px] leading-relaxed text-[#555]">
-                TableReply drafts personalized responses that sound exactly like you — matched to your tone, your cuisine, and the reviewer's sentiment. Restaurants that respond to every review earn more reviews and higher ratings.
-              </p>
+            {/* After — solution */}
+            <div className={`rounded-2xl border border-emerald-900/30 bg-emerald-950/20 p-6 transition-all duration-700 delay-150 ${problemAnim.inView ? 'translate-x-0' : 'translate-x-6'}`}>
+              <div className="flex items-center gap-2 mb-5">
+                <div className="w-6 h-6 rounded-full bg-emerald-900/50 border border-emerald-800/40 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span className="text-[12px] font-bold uppercase tracking-[0.12em] text-emerald-400">With TableReply</span>
+              </div>
+              <ul className="space-y-3.5">
+                {[
+                  'Reviews are waiting with AI drafts every morning',
+                  'Copy, paste, done — under 30 seconds per review',
+                  'Every reviewer feels heard, even the unhappy ones',
+                  'Each reply sounds personal, not templated',
+                  'Higher response rate → more trust → more covers',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2.5 text-[13px] text-white/70 leading-snug">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0 mt-1.5" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
@@ -477,22 +518,27 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
             {steps.map(({ num, title, desc }, i) => (
               <div
                 key={num}
-                className="flex sm:flex-col items-start sm:items-center gap-4 sm:gap-3 p-4 sm:p-6 sm:text-center rounded-2xl bg-[#fafaf8] border border-[#E4DED8] transition-all duration-500"
+                className="relative flex sm:flex-col items-start gap-4 sm:gap-4 p-5 sm:p-6 rounded-2xl bg-[#fafaf8] border border-[#E4DED8] transition-all duration-500 hover:shadow-[0_4px_20px_rgba(0,0,0,0.07)] hover:-translate-y-0.5"
                 style={{
                   transitionDelay: howItWorksAnim.inView ? `${i * 100}ms` : '0ms',
                   opacity: howItWorksAnim.inView ? 1 : 0,
                   transform: howItWorksAnim.inView ? 'translateY(0)' : 'translateY(16px)',
                 }}
               >
-                <div className="w-9 h-9 rounded-full bg-[#E05A28] text-white flex items-center justify-center flex-shrink-0 font-bold text-[14px] shadow-[0_4px_14px_rgba(224,90,40,0.35)]">
+                {/* Connector line between cards on desktop */}
+                {i < steps.length - 1 && (
+                  <div className="hidden sm:block absolute top-[38px] left-full w-full h-px z-10" style={{ width: 'calc(100% - 100%)' }}>
+                  </div>
+                )}
+                <div className="w-10 h-10 rounded-xl bg-[#E05A28] text-white flex items-center justify-center flex-shrink-0 font-bold text-[15px] shadow-[0_4px_14px_rgba(224,90,40,0.30)]">
                   {num}
                 </div>
                 <div>
-                  <h3 className="font-semibold text-[#111111] text-[14px] sm:text-[15px] mb-1 tracking-tight">{title}</h3>
+                  <h3 className="font-semibold text-[#111111] text-[14px] sm:text-[15px] mb-1.5 tracking-tight">{title}</h3>
                   <p className="text-[13px] leading-relaxed text-[#666]">{desc}</p>
                 </div>
               </div>

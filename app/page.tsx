@@ -669,30 +669,44 @@ export default function LandingPage() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────────────────── */}
-      <section className="py-10 sm:py-14 px-4 sm:px-6 bg-[#111111]">
+      <section className="bg-[#0D0D0D] border-t border-white/[0.06] py-8 sm:py-12 px-4 sm:px-6">
         <div
           ref={ctaAnim.ref}
-          className={`max-w-xl mx-auto transition-all duration-700 ${ctaAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+          className={`max-w-4xl mx-auto transition-all duration-700 ${ctaAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
         >
-          <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden px-6 sm:px-10 py-10 sm:py-12 text-center" style={{ background: 'linear-gradient(145deg, #E05A28 0%, #B84018 100%)' }}>
-            <div aria-hidden="true" className="absolute inset-0 opacity-[0.06]" style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
-            <div className="relative">
-              <p className="text-white/60 text-[11px] font-semibold uppercase tracking-[0.14em] mb-3">Join 200+ restaurants</p>
-              <h2 className="font-bold text-white mb-3" style={{ fontSize: 'clamp(20px, 4vw, 30px)', lineHeight: 1.15, letterSpacing: '-0.025em' }}>
-                Reply to every review.<br />Build a reputation that brings guests back.
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-10">
+
+            {/* Left — text */}
+            <div className="text-center sm:text-left">
+              <div className="flex items-center justify-center sm:justify-start gap-2 mb-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#E05A28] animate-pulse flex-shrink-0" />
+                <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/30">200+ restaurants</span>
+              </div>
+              <h2 className="font-bold text-white mb-1.5" style={{ fontSize: 'clamp(20px, 3vw, 28px)', lineHeight: 1.2, letterSpacing: '-0.025em' }}>
+                Every review replied to.<br className="hidden sm:block" /> Every guest heard.
               </h2>
-              <p className="text-white/65 mb-7 text-[13px] sm:text-[14px] leading-relaxed max-w-sm mx-auto">
-                No credit card. No setup fee. 7 days free — takes 2 minutes.
-              </p>
+              <p className="text-white/40 text-[13px]">7 days free · no card needed · cancel anytime</p>
+            </div>
+
+            {/* Right — CTA */}
+            <div className="flex flex-col items-center sm:items-end gap-3 flex-shrink-0">
               <Link
                 href="/signup"
-                className="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-[#E05A28] text-[14px] font-bold rounded-xl hover:bg-white/92 active:bg-white/85 transition-all duration-150 active:scale-[0.98] shadow-[0_8px_24px_rgba(0,0,0,0.2)]"
+                className="group inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl font-bold text-[14px] text-white transition-all duration-200 active:scale-[0.97]"
+                style={{ background: 'linear-gradient(135deg, #E05A28 0%, #C44A1E 100%)', boxShadow: '0 4px 16px rgba(224,90,40,0.35), inset 0 1px 0 rgba(255,255,255,0.12)' }}
               >
                 Start your free week
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7"/></svg>
+                <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-150" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7"/>
+                </svg>
               </Link>
-              <p className="text-white/40 text-[11px] mt-4">Then $29/mo · cancel anytime</p>
+              <div className="flex items-center gap-3">
+                {['Google', 'Yelp', 'TripAdvisor'].map((p) => (
+                  <span key={p} className="text-[10px] text-white/25 font-medium">{p}</span>
+                ))}
+              </div>
             </div>
+
           </div>
         </div>
       </section>

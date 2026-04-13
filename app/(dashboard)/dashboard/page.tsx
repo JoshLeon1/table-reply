@@ -85,7 +85,6 @@ export default async function DashboardPage() {
       yelpUrl={restaurantProfile?.yelp_url ?? null}
       tripadvisorUrl={restaurantProfile?.tripadvisor_url ?? null}
       hasGeneratedReply={(approvedAllTime ?? 0) > 0}
-      isPaid={profile?.is_paid ?? false}
       reviewsThisMonth={reviewsThisMonth ?? 0}
       reviewsLastMonth={reviewsLastMonth ?? 0}
       avgRating={avgRating}

@@ -348,11 +348,7 @@ export default function HomeClient({
   themes,
   hasAnalytics,
 }: Props) {
-  const hour = new Date().getHours()
-  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
-  const greetingEmoji = hour < 12 ? '☀️' : hour < 17 ? '⚡' : '🌙'
-
-  const [showConnectModal, setShowConnectModal] = useState(!googleMapsUrl)
+  const [showConnectModal, setShowConnectModal] = useState(false)
   const [pendingList, setPendingList] = useState<ScrapedReview[]>(initialPendingReviews)
   const [quickReview, setQuickReview] = useState('')
   const [quickReply, setQuickReply] = useState('')
@@ -455,28 +451,46 @@ export default function HomeClient({
             }}
           />
 
-          <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+          <div className="relative flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5">
+            {/* Left — action-oriented headline */}
             <div>
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-lg">{greetingEmoji}</span>
-                <h1 className="text-[20px] sm:text-[26px] font-bold text-white tracking-[-0.03em] leading-tight">
-                  {greeting}, {ownerName}
-                </h1>
+              {/* Eyebrow: restaurant + sync time */}
+              <div className="flex items-center gap-2 flex-wrap mb-2">
+                <span className="text-[12px] font-semibold text-white/60 tracking-wide">{restaurantName}</span>
+                {lastScrapedAt && (
+                  <>
+                    <span className="w-1 h-1 rounded-full bg-white/30 flex-shrink-0" />
+                    <span className="text-[11px] text-white/40">synced {formatTimeAgo(lastScrapedAt)}</span>
+                  </>
+                )}
               </div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-[13px] font-medium text-white/70">{restaurantName}</span>
-                <span className="w-1 h-1 rounded-full bg-white/30 flex-shrink-0" />
-                <span className="text-[12px] text-white/50">
-                  {lastScrapedAt ? `Synced ${formatTimeAgo(lastScrapedAt)}` : 'Not synced yet'}
+
+              {/* Big count */}
+              <div className="flex items-baseline gap-3 mb-2">
+                <h1 className="text-[36px] sm:text-[48px] font-black text-white tracking-[-0.04em] leading-none tabular-nums">
+                  {pendingList.length}
+                </h1>
+                <span className="text-[18px] sm:text-[22px] font-bold text-white/80 tracking-[-0.02em] leading-none">
+                  {pendingList.length === 1 ? 'review needs a reply' : 'reviews need replies'}
                 </span>
               </div>
+
+              {/* Subtext — contextual */}
+              <p className="text-[13px] text-white/55 leading-snug">
+                {pendingList.length > 0
+                  ? 'Respond in seconds below — AI drafts are ready.'
+                  : googleMapsUrl
+                    ? "You're all caught up. Sync to check for new reviews."
+                    : 'Sync your accounts to start generating replies instantly.'}
+              </p>
             </div>
 
+            {/* Right — sync button */}
             <div className="flex items-center gap-2.5 flex-wrap">
               <button
                 onClick={handleSync}
                 disabled={syncing}
-                className="group flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/[0.12] hover:bg-white/[0.22] border border-white/[0.18] text-[13px] font-semibold text-white/90 hover:text-white disabled:opacity-40 transition-all duration-200 active:scale-[0.97] backdrop-blur-sm flex-shrink-0"
+                className="group flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/[0.14] hover:bg-white/[0.24] border border-white/[0.20] text-[13px] font-semibold text-white/90 hover:text-white disabled:opacity-40 transition-all duration-200 active:scale-[0.97] backdrop-blur-sm flex-shrink-0"
               >
                 <svg
                   className={`w-3.5 h-3.5 transition-transform duration-700 ${syncing ? 'animate-spin' : 'group-hover:rotate-180'}`}

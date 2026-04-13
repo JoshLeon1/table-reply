@@ -6,6 +6,7 @@ import RestaurantProfileForm from '@/components/RestaurantProfileForm'
 import ManageBillingButton from './ManageBillingButton'
 import SettingsClient from './SettingsClient'
 import KeywordAlertsManager from '@/components/KeywordAlertsManager'
+import YelpConnectSection from '@/components/YelpConnectSection'
 import Link from 'next/link'
 
 export default async function SettingsPage() {
@@ -154,6 +155,22 @@ export default async function SettingsPage() {
             userId={user.id}
             existingProfile={restaurantProfile}
             redirectTo="/settings"
+          />
+        </div>
+      </div>
+
+      {/* Yelp Auto-Sync */}
+      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden shadow-card">
+        <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-[#EDE9E4]">
+          <h2 className="text-[11px] font-semibold text-[#A8A29E] uppercase tracking-[0.12em]">Yelp Auto-Sync</h2>
+          <p className="text-[12px] text-[#57534E] mt-0.5">Connect Yelp to sync reviews automatically every day.</p>
+        </div>
+        <div className="px-4 sm:px-6 py-4 sm:py-5">
+          <YelpConnectSection
+            userId={user.id}
+            restaurantProfileId={restaurantProfile.id}
+            currentYelpUrl={restaurantProfile.yelp_url ?? null}
+            yelpLastScrapedAt={restaurantProfile.yelp_last_scraped_at ?? null}
           />
         </div>
       </div>

@@ -20,11 +20,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  // Fetch every restaurant profile that has a Google Maps URL configured
+  // Fetch all restaurant profiles (we'll filter per platform below)
   const { data: profiles, error } = await supabaseAdmin
     .from('restaurant_profiles')
-    .select('id, user_id')
-    .not('google_maps_url', 'is', null)
+    .select('id, user_id, google_maps_url, yelp_url')
 
   if (error) {
     console.error('[daily-scrape] Failed to fetch profiles:', error)
@@ -40,31 +39,63 @@ export async function GET(request: NextRequest) {
   const errors: string[] = []
 
   for (const profile of profiles) {
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/scrape-reviews`, {
-        method:  'POST',
-        headers: {
-          'Content-Type':   'application/json',
-          'x-cron-secret':  process.env.CRON_SECRET!,
-        },
-        body: JSON.stringify({
-          userId:              profile.user_id,
-          restaurantProfileId: profile.id,
-        }),
-      })
+    // ── Google scrape ───────────────────────────────────────────────────
+    if (profile.google_maps_url) {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/scrape-reviews`, {
+          method:  'POST',
+          headers: {
+            'Content-Type':  'application/json',
+            'x-cron-secret': process.env.CRON_SECRET!,
+          },
+          body: JSON.stringify({
+            userId:              profile.user_id,
+            restaurantProfileId: profile.id,
+          }),
+        })
 
-      if (res.ok) {
-        const result = await res.json()
-        totalNewReplies += result.newReviews ?? 0
-        processed++
-      } else {
-        const err = await res.json().catch(() => ({}))
-        errors.push(`Profile ${profile.id}: ${err.error ?? res.statusText}`)
+        if (res.ok) {
+          const result = await res.json()
+          totalNewReplies += result.newReviews ?? 0
+          processed++
+        } else {
+          const err = await res.json().catch(() => ({}))
+          errors.push(`Google profile ${profile.id}: ${err.error ?? res.statusText}`)
+        }
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err)
+        console.error(`[daily-scrape] Google failed for profile ${profile.id}:`, msg)
+        errors.push(`Google profile ${profile.id}: ${msg}`)
       }
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err)
-      console.error(`[daily-scrape] Failed to scrape profile ${profile.id}:`, msg)
-      errors.push(`Profile ${profile.id}: ${msg}`)
+    }
+
+    // ── Yelp scrape ─────────────────────────────────────────────────────
+    if (profile.yelp_url) {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/scrape-yelp-reviews`, {
+          method:  'POST',
+          headers: {
+            'Content-Type':  'application/json',
+            'x-cron-secret': process.env.CRON_SECRET!,
+          },
+          body: JSON.stringify({
+            userId:              profile.user_id,
+            restaurantProfileId: profile.id,
+          }),
+        })
+
+        if (res.ok) {
+          const result = await res.json()
+          totalNewReplies += result.newReviews ?? 0
+        } else {
+          const err = await res.json().catch(() => ({}))
+          errors.push(`Yelp profile ${profile.id}: ${err.error ?? res.statusText}`)
+        }
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err)
+        console.error(`[daily-scrape] Yelp failed for profile ${profile.id}:`, msg)
+        errors.push(`Yelp profile ${profile.id}: ${msg}`)
+      }
     }
   }
 

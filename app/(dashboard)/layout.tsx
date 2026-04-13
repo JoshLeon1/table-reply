@@ -1,24 +1,7 @@
-import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
 import Nav from '@/components/Nav'
 import ErrorBoundary from '@/components/ErrorBoundary'
 
-export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const supabase = createClient()
-
-  // Verify the user is logged in
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
-
-  // If they haven't completed onboarding, send them there
-  const { data: profile } = await supabase
-    .from('restaurant_profiles')
-    .select('id')
-    .eq('user_id', user.id)
-    .maybeSingle()
-
-  if (!profile) redirect('/onboarding')
-
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden" style={{ backgroundColor: '#080808' }}>
       {/* Subtle ambient gradient at top */}

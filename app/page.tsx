@@ -255,7 +255,7 @@ export default function LandingPage() {
                 {['7-day free trial', 'No credit card required', 'Cancel anytime'].map((item) => (
                   <div key={item} className="flex items-center gap-1.5">
                     <svg className="w-3 h-3 text-[#E05A28] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>
-                    <span className="text-[#555] text-[12px]">{item}</span>
+                    <span className="text-white/60 text-[12px]">{item}</span>
                   </div>
                 ))}
               </div>
@@ -713,9 +713,10 @@ export default function LandingPage() {
                 <span className="text-[#9a9a9a] text-lg pb-2">/mo</span>
               </div>
               {annual
-                ? <p className="text-center text-[#E05A28] text-[13px] mb-4">Billed $228/yr — save $120</p>
-                : <p className="text-center text-[#9a9a9a] text-[12px] mb-4">7-day free trial — no credit card required.</p>
+                ? <p className="text-center text-[#E05A28] text-[13px] mb-1">Billed $228/yr — save $120</p>
+                : null
               }
+              <p className="text-center text-white/55 text-[13px] mb-4">7-day free trial — no credit card required.</p>
               <div className="h-px bg-[#E05A28]/20 mb-5" />
               <ul className="space-y-3 mb-7">
                 {proFeatures.map((f) => (
@@ -731,7 +732,7 @@ export default function LandingPage() {
               >
                 Start Free 7-Day Trial →
               </Link>
-              <p className="text-center mt-3 text-[#555] text-[11px]">7-day free trial · no credit card required · cancel anytime</p>
+              <p className="text-center mt-3 text-white/50 text-[12px]">7-day free trial · no credit card required · cancel anytime</p>
             </div>
           </div>
         </div>
@@ -754,7 +755,7 @@ export default function LandingPage() {
               <h2 className="font-bold text-white mb-1.5" style={{ fontSize: 'clamp(20px, 3vw, 28px)', lineHeight: 1.2, letterSpacing: '-0.025em' }}>
                 Start replying to every review today.
               </h2>
-              <p className="text-white/40 text-[13px]">7-day free trial — no credit card required</p>
+              <p className="text-white/65 text-[13px]">7-day free trial — no credit card required</p>
             </div>
 
             {/* Right — CTA */}

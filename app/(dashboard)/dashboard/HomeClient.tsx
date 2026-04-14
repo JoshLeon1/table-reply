@@ -667,9 +667,9 @@ export default function HomeClient({
               </button>
             ) : (
               <>
-                <Link href="/dashboard/generate" className="flex items-center gap-2.5 px-6 py-3 rounded-xl bg-white text-[#C94E21] text-[14px] font-bold shadow-[0_4px_20px_rgba(0,0,0,0.20)] hover:shadow-[0_6px_28px_rgba(0,0,0,0.30)] active:scale-[0.97] transition-all duration-200 whitespace-nowrap">
+                <Link href="/dashboard/reviews" className="flex items-center gap-2.5 px-6 py-3 rounded-xl bg-white text-[#C94E21] text-[14px] font-bold shadow-[0_4px_20px_rgba(0,0,0,0.20)] hover:shadow-[0_6px_28px_rgba(0,0,0,0.30)] active:scale-[0.97] transition-all duration-200 whitespace-nowrap">
                   <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd"/></svg>
-                  Generate Replies
+                  Review Replies
                 </Link>
                 <button onClick={handleSync} disabled={syncing} className="group flex items-center gap-1.5 text-[12px] font-medium text-white/45 hover:text-white/80 disabled:opacity-40 transition-colors duration-150">
                   <svg className={`w-3 h-3 transition-transform duration-700 ${syncing ? 'animate-spin' : 'group-hover:rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>

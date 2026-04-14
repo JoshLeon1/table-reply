@@ -785,7 +785,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────────────────── */}
-      <section className="bg-[#0D0D0D] border-t border-white/[0.06] py-8 sm:py-12 px-4 sm:px-6">
+      <section className="bg-[#0D0D0D] border-t border-white/[0.06] py-6 sm:py-8 px-4 sm:px-6">
         <div
           ref={ctaAnim.ref}
           className={`max-w-4xl mx-auto transition-all duration-700 ${ctaAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
@@ -828,9 +828,9 @@ export default function LandingPage() {
       </section>
 
       {/* ── FOOTER ───────────────────────────────────────────────────────── */}
-      <footer className="bg-[#111111] border-t border-[#1E1E1E] py-10 sm:py-14 px-4 sm:px-6">
+      <footer className="bg-[#111111] border-t border-[#1E1E1E] py-6 sm:py-8 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 sm:gap-10 mb-8 sm:mb-10">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-5 sm:gap-8 mb-5 sm:mb-6">
             {/* Brand */}
             <div className="col-span-2 sm:col-span-1">
               <div className="flex items-center gap-2 mb-3">
@@ -847,8 +847,8 @@ export default function LandingPage() {
 
             {/* Product */}
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#444] mb-4">Product</p>
-              <ul className="space-y-2.5">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#444] mb-2.5">Product</p>
+              <ul className="space-y-2">
                 {[{ label: 'Features', href: '#how-it-works' }, { label: 'Pricing', href: '#pricing' }, { label: 'Sign in', href: '/login' }, { label: 'Start free', href: '/signup' }].map(({ label, href }) => (
                   <li key={label}><Link href={href} className="text-[13px] text-[#555] hover:text-white transition-colors duration-200">{label}</Link></li>
                 ))}
@@ -857,8 +857,8 @@ export default function LandingPage() {
 
             {/* Legal */}
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#444] mb-4">Legal</p>
-              <ul className="space-y-2.5">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#444] mb-2.5">Legal</p>
+              <ul className="space-y-2">
                 {[{ label: 'Privacy', href: '/privacy' }, { label: 'Terms', href: '/terms' }, { label: 'Contact', href: '/contact' }].map(({ label, href }) => (
                   <li key={label}><Link href={href} className="text-[13px] text-[#555] hover:text-white transition-colors duration-200">{label}</Link></li>
                 ))}
@@ -866,7 +866,7 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="border-t border-[#1E1E1E] pt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+          <div className="border-t border-[#1E1E1E] pt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1">
             <p className="text-[12px] text-[#444]">© 2025 TableReply · Austin, TX</p>
             <p className="text-[11px] text-[#333]">Made for independent restaurants everywhere</p>
           </div>

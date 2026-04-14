@@ -173,8 +173,7 @@ export default function Nav() {
 
   const links: { href: string; label: string; icon: (a: boolean) => React.ReactNode; badge?: number | null; dot?: boolean }[] = [
     { href: '/dashboard',                  label: 'Home',            icon: (a) => <IconHome active={a} /> },
-    { href: '/dashboard/generate',         label: 'Generate',        icon: (a) => <IconBolt active={a} /> },
-    { href: '/dashboard/reviews',          label: 'Auto Reviews',    icon: (a) => <IconRefresh active={a} />, badge: pendingCount > 0 ? pendingCount : null },
+    { href: '/dashboard/reviews',          label: 'Review Replies',  icon: (a) => <IconRefresh active={a} />, badge: pendingCount > 0 ? pendingCount : null },
     { href: '/dashboard/analytics',        label: 'Analytics',       icon: (a) => <IconChart active={a} />, dot: analyticsStale },
     { href: '/dashboard/social',           label: 'Social',          icon: (a) => <IconShare active={a} /> },
     { href: '/dashboard/competitors',      label: 'Competitors',     icon: (a) => <IconUsers active={a} /> },

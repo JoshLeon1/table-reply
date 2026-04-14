@@ -696,7 +696,7 @@ export default function HomeClient({
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* Pending reviews */}
         <div className="lg:col-span-3">
-          <SectionLabel badge={pendingList.length > 0 ? <span className="relative inline-flex items-center justify-center min-w-[22px] h-5 px-1.5 rounded-full bg-[#E05A28] text-white text-[10px] font-bold shadow-[0_0_10px_rgba(224,90,40,0.45)]"><span className="absolute inset-0 rounded-full bg-[#E05A28] animate-ping opacity-40"/><span className="relative">{pendingCount}</span></span> : undefined}>
+          <SectionLabel badge={pendingList.length > 0 ? <span className="relative inline-flex items-center justify-center min-w-[22px] h-5 px-1.5 rounded-full bg-[#E05A28] text-white text-[10px] font-bold shadow-[0_0_10px_rgba(224,90,40,0.45)]"><span className="absolute inset-0 rounded-full bg-[#E05A28] animate-ping opacity-40"/><span className="relative">{pendingList.length}</span></span> : undefined}>
             Pending replies
           </SectionLabel>
           {pendingList.length === 0 ? (
@@ -712,9 +712,9 @@ export default function HomeClient({
           ) : (
             <div className="space-y-3">
               {pendingList.map((review, i) => <PendingCard key={review.id} review={review} onAction={handlePendingAction} animDelay={i * 60} />)}
-              {pendingCount > 3 && (
+              {pendingList.length > 3 && (
                 <Link href="/dashboard/reviews" className="inline-flex items-center gap-1.5 text-[13px] text-[#E05A28] font-semibold hover:text-[#C94E21] transition-colors pt-1 group">
-                  View all {pendingCount} pending
+                  View all {pendingList.length} pending
                   <svg className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform duration-150" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
                 </Link>
               )}

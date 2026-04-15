@@ -6,9 +6,9 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export type StripePlan = 'monthly' | 'annual'
 
-// Hardcoded as fallback so the app works even if env vars aren't set
-const MONTHLY_PRICE_ID = process.env.STRIPE_PRICE_ID_MONTHLY || 'price_1TLwjc2IRuOunZUQTdms55bJ'
-const ANNUAL_PRICE_ID  = process.env.STRIPE_PRICE_ID_ANNUAL  || 'price_1TMMPT2IRuOunZUQ7qayYYPV'
+// Trim to guard against accidental whitespace/tabs copied from env var tables
+const MONTHLY_PRICE_ID = (process.env.STRIPE_PRICE_ID_MONTHLY || 'price_1TLwjc2IRuOunZUQTdms55bJ').trim()
+const ANNUAL_PRICE_ID  = (process.env.STRIPE_PRICE_ID_ANNUAL  || 'price_1TMMPT2IRuOunZUQ7qayYYPV').trim()
 
 export const PRICE_IDS: Record<StripePlan, string> = {
   monthly: MONTHLY_PRICE_ID,

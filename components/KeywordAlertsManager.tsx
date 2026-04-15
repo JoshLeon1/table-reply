@@ -110,7 +110,7 @@ export default function KeywordAlertsManager({ userId, initialAlerts }: KeywordA
         <button
           onClick={handleAdd}
           disabled={adding || !newKeyword.trim()}
-          className="h-11 px-4 rounded-xl bg-[#111] text-white text-[13px] font-medium hover:bg-[#1E1E1E] active:bg-[#0A0A0A] disabled:opacity-40 disabled:cursor-not-allowed transition-all whitespace-nowrap"
+          className="h-11 px-4 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-[13px] font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-all whitespace-nowrap shadow-[0_1px_3px_rgba(224,90,40,0.25)]"
         >
           {adding ? 'Adding…' : '+ Add'}
         </button>

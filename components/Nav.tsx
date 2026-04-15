@@ -256,7 +256,7 @@ export default function Nav() {
             onClick={() => setMobileOpen(false)}
           />
 
-          <div className={`lg:hidden fixed left-0 right-0 z-50 bg-white border-b border-[#E4DED8] shadow-[0_20px_50px_rgba(0,0,0,0.10)] transition-transform duration-300 ease-out overflow-y-auto ${mobileOpen ? 'translate-y-0' : '-translate-y-[110%]'}`} style={{ top: 'calc(64px + env(safe-area-inset-top))', maxHeight: 'calc(100dvh - 64px - env(safe-area-inset-top))' }}>
+          <div className="lg:hidden fixed left-0 right-0 z-50 bg-white border-b border-[#E4DED8] shadow-[0_20px_50px_rgba(0,0,0,0.10)] transition-transform duration-300 ease-out overflow-y-auto" style={{ top: 'calc(64px + env(safe-area-inset-top))', maxHeight: 'calc(100dvh - 64px - env(safe-area-inset-top))', transform: mobileOpen ? 'translateY(0)' : 'translateY(calc(-100% - 64px - env(safe-area-inset-top)))' }}>
             <div className="px-3 py-2 space-y-0.5">
               {links.map((link) => {
                 const active = pathname === link.href

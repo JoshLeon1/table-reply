@@ -51,8 +51,9 @@ export async function GET(request: NextRequest) {
   try {
     const session = await createCheckoutSession(user.id, user.email!, plan)
     return NextResponse.redirect(session.url!)
-  } catch (error) {
-    console.error('Stripe checkout error:', error)
-    return NextResponse.redirect(new URL('/dashboard', request.url))
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : String(error)
+    console.error('Stripe checkout error:', msg)
+    return NextResponse.redirect(new URL('/settings', request.url))
   }
 }

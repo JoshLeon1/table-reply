@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import RestaurantProfileForm from '@/components/RestaurantProfileForm'
 import ManageBillingButton from './ManageBillingButton'
+import BillingButtons from './BillingButtons'
 import SettingsClient from './SettingsClient'
 import KeywordAlertsManager from '@/components/KeywordAlertsManager'
 import GoogleConnectSection from '@/components/GoogleConnectSection'
@@ -115,36 +116,7 @@ export default async function SettingsPage() {
           {isPaid ? (
             <ManageBillingButton />
           ) : (
-            <div className="space-y-3">
-              {/* Annual — best value */}
-              <a
-                href="/api/stripe/create-checkout?plan=annual"
-                className="flex items-center justify-between px-5 py-3.5 rounded-xl bg-[#111] hover:bg-[#2a2a2a] text-white transition-all duration-150 group ring-2 ring-[#E05A28]/20"
-              >
-                <div>
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <span className="text-[13px] font-semibold">Annual plan</span>
-                    <span className="px-1.5 py-0.5 rounded bg-[#E05A28] text-white text-[9px] font-bold uppercase tracking-wide leading-none">
-                      Best value
-                    </span>
-                  </div>
-                  <p className="text-white/50 text-[11px]">$239/yr · save $109 · under $20/month</p>
-                </div>
-                <span className="text-[#E05A28] text-[13px] font-semibold group-hover:text-[#F07040] transition-colors flex items-center gap-0.5">
-                  $239/yr
-                  <span className="inline-block group-hover:translate-x-0.5 transition-transform duration-150">→</span>
-                </span>
-              </a>
-
-              {/* Monthly */}
-              <a
-                href="/api/stripe/create-checkout?plan=monthly"
-                className="flex items-center justify-between px-5 py-3 rounded-xl border border-[#E4DED8] hover:border-[#D4CFC6] bg-white text-[#111] text-[13px] transition-all duration-150"
-              >
-                <span className="font-medium">Monthly plan</span>
-                <span className="text-[#888]">$29/mo →</span>
-              </a>
-            </div>
+            <BillingButtons />
           )}
         </div>
       </div>

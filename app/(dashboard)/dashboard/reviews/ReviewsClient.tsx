@@ -536,7 +536,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
       {/* Page header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-[22px] sm:text-[24px] font-bold tracking-tight text-[#111111]">Auto Reviews</h1>
+          <h1 className="text-[22px] sm:text-[24px] font-bold tracking-tight text-[#111111]">Reviews</h1>
           <div className="flex items-center gap-2 mt-1 flex-wrap">
             <span className="relative flex h-2 w-2 flex-shrink-0">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />

@@ -51,6 +51,12 @@ export default function GrowClient({ restaurantProfile, reviews, competitors, us
 
   return (
     <div className="space-y-6">
+      {/* Page header */}
+      <div>
+        <h1 className="text-[22px] font-bold tracking-tight text-[#111111]">Grow</h1>
+        <p className="text-[13px] text-[#A8A29E] mt-1">Get more reviews, create social content, and track competitors.</p>
+      </div>
+
       {/* Tab bar */}
       <div className="flex items-center gap-1 p-1 bg-white rounded-2xl border border-[#E4DED8] shadow-[0_1px_3px_rgba(0,0,0,0.04)] w-fit">
         {TABS.map((tab) => {

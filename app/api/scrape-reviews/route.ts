@@ -157,7 +157,12 @@ export async function POST(request: NextRequest) {
     if (!outscrapeRes.ok) {
       const errBody = await outscrapeRes.text().catch(() => '(unreadable)')
       console.error('[scrape-reviews] Outscraper error body:', errBody.slice(0, 500))
-      throw new Error(`Outscraper returned ${outscrapeRes.status}: ${outscrapeRes.statusText}`)
+      const friendlyMsg =
+        outscrapeRes.status === 402 ? 'Review sync failed — your Outscraper account has an unpaid balance. Please settle it at outscraper.com.' :
+        outscrapeRes.status === 401 ? 'Review sync failed — invalid Outscraper API credentials.' :
+        outscrapeRes.status === 429 ? 'Review sync rate-limited by Outscraper. Please try again in a few minutes.' :
+        `Review sync failed (Outscraper error ${outscrapeRes.status}). Please try again.`
+      throw new Error(friendlyMsg)
     }
 
     let result = await outscrapeRes.json()

@@ -605,6 +605,7 @@ export default function HomeClient({
   const [manualMode, setManualMode] = useState(false)
   const [modeHydrated, setModeHydrated] = useState(false)
   const [pendingList, setPendingList] = useState<ScrapedReview[]>(initialPendingReviews)
+  const [displayLastSynced, setDisplayLastSynced] = useState<string | null>(lastScrapedAt)
 
   const router = useRouter()
   const [syncing, setSyncing] = useState(false)
@@ -641,14 +642,30 @@ export default function HomeClient({
       const res = await fetch('/api/sync-all', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? 'Sync failed')
+
+      // Surface platform-level errors even when HTTP 200
+      if (data.errors?.length > 0) {
+        if (!data.newReviews) {
+          // All platforms failed — strip the platform prefix for a cleaner message
+          const msg = (data.errors[0] as string).replace(/^(Google Maps|Yelp|TripAdvisor): /, '')
+          throw new Error(msg)
+        }
+        // Partial success — some platforms failed
+        setSyncMsg({ type: 'error', text: `${data.newReviews} new synced — some platforms failed` })
+        router.refresh()
+        return
+      }
+
       const n: number = data.newReviews ?? 0
+      const now = new Date().toISOString()
+      setDisplayLastSynced(now)
       setSyncMsg({ type: 'success', text: n > 0 ? `${n} new review${n > 1 ? 's' : ''} synced` : 'Already up to date' })
       router.refresh()
     } catch (err) {
       setSyncMsg({ type: 'error', text: err instanceof Error ? err.message : 'Sync failed' })
     } finally {
       setSyncing(false)
-      setTimeout(() => setSyncMsg(null), 4000)
+      setTimeout(() => setSyncMsg(null), 6000)
     }
   }
 
@@ -711,7 +728,10 @@ export default function HomeClient({
           <div>
             <div className="flex items-center gap-2 flex-wrap mb-1">
               <span className="text-[12px] text-[#A8A29E]">{restaurantName}</span>
-              {lastScrapedAt && <><span className="w-1 h-1 rounded-full bg-[#D0C9C1] flex-shrink-0" /><span className="text-[11px] text-[#C4BEB8]">synced {formatTimeAgo(lastScrapedAt)}</span></>}
+              {displayLastSynced && (
+                <><span className="w-1 h-1 rounded-full bg-[#D0C9C1] flex-shrink-0" />
+                <span className="text-[11px] text-[#C4BEB8]">last refreshed {formatTimeAgo(displayLastSynced)}</span></>
+              )}
             </div>
             <div className="flex items-baseline gap-2.5">
               <h1 className="text-[32px] sm:text-[40px] font-bold text-[#111111] tracking-[-0.04em] leading-none tabular-nums">{pendingList.length}</h1>

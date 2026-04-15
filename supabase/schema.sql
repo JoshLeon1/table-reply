@@ -8,7 +8,9 @@ create table if not exists profiles (
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
   is_paid boolean default false not null,
   trial_started_at timestamp with time zone,
-  stripe_customer_id text
+  stripe_customer_id text,
+  stripe_subscription_id text,
+  stripe_plan text
 );
 
 -- Restaurant profiles table

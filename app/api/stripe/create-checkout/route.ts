@@ -2,7 +2,11 @@ export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { createCheckoutSession } from '@/lib/stripe'
+import { createCheckoutSession, StripePlan } from '@/lib/stripe'
+
+function parsePlan(raw: string | null | undefined): StripePlan {
+  return raw === 'annual' ? 'annual' : 'monthly'
+}
 
 export async function POST(request: NextRequest) {
   const supabase = createClient()
@@ -14,8 +18,16 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  let plan: StripePlan = 'monthly'
   try {
-    const session = await createCheckoutSession(user.id, user.email!)
+    const body = await request.json()
+    plan = parsePlan(body?.plan)
+  } catch {
+    // body may be empty — default to monthly
+  }
+
+  try {
+    const session = await createCheckoutSession(user.id, user.email!, plan)
     return NextResponse.json({ url: session.url })
   } catch (error) {
     console.error('Stripe checkout error:', error)
@@ -23,7 +35,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// GET handler so the settings page <a href> link works too
+// GET handler — used by settings page <Link href="/api/stripe/create-checkout?plan=annual">
 export async function GET(request: NextRequest) {
   const supabase = createClient()
   const {
@@ -34,8 +46,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
+  const plan = parsePlan(request.nextUrl.searchParams.get('plan'))
+
   try {
-    const session = await createCheckoutSession(user.id, user.email!)
+    const session = await createCheckoutSession(user.id, user.email!, plan)
     return NextResponse.redirect(session.url!)
   } catch (error) {
     console.error('Stripe checkout error:', error)

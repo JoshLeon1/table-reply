@@ -103,7 +103,11 @@ export default async function SettingsPage() {
           {isPaid && (
             <div className="flex items-center justify-between">
               <span className="text-[13px] text-[#57534E]">Plan</span>
-              <span className="text-[13px] font-medium text-[#111]">TableReply Pro — $29/month</span>
+              <span className="text-[13px] font-medium text-[#111]">
+                {profile?.stripe_plan === 'annual'
+                  ? 'TableReply Pro — $239/yr'
+                  : 'TableReply Pro — $29/mo'}
+              </span>
             </div>
           )}
         </div>

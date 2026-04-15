@@ -8,7 +8,7 @@ export default async function OnboardingDemoPage() {
   if (!user) redirect('/login')
 
   const { data: profile } = await supabase
-    .from('restaurant_profiles')
+    .from('business_profiles')
     .select('*')
     .eq('user_id', user.id)
     .single()

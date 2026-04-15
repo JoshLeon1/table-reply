@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import type { RestaurantProfile } from '@/types'
+import type { BusinessProfile } from '@/types'
 
 interface Props {
-  restaurantProfile: RestaurantProfile
+  restaurantProfile: BusinessProfile
 }
 
 // ── Sample reviews by cuisine type ───────────────────────────────────────────
@@ -93,7 +93,7 @@ export default function DemoClient({ restaurantProfile }: Props) {
   const [elapsed, setElapsed] = useState(0)
   const [copied, setCopied] = useState(false)
 
-  const demo = getDemo(restaurantProfile.cuisine_type)
+  const demo = getDemo(restaurantProfile.business_type)
 
   useEffect(() => {
     const start = Date.now()
@@ -147,7 +147,7 @@ export default function DemoClient({ restaurantProfile }: Props) {
                 <path d="M7 1C3.686 1 1 3.686 1 7s2.686 6 6 6 6-2.686 6-6-2.686-6-6-6zm0 2a4 4 0 110 8A4 4 0 017 3z"/>
               </svg>
             </div>
-            <span className="text-sm font-semibold text-[#111] tracking-tight">TableReply</span>
+            <span className="text-sm font-semibold text-[#111] tracking-tight">Replyfi</span>
           </div>
           <h1
             className="text-[clamp(24px,3vw,36px)] text-[#111] leading-tight mb-2"
@@ -156,8 +156,8 @@ export default function DemoClient({ restaurantProfile }: Props) {
             Your first reply
           </h1>
           <p className="text-[#888] text-[14px]">
-            We generated a reply for {restaurantProfile.restaurant_name} using a sample{' '}
-            {restaurantProfile.cuisine_type} restaurant review.
+            We generated a reply for {restaurantProfile.business_name} using a sample{' '}
+            {restaurantProfile.business_type} business review.
           </p>
         </div>
 

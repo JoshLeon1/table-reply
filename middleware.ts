@@ -59,7 +59,7 @@ export async function middleware(request: NextRequest) {
     // Logged-in user on a protected dashboard route → check if they completed onboarding
     if (isProtected && user) {
       const { data: profile } = await supabase
-        .from('restaurant_profiles')
+        .from('business_profiles')
         .select('id')
         .eq('user_id', user.id)
         .maybeSingle()
@@ -72,7 +72,7 @@ export async function middleware(request: NextRequest) {
     // Logged-in user already has a profile and tries to go to onboarding → send to dashboard
     if (isOnboarding && user) {
       const { data: profile } = await supabase
-        .from('restaurant_profiles')
+        .from('business_profiles')
         .select('id')
         .eq('user_id', user.id)
         .maybeSingle()

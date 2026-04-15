@@ -42,7 +42,7 @@ export default function ForgotPasswordPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 2v4a2 2 0 002 2v6M8 2v10M11 2s2 1 2 3-2 3-2 3v4"/>
               </svg>
             </div>
-            <span className="text-[16px] font-bold text-[#111] tracking-tight">TableReply</span>
+            <span className="text-[16px] font-bold text-[#111] tracking-tight">Replyfi</span>
           </div>
         </div>
 

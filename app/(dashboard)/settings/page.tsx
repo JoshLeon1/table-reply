@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic'
 
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import RestaurantProfileForm from '@/components/RestaurantProfileForm'
+import BusinessProfileForm from '@/components/BusinessProfileForm'
 import ManageBillingButton from './ManageBillingButton'
 import BillingButtons from './BillingButtons'
 import SettingsClient from './SettingsClient'
@@ -19,7 +19,7 @@ export default async function SettingsPage() {
 
   const [{ data: profile }, { data: restaurantProfile }, { data: keywordAlerts }] = await Promise.all([
     supabase.from('profiles').select('*').eq('id', user.id).single(),
-    supabase.from('restaurant_profiles').select('*').eq('user_id', user.id).single(),
+    supabase.from('business_profiles').select('*').eq('user_id', user.id).single(),
     supabase
       .from('keyword_alerts')
       .select('id, keyword, alert_type')
@@ -42,7 +42,7 @@ export default async function SettingsPage() {
 
   const defaultReplyPrefs = {
     endWithOwnerName: true,
-    includeRestaurantName: true,
+    includeBusinessName: true,
     inviteBack: true,
   }
 
@@ -105,8 +105,8 @@ export default async function SettingsPage() {
               <span className="text-[13px] text-[#57534E]">Plan</span>
               <span className="text-[13px] font-medium text-[#111]">
                 {profile?.stripe_plan === 'annual'
-                  ? 'TableReply Pro — $239/yr'
-                  : 'TableReply Pro — $29/mo'}
+                  ? 'Replyfi Pro — $239/yr'
+                  : 'Replyfi Pro — $29/mo'}
               </span>
             </div>
           )}
@@ -128,7 +128,7 @@ export default async function SettingsPage() {
           <p className="text-[12px] text-[#57534E] mt-0.5">Used to personalise every generated reply.</p>
         </div>
         <div className="px-4 sm:px-6 py-5 sm:py-6">
-          <RestaurantProfileForm
+          <BusinessProfileForm
             userId={user.id}
             existingProfile={restaurantProfile}
             redirectTo="/settings"

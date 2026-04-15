@@ -12,9 +12,9 @@ type ScrapedReview = {
   source?: string | null
 }
 
-type RestaurantProfile = {
-  restaurant_name: string
-  cuisine_type: string
+type BusinessProfile = {
+  business_name: string
+  business_type: string
   vibe: string
   voice_style: string
   description: string
@@ -28,7 +28,7 @@ type Tab = 'caption' | 'graphic'
 
 interface Props {
   reviews: ScrapedReview[]
-  restaurantProfile: RestaurantProfile
+  restaurantProfile: BusinessProfile
 }
 
 function Stars({ rating }: { rating: number }) {
@@ -51,7 +51,7 @@ function CreatePostModal({
   onClose,
 }: {
   review: ScrapedReview
-  restaurantProfile: RestaurantProfile
+  restaurantProfile: BusinessProfile
   onClose: () => void
 }) {
   const [tab, setTab] = useState<Tab>('caption')
@@ -92,8 +92,8 @@ function CreatePostModal({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           reviewText: review.review_text,
-          restaurantName: restaurantProfile.restaurant_name,
-          cuisineType: restaurantProfile.cuisine_type,
+          restaurantName: restaurantProfile.business_name,
+          cuisineType: restaurantProfile.business_type,
           vibe: restaurantProfile.vibe,
           platform,
           style: captionStyle,
@@ -122,7 +122,7 @@ function CreatePostModal({
           reviewText: review.review_text,
           reviewerName: review.reviewer_name,
           starRating: review.star_rating,
-          restaurantName: restaurantProfile.restaurant_name,
+          restaurantName: restaurantProfile.business_name,
           style: graphicStyle,
         }),
       })
@@ -165,7 +165,7 @@ function CreatePostModal({
       img.onload = () => {
         ctx.drawImage(img, 0, 0)
         const link = document.createElement('a')
-        link.download = `${restaurantProfile.restaurant_name.replace(/[^a-z0-9]/gi, '-')}-review.png`
+        link.download = `${restaurantProfile.business_name.replace(/[^a-z0-9]/gi, '-')}-review.png`
         link.href = canvas.toDataURL('image/png')
         link.click()
         setDownloading(false)
@@ -180,7 +180,7 @@ function CreatePostModal({
     } catch {
       setDownloading(false)
     }
-  }, [graphicHtml, restaurantProfile.restaurant_name])
+  }, [graphicHtml, restaurantProfile.business_name])
 
   return createPortal(
     <div

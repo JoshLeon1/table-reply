@@ -13,7 +13,7 @@ export default async function GeneratePage() {
   if (!user) redirect('/login')
 
   const { data: restaurantProfile } = await supabase
-    .from('restaurant_profiles')
+    .from('business_profiles')
     .select('*')
     .eq('user_id', user.id)
     .single()
@@ -55,8 +55,8 @@ export default async function GeneratePage() {
       hasGeneratedReply={(replyCount ?? 0) > 0}
       hasAutoSync={!!(restaurantProfile?.google_maps_url || restaurantProfile?.yelp_url || restaurantProfile?.tripadvisor_url)}
       restaurantProfile={restaurantProfile ? {
-        restaurant_name: restaurantProfile.restaurant_name,
-        cuisine_type: restaurantProfile.cuisine_type,
+        business_name: restaurantProfile.business_name,
+        business_type: restaurantProfile.business_type,
         vibe: restaurantProfile.vibe,
       } : null}
     />

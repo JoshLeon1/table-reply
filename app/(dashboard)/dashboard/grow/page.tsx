@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import GrowClient from './GrowClient'
-import type { RestaurantProfile, CompetitorProfile } from '@/types'
+import type { BusinessProfile, CompetitorProfile } from '@/types'
 
 export default async function GrowPage() {
   const supabase = createClient()
@@ -17,7 +17,7 @@ export default async function GrowPage() {
   if (!user) redirect('/login')
 
   const { data: profile } = await supabaseAdmin
-    .from('restaurant_profiles')
+    .from('business_profiles')
     .select('*')
     .eq('user_id', user.id)
     .single()
@@ -57,7 +57,7 @@ export default async function GrowPage() {
 
   return (
     <GrowClient
-      restaurantProfile={profile as RestaurantProfile}
+      restaurantProfile={profile as BusinessProfile}
       reviews={reviews ?? []}
       competitors={(competitors ?? []) as CompetitorProfile[]}
       userAvgRating={userAvgRating}

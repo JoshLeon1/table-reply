@@ -4,9 +4,9 @@ import { useState, useMemo, useEffect } from 'react'
 import StarRating from './StarRating'
 import CopyButton from './CopyButton'
 
-interface RestaurantProfileSnippet {
-  restaurant_name: string
-  cuisine_type?: string | null
+interface BusinessProfileSnippet {
+  business_name: string
+  business_type?: string | null
   vibe?: string | null
 }
 
@@ -16,7 +16,7 @@ interface ReplyGeneratorProps {
   initialReview?: string
   initialRating?: number
   onGenerateTriggerRef?: (fn: () => void) => void
-  restaurantProfile?: RestaurantProfileSnippet | null
+  restaurantProfile?: BusinessProfileSnippet | null
 }
 
 const platforms = ['Google', 'Yelp', 'TripAdvisor', 'OpenTable', 'Facebook', 'Other']
@@ -150,7 +150,7 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
       setError(
         err instanceof Error
           ? err.message
-          : 'Something went wrong generating your reply. Please try again — if this keeps happening, email us at hello@tablereply.com'
+          : 'Something went wrong generating your reply. Please try again — if this keeps happening, email us at hello@replyfi.com'
       )
     } finally {
       setLoading(false)
@@ -183,8 +183,8 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
           reviewText,
           starRating,
           platform,
-          restaurantName: restaurantProfile?.restaurant_name ?? '',
-          cuisineType: restaurantProfile?.cuisine_type ?? '',
+          businessName: restaurantProfile?.business_name ?? '',
+          businessType: restaurantProfile?.business_type ?? '',
           vibe: restaurantProfile?.vibe ?? '',
           style: 'Grateful & warm',
         }),

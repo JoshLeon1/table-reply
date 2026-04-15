@@ -8,7 +8,7 @@ interface TrialBannerProps {
   onUpgrade: () => void
 }
 
-const SESSION_KEY = 'tablereply_expired_banner_dismissed'
+const SESSION_KEY = 'replyfi_expired_banner_dismissed'
 
 export default function TrialBanner({ daysRemaining, trialExpired, onUpgrade }: TrialBannerProps) {
   const [dismissed, setDismissed] = useState(false)

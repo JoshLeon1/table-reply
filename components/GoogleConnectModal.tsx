@@ -117,7 +117,7 @@ export default function GoogleConnectModal({
             </h2>
             <p className="text-[#7C7672] text-sm text-center leading-relaxed mb-7">
               We&apos;re building direct Google Business Profile integration. Connect once
-              and TableReply will automatically pull new reviews and generate replies —
+              and Replyfi will automatically pull new reviews and generate replies —
               no copy-paste needed.
             </p>
 

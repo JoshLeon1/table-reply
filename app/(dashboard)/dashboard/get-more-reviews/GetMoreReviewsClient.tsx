@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react'
 import QRCode from 'qrcode'
 import { createClient } from '@/lib/supabase/client'
-import type { RestaurantProfile } from '@/types'
+import type { BusinessProfile } from '@/types'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -112,7 +112,7 @@ function PlatformCard({
     setSaving(true)
     setError('')
     const { error: dbErr } = await supabase
-      .from('restaurant_profiles')
+      .from('business_profiles')
       .update({ [dbColumn]: trimmed })
       .eq('id', profileId)
       .eq('user_id', userId)
@@ -268,7 +268,7 @@ const CHANNELS = [
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 interface Props {
-  restaurantProfile: RestaurantProfile
+  restaurantProfile: BusinessProfile
 }
 
 export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
@@ -290,8 +290,8 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          restaurantName: restaurantProfile.restaurant_name,
-          cuisineType: restaurantProfile.cuisine_type,
+          restaurantName: restaurantProfile.business_name,
+          cuisineType: restaurantProfile.business_type,
           vibe: restaurantProfile.vibe,
           voiceStyle: restaurantProfile.voice_style,
           ownerName: restaurantProfile.owner_name,
@@ -348,7 +348,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
     if (!qrDataUrl) return
     const a = document.createElement('a')
     a.href = qrDataUrl
-    a.download = `${restaurantProfile.restaurant_name.replace(/\s+/g, '-')}-review-qr.png`
+    a.download = `${restaurantProfile.business_name.replace(/\s+/g, '-')}-review-qr.png`
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
@@ -370,7 +370,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
       <div className="space-y-4">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-1">Review Platforms</p>
-          <p className="text-[13px] text-[#57534E]">Connect your listings so TableReply can pull in new reviews automatically every day.</p>
+          <p className="text-[13px] text-[#57534E]">Connect your listings so Replyfi can pull in new reviews automatically every day.</p>
         </div>
 
         {/* Google Maps */}
@@ -386,7 +386,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
             </div>
           }
           name="Google Maps"
-          description="Your primary review source. TableReply syncs new Google reviews daily and auto-generates replies."
+          description="Your primary review source. Replyfi syncs new Google reviews daily and auto-generates replies."
           placeholder="https://www.google.com/maps/place/Your+Restaurant/..."
           validate={(url) => {
             if (!url) return 'Please enter your Google Maps URL.'
@@ -556,7 +556,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
                   {isEmail && (
                     <div className="rounded-xl border border-[#E4DED8] overflow-hidden">
                       <div className="bg-[#F8F6F3] border-b border-[#E4DED8] px-3 py-2 space-y-0.5">
-                        <p className="text-[11px] text-[#A8A29E]"><span className="font-medium text-[#57534E]">From:</span> {restaurantProfile.restaurant_name}</p>
+                        <p className="text-[11px] text-[#A8A29E]"><span className="font-medium text-[#57534E]">From:</span> {restaurantProfile.business_name}</p>
                         <p className="text-[11px] text-[#A8A29E]"><span className="font-medium text-[#57534E]">Subject:</span> We&apos;d love your feedback!</p>
                       </div>
                       <div className="px-3 py-2.5">
@@ -614,7 +614,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
             </div>
             <p className="text-[14px] font-medium text-[#111111]">Generate your message templates</p>
             <p className="text-[13px] text-[#57534E] mt-1 max-w-[280px] mx-auto leading-relaxed">
-              AI-crafted messages for <span className="text-[#111111] font-medium">{restaurantProfile.restaurant_name}</span> — ready to copy and send.
+              AI-crafted messages for <span className="text-[#111111] font-medium">{restaurantProfile.business_name}</span> — ready to copy and send.
             </p>
           </div>
         )}

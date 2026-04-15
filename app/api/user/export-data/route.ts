@@ -15,7 +15,7 @@ export async function GET() {
     { data: replies },
   ] = await Promise.all([
     supabase.from('profiles').select('*').eq('id', user.id).single(),
-    supabase.from('restaurant_profiles').select('*').eq('user_id', user.id).single(),
+    supabase.from('business_profiles').select('*').eq('user_id', user.id).single(),
     supabase.from('reviews').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
     supabase.from('replies').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
   ])
@@ -27,10 +27,10 @@ export async function GET() {
       created_at: user.created_at,
       is_paid: profile?.is_paid ?? false,
     },
-    restaurant_profile: restaurantProfile
+    business_profile: restaurantProfile
       ? {
-          restaurant_name: restaurantProfile.restaurant_name,
-          cuisine_type: restaurantProfile.cuisine_type,
+          business_name: restaurantProfile.business_name,
+          business_type: restaurantProfile.business_type,
           vibe: restaurantProfile.vibe,
           voice_style: restaurantProfile.voice_style,
           description: restaurantProfile.description,
@@ -60,7 +60,7 @@ export async function GET() {
   return new NextResponse(JSON.stringify(exportData, null, 2), {
     headers: {
       'Content-Type': 'application/json',
-      'Content-Disposition': 'attachment; filename="tablereply-data.json"',
+      'Content-Disposition': 'attachment; filename="replyfi-data.json"',
     },
   })
 }

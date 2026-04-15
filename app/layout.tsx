@@ -22,26 +22,26 @@ export const viewport = {
 }
 
 export const metadata: Metadata = {
-  title: 'TableReply — AI Review Replies for Restaurants',
+  title: 'Replyfi — AI Review Replies for Local Businesses',
   description:
-    'Generate personalized, on-brand responses to your Google and Yelp reviews in 10 seconds. Built specifically for restaurants. Unlimited replies, $29/mo.',
+    'Replyfi drafts personalized review replies for any local business. Approve and post in seconds.',
   icons: {
     icon: '/favicon.svg',
     shortcut: '/favicon.ico',
   },
   openGraph: {
-    title: 'TableReply — AI Review Replies for Restaurants',
+    title: 'Replyfi — AI Review Replies for Local Businesses',
     description:
-      'Generate personalized, on-brand responses to your Google and Yelp reviews in 10 seconds. Built specifically for restaurants.',
-    url: 'https://tablereply.com',
-    siteName: 'TableReply',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'TableReply' }],
+      'Replyfi drafts personalized review replies for any local business. Approve and post in seconds.',
+    url: 'https://replyfi.com',
+    siteName: 'Replyfi',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Replyfi' }],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'TableReply — AI Review Replies for Restaurants',
-    description: 'Generate personalized, on-brand responses to your Google and Yelp reviews in 10 seconds.',
+    title: 'Replyfi — AI Review Replies for Local Businesses',
+    description: 'Replyfi drafts personalized review replies for any local business. Approve and post in seconds.',
     images: ['/og-image.png'],
   },
 }

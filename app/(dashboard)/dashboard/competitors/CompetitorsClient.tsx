@@ -11,10 +11,10 @@ import {
   Cell,
   LabelList,
 } from 'recharts'
-import type { RestaurantProfile, CompetitorProfile } from '@/types'
+import type { BusinessProfile, CompetitorProfile } from '@/types'
 
 interface Props {
-  restaurantProfile: RestaurantProfile
+  restaurantProfile: BusinessProfile
   competitors: CompetitorProfile[]
   userAvgRating: number
 }
@@ -709,7 +709,7 @@ export default function CompetitorsClient({
 
   // Setup flow
   if (competitors.length < 1) {
-    return <SetupFlow restaurantName={restaurantProfile.restaurant_name} />
+    return <SetupFlow restaurantName={restaurantProfile.business_name} />
   }
 
   return (
@@ -721,7 +721,7 @@ export default function CompetitorsClient({
           <div>
             <h1 className="text-[22px] font-semibold text-[#111111] leading-tight tracking-tight">Competitor Tracker</h1>
             <p className="text-[13px] text-[#57534E] mt-1">
-              See how {restaurantProfile.restaurant_name} stacks up
+              See how {restaurantProfile.business_name} stacks up
             </p>
           </div>
           {competitors.length < 3 && !showAddMore && (
@@ -748,21 +748,21 @@ export default function CompetitorsClient({
 
         {/* Comparison Table */}
         <ComparisonTable
-          restaurantName={restaurantProfile.restaurant_name}
+          restaurantName={restaurantProfile.business_name}
           userAvgRating={userAvgRating}
           competitors={competitors}
         />
 
         {/* Rating Chart */}
         <RatingChart
-          restaurantName={restaurantProfile.restaurant_name}
+          restaurantName={restaurantProfile.business_name}
           userAvgRating={userAvgRating}
           competitors={competitors}
         />
 
         {/* Insights */}
         <InsightCallout
-          restaurantName={restaurantProfile.restaurant_name}
+          restaurantName={restaurantProfile.business_name}
           userAvgRating={userAvgRating}
           competitors={competitors}
         />

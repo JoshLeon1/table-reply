@@ -4,12 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
-const CUISINE_OPTIONS = [
-  'American', 'Italian', 'Mexican', 'Japanese', 'Chinese', 'Thai', 'Indian',
-  'Mediterranean', 'French', 'Greek', 'Spanish', 'Korean', 'Vietnamese',
-  'Middle Eastern', 'Seafood', 'Steakhouse', 'Pizza', 'Burgers', 'Cafe & Brunch',
-  'Bakery', 'Vegan & Vegetarian', 'Food Truck', 'Bar & Grill', 'Fine Dining', 'Other',
-]
+const BUSINESS_TYPE_OPTIONS = ['Restaurant', 'Dental Practice', 'Hair Salon', 'Med Spa', 'Auto Repair', 'Law Firm', 'Home Services', 'Retail', 'Other']
 
 const VIBE_OPTIONS = [
   { value: 'casual',          label: 'Casual & Relaxed' },
@@ -74,8 +69,8 @@ export default function OnboardingPage() {
   const [error, setError] = useState('')
 
   // Step 1
-  const [restaurantName, setRestaurantName] = useState('')
-  const [cuisineType, setCuisineType] = useState('')
+  const [businessName, setBusinessName] = useState('')
+  const [businessType, setBusinessType] = useState('')
   const [ownerName, setOwnerName] = useState('')
 
   // Step 2
@@ -97,7 +92,7 @@ export default function OnboardingPage() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { router.replace('/login'); return }
       const { data: profile } = await supabase
-        .from('restaurant_profiles')
+        .from('business_profiles')
         .select('id')
         .eq('user_id', user.id)
         .maybeSingle()
@@ -110,7 +105,7 @@ export default function OnboardingPage() {
   const handleStep1 = (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    if (!restaurantName.trim() || !cuisineType || !ownerName.trim()) {
+    if (!businessName.trim() || !businessType || !ownerName.trim()) {
       setError('Please fill in all fields.')
       return
     }
@@ -154,11 +149,11 @@ export default function OnboardingPage() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { router.replace('/login'); return }
 
-      const { error: upsertError } = await supabase.from('restaurant_profiles').upsert(
+      const { error: upsertError } = await supabase.from('business_profiles').upsert(
         {
           user_id: user.id,
-          restaurant_name: restaurantName.trim(),
-          cuisine_type: cuisineType,
+          business_name: businessName.trim(),
+          business_type: businessType,
           owner_name: ownerName.trim(),
           vibe,
           voice_style: replyTone,
@@ -171,7 +166,7 @@ export default function OnboardingPage() {
       )
 
       if (upsertError) {
-        console.error('[TableReply] Onboarding upsert error:', upsertError)
+        console.error('[Replyfi] Onboarding upsert error:', upsertError)
         setError(upsertError.message || 'Failed to save your profile. Please try again.')
         setLoading(false)
         return
@@ -190,7 +185,7 @@ export default function OnboardingPage() {
       router.push('/dashboard')
       router.refresh()
     } catch (err) {
-      console.error('[TableReply] Unexpected onboarding error:', err)
+      console.error('[Replyfi] Unexpected onboarding error:', err)
       setError('Something went wrong. Please try again.')
       setLoading(false)
     }
@@ -220,7 +215,7 @@ export default function OnboardingPage() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 2v4a2 2 0 002 2v6M8 2v10M11 2s2 1 2 3-2 3-2 3v4"/>
           </svg>
         </div>
-        <span className="text-[16px] font-bold text-[#111] tracking-tight">TableReply</span>
+        <span className="text-[16px] font-bold text-[#111] tracking-tight">Replyfi</span>
       </div>
 
       <div className="w-full max-w-sm animate-fade-up">
@@ -267,13 +262,13 @@ export default function OnboardingPage() {
               <form onSubmit={handleStep1} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="restaurant-name" className="block text-[13px] font-medium text-[#111] mb-1.5">Restaurant Name</label>
+                    <label htmlFor="business-name" className="block text-[13px] font-medium text-[#111] mb-1.5">Business Name</label>
                     <input
-                      id="restaurant-name"
+                      id="business-name"
                       type="text"
-                      value={restaurantName}
-                      onChange={(e) => setRestaurantName(e.target.value)}
-                      placeholder="The Golden Fork"
+                      value={businessName}
+                      onChange={(e) => setBusinessName(e.target.value)}
+                      placeholder="e.g. Bright Smile Dental"
                       required
                       autoFocus
                       className={inputClass}
@@ -293,17 +288,17 @@ export default function OnboardingPage() {
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="cuisine-type" className="block text-[13px] font-medium text-[#111] mb-1.5">Cuisine Type</label>
+                  <label htmlFor="business-type" className="block text-[13px] font-medium text-[#111] mb-1.5">Business Type</label>
                   <select
-                    id="cuisine-type"
-                    value={cuisineType}
-                    onChange={(e) => setCuisineType(e.target.value)}
+                    id="business-type"
+                    value={businessType}
+                    onChange={(e) => setBusinessType(e.target.value)}
                     required
                     className={`${inputClass} appearance-none`}
                     style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23A8A29E' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\")", backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center' }}
                   >
-                    <option value="" disabled>Select cuisine type</option>
-                    {CUISINE_OPTIONS.map((c) => (
+                    <option value="" disabled>Select business type</option>
+                    {BUSINESS_TYPE_OPTIONS.map((c) => (
                       <option key={c} value={c}>{c}</option>
                     ))}
                   </select>
@@ -370,7 +365,7 @@ export default function OnboardingPage() {
             <>
               <h2 className="text-[18px] font-bold text-[#111] tracking-[-0.02em] mb-1">Connect Your Platforms</h2>
               <p className="text-[13px] text-[#A8A29E] mb-5">
-                Paste your listing URLs — TableReply syncs your reviews daily from each one.
+                Paste your listing URLs — Replyfi syncs your reviews daily from each one.
               </p>
 
               <div className="space-y-3">

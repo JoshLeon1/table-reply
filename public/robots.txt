@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://tablereply.com/sitemap.xml
+Sitemap: https://replyfi.com/sitemap.xml

@@ -45,7 +45,7 @@ export default function GoogleConnectSection({
     setSaving(true)
     setError('')
     const { error: dbErr } = await supabase
-      .from('restaurant_profiles')
+      .from('business_profiles')
       .update({ google_maps_url: trimmed })
       .eq('id', restaurantProfileId)
       .eq('user_id', userId)
@@ -106,7 +106,7 @@ export default function GoogleConnectSection({
       </div>
 
       <p className="text-[12px] text-[#888] leading-relaxed">
-        Paste your Google Maps listing URL. TableReply will automatically sync your newest Google reviews every day and generate AI reply drafts for each one.
+        Paste your Google Maps listing URL. Replyfi will automatically sync your newest Google reviews every day and generate AI reply drafts for each one.
       </p>
 
       {/* URL input */}

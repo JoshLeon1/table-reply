@@ -27,13 +27,13 @@ export async function POST(request: NextRequest) {
 
     // ── Fetch profile ──────────────────────────────────────────────────────
     const { data: profile } = await supabaseAdmin
-      .from('restaurant_profiles')
+      .from('business_profiles')
       .select('id, google_maps_url, yelp_url, tripadvisor_url')
       .eq('user_id', user.id)
       .single()
 
     if (!profile) {
-      return NextResponse.json({ error: 'Restaurant profile not found' }, { status: 404 })
+      return NextResponse.json({ error: 'Business profile not found' }, { status: 404 })
     }
 
     const { google_maps_url, yelp_url, tripadvisor_url } = profile

@@ -1,12 +1,12 @@
 interface ReplyPreferences {
   endWithOwnerName?: boolean
-  includeRestaurantName?: boolean
+  includeBusinessName?: boolean
   inviteBack?: boolean
 }
 
 interface GenerateReviewReplyParams {
-  restaurantName: string
-  cuisineType: string
+  businessName: string
+  businessType: string
   vibe: string
   voiceStyle: string
   description: string
@@ -20,8 +20,8 @@ interface GenerateReviewReplyParams {
 
 export async function generateReviewReply(params: GenerateReviewReplyParams): Promise<string> {
   const {
-    restaurantName,
-    cuisineType,
+    businessName,
+    businessType,
     vibe,
     voiceStyle,
     description,
@@ -35,7 +35,7 @@ export async function generateReviewReply(params: GenerateReviewReplyParams): Pr
 
   const prefs: ReplyPreferences = {
     endWithOwnerName: true,
-    includeRestaurantName: true,
+    includeBusinessName: true,
     inviteBack: true,
     ...replyPreferences,
   }
@@ -53,9 +53,9 @@ export async function generateReviewReply(params: GenerateReviewReplyParams): Pr
     prefs.endWithOwnerName
       ? `End with — ${ownerName} on its own line.`
       : 'Do NOT sign off with a name at the end.',
-    prefs.includeRestaurantName
-      ? `Naturally mention the restaurant name (${restaurantName}) once in the reply.`
-      : 'Do NOT mention the restaurant name in the reply.',
+    prefs.includeBusinessName
+      ? `Naturally mention the business name (${businessName}) once in the reply.`
+      : 'Do NOT mention the business name in the reply.',
     prefs.inviteBack
       ? 'For 4-5 star reviews, invite the customer to come back soon.'
       : 'Do NOT invite the customer to return.',
@@ -67,7 +67,7 @@ export async function generateReviewReply(params: GenerateReviewReplyParams): Pr
     ? 'This is a TripAdvisor review — TripAdvisor audiences are often travelers, so warmth and a welcoming tone matter.'
     : 'This is a Google Maps review — keep the reply professional and discoverable.'
 
-  const systemPrompt = `You are a reply assistant for ${restaurantName}, a ${vibe} ${cuisineType} restaurant. The owner's name is ${ownerName}. Write in this voice: ${voiceStyle}.${toneInstruction} About the restaurant: ${description}. Platform: ${platformContext}
+  const systemPrompt = `You are a reply assistant for ${businessName}, a ${vibe} ${businessType} business. The owner's name is ${ownerName}. Write in this voice: ${voiceStyle}.${toneInstruction} About the business: ${description}. Platform: ${platformContext}
 
 RULES:
 (1) NEVER start with "Thank you for your feedback" or "We appreciate your review."

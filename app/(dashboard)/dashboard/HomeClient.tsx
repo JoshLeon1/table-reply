@@ -307,7 +307,7 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
           Hey {ownerName}, where are your reviews?
         </h1>
         <p className="text-[14px] text-[#57534E]/80 max-w-md mx-auto leading-relaxed">
-          Paste your listing URL from any platform below. TableReply will pull in your reviews automatically.
+          Paste your listing URL from any platform below. Replyfi will pull in your reviews automatically.
         </p>
       </div>
 

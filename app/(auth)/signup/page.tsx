@@ -22,7 +22,7 @@ function Logo() {
           <path strokeLinecap="round" strokeLinejoin="round" d="M5 2v4a2 2 0 002 2v6M8 2v10M11 2s2 1 2 3-2 3-2 3v4"/>
         </svg>
       </div>
-      <span className="text-[16px] font-bold text-[#111] tracking-tight">TableReply</span>
+      <span className="text-[16px] font-bold text-[#111] tracking-tight">Replyfi</span>
     </div>
   )
 }
@@ -64,7 +64,7 @@ export default function SignupPage() {
       })
 
       if (signUpError) {
-        console.error('[TableReply] Signup error:', signUpError.message)
+        console.error('[Replyfi] Signup error:', signUpError.message)
         if (signUpError.message.includes('already registered')) {
           setError('This email is already registered. Try signing in instead.')
         } else if (signUpError.message.includes('password')) {
@@ -91,7 +91,7 @@ export default function SignupPage() {
         setLoading(false)
       }
     } catch (err) {
-      console.error('[TableReply] Unexpected signup error:', err)
+      console.error('[Replyfi] Unexpected signup error:', err)
       setError('Something went wrong. Please try again.')
       setLoading(false)
     }
@@ -107,14 +107,14 @@ export default function SignupPage() {
         options: { redirectTo: `${window.location.origin}/auth/callback` },
       })
       if (oauthError) {
-        console.error('[TableReply] Google OAuth error:', oauthError.message, oauthError)
+        console.error('[Replyfi] Google OAuth error:', oauthError.message, oauthError)
         setError(`Google sign up failed: ${oauthError.message}`)
         setGoogleLoading(false)
       }
       if (data?.url) window.location.href = data.url
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err)
-      console.error('[TableReply] Unexpected Google OAuth error:', msg, err)
+      console.error('[Replyfi] Unexpected Google OAuth error:', msg, err)
       setError(`Google sign up error: ${msg}`)
       setGoogleLoading(false)
     }

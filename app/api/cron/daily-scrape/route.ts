@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
 
   // Fetch all restaurant profiles (we'll filter per platform below)
   const { data: profiles, error } = await supabaseAdmin
-    .from('restaurant_profiles')
+    .from('business_profiles')
     .select('id, user_id, google_maps_url, yelp_url, tripadvisor_url')
 
   if (error) {

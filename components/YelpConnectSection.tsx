@@ -49,7 +49,7 @@ export default function YelpConnectSection({
     setError('')
 
     const { error: dbErr } = await supabase
-      .from('restaurant_profiles')
+      .from('business_profiles')
       .update({ yelp_url: trimmed })
       .eq('id', restaurantProfileId)
       .eq('user_id', userId)
@@ -117,7 +117,7 @@ export default function YelpConnectSection({
       </div>
 
       <p className="text-[12px] text-[#888] leading-relaxed">
-        Paste your Yelp business page URL. TableReply will auto-sync your newest Yelp reviews every day alongside Google — no manual copy-paste needed.
+        Paste your Yelp listing URL. Replyfi will auto-sync your newest Yelp reviews every day alongside Google — no manual copy-paste needed.
       </p>
 
       {/* URL input */}

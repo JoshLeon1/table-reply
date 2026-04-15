@@ -49,25 +49,25 @@ export async function POST(request: NextRequest) {
 
       userId = user.id
       const { data: rp } = await supabaseAdmin
-        .from('restaurant_profiles')
+        .from('business_profiles')
         .select('id')
         .eq('user_id', userId)
         .single()
 
-      if (!rp) return NextResponse.json({ error: 'Restaurant profile not found' }, { status: 400 })
+      if (!rp) return NextResponse.json({ error: 'Business profile not found' }, { status: 400 })
       restaurantProfileId = rp.id
     }
 
-    // ── Fetch restaurant profile ──────────────────────────────────────────
+    // ── Fetch business profile ──────────────────────────────────────────
     const { data: profile, error: profileError } = await supabaseAdmin
-      .from('restaurant_profiles')
+      .from('business_profiles')
       .select('*')
       .eq('id', restaurantProfileId)
       .eq('user_id', userId)
       .single()
 
     if (profileError || !profile) {
-      return NextResponse.json({ error: 'Restaurant profile not found' }, { status: 404 })
+      return NextResponse.json({ error: 'Business profile not found' }, { status: 404 })
     }
 
     if (!profile.tripadvisor_url) {
@@ -161,8 +161,8 @@ export async function POST(request: NextRequest) {
     let skippedExisting = 0
 
     const systemPrompt =
-      `You are a reply assistant for ${profile.restaurant_name}, ` +
-      `a ${profile.vibe} ${profile.cuisine_type} restaurant. ` +
+      `You are a reply assistant for ${profile.business_name}, ` +
+      `a ${profile.vibe} ${profile.business_type} business. ` +
       `Owner: ${profile.owner_name}. ` +
       `Voice: ${profile.voice_style ?? profile.reply_tone ?? 'warm and professional'}. ` +
       `Rules: (1) NEVER start with "Thank you for your feedback" or "We appreciate your review." ` +
@@ -265,18 +265,18 @@ export async function POST(request: NextRequest) {
         // Keyword alert email
         if (alertTriggered && userEmail && resend) {
           await resend.emails.send({
-            from: 'TableReply Alerts <alerts@tablereply.com>',
+            from: 'Replyfi Alerts <alerts@replyfi.com>',
             to: userEmail,
             subject: `⚠️ Alert: A TripAdvisor review mentioned "${matchedKeyword}"`,
             html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:20px">
-              <h2 style="color:#111">⚠️ TripAdvisor Keyword Alert for ${profile.restaurant_name}</h2>
+              <h2 style="color:#111">⚠️ TripAdvisor Keyword Alert for ${profile.business_name}</h2>
               <p>A new TripAdvisor review mentioned <strong>"${matchedKeyword}"</strong>.</p>
               <div style="background:#FEF2F2;border-left:4px solid #EF4444;padding:16px;margin:16px 0;border-radius:8px">
                 <p style="margin:0;font-weight:600">${author_title ?? 'Anonymous'} · ${review_rating}★ (TripAdvisor)</p>
                 <p style="margin:8px 0 0;color:#555">"${review_text.slice(0, 300)}..."</p>
               </div>
-              <a href="https://tablereply.com/dashboard/reviews" style="display:inline-block;background:#111;color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600">View Review →</a>
-              <p style="color:#AAA;font-size:12px;margin-top:24px">TableReply · Manage alerts in <a href="https://tablereply.com/settings">Settings</a></p>
+              <a href="https://replyfi.com/dashboard/reviews" style="display:inline-block;background:#111;color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600">View Review →</a>
+              <p style="color:#AAA;font-size:12px;margin-top:24px">Replyfi · Manage alerts in <a href="https://replyfi.com/settings">Settings</a></p>
             </div>`,
           }).catch(err => console.error('[scrape-tripadvisor] Alert email error:', err))
         }
@@ -284,7 +284,7 @@ export async function POST(request: NextRequest) {
 
       const baseInsert = {
         user_id:               userId,
-        restaurant_profile_id: restaurantProfileId,
+        business_profile_id: restaurantProfileId,
         review_id:             taReviewId,
         reviewer_name:         author_title ?? 'Anonymous',
         star_rating:           review_rating ?? 0,
@@ -318,13 +318,13 @@ export async function POST(request: NextRequest) {
     console.log(`[scrape-tripadvisor] Done — total: ${reviews.length}, new: ${newReviewsCount}, skipped: ${skippedExisting}`)
 
     await supabaseAdmin
-      .from('restaurant_profiles')
+      .from('business_profiles')
       .update({ tripadvisor_last_scraped_at: new Date().toISOString() })
       .eq('id', restaurantProfileId)
 
     if (newReviewsCount > 0) {
       await supabaseAdmin
-        .from('restaurant_analytics')
+        .from('business_analytics')
         .update({ reviews_count_at_analysis: -1 })
         .eq('user_id', userId)
     }

@@ -12,9 +12,9 @@ export default function ContactPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Opens default mail client as a simple fallback
-    const subject = encodeURIComponent('TableReply Support Request')
+    const subject = encodeURIComponent('Replyfi Support Request')
     const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`)
-    window.location.href = `mailto:support@tablereply.com?subject=${subject}&body=${body}`
+    window.location.href = `mailto:support@replyfi.com?subject=${subject}&body=${body}`
     setSent(true)
   }
 
@@ -30,7 +30,7 @@ export default function ContactPage() {
                 <path d="M8 8h9.5A1.5 1.5 0 0119 9.5v5A1.5 1.5 0 0117.5 16H16v2.5l-3-2.5H8A1.5 1.5 0 016.5 14.5v-5A1.5 1.5 0 018 8z" fill="white"/>
               </svg>
             </div>
-            <span className="font-bold text-[15px] text-[#111] tracking-tight">TableReply</span>
+            <span className="font-bold text-[15px] text-[#111] tracking-tight">Replyfi</span>
           </Link>
           <Link href="/" className="text-[13px] text-[#A8A29E] hover:text-[#111] transition-colors font-medium">← Back</Link>
         </div>
@@ -47,8 +47,8 @@ export default function ContactPage() {
             {
               icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>,
               label: 'Email Support',
-              value: 'support@tablereply.com',
-              href: 'mailto:support@tablereply.com',
+              value: 'support@replyfi.com',
+              href: 'mailto:support@replyfi.com',
             },
             {
               icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>,
@@ -147,7 +147,7 @@ export default function ContactPage() {
           <span className="text-[#E4DED8]">·</span>
           <Link href="/contact" className="hover:text-[#111] transition-colors">Contact</Link>
         </div>
-        <p className="mt-2.5 text-[#C4BEB8]">© {new Date().getFullYear()} TableReply. All rights reserved.</p>
+        <p className="mt-2.5 text-[#C4BEB8]">© {new Date().getFullYear()} Replyfi. All rights reserved.</p>
       </footer>
     </div>
   )

@@ -11,14 +11,14 @@ export default async function TemplatesPage() {
   if (!user) redirect('/login')
 
   const { data: restaurantProfile } = await supabase
-    .from('restaurant_profiles')
-    .select('restaurant_name')
+    .from('business_profiles')
+    .select('business_name')
     .eq('user_id', user.id)
     .single()
 
   if (!restaurantProfile) redirect('/onboarding')
 
-  const name = restaurantProfile.restaurant_name
+  const name = restaurantProfile.business_name
 
   const templates = [
     {

@@ -19,7 +19,7 @@ function starString(rating: number): string {
 }
 
 function buildHtml(params: {
-  restaurantName: string
+  businessName: string
   newReviewCount: number
   avgRating: number | null
   approvedCount: number
@@ -30,7 +30,7 @@ function buildHtml(params: {
     generatedReply: string | null
   }>
 }): string {
-  const { restaurantName, newReviewCount, avgRating, approvedCount, reviews } = params
+  const { businessName, newReviewCount, avgRating, approvedCount, reviews } = params
 
   const avgDisplay = avgRating != null ? avgRating.toFixed(1) + ' ★' : 'N/A'
 
@@ -65,7 +65,7 @@ function buildHtml(params: {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Your weekly review summary — ${restaurantName}</title>
+  <title>Your weekly review summary — ${businessName}</title>
 </head>
 <body style="margin:0;padding:0;background-color:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f9fafb;padding:32px 0;">
@@ -76,8 +76,8 @@ function buildHtml(params: {
           <!-- Header -->
           <tr>
             <td style="background-color:#111827;padding:28px 32px;">
-              <p style="margin:0 0 6px;font-size:18px;font-weight:700;color:#E05A28;letter-spacing:.5px;">TableReply</p>
-              <p style="margin:0;font-size:22px;font-weight:600;color:#ffffff;">${restaurantName}</p>
+              <p style="margin:0 0 6px;font-size:18px;font-weight:700;color:#E05A28;letter-spacing:.5px;">Replyfi</p>
+              <p style="margin:0;font-size:22px;font-weight:600;color:#ffffff;">${businessName}</p>
               <p style="margin:6px 0 0;font-size:13px;color:#9ca3af;">Weekly review digest</p>
             </td>
           </tr>
@@ -109,7 +109,7 @@ function buildHtml(params: {
           <!-- Reviews section -->
           <tr>
             <td style="padding:28px 32px 8px;">
-              <h2 style="margin:0 0 20px;font-size:16px;font-weight:600;color:#111827;">This week at ${restaurantName}:</h2>
+              <h2 style="margin:0 0 20px;font-size:16px;font-weight:600;color:#111827;">This week at ${businessName}:</h2>
               ${reviewRows}
             </td>
           </tr>
@@ -117,7 +117,7 @@ function buildHtml(params: {
           <!-- CTA -->
           <tr>
             <td style="padding:8px 32px 32px;text-align:center;">
-              <a href="https://tablereply.com/dashboard/reviews"
+              <a href="https://replyfi.com/dashboard/reviews"
                  style="display:inline-block;background-color:#111827;color:#ffffff;text-decoration:none;font-size:14px;font-weight:600;padding:12px 28px;border-radius:6px;letter-spacing:.3px;">
                 View All Reviews →
               </a>
@@ -128,8 +128,8 @@ function buildHtml(params: {
           <tr>
             <td style="background-color:#f9fafb;padding:16px 32px;border-top:1px solid #e5e7eb;text-align:center;">
               <p style="margin:0;font-size:12px;color:#9ca3af;">
-                © TableReply &nbsp;·&nbsp;
-                <a href="https://tablereply.com/settings" style="color:#9ca3af;text-decoration:underline;">Unsubscribe</a>
+                © Replyfi &nbsp;·&nbsp;
+                <a href="https://replyfi.com/settings" style="color:#9ca3af;text-decoration:underline;">Unsubscribe</a>
               </p>
             </td>
           </tr>
@@ -234,15 +234,15 @@ export async function POST(request: NextRequest) {
         continue
       }
 
-      // Fetch restaurant profile
+      // Fetch business profile
       const { data: restaurant, error: restError } = await supabaseAdmin
-        .from('restaurant_profiles')
-        .select('id, restaurant_name')
+        .from('business_profiles')
+        .select('id, business_name')
         .eq('user_id', profile.id)
         .single()
 
       if (restError || !restaurant) {
-        console.warn(`[digest] No restaurant profile for user ${profile.id}, skipping`)
+        console.warn(`[digest] No business profile for user ${profile.id}, skipping`)
         skipped++
         continue
       }
@@ -263,7 +263,7 @@ export async function POST(request: NextRequest) {
       }
 
       if (!reviews || reviews.length === 0) {
-        console.log(`[digest] No new reviews for user ${profile.id} (${restaurant.restaurant_name}), skipping`)
+        console.log(`[digest] No new reviews for user ${profile.id} (${restaurant.business_name}), skipping`)
         skipped++
         continue
       }
@@ -278,11 +278,11 @@ export async function POST(request: NextRequest) {
 
       // Send email
       const { error: sendError } = await resend.emails.send({
-        from: 'TableReply <digest@tablereply.com>',
+        from: 'Replyfi <digest@replyfi.com>',
         to: userEmail,
-        subject: `Your weekly review summary — ${restaurant.restaurant_name}`,
+        subject: `Your weekly review summary — ${restaurant.business_name}`,
         html: buildHtml({
-          restaurantName: restaurant.restaurant_name,
+          businessName: restaurant.business_name,
           newReviewCount: reviews.length,
           avgRating,
           approvedCount,
@@ -302,7 +302,7 @@ export async function POST(request: NextRequest) {
       }
 
       console.log(
-        `[digest] Sent digest to ${userEmail} (${restaurant.restaurant_name}) — ${reviews.length} reviews, ${approvedCount} approved`,
+        `[digest] Sent digest to ${userEmail} (${restaurant.business_name}) — ${reviews.length} reviews, ${approvedCount} approved`,
       )
       sent++
     } catch (err) {

@@ -14,7 +14,7 @@ export default async function DashboardPage() {
 
   // Quick check for restaurant profile first
   const { data: restaurantProfileCheck } = await supabase
-    .from('restaurant_profiles')
+    .from('business_profiles')
     .select('id')
     .eq('user_id', user.id)
     .single()
@@ -41,7 +41,7 @@ export default async function DashboardPage() {
     { count: approvedAllTime },
   ] = await Promise.all([
     supabase.from('profiles').select('*').eq('id', user.id).single(),
-    supabase.from('restaurant_profiles').select('*').eq('user_id', user.id).single(),
+    supabase.from('business_profiles').select('*').eq('user_id', user.id).single(),
     supabase.from('scraped_reviews').select('id', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', monthStart),
     supabase.from('scraped_reviews').select('id', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', lastMonthStart).lt('created_at', lastMonthEnd),
     supabase.from('scraped_reviews').select('star_rating').eq('user_id', user.id),
@@ -50,7 +50,7 @@ export default async function DashboardPage() {
     supabase.from('scraped_reviews').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('reply_status', 'pending'),
     supabase.from('scraped_reviews').select('*').eq('user_id', user.id).eq('reply_status', 'pending').order('review_datetime_utc', { ascending: false }).limit(3),
     supabase.from('scraped_reviews').select('*').eq('user_id', user.id).eq('reply_status', 'approved').order('created_at', { ascending: false }).limit(5),
-    supabase.from('restaurant_analytics').select('themes, last_analyzed_at').eq('user_id', user.id).maybeSingle(),
+    supabase.from('business_analytics').select('themes, last_analyzed_at').eq('user_id', user.id).maybeSingle(),
     supabase.from('scraped_reviews').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('reply_status', 'approved'),
   ])
 
@@ -78,7 +78,7 @@ export default async function DashboardPage() {
   return (
     <HomeClient
       ownerName={restaurantProfile?.owner_name ?? 'there'}
-      restaurantName={restaurantProfile?.restaurant_name ?? ''}
+      restaurantName={restaurantProfile?.business_name ?? ''}
       lastScrapedAt={restaurantProfile?.last_scraped_at ?? null}
       userId={user.id}
       googleMapsUrl={restaurantProfile?.google_maps_url ?? null}

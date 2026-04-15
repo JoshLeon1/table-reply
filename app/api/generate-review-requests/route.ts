@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Missing restaurantName' }, { status: 400 })
   }
 
-  const systemPrompt = `You are a marketing copywriter for ${restaurantName}, a ${cuisineType ?? 'restaurant'}${vibe ? ` with a ${vibe} vibe` : ''}. The owner's name is ${ownerName ?? 'the owner'}. Voice: ${voiceStyle ?? 'warm and genuine'}. Write in a warm, genuine tone that matches the restaurant's personality.`
+  const systemPrompt = `You are a marketing copywriter for ${restaurantName}, a ${cuisineType ?? 'local business'}${vibe ? ` with a ${vibe} vibe` : ''}. The owner's name is ${ownerName ?? 'the owner'}. Voice: ${voiceStyle ?? 'warm and genuine'}. Write in a warm, genuine tone that matches the business's personality.`
 
   const userPrompt = `Generate 4 short review request messages for ${restaurantName}.
 
@@ -61,9 +61,9 @@ Rules:
     const parsed = JSON.parse(jsonMatch[0])
 
     const result = {
-      sms:       typeof parsed.sms === 'string'       ? parsed.sms       : `Loved dining at ${restaurantName}? We'd be so grateful for a quick Google review! [REVIEW LINK]`,
+      sms:       typeof parsed.sms === 'string'       ? parsed.sms       : `Loved your visit to ${restaurantName}? We'd be so grateful for a quick Google review! [REVIEW LINK]`,
       email:     typeof parsed.email === 'string'     ? parsed.email     : `Thanks for visiting ${restaurantName}! If you enjoyed your experience, a quick Google review would mean the world to us. [REVIEW LINK]`,
-      receipt:   typeof parsed.receipt === 'string'   ? parsed.receipt   : `Enjoyed your meal? Leave us a review! [REVIEW LINK]`,
+      receipt:   typeof parsed.receipt === 'string'   ? parsed.receipt   : `Enjoyed your experience? Leave us a review! [REVIEW LINK]`,
       tablecard: typeof parsed.tablecard === 'string' ? parsed.tablecard : `Love ${restaurantName}? Share your experience! [REVIEW LINK]`,
     }
 

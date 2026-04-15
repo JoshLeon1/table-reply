@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 interface ReplyPreferences {
   endWithOwnerName: boolean
-  includeRestaurantName: boolean
+  includeBusinessName: boolean
   inviteBack: boolean
 }
 
@@ -126,7 +126,7 @@ export default function SettingsClient({
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = 'tablereply-data.json'
+      a.download = 'replyfi-data.json'
       a.click()
       URL.revokeObjectURL(url)
     } catch {
@@ -146,7 +146,7 @@ export default function SettingsClient({
       // Redirect to login after account deletion
       window.location.href = '/login?deleted=1'
     } catch {
-      setDeleteError('Something went wrong. Please try again or contact hello@tablereply.com.')
+      setDeleteError('Something went wrong. Please try again or contact hello@replyfi.com.')
       setDeleteLoading(false)
     }
   }
@@ -188,12 +188,12 @@ export default function SettingsClient({
 
           <div className="px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
             <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-medium text-[#111111]">Include restaurant name</p>
-              <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">Mention your restaurant name naturally in the reply</p>
+              <p className="text-[13px] font-medium text-[#111111]">Include business name</p>
+              <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">Mention your business name naturally in the reply</p>
             </div>
             <Toggle
-              checked={replyPrefs.includeRestaurantName}
-              onChange={(v) => handleReplyPrefChange('includeRestaurantName', v)}
+              checked={replyPrefs.includeBusinessName}
+              onChange={(v) => handleReplyPrefChange('includeBusinessName', v)}
               disabled={savingPrefs}
             />
           </div>

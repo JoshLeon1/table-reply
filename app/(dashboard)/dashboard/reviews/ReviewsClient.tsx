@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import type { RestaurantProfile, ScrapedReview } from '@/types'
+import type { BusinessProfile, ScrapedReview } from '@/types'
 
 interface Props {
-  profile: RestaurantProfile
+  profile: BusinessProfile
   initialReviews: ScrapedReview[]
   userId: string
 }
@@ -84,7 +84,7 @@ function ScrapeProgress() {
 
 // ── Setup panel ───────────────────────────────────────────────────────────────
 
-function SetupPanel({ profile, onSaved }: { profile: RestaurantProfile; onSaved: (url: string) => void }) {
+function SetupPanel({ profile, onSaved }: { profile: BusinessProfile; onSaved: (url: string) => void }) {
   const [url, setUrl] = useState('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -100,7 +100,7 @@ function SetupPanel({ profile, onSaved }: { profile: RestaurantProfile; onSaved:
     setSaving(true)
     setError('')
     const { error: dbErr } = await supabase
-      .from('restaurant_profiles')
+      .from('business_profiles')
       .update({ google_maps_url: trimmed })
       .eq('id', profile.id)
 
@@ -119,7 +119,7 @@ function SetupPanel({ profile, onSaved }: { profile: RestaurantProfile; onSaved:
       </div>
       <h1 className="text-xl font-semibold text-[#111111] mb-2">Put Your Review Replies on Autopilot</h1>
       <p className="text-[13px] text-[#57534E]/80 max-w-[280px] sm:max-w-sm mb-8 leading-relaxed">
-        Connect Google Maps, Yelp, or TripAdvisor and TableReply will sync new reviews every morning, generate personalised replies, and queue them for your approval.
+        Connect Google Maps, Yelp, or TripAdvisor and Replyfi will sync new reviews every morning, generate personalised replies, and queue them for your approval.
       </p>
       <div className="w-full sm:max-w-lg text-left space-y-3">
         <label className="block text-[13px] font-medium text-[#111111]">Google Maps URL</label>
@@ -580,7 +580,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
 type ReviewTab = 'pending' | 'approved' | 'dismissed'
 
 function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onScrapeNow, onTestMode, scraping, scrapeError, onDismissError, lastScrapedAt }: {
-  profile: RestaurantProfile
+  profile: BusinessProfile
   reviews: ScrapedReview[]
   onApprove: (id: string) => void
   onDismiss: (id: string) => void
@@ -647,7 +647,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
             </span>
             <span className="text-[13px] text-[#57534E]">
-              {profile.restaurant_name}
+              {profile.business_name}
               {lastScrapedAt && <> · Synced {formatDate(lastScrapedAt)}</>}
             </span>
           </div>
@@ -876,7 +876,7 @@ export default function ReviewsClient({ profile, initialReviews, userId }: Props
           const newCount = data?.newReviews ?? 0
           if (newCount > 0) {
             new Notification(`🍴 ${newCount} new review${newCount !== 1 ? 's' : ''} synced`, {
-              body: `${newCount} new review${newCount !== 1 ? 's' : ''} for ${profile.restaurant_name} — replies are ready`,
+              body: `${newCount} new review${newCount !== 1 ? 's' : ''} for ${profile.business_name} — replies are ready`,
               icon: '/favicon.svg',
             })
           }

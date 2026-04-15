@@ -20,7 +20,7 @@ export async function GET(request: Request) {
 
       // Otherwise route by onboarding status
       const { data: profile } = await supabase
-        .from('restaurant_profiles')
+        .from('business_profiles')
         .select('id')
         .eq('user_id', data.user.id)
         .single()
@@ -32,7 +32,7 @@ export async function GET(request: Request) {
     }
 
     if (error) {
-      console.error('[TableReply] Auth callback error:', error.message)
+      console.error('[Replyfi] Auth callback error:', error.message)
     }
   }
 

@@ -10,8 +10,8 @@ export async function GET() {
 
   // Get the restaurant profile
   const { data: profile } = await supabase
-    .from('restaurant_profiles')
-    .select('restaurant_name, cuisine_type, google_maps_url')
+    .from('business_profiles')
+    .select('business_name, business_type, google_maps_url')
     .eq('user_id', user.id)
     .single()
 
@@ -20,8 +20,8 @@ export async function GET() {
   const apiKey = process.env.GOOGLE_MAPS_API_KEY
   if (!apiKey) return NextResponse.json({ results: [], apiError: 'Google Maps API not configured' })
 
-  const cuisine = profile.cuisine_type ?? 'restaurant'
-  const name = profile.restaurant_name ?? ''
+  const cuisine = profile.business_type ?? 'business'
+  const name = profile.business_name ?? ''
 
   // Build a search query: e.g. "Italian restaurants near Rosario's Trattoria"
   const query = `${cuisine} restaurants near ${name}`

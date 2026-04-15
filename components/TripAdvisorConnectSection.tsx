@@ -49,7 +49,7 @@ export default function TripAdvisorConnectSection({
     setError('')
 
     const { error: dbErr } = await supabase
-      .from('restaurant_profiles')
+      .from('business_profiles')
       .update({ tripadvisor_url: trimmed })
       .eq('id', restaurantProfileId)
       .eq('user_id', userId)
@@ -117,7 +117,7 @@ export default function TripAdvisorConnectSection({
       </div>
 
       <p className="text-[12px] text-[#888] leading-relaxed">
-        Paste your TripAdvisor restaurant page URL. TableReply will auto-sync your newest TripAdvisor reviews every day — no manual copy-paste needed.
+        Paste your TripAdvisor listing URL. Replyfi will auto-sync your newest TripAdvisor reviews every day — no manual copy-paste needed.
       </p>
 
       {/* URL input */}

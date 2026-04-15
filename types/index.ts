@@ -7,11 +7,11 @@ export interface Profile {
   stripe_customer_id: string | null
 }
 
-export interface RestaurantProfile {
+export interface BusinessProfile {
   id: string
   user_id: string
-  restaurant_name: string
-  cuisine_type: string
+  business_name: string
+  business_type: string
   vibe: string
   voice_style: string
   description: string
@@ -38,7 +38,7 @@ export interface Reply {
 export interface ScrapedReview {
   id: string
   user_id: string
-  restaurant_profile_id: string
+  business_profile_id: string
   review_id: string
   reviewer_name: string
   star_rating: number

@@ -9,7 +9,7 @@ import Select from './ui/Select'
 import Button from './ui/Button'
 import type { BusinessProfile } from '@/types'
 
-interface RestaurantProfileFormProps {
+interface BusinessProfileFormProps {
   userId: string
   existingProfile?: BusinessProfile | null
   redirectTo?: string
@@ -51,11 +51,11 @@ const voiceOptions = [
   { value: 'enthusiastic and energetic', label: 'Enthusiastic & Energetic' },
 ]
 
-export default function RestaurantProfileForm({
+export default function BusinessProfileForm({
   userId,
   existingProfile,
   redirectTo = '/dashboard',
-}: RestaurantProfileFormProps) {
+}: BusinessProfileFormProps) {
   const router = useRouter()
   const supabase = createClient()
   const [loading, setLoading] = useState(false)

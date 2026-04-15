@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import ReviewsClient from './ReviewsClient'
-import type { RestaurantProfile, ScrapedReview } from '@/types'
+import type { BusinessProfile, ScrapedReview } from '@/types'
 
 export default async function ReviewsPage() {
   const supabaseAdmin = createServiceClient(
@@ -18,9 +18,9 @@ export default async function ReviewsPage() {
 
   if (!user) redirect('/login')
 
-  // Fetch restaurant profile
+  // Fetch business profile
   const { data: profile } = await supabaseAdmin
-    .from('restaurant_profiles')
+    .from('business_profiles')
     .select('*')
     .eq('user_id', user.id)
     .single()
@@ -39,7 +39,7 @@ export default async function ReviewsPage() {
 
   return (
     <ReviewsClient
-      profile={profile as RestaurantProfile}
+      profile={profile as BusinessProfile}
       initialReviews={(reviews ?? []) as ScrapedReview[]}
       userId={user.id}
     />

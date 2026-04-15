@@ -4,7 +4,7 @@ import { useState } from 'react'
 import GetMoreReviewsClient from '../get-more-reviews/GetMoreReviewsClient'
 import SocialClient from '../social/SocialClient'
 import CompetitorsClient from '../competitors/CompetitorsClient'
-import type { RestaurantProfile, CompetitorProfile } from '@/types'
+import type { BusinessProfile, CompetitorProfile } from '@/types'
 import type { ScrapedReview } from '@/types'
 
 type Tab = 'get-reviews' | 'social' | 'competitors'
@@ -40,7 +40,7 @@ const TABS: { key: Tab; label: string; icon: React.ReactNode }[] = [
 ]
 
 interface GrowClientProps {
-  restaurantProfile: RestaurantProfile
+  restaurantProfile: BusinessProfile
   reviews: ScrapedReview[]
   competitors: CompetitorProfile[]
   userAvgRating: number

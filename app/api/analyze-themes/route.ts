@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
   // ── Check Supabase cache ──────────────────────────────────────────────────────
   if (!forceRefresh) {
     const { data: cached } = await supabaseAdmin
-      .from('restaurant_analytics')
+      .from('business_analytics')
       .select('themes, last_analyzed_at, reviews_count_at_analysis')
       .eq('user_id', user.id)
       .maybeSingle()
@@ -130,7 +130,7 @@ ${reviews.slice(0, 60).join('\n---\n')}`,
     // ── Save to Supabase ──────────────────────────────────────────────────────
     const now = new Date().toISOString()
     await supabaseAdmin
-      .from('restaurant_analytics')
+      .from('business_analytics')
       .upsert({
         user_id: user.id,
         themes: result,

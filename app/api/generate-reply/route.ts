@@ -22,13 +22,13 @@ export async function POST(request: NextRequest) {
   }
 
   const { data: restaurantProfile } = await supabase
-    .from('restaurant_profiles')
+    .from('business_profiles')
     .select('*')
     .eq('user_id', user.id)
     .single()
 
   if (!restaurantProfile) {
-    return NextResponse.json({ error: 'Restaurant profile not found' }, { status: 400 })
+    return NextResponse.json({ error: 'Business profile not found' }, { status: 400 })
   }
 
   const anthropicKey = process.env.ANTHROPIC_API_KEY
@@ -39,8 +39,8 @@ export async function POST(request: NextRequest) {
 
   try {
     const reply = await generateReviewReply({
-      restaurantName: restaurantProfile.restaurant_name ?? '',
-      cuisineType: restaurantProfile.cuisine_type ?? '',
+      businessName: restaurantProfile.business_name ?? '',
+      businessType: restaurantProfile.business_type ?? '',
       vibe: restaurantProfile.vibe ?? '',
       voiceStyle: restaurantProfile.voice_style ?? restaurantProfile.reply_tone ?? '',
       description: restaurantProfile.description ?? '',

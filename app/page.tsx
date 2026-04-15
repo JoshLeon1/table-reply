@@ -49,8 +49,8 @@ export default function LandingPage() {
   const [animPhase, setAnimPhase] = useState<'typing' | 'generating' | 'revealing'>('typing')
 
   useEffect(() => {
-    const REVIEW = 'Food was cold and service was slow. Very disappointed.'
-    const REPLY   = "We're truly sorry your experience didn't match our standards. We'd love to make this right — please email us directly."
+    const REVIEW = 'Wait time was long and staff seemed disinterested. Very disappointed.'
+    const REPLY   = "We're truly sorry your experience didn't match our standards. We'd love to make this right — please reach out to us directly."
     const WORDS   = REPLY.split(' ')
     let charIdx = 0
     let wordIdx = 0
@@ -108,7 +108,7 @@ export default function LandingPage() {
     {
       icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>,
       title: 'AI-Powered Replies',
-      desc: "Crafted to match your restaurant's voice, their tone, and the star rating.",
+      desc: "Crafted to match your business's voice, their tone, and the star rating.",
     },
     {
       icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>,
@@ -118,7 +118,7 @@ export default function LandingPage() {
     {
       icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>,
       title: 'Keyword Alerts',
-      desc: 'Instant email when a review mentions food safety issues, staff names, or anything you track.',
+      desc: 'Instant email when a review mentions a specific issue, staff names, or anything you track.',
     },
     {
       icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>,
@@ -143,23 +143,23 @@ export default function LandingPage() {
   ]
 
   const steps = [
-    { num: '1', title: 'Connect your restaurant', desc: 'Link your Google, Yelp, and TripAdvisor listings once. Takes under 2 minutes.' },
-    { num: '2', title: 'Your reviews appear automatically', desc: 'TableReply pulls in your latest reviews every day — no manual work, no copy-pasting.' },
+    { num: '1', title: 'Connect your business', desc: 'Link your Google, Yelp, and TripAdvisor listings once. Takes under 2 minutes.' },
+    { num: '2', title: 'Your reviews appear automatically', desc: 'Replyfi pulls in your latest reviews every day — no manual work, no copy-pasting.' },
     { num: '3', title: 'Approve, Edit, Then Post With One Click', desc: "Review the AI draft, edit inline if needed, then approve it. Your Approved tab collects everything ready to post — copy the reply and click 'Respond on Google/Yelp/TripAdvisor' to land directly on that specific review." },
   ]
 
   const testimonials = [
     {
-      initials: 'MR', name: 'Marco R.', role: 'Owner', restaurant: "Rosario's Trattoria, Austin TX",
-      quote: 'I used to dread opening Yelp on Monday mornings. Now I actually look forward to it. We went from responding to maybe 10% of reviews to every single one.',
+      initials: 'SM', name: 'Dr. Sarah M.', role: 'Owner', restaurant: 'Bright Smile Dental, Austin TX',
+      quote: 'I used to dread opening Yelp on Monday mornings. Now I actually look forward to it. We went from responding to maybe 10% of reviews to every single one — patients notice.',
     },
     {
-      initials: 'JK', name: 'Jen K.', role: 'Owner & Chef', restaurant: 'The Perch Kitchen, Denver CO',
-      quote: 'The 1-star reply drafts alone are worth the subscription. I used to write something defensive and regret it every time. TableReply keeps it professional.',
+      initials: 'MT', name: 'Marcus T.', role: 'Owner', restaurant: 'Crown & Blade, Denver CO',
+      quote: 'The 1-star reply drafts alone are worth the subscription. I used to write something defensive and regret it every time. Replyfi keeps it professional and my clients keep coming back.',
     },
     {
-      initials: 'DL', name: 'David L.', role: 'General Manager', restaurant: 'Lucky Dragon, Portland OR',
-      quote: 'Our rating went from 4.1 to 4.6 in three months. We attribute most of that to actually responding to every review now — guests notice.',
+      initials: 'JR', name: 'Jen R.', role: 'Owner', restaurant: 'Comfort Air Services, Portland OR',
+      quote: 'Our rating went from 4.1 to 4.6 in three months. We attribute most of that to actually responding to every review now — customers trust a business that responds.',
     },
   ]
 
@@ -176,10 +176,10 @@ export default function LandingPage() {
   ]
 
   const faqs = [
-    { q: 'Do I approve replies before they get posted?', a: 'Yes, always. TableReply generates a draft — you review it, edit inline if needed, then approve it. Approved replies go to your Approved tab, where you copy and paste on the platform yourself. Nothing ever posts automatically.' },
+    { q: 'Do I approve replies before they get posted?', a: 'Yes, always. Replyfi generates a draft — you review it, edit inline if needed, then approve it. Approved replies go to your Approved tab, where you copy and paste on the platform yourself. Nothing ever posts automatically.' },
     { q: 'Does this connect to Google, Yelp, and TripAdvisor automatically?', a: 'Yes — all three sync every day. Connect each platform once in Settings and reviews start appearing in your dashboard.' },
-    { q: 'Will replies sound robotic or generic?', a: "No. You set your restaurant's name, cuisine, owner name, and tone. Every reply is written specifically for that review — it won't sound like a template." },
-    { q: 'How long does setup take?', a: "About 2 minutes. Enter your restaurant name, cuisine type, and tone. That's it — you can start generating replies immediately." },
+    { q: 'Will replies sound robotic or generic?', a: "No. You set your business name, owner name, and tone. Every reply is written specifically for that review — it won't sound like a template." },
+    { q: 'How long does setup take?', a: "About 2 minutes. Enter your business name and tone. That's it — you can start generating replies immediately." },
     { q: 'Can I edit the replies before I use them?', a: 'Absolutely. Every reply has an inline edit button right in the dashboard — make changes before you approve. Once approved, copy it and respond directly on the platform.' },
   ]
 
@@ -196,7 +196,7 @@ export default function LandingPage() {
                 <path d="M8 8h9.5A1.5 1.5 0 0119 9.5v5A1.5 1.5 0 0117.5 16H16v2.5l-3-2.5H8A1.5 1.5 0 016.5 14.5v-5A1.5 1.5 0 018 8z" fill="white"/>
               </svg>
             </div>
-            <span className="font-bold text-[15px] sm:text-[17px] tracking-[-0.025em] text-[#111111]">TableReply</span>
+            <span className="font-bold text-[15px] sm:text-[17px] tracking-[-0.025em] text-[#111111]">Replyfi</span>
           </Link>
 
           <div className="flex items-center gap-2 sm:gap-4">
@@ -221,7 +221,7 @@ export default function LandingPage() {
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#E05A28]/10 border border-[#E05A28]/20 mb-5 animate-fade-in" style={{ animationDelay: '100ms' }}>
                 <span className="w-1.5 h-1.5 rounded-full bg-[#E05A28] animate-pulse flex-shrink-0" />
-                <span className="text-[#E05A28] text-[11px] sm:text-[12px] font-semibold tracking-wide">Built for independent restaurants</span>
+                <span className="text-[#E05A28] text-[11px] sm:text-[12px] font-semibold tracking-wide">Built for local businesses</span>
               </div>
 
               <h1
@@ -232,7 +232,7 @@ export default function LandingPage() {
               </h1>
 
               <p className="text-[#888] mb-7 animate-fade-up" style={{ fontSize: 'clamp(14px, 2vw, 16px)', lineHeight: '1.65', animationDelay: '260ms', maxWidth: '460px' }}>
-                TableReply crafts personalized responses that sound exactly like you. Built for independent restaurants who care about every guest.
+                Replyfi drafts personalized responses for any local business. Approve, copy, and post in under 30 seconds.
               </p>
 
               {/* CTAs */}
@@ -275,7 +275,7 @@ export default function LandingPage() {
                     <div className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
                     <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50" />
                     <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/50" />
-                    <span className="ml-2 text-white/20 text-[11px]">TableReply — Pending Reviews</span>
+                    <span className="ml-2 text-white/20 text-[11px]">Replyfi — Pending Reviews</span>
                   </div>
 
                   <div className="p-4">
@@ -289,12 +289,12 @@ export default function LandingPage() {
                             <span className="text-white/20 text-[10px]">2h ago</span>
                           </div>
                           <div className="text-amber-400 text-[11px] mb-2">★★★★★</div>
-                          <p className="text-white/50 text-[11px] leading-relaxed">"Best Italian outside of Naples. Chef came out to greet us — truly special."</p>
+                          <p className="text-white/50 text-[11px] leading-relaxed">"Best experience I've had. The team was so welcoming — truly special."</p>
                         </div>
                       </div>
                       <div className="mt-3 ml-9 bg-[#E05A28]/10 border border-[#E05A28]/20 rounded-xl p-2.5">
                         <p className="text-[9px] font-bold uppercase tracking-wider text-[#E05A28] mb-1">Your reply</p>
-                        <p className="text-white/65 text-[11px] leading-relaxed">Thank you so much, Sarah! Chef Marco loves connecting with guests. See you again soon! 🙏</p>
+                        <p className="text-white/65 text-[11px] leading-relaxed">Thank you so much, Sarah! Our team loves hearing this. We look forward to seeing you again! 🙏</p>
                       </div>
                       <div className="mt-2.5 ml-9 flex gap-1.5">
                         <div className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#E05A28] text-white text-[10px] font-semibold">
@@ -356,7 +356,7 @@ export default function LandingPage() {
         <div className="flex" style={{ animation: 'marqueeScroll 28s linear infinite' }}>
           {[0, 1].map((set) => (
             <div key={set} className="flex items-center flex-shrink-0" aria-hidden={set === 1}>
-              {['Italian', 'BBQ & Smokehouse', 'Café', 'Fine Dining', 'Food Truck', 'Bakery', 'Sushi Bar', 'Mexican', 'Farm-to-Table', 'Gastropub', 'Pizza', 'Steakhouse'].map((item) => (
+              {['Dental Practices', 'Hair Salons', 'HVAC Companies', 'Auto Repair', 'Restaurants', 'Med Spas', 'Plumbers', 'Law Firms', 'Gyms & Studios', 'Veterinarians', 'Landscaping', 'Retail Shops'].map((item) => (
                 <span key={item} className="flex items-center gap-4 sm:gap-5 px-5 sm:px-6 text-[11px] sm:text-[12px] font-medium text-white/30 whitespace-nowrap">
                   {item}<span className="w-1 h-1 rounded-full bg-white/15 flex-shrink-0" />
                 </span>
@@ -377,7 +377,7 @@ export default function LandingPage() {
             <h2 className="font-bold text-[#111111]" style={{ fontSize: 'clamp(22px, 3vw, 34px)', lineHeight: 1.15, letterSpacing: '-0.02em' }}>
               See Exactly What You&apos;ll Get
             </h2>
-            <p className="text-[14px] text-[#777] mt-2 max-w-sm mx-auto">A real 1-star review. The reply TableReply drafts in seconds.</p>
+            <p className="text-[14px] text-[#777] mt-2 max-w-sm mx-auto">A real 1-star review. The reply Replyfi drafts in seconds.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-5">
@@ -391,18 +391,18 @@ export default function LandingPage() {
               <p className="text-[13px] font-semibold text-[#111] mb-0.5">James T.</p>
               <p className="text-[12px] text-[#aaa] mb-3">3 days ago</p>
               <p className="text-[13px] sm:text-[14px] leading-relaxed text-[#444]">
-                &ldquo;Honestly disappointed. Waited 40 minutes for a table with a reservation, then the pasta was lukewarm. Won&apos;t be back.&rdquo;
+                &ldquo;Honestly disappointed. Waited 40 minutes past my appointment and the staff barely acknowledged it. Won&apos;t be back.&rdquo;
               </p>
             </div>
 
-            {/* TableReply's draft */}
+            {/* Replyfi's draft */}
             <div className="rounded-2xl border bg-[#FEF0E8] border-l-4 border-l-[#E05A28] border-[#F5C9AD] p-5 sm:p-6">
               <div className="flex items-center gap-1.5 mb-3">
                 <svg className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
                 <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#E05A28]">AI Reply · 4 seconds</p>
               </div>
               <p className="text-[13px] sm:text-[14px] leading-relaxed text-[#333]">
-                &ldquo;Hi James, thank you for sharing this — I&apos;m genuinely sorry your experience fell short. A 40-minute wait with a reservation is not our standard. I&apos;d love to make this right. Please reach out directly and I&apos;ll personally ensure your next visit is much better. — [Owner Name]&rdquo;
+                &ldquo;Hi James, thank you for sharing this — I&apos;m genuinely sorry your experience fell short. A 40-minute wait past your appointment is not our standard. I&apos;d love to make this right. Please reach out directly and I&apos;ll personally ensure your next visit is much better. — [Owner Name]&rdquo;
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
                 {['✓ Sounds human', '✓ Takes accountability', '✓ Invites them back'].map((badge) => (
@@ -420,7 +420,7 @@ export default function LandingPage() {
           <div className={`grid grid-cols-3 gap-4 transition-all duration-700 ${problemAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
             {[
               { val: stat1, suffix: '%', label: 'of reviews go unanswered' },
-              { val: stat2, suffix: '%', label: 'of guests read replies' },
+              { val: stat2, suffix: '%', label: 'of reviewers read replies' },
               { val: stat3, suffix: '%', label: 'time saved per reply' },
             ].map(({ val, suffix, label }, i) => (
               <div key={label} className="flex flex-col items-center text-center" style={{ transitionDelay: `${i * 80}ms` }}>
@@ -457,7 +457,7 @@ export default function LandingPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </div>
-                <span className="text-[12px] font-bold uppercase tracking-[0.12em] text-red-400">Without TableReply</span>
+                <span className="text-[12px] font-bold uppercase tracking-[0.12em] text-red-400">Without Replyfi</span>
               </div>
               <ul className="space-y-3.5">
                 {[
@@ -483,7 +483,7 @@ export default function LandingPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <span className="text-[12px] font-bold uppercase tracking-[0.12em] text-emerald-400">With TableReply</span>
+                <span className="text-[12px] font-bold uppercase tracking-[0.12em] text-emerald-400">With Replyfi</span>
               </div>
               <ul className="space-y-3.5">
                 {[
@@ -491,7 +491,7 @@ export default function LandingPage() {
                   'Approve, copy, paste — under 30 seconds per review',
                   'Deep link drops you right on the review to post',
                   'Each reply sounds personal, not templated',
-                  'Higher response rate → more trust → more covers',
+                  'Higher response rate → more trust → more customers',
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-[13px] text-white/70 leading-snug">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0 mt-1.5" />
@@ -516,7 +516,7 @@ export default function LandingPage() {
               Set Up Once. Replies Ready Every Morning.
             </h2>
             <p className="text-[14px] text-[#777] mt-3 max-w-md mx-auto leading-relaxed">
-              TableReply syncs your reviews automatically — you just approve, edit, and post.
+              Replyfi syncs your reviews automatically — you just approve, edit, and post.
             </p>
           </div>
 
@@ -564,7 +564,7 @@ export default function LandingPage() {
               {
                 num: '01',
                 title: 'Replies That Sound Like You',
-                desc: "Set your restaurant's name, cuisine, and tone once. Every reply matches your voice — warm, professional, or straight-talking. Guests can't tell it wasn't written by you.",
+                desc: "Set your business name and tone once. Every reply matches your voice — warm, professional, or straight-talking. Reviewers can't tell it wasn't written by you.",
                 icon: (
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
                 ),
@@ -575,7 +575,7 @@ export default function LandingPage() {
               {
                 num: '02',
                 title: 'Every Platform, Hands-Free',
-                desc: 'Google, Yelp, and TripAdvisor reviews sync to your dashboard every day — automatically. No browser tabs, no logging in. Just open TableReply and everything is waiting for you.',
+                desc: 'Google, Yelp, and TripAdvisor reviews sync to your dashboard every day — automatically. No browser tabs, no logging in. Just open Replyfi and everything is waiting for you.',
                 icon: (
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                 ),
@@ -658,7 +658,7 @@ export default function LandingPage() {
           >
             <p className="text-[#E05A28] text-[11px] font-semibold uppercase tracking-wider mb-2.5">What Owners Say</p>
             <h2 className="font-bold text-white" style={{ fontSize: 'clamp(22px, 3.5vw, 34px)', lineHeight: 1.2, letterSpacing: '-0.02em' }}>
-              Restaurant Owners Love It
+              Local Business Owners Love It
             </h2>
           </div>
 
@@ -753,7 +753,7 @@ export default function LandingPage() {
               <span className="px-3 py-1 rounded-full bg-[#E05A28]/20 text-[#E05A28] text-[10px] font-bold uppercase tracking-[0.12em]">7-day free trial</span>
             </div>
             <div className="px-6 sm:px-8 pt-4 pb-7">
-              <p className="text-center text-white font-bold text-[17px] mb-4 tracking-tight">TableReply Pro</p>
+              <p className="text-center text-white font-bold text-[17px] mb-4 tracking-tight">Replyfi Pro</p>
               <div className="flex items-end justify-center gap-1 mb-1.5">
                 <span className="font-bold text-white leading-none transition-all duration-300" style={{ fontSize: 'clamp(56px, 12vw, 76px)', letterSpacing: '-0.04em' }}>
                   ${annual ? '19' : '29'}
@@ -798,7 +798,7 @@ export default function LandingPage() {
             <div className="text-center sm:text-left">
               <div className="flex items-center justify-center sm:justify-start gap-2 mb-2.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#E05A28] animate-pulse flex-shrink-0" />
-                <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/30">200+ restaurants</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/30">500+ local businesses</span>
               </div>
               <h2 className="font-bold text-white mb-1.5" style={{ fontSize: 'clamp(20px, 3vw, 28px)', lineHeight: 1.2, letterSpacing: '-0.025em' }}>
                 Start replying to every review today.
@@ -842,9 +842,9 @@ export default function LandingPage() {
                     <path d="M8 8h9.5A1.5 1.5 0 0119 9.5v5A1.5 1.5 0 0117.5 16H16v2.5l-3-2.5H8A1.5 1.5 0 016.5 14.5v-5A1.5 1.5 0 018 8z" fill="white"/>
                   </svg>
                 </div>
-                <span className="font-bold text-white text-[15px] tracking-[-0.02em]">TableReply</span>
+                <span className="font-bold text-white text-[15px] tracking-[-0.02em]">Replyfi</span>
               </div>
-              <p className="text-[12px] sm:text-[13px] text-[#555] leading-relaxed">AI-powered review replies for independent restaurants.</p>
+              <p className="text-[12px] sm:text-[13px] text-[#555] leading-relaxed">AI-powered review replies for local businesses.</p>
             </div>
 
             {/* Product */}
@@ -869,8 +869,8 @@ export default function LandingPage() {
           </div>
 
           <div className="border-t border-[#1E1E1E] pt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1">
-            <p className="text-[12px] text-[#444]">© 2025 TableReply · Austin, TX</p>
-            <p className="text-[11px] text-[#333]">Made for independent restaurants everywhere</p>
+            <p className="text-[12px] text-[#444]">© 2025 Replyfi · Austin, TX</p>
+            <p className="text-[11px] text-[#333]">AI-powered review replies for local businesses.</p>
           </div>
         </div>
       </footer>

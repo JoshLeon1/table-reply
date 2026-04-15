@@ -6,9 +6,9 @@ import ReplyGenerator from '@/components/ReplyGenerator'
 import TrialBanner from '@/components/TrialBanner'
 import PaywallModal from '@/components/PaywallModal'
 
-interface RestaurantProfileSnippet {
-  restaurant_name: string
-  cuisine_type?: string | null
+interface BusinessProfileSnippet {
+  business_name: string
+  business_type?: string | null
   vibe?: string | null
 }
 
@@ -18,7 +18,7 @@ interface DashboardClientProps {
   trialExpired: boolean
   hasGeneratedReply: boolean
   hasAutoSync: boolean
-  restaurantProfile?: RestaurantProfileSnippet | null
+  restaurantProfile?: BusinessProfileSnippet | null
 }
 
 export default function DashboardClient({

@@ -17,7 +17,7 @@ export async function DELETE() {
   )
 
   // Delete all user data — RLS cascade handles children
-  // Order: replies, reviews, reply_feedback, restaurant_profiles, profiles, then auth user
+  // Order: replies, reviews, reply_feedback, business_profiles, profiles, then auth user
   await Promise.all([
     serviceClient.from('replies').delete().eq('user_id', user.id),
     serviceClient.from('reply_feedback').delete().eq('user_id', user.id),
@@ -28,7 +28,7 @@ export async function DELETE() {
   ])
 
   await Promise.all([
-    serviceClient.from('restaurant_profiles').delete().eq('user_id', user.id),
+    serviceClient.from('business_profiles').delete().eq('user_id', user.id),
     serviceClient.from('profiles').delete().eq('id', user.id),
   ])
 

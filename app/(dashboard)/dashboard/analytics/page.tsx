@@ -16,7 +16,7 @@ export default async function AnalyticsPage() {
   if (!user) redirect('/login')
 
   const { data: profile } = await supabaseAdmin
-    .from('restaurant_profiles')
+    .from('business_profiles')
     .select('*')
     .eq('user_id', user.id)
     .single()
@@ -34,7 +34,7 @@ export default async function AnalyticsPage() {
   return (
     <AnalyticsClient
       reviews={(reviews ?? []) as ScrapedReview[]}
-      restaurantName={profile.restaurant_name}
+      restaurantName={profile.business_name}
       userId={user.id}
     />
   )

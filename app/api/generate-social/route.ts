@@ -29,16 +29,16 @@ export async function POST(request: NextRequest) {
 
   let { reviewText, restaurantName, cuisineType, vibe, platform, style } = body
 
-  // If caller didn't supply restaurant details, fetch them from the DB
+  // If caller didn't supply business details, fetch them from the DB
   if (!restaurantName) {
     const { data: rp } = await supabase
-      .from('restaurant_profiles')
-      .select('restaurant_name, cuisine_type, vibe')
+      .from('business_profiles')
+      .select('business_name, business_type, vibe')
       .eq('user_id', user.id)
       .single()
     if (rp) {
-      restaurantName = restaurantName || rp.restaurant_name
-      cuisineType    = cuisineType    || rp.cuisine_type
+      restaurantName = restaurantName || rp.business_name
+      cuisineType    = cuisineType    || rp.business_type
       vibe           = vibe           || rp.vibe
     }
   }
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
   try {
     const rawText = await callClaude({
       maxTokens: 300,
-      system: `You are a social media manager for ${restaurantName}, a ${cuisineType ?? 'restaurant'} with a ${vibe ?? 'welcoming'} vibe. Transform a customer review into a social post caption. Never quote the review verbatim. Celebrate the restaurant authentically. Style: ${style}.`,
+      system: `You are a social media manager for ${restaurantName}, a ${cuisineType ?? 'local business'} with a ${vibe ?? 'welcoming'} vibe. Transform a customer review into a social post caption. Never quote the review verbatim. Celebrate the business authentically. Style: ${style}.`,
       userMessage: `Review: "${reviewText}"
 Platform: ${platform}
 Rule: ${rule}

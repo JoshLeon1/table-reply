@@ -203,12 +203,13 @@ function SkeletonCard() {
 
 const REVIEW_TRUNCATE_LENGTH = 200
 
-function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, showStatus }: {
+function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, showStatus, profileUrls }: {
   review: ScrapedReview
   onApprove: (id: string) => void
   onDismiss: (id: string) => void
   onRestore?: (id: string) => void
   showStatus?: boolean
+  profileUrls?: { google?: string | null; yelp?: string | null; tripadvisor?: string | null }
 }) {
   const supabase = createClient()
   const [review, setReview] = useState(initialReview)
@@ -217,6 +218,9 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
   const [generating, setGenerating] = useState(false)
   const [genError, setGenError] = useState('')
   const [expanded, setExpanded] = useState(false)
+  const [editing, setEditing] = useState(false)
+  const [editedReply, setEditedReply] = useState(initialReview.generated_reply ?? '')
+  const [savingEdit, setSavingEdit] = useState(false)
   const noText = !review.review_text?.trim()
   const isLong = (review.review_text?.length ?? 0) > REVIEW_TRUNCATE_LENGTH
 
@@ -251,12 +255,33 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
   const handleApprove = async () => {
     if (!review.generated_reply) return
     setActioning(true)
-    await navigator.clipboard.writeText(review.generated_reply).catch(() => {})
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2500)
     onApprove(review.id)
     setActioning(false)
   }
+
+  const handleCopyReply = async () => {
+    await navigator.clipboard.writeText(review.generated_reply ?? '').catch(() => {})
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2500)
+  }
+
+  const handleSaveEdit = async () => {
+    setSavingEdit(true)
+    await supabase
+      .from('scraped_reviews')
+      .update({ generated_reply: editedReply })
+      .eq('id', review.id)
+    setReview(prev => ({ ...prev, generated_reply: editedReply }))
+    setEditing(false)
+    setSavingEdit(false)
+  }
+
+  const platformLabel = review.source === 'yelp' ? 'Yelp' : review.source === 'tripadvisor' ? 'TripAdvisor' : 'Google'
+  const platformUrl = review.source === 'yelp'
+    ? profileUrls?.yelp
+    : review.source === 'tripadvisor'
+    ? profileUrls?.tripadvisor
+    : profileUrls?.google
 
   const handleDismiss = () => {
     setActioning(true)
@@ -372,19 +397,59 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
             {review.generated_reply ? (
               /* AI reply card */
               <div className="rounded-xl bg-[#E05A28]/[0.08] border border-[#E05A28]/20 px-4 py-3.5">
-                <div className="flex items-center gap-1.5 mb-2">
-                  <div className="w-4 h-4 rounded-md bg-[#E05A28]/10 flex items-center justify-center">
-                    <svg className="w-2.5 h-2.5 text-[#E05A28]" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
-                    </svg>
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-4 h-4 rounded-md bg-[#E05A28]/10 flex items-center justify-center">
+                      <svg className="w-2.5 h-2.5 text-[#E05A28]" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <p className="text-[11px] font-semibold text-[#E05A28]">AI Reply</p>
                   </div>
-                  <p className="text-[11px] font-semibold text-[#E05A28]">AI reply</p>
+                  {status === 'pending' && !editing && (
+                    <button
+                      onClick={() => { setEditedReply(review.generated_reply ?? ''); setEditing(true) }}
+                      className="flex items-center gap-1 text-[11px] font-medium text-[#A8A29E] hover:text-[#E05A28] transition-colors"
+                    >
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                      </svg>
+                      Edit
+                    </button>
+                  )}
                 </div>
-                <p className="text-[13px] text-[#57534E] leading-relaxed">{review.generated_reply}</p>
+                {editing ? (
+                  <div className="space-y-2.5">
+                    <textarea
+                      value={editedReply}
+                      onChange={(e) => setEditedReply(e.target.value)}
+                      rows={5}
+                      autoFocus
+                      className="w-full text-[13px] text-[#57534E] leading-relaxed bg-white border border-[#E05A28]/30 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] resize-none transition-all"
+                    />
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={handleSaveEdit}
+                        disabled={savingEdit || !editedReply.trim()}
+                        className="px-3.5 py-1.5 rounded-lg bg-[#E05A28] hover:bg-[#C94E21] text-white text-[12px] font-semibold disabled:opacity-40 transition-all"
+                      >
+                        {savingEdit ? 'Saving…' : 'Save Changes'}
+                      </button>
+                      <button
+                        onClick={() => setEditing(false)}
+                        className="px-3 py-1.5 rounded-lg text-[12px] font-medium text-[#A8A29E] hover:text-[#57534E] hover:bg-[#F3F0EC] transition-all"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-[13px] text-[#57534E] leading-relaxed">{review.generated_reply}</p>
+                )}
               </div>
             ) : (
               <div>
-                <p className="text-[11px] font-medium text-[#A8A29E] mb-2">AI reply</p>
+                <p className="text-[11px] font-medium text-[#A8A29E] mb-2">AI Reply</p>
                 {generating ? (
                   <div className="flex items-center gap-2.5 text-[13px] text-[#57534E] py-1">
                     <svg className="animate-spin w-3.5 h-3.5 text-[#E05A28] flex-shrink-0" fill="none" viewBox="0 0 24 24">
@@ -417,19 +482,34 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
       <div className="flex flex-wrap items-center gap-2 px-4 sm:px-5 py-3.5 border-t border-[#EDE9E4]">
         {status === 'approved' ? (
           <>
+            {/* Copy reply */}
             <button
-              onClick={handleApprove}
-              disabled={actioning}
-              className="flex items-center justify-center gap-1.5 px-4 min-h-[44px] rounded-xl bg-[#F3F0EC] border border-[#E4DED8] hover:border-[#D0C9C1] text-[#57534E] hover:text-[#111111] text-[13px] font-medium active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
+              onClick={handleCopyReply}
+              disabled={!review.generated_reply}
+              className="flex items-center justify-center gap-1.5 px-4 min-h-[44px] rounded-xl bg-[#111827] hover:bg-[#1f2937] active:scale-[0.97] text-white text-[13px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
             >
               {copied ? (
-                <><svg className="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied!</>
+                <><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied!</>
               ) : (
-                <><svg className="w-3.5 h-3.5 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>View Reply</>
+                <><svg className="w-3.5 h-3.5 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>Copy Reply</>
               )}
             </button>
+            {/* Platform link */}
+            {platformUrl && (
+              <a
+                href={platformUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-1.5 px-4 min-h-[44px] rounded-xl border border-[#E4DED8] hover:border-[#D0C9C1] bg-white hover:bg-[#F8F6F3] text-[#57534E] hover:text-[#111111] text-[13px] font-medium active:scale-[0.97] transition-all duration-150"
+              >
+                <svg className="w-3.5 h-3.5 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                </svg>
+                Post on {platformLabel}
+              </a>
+            )}
             <button
-              onClick={handleDismiss}
+              onClick={handleRestore}
               disabled={actioning}
               className="px-3.5 min-h-[44px] rounded-xl text-[13px] font-medium text-[#A8A29E] hover:text-[#57534E] hover:bg-[#F3F0EC] active:scale-[0.97] disabled:opacity-40 transition-all duration-150"
             >
@@ -448,14 +528,13 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
           <>
             <button
               onClick={handleApprove}
-              disabled={actioning || !review.generated_reply}
+              disabled={actioning || !review.generated_reply || editing}
               className="flex items-center justify-center gap-1.5 px-4 min-h-[44px] rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.97] text-white text-[13px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 shadow-[0_1px_3px_rgba(224,90,40,0.3)]"
             >
-              {copied ? (
-                <><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied!</>
-              ) : (
-                <><svg className="w-3.5 h-3.5 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Copy &amp; Approve</>
-              )}
+              <svg className="w-3.5 h-3.5 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/>
+              </svg>
+              Approve Reply
             </button>
             <button
               onClick={handleDismiss}
@@ -595,7 +674,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
           </span>
           <p className="text-[13px] text-[#E05A28]/80">
             <span className="font-semibold text-[#E05A28]">{pending.length} {pending.length === 1 ? 'review' : 'reviews'}</span>
-            <span className="opacity-80"> waiting — copy the AI reply and paste it on the review platform.</span>
+            <span className="opacity-80"> waiting — review the reply, edit if needed, then approve.</span>
           </p>
         </div>
       )}
@@ -642,7 +721,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
         <div className="space-y-3">
           {pending.map((r, i) => (
             <div key={r.id} className={i < 5 ? `animate-fade-up stagger-${i + 1}` : ''}>
-              <ReviewCard review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore}/>
+              <ReviewCard review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }}/>
             </div>
           ))}
         </div>
@@ -663,23 +742,19 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
         <div>
           {approved.length > 0 ? (
             <>
-              {approved.some((r) => r.generated_reply) && (
-                <div className="flex justify-end mb-3">
-                  <button
-                    onClick={handleCopyAll}
-                    className="flex items-center gap-1.5 text-[12px] font-medium text-[#57534E] hover:text-[#111111] px-3 py-1.5 rounded-lg border border-[#E4DED8] hover:border-[#D0C9C1] bg-[#F3F0EC] transition-all"
-                  >
-                    {copiedAll ? (
-                      <><svg className="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied all</>
-                    ) : (
-                      <><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>Copy all</>
-                    )}
-                  </button>
-                </div>
-              )}
+              {/* Instruction banner */}
+              <div className="flex items-start gap-3 px-4 py-3.5 mb-4 rounded-xl bg-emerald-50 border border-emerald-200/70">
+                <svg className="w-4 h-4 flex-shrink-0 mt-0.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <p className="text-[13px] text-emerald-700 leading-snug">
+                  <span className="font-semibold">Ready to post.</span>{' '}
+                  Copy each reply and paste it directly on the review platform.
+                </p>
+              </div>
               <div className="space-y-3">
                 {approved.map((r) => (
-                  <ReviewCard key={r.id} review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore}/>
+                  <ReviewCard key={r.id} review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }}/>
                 ))}
               </div>
             </>
@@ -703,7 +778,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
           {dismissed.length > 0 ? (
             <div className="space-y-3">
               {dismissed.map((r) => (
-                <ReviewCard key={r.id} review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} showStatus/>
+                <ReviewCard key={r.id} review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} showStatus profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }}/>
               ))}
             </div>
           ) : (

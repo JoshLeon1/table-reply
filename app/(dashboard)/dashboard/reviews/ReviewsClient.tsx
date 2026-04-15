@@ -132,7 +132,7 @@ function SetupPanel({ profile, onSaved }: { profile: BusinessProfile; onSaved: (
         <label className="block text-[13px] font-medium text-[#111111]">Google Maps URL</label>
         <input
           type="url"
-          placeholder="https://www.google.com/maps/place/your-restaurant…"
+          placeholder="https://www.google.com/maps/place/your-business…"
           value={url}
           onChange={(e) => { setUrl(e.target.value); setError('') }}
           onKeyDown={(e) => e.key === 'Enter' && handleSave()}
@@ -144,7 +144,7 @@ function SetupPanel({ profile, onSaved }: { profile: BusinessProfile; onSaved: (
         {/* Helper bullets */}
         <div className="space-y-1.5 pt-1">
           <p className="flex items-center gap-2 text-[12px] text-[#57534E]"><span>📍</span> Go to Google Maps</p>
-          <p className="flex items-center gap-2 text-[12px] text-[#57534E]"><span>🔍</span> Search for your restaurant</p>
+          <p className="flex items-center gap-2 text-[12px] text-[#57534E]"><span>🔍</span> Search for your business</p>
           <p className="flex items-center gap-2 text-[12px] text-[#57534E]"><span>🔗</span> Copy the URL from address bar</p>
         </div>
 
@@ -168,7 +168,7 @@ function SetupPanel({ profile, onSaved }: { profile: BusinessProfile; onSaved: (
           How do I find my Google Maps URL?
         </summary>
         <div className="mt-3 p-4 rounded-xl bg-[#F8F6F3] border border-[#E4DED8] text-[12px] text-[#57534E] leading-relaxed space-y-1">
-          <p>1. Go to <strong>Google Maps</strong> and search for your restaurant.</p>
+          <p>1. Go to <strong>Google Maps</strong> and search for your business.</p>
           <p>2. Click your listing to open the info panel.</p>
           <p>3. Copy the URL from your browser address bar.</p>
           <p className="text-[#A8A29E] mt-1">URL starts with <code className="font-mono bg-[#F3F0EC] text-[#E05A28] px-1 py-0.5 rounded">google.com/maps/place/</code></p>

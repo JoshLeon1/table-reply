@@ -387,7 +387,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
           }
           name="Google Maps"
           description="Your primary review source. Replyfi syncs new Google reviews daily and auto-generates replies."
-          placeholder="https://www.google.com/maps/place/Your+Restaurant/..."
+          placeholder="https://www.google.com/maps/place/Your+Business/..."
           validate={(url) => {
             if (!url) return 'Please enter your Google Maps URL.'
             if (!url.includes('google.com/maps') && !url.includes('maps.google') && !url.includes('goo.gl/maps')) {
@@ -398,7 +398,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
           hint={
             <>
               <span className="font-medium text-[#57534E]">How to find it:</span> Open{' '}
-              <span className="text-[#57534E]">maps.google.com</span>, search your restaurant, click your listing, then copy the URL from your browser.
+              <span className="text-[#57534E]">maps.google.com</span>, search your business, click your listing, then copy the URL from your browser.
             </>
           }
           apiRoute="/api/scrape-reviews"
@@ -418,10 +418,10 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
           }
           name="Yelp"
           description="Sync Yelp reviews daily alongside Google. Replies are generated for every new review automatically."
-          placeholder="https://www.yelp.com/biz/your-restaurant-city"
+          placeholder="https://www.yelp.com/biz/your-business-city"
           validate={(url) => {
             if (!url) return 'Please enter your Yelp business URL.'
-            if (!url.includes('yelp.com/biz/')) return 'URL must be a Yelp business page (e.g. yelp.com/biz/your-restaurant).'
+            if (!url.includes('yelp.com/biz/')) return 'URL must be a Yelp business page (e.g. yelp.com/biz/your-business).'
             return null
           }}
           hint={
@@ -429,7 +429,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
               <span className="font-medium text-[#57534E]">How to find it:</span> Go to{' '}
               <a href="https://biz.yelp.com" target="_blank" rel="noopener noreferrer" className="text-[#E05A28] underline underline-offset-2">biz.yelp.com</a>
               , click your business → &ldquo;Public Business Page&rdquo; → copy the URL.
-              Format: <span className="font-mono text-[11px] text-[#57534E] bg-[#F3F0EC] px-1.5 py-0.5 rounded">yelp.com/biz/your-restaurant-city</span>
+              Format: <span className="font-mono text-[11px] text-[#57534E] bg-[#F3F0EC] px-1.5 py-0.5 rounded">yelp.com/biz/your-business-city</span>
             </>
           }
           apiRoute="/api/scrape-yelp-reviews"
@@ -457,7 +457,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
           }}
           hint={
             <>
-              <span className="font-medium text-[#57534E]">How to find it:</span> Search your restaurant on{' '}
+              <span className="font-medium text-[#57534E]">How to find it:</span> Search your business on{' '}
               <a href="https://www.tripadvisor.com" target="_blank" rel="noopener noreferrer" className="text-[#E05A28] underline underline-offset-2">tripadvisor.com</a>
               , open your page, copy the URL.
               Format: <span className="font-mono text-[11px] text-[#57534E] bg-[#F3F0EC] px-1.5 py-0.5 rounded">tripadvisor.com/Restaurant_Review-g...-your_restaurant.html</span>
@@ -672,8 +672,8 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
           {[
             { title: 'Ask in person', body: "The best time to ask is right after a positive experience. A simple 'Would you mind leaving us a review? It really helps.' goes a long way." },
-            { title: 'Timing matters', body: 'Ask within 24 hours while the memory is fresh. Saturday dinner guests who had a great time are your best reviewers.' },
-            { title: 'Make it easy', body: 'The fewer steps the better. A QR code on the table or receipt removes all friction.' },
+            { title: 'Timing matters', body: 'Ask within 24 hours while the experience is still fresh. Happy customers who just left are your best reviewers.' },
+            { title: 'Make it easy', body: 'The fewer steps the better. A QR code at checkout or on a receipt removes all friction.' },
           ].map((tip) => (
             <div key={tip.title} className="bg-white rounded-xl border border-[#E4DED8] p-4 sm:p-5">
               <h3 className="text-[13px] font-semibold text-[#111111] mb-1.5">{tip.title}</h3>

@@ -48,6 +48,7 @@ export default async function SettingsPage() {
 
   const defaultEmailNotifs = {
     newReviewsScraped: true,
+    weeklyDigest: true,
   }
 
   const replyPreferences = {
@@ -65,7 +66,7 @@ export default async function SettingsPage() {
       {/* Header */}
       <div>
         <h1 className="text-[22px] font-semibold text-[#111]">Settings</h1>
-        <p className="text-[13px] text-[#57534E] mt-1">Manage your restaurant profile and subscription.</p>
+        <p className="text-[13px] text-[#57534E] mt-1">Manage your business profile and subscription.</p>
       </div>
 
       {/* Subscription */}
@@ -121,11 +122,11 @@ export default async function SettingsPage() {
         </div>
       </div>
 
-      {/* Restaurant profile */}
+      {/* Business profile */}
       <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden shadow-card">
         <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-[#EDE9E4]">
-          <h2 className="text-[11px] font-semibold text-[#A8A29E] uppercase tracking-[0.12em]">Restaurant Profile</h2>
-          <p className="text-[12px] text-[#57534E] mt-0.5">Used to personalise every generated reply.</p>
+          <h2 className="text-[11px] font-semibold text-[#A8A29E] uppercase tracking-[0.12em]">Business Profile</h2>
+          <p className="text-[12px] text-[#57534E] mt-0.5">Used to personalize every generated reply.</p>
         </div>
         <div className="px-4 sm:px-6 py-5 sm:py-6">
           <BusinessProfileForm

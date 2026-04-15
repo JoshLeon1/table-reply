@@ -342,7 +342,7 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
             type="url"
             value={yelpUrl}
             onChange={e => setYelpUrl(e.target.value)}
-            placeholder="https://www.yelp.com/biz/your-restaurant"
+            placeholder="https://www.yelp.com/biz/your-business"
             className="w-full h-10 px-3.5 rounded-xl bg-[#F8F6F3] border border-[#E4DED8] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10 transition-all"
           />
         </div>

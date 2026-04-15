@@ -184,7 +184,7 @@ export async function POST(request: NextRequest) {
   const { data: profiles, error: profilesError } = await supabaseAdmin
     .from('profiles')
     .select('id, is_paid, trial_started_at, email_notifications')
-    .eq('email_notifications->>newReviewsScraped', 'true')
+    .not('email_notifications->>weeklyDigest', 'eq', 'false')
 
   if (profilesError) {
     console.error('[digest] Failed to fetch profiles:', profilesError)

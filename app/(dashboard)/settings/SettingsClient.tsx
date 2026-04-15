@@ -10,6 +10,7 @@ interface ReplyPreferences {
 
 interface EmailNotifications {
   newReviewsScraped: boolean
+  weeklyDigest: boolean
 }
 
 interface SettingsClientProps {
@@ -70,6 +71,7 @@ export default function SettingsClient({
   const [deleteLoading, setDeleteLoading] = useState(false)
   const [deleteError, setDeleteError] = useState<string | null>(null)
   const [exportLoading, setExportLoading] = useState(false)
+  const [exportError, setExportError] = useState<string | null>(null)
 
   async function saveReplyPrefs(newPrefs: ReplyPreferences) {
     setSavingPrefs(true)
@@ -134,7 +136,8 @@ export default function SettingsClient({
       a.click()
       URL.revokeObjectURL(url)
     } catch {
-      alert('Export failed. Please try again.')
+      setExportError('Export failed. Please try again.')
+      setTimeout(() => setExportError(null), 5000)
     } finally {
       setExportLoading(false)
     }
@@ -272,16 +275,29 @@ export default function SettingsClient({
           )}
         </div>
 
-        <div className="px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
-          <div className="min-w-0 flex-1">
-            <p className="text-[13px] font-medium text-[#111111]">New reviews scraped</p>
-            <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">Get notified when your Auto Review sync pulls in new reviews</p>
+        <div className="divide-y divide-[#EDE9E4]">
+          <div className="px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+            <div className="min-w-0 flex-1">
+              <p className="text-[13px] font-medium text-[#111111]">New reviews synced</p>
+              <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">Get notified when your Auto Review sync pulls in new reviews</p>
+            </div>
+            <Toggle
+              checked={emailNotifs.newReviewsScraped}
+              onChange={(v) => handleEmailNotifChange('newReviewsScraped', v)}
+              disabled={savingEmail}
+            />
           </div>
-          <Toggle
-            checked={emailNotifs.newReviewsScraped}
-            onChange={(v) => handleEmailNotifChange('newReviewsScraped', v)}
-            disabled={savingEmail}
-          />
+          <div className="px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+            <div className="min-w-0 flex-1">
+              <p className="text-[13px] font-medium text-[#111111]">Weekly digest</p>
+              <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">A weekly summary of new reviews, ratings, and approved replies</p>
+            </div>
+            <Toggle
+              checked={emailNotifs.weeklyDigest ?? true}
+              onChange={(v) => handleEmailNotifChange('weeklyDigest', v)}
+              disabled={savingEmail}
+            />
+          </div>
         </div>
       </div>
 
@@ -291,18 +307,23 @@ export default function SettingsClient({
           <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E]">Data &amp; Privacy</h2>
           <p className="text-[12px] text-[#57534E] mt-1">Download a copy of your data at any time.</p>
         </div>
-        <div className="px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between gap-4">
-          <div className="min-w-0 flex-1">
-            <p className="text-[13px] font-medium text-[#111111]">Export my data</p>
-            <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">Download all your reviews and replies as a JSON file</p>
+        <div className="px-4 sm:px-6 py-4 sm:py-5 space-y-3">
+          <div className="flex items-center justify-between gap-4">
+            <div className="min-w-0 flex-1">
+              <p className="text-[13px] font-medium text-[#111111]">Export my data</p>
+              <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">Download all your reviews and replies as a JSON file</p>
+            </div>
+            <button
+              onClick={handleExport}
+              disabled={exportLoading}
+              className="flex-shrink-0 px-3.5 py-2 rounded-xl border border-[#E4DED8] hover:border-[#D0C9C1] bg-[#F3F0EC] text-[13px] font-medium text-[#57534E] hover:text-[#111111] transition-all duration-150 disabled:opacity-50 min-h-[40px]"
+            >
+              {exportLoading ? 'Exporting…' : 'Export JSON'}
+            </button>
           </div>
-          <button
-            onClick={handleExport}
-            disabled={exportLoading}
-            className="flex-shrink-0 px-3.5 py-2 rounded-xl border border-[#E4DED8] hover:border-[#D0C9C1] bg-[#F3F0EC] text-[13px] font-medium text-[#57534E] hover:text-[#111111] transition-all duration-150 disabled:opacity-50 min-h-[40px]"
-          >
-            {exportLoading ? 'Exporting…' : 'Export JSON'}
-          </button>
+          {exportError && (
+            <p className="text-[12px] text-red-500 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{exportError}</p>
+          )}
         </div>
       </div>
 
@@ -319,7 +340,7 @@ export default function SettingsClient({
             <div>
               <p className="text-[13px] font-medium text-[#111111]">Delete All My Data</p>
               <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">
-                Permanently deletes your account, restaurant profile, all reviews, and generated replies. Type{' '}
+                Permanently deletes your account, business profile, all reviews, and generated replies. Type{' '}
                 <code className="font-mono text-red-500 bg-red-50 px-1 rounded">DELETE</code> to confirm.
               </p>
             </div>

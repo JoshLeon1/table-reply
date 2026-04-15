@@ -54,10 +54,10 @@ function IconBolt({ active }: { active: boolean }) {
   )
 }
 
-function IconRefresh({ active }: { active: boolean }) {
+function IconReviews({ active }: { active: boolean }) {
   return (
-    <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={active ? 2 : 1.75} viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+    <svg className="w-4 h-4 flex-shrink-0" fill={active ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={active ? 0 : 1.75} viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
     </svg>
   )
 }
@@ -151,7 +151,7 @@ export default function Nav() {
 
       if (!cancelled && profile) {
         const name = (profile.owner_name || profile.business_name || '').trim()
-        if (name) setDisplayName(name.slice(0, 15) + (name.length > 15 ? '…' : ''))
+        if (name) setDisplayName(name.slice(0, 20) + (name.length > 20 ? '…' : ''))
       }
     }
 
@@ -183,7 +183,7 @@ export default function Nav() {
 
   const links: { href: string; label: string; icon: (a: boolean) => React.ReactNode; badge?: number | null; dot?: boolean }[] = [
     { href: '/dashboard',               label: 'Home',      icon: (a) => <IconHome active={a} /> },
-    { href: '/dashboard/reviews',       label: 'Reviews',   icon: (a) => <IconRefresh active={a} />, badge: pendingCount > 0 ? pendingCount : null },
+    { href: '/dashboard/reviews',       label: 'Reviews',   icon: (a) => <IconReviews active={a} />, badge: pendingCount > 0 ? pendingCount : null },
     { href: '/dashboard/analytics',     label: 'Analytics', icon: (a) => <IconChart active={a} />, dot: analyticsStale },
     { href: '/dashboard/grow',          label: 'Grow',      icon: (a) => <IconGrow active={a} /> },
   ]
@@ -344,7 +344,7 @@ export default function Nav() {
               >
                 <span className="w-0.5 h-5 rounded-full flex-shrink-0 bg-transparent" />
                 <IconLogout />
-                Log Out
+                Sign Out
               </button>
             </div>
           </div>

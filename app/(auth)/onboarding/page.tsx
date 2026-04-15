@@ -8,9 +8,9 @@ const BUSINESS_TYPE_OPTIONS = ['Restaurant', 'Dental Practice', 'Hair Salon', 'M
 
 const VIBE_OPTIONS = [
   { value: 'casual',          label: 'Casual & Relaxed' },
-  { value: 'upscale',         label: 'Upscale & Refined' },
-  { value: 'family_friendly', label: 'Family-Friendly' },
-  { value: 'trendy',          label: 'Trendy & Modern' },
+  { value: 'upscale',         label: 'Upscale & Professional' },
+  { value: 'family_friendly', label: 'Friendly & Welcoming' },
+  { value: 'trendy',          label: 'Modern & Premium' },
 ]
 
 const TONE_OPTIONS = [
@@ -126,11 +126,11 @@ export default function OnboardingPage() {
     setError('')
     // Validate URLs if provided
     if (googleUrl.trim() && !googleUrl.includes('google.com/maps') && !googleUrl.includes('maps.google') && !googleUrl.includes('goo.gl/maps')) {
-      setError("That Google Maps URL doesn't look right. Search your restaurant on maps.google.com and copy the URL from your browser.")
+      setError("That Google Maps URL doesn't look right. Search your business on maps.google.com and copy the URL from your browser.")
       return
     }
     if (yelpUrl.trim() && !yelpUrl.includes('yelp.com/biz/')) {
-      setError("That Yelp URL doesn't look right. It should look like: yelp.com/biz/your-restaurant-city")
+      setError("That Yelp URL doesn't look right. It should look like: yelp.com/biz/your-business-city")
       return
     }
     if (taUrl.trim() && !taUrl.includes('tripadvisor.com')) {
@@ -191,7 +191,7 @@ export default function OnboardingPage() {
     }
   }
 
-  const stepLabels = ['Basics', 'Voice', 'Platforms', 'Training']
+  const stepLabels = ['Basics', 'Voice', 'Platforms', 'Style']
   const totalSteps = stepLabels.length
 
   if (checking) {
@@ -210,9 +210,10 @@ export default function OnboardingPage() {
 
       {/* Logo */}
       <div className="flex items-center gap-2.5 mb-7">
-        <div className="w-8 h-8 rounded-lg bg-[#E05A28] flex items-center justify-center">
-          <svg className="text-white" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 2v4a2 2 0 002 2v6M8 2v10M11 2s2 1 2 3-2 3-2 3v4"/>
+        <div className="w-8 h-8 rounded-lg bg-[#E05A28] flex items-center justify-center flex-shrink-0">
+          <svg viewBox="0 0 20 20" fill="none" style={{ width: 16, height: 16 }}>
+            <path d="M2 1.5h9A1.5 1.5 0 0112.5 3v5A1.5 1.5 0 0111 9.5H7l-2 2v-2H2A1.5 1.5 0 01.5 8V3A1.5 1.5 0 012 1.5z" fill="white" fillOpacity="0.5" />
+            <path d="M8 8h9.5A1.5 1.5 0 0119 9.5v5A1.5 1.5 0 0117.5 16H16v2.5l-3-2.5H8A1.5 1.5 0 016.5 14.5v-5A1.5 1.5 0 018 8z" fill="white" />
           </svg>
         </div>
         <span className="text-[16px] font-bold text-[#111] tracking-tight">Replyfi</span>
@@ -225,7 +226,7 @@ export default function OnboardingPage() {
           <div className="h-1.5 bg-[#EDE9E4] rounded-full overflow-hidden mb-4">
             <div
               className="h-full bg-[#E05A28] rounded-full transition-all duration-500 ease-out"
-              style={{ width: `${((step - 1) / (totalSteps - 1)) * 100}%` }}
+              style={{ width: `${(step / totalSteps) * 100}%` }}
             />
           </div>
           <div className="flex items-center justify-between">
@@ -257,7 +258,7 @@ export default function OnboardingPage() {
           {/* ── Step 1: Basics ─────────────────────────────────────── */}
           {step === 1 && (
             <>
-              <h2 className="text-[18px] font-bold text-[#111] tracking-[-0.02em] mb-1">Restaurant Basics</h2>
+              <h2 className="text-[18px] font-bold text-[#111] tracking-[-0.02em] mb-1">Business Basics</h2>
               <p className="text-[13px] text-[#A8A29E] mb-5">Takes 30 seconds — we only need the essentials.</p>
               <form onSubmit={handleStep1} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -321,7 +322,7 @@ export default function OnboardingPage() {
               <p className="text-[13px] text-[#A8A29E] mb-5">This shapes how all your replies will sound.</p>
               <form onSubmit={handleStep2} className="space-y-5">
                 <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.10em] text-[#A8A29E] mb-2.5">Restaurant Vibe</p>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.10em] text-[#A8A29E] mb-2.5">Business Vibe</p>
                   <div className="grid grid-cols-2 gap-2">
                     {VIBE_OPTIONS.map((opt) => (
                       <OptionButton key={opt.value} selected={vibe === opt.value} onClick={() => setVibe(opt.value)}>
@@ -392,7 +393,7 @@ export default function OnboardingPage() {
                 {/* Yelp — optional */}
                 <div className="rounded-xl border border-[#E4DED8] bg-[#FAFAF8] p-4 space-y-2.5">
                   <div className="flex items-center gap-2">
-                    <span className="w-4 h-4 flex items-center justify-center font-black text-[#FF1A1A] text-[12px] leading-none">y!</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF1A1A"><path d="M21.111 18.226c-.141.969-2.119 3.483-3.029 3.847-.311.124-.611.094-.838-.09-.154-.12-.314-.365-2.447-3.827l-.633-1.046c-.2-.316-.16-.722.094-1.016a1.4 1.4 0 011.046-.477l.049.001c.025.001 3.793.337 4.001.356.406.037.68.221.802.534.093.237.083.512-.045.718zM9.535 14.947c-.157.557-.803 3.47-.868 4.044a.83.83 0 00.33.782c.21.155.501.195.83.115 1.028-.255 3.174-2.161 3.427-3.117a1.28 1.28 0 00-.156-1.017 1.304 1.304 0 00-.893-.578l-1.177-.188c-.405-.064-.794-.023-1.064.145a.887.887 0 00-.429.814zM21.245 12.55c-.189-.444-2.348-2.464-3.308-3.15a.852.852 0 00-.839-.084c-.296.136-.49.435-.528.806-.006.055-.314 3.813-.349 4.026-.07.411.065.726.38.893.228.122.516.124.786.005l1.076-.47c.375-.163 3.1-1.354 3.241-1.597a.826.826 0 00-.459-1.429zm-10.617-8.42C10.36 3.52 9.853.972 9.686.57 9.55.252 9.319.065 9.035.009c-.296-.058-.633.05-.913.299C7.27 1.074 6.144 4.057 6.178 5.045c.018.516.217.927.561 1.159.327.22.748.265 1.185.127l1.124-.343c.394-.12 2.785-.879 2.58-1.858zm-2.261 7.197c.28-.276.38-.676.27-1.073L8.14 9.047c-.108-.387-.392-2.74-.433-2.903-.085-.338-.302-.56-.6-.611a.848.848 0 00-.786.292C5.587 6.712 4.12 9.566 4.08 10.55c-.021.508.148.935.477 1.203.309.251.727.334 1.168.232l1.151-.265c.402-.092 1.972-.704 2.491-.393z"/></svg>
                     <span className="text-[13px] font-semibold text-[#111]">Yelp</span>
                     <span className="text-[10px] font-medium text-[#A8A29E] bg-[#F3F0EC] border border-[#E4DED8] px-1.5 py-0.5 rounded-full leading-none">Optional</span>
                   </div>
@@ -408,7 +409,7 @@ export default function OnboardingPage() {
                 {/* TripAdvisor — optional */}
                 <div className="rounded-xl border border-[#E4DED8] bg-[#FAFAF8] p-4 space-y-2.5">
                   <div className="flex items-center gap-2">
-                    <span className="w-4 h-4 flex items-center justify-center font-black text-[#34E0A1] text-[10px] leading-none">TA</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#34E0A1"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 2c4.418 0 8 3.582 8 8s-3.582 8-8 8-8-3.582-8-8 3.582-8 8-8zm0 2a6 6 0 100 12A6 6 0 0012 6zm0 2a4 4 0 110 8 4 4 0 010-8zm0 2a2 2 0 100 4 2 2 0 000-4zM7 8.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3zm10 0a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/></svg>
                     <span className="text-[13px] font-semibold text-[#111]">TripAdvisor</span>
                     <span className="text-[10px] font-medium text-[#A8A29E] bg-[#F3F0EC] border border-[#E4DED8] px-1.5 py-0.5 rounded-full leading-none">Optional</span>
                   </div>

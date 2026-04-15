@@ -161,6 +161,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
   const [downloadingReport, setDownloadingReport] = useState(false)
   const [downloadingCsv, setDownloadingCsv] = useState(false)
   const [showDownloadMenu, setShowDownloadMenu] = useState(false)
+  const [downloadError, setDownloadError] = useState<string | null>(null)
 
   // ── Core metrics ───────────────────────────────────────────────────────────
   const totalReviews = reviews.length
@@ -390,7 +391,8 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       a.click()
       URL.revokeObjectURL(url)
     } catch {
-      alert('Export failed. Please try again.')
+      setDownloadError('CSV export failed. Please try again.')
+      setTimeout(() => setDownloadError(null), 5000)
     } finally {
       setDownloadingCsv(false)
     }
@@ -910,7 +912,8 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       doc.save(`${slug}-${monthSlug}-report.pdf`)
     } catch (err) {
       console.error('PDF generation error:', err)
-      alert('Failed to generate report. Please try again.')
+      setDownloadError('Failed to generate PDF. Please try again.')
+      setTimeout(() => setDownloadError(null), 5000)
     } finally {
       setDownloadingReport(false)
     }
@@ -928,7 +931,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
         <div>
           <h1 className="text-[22px] font-bold tracking-tight text-[#111111] leading-tight">{restaurantName}</h1>
           <p className="text-[#A8A29E] text-[13px] mt-1">
-            {totalReviews} review{totalReviews !== 1 ? 's' : ''} analysed
+            {totalReviews} review{totalReviews !== 1 ? 's' : ''} analyzed
             {ratingDelta !== null && (
               <span className={`ml-2 font-semibold ${ratingDelta > 0 ? 'text-emerald-600' : ratingDelta < 0 ? 'text-red-500' : 'text-[#A8A29E]'}`}>
                 {ratingDelta > 0 ? `↑ +${ratingDelta.toFixed(1)} vs last month` : ratingDelta < 0 ? `↓ ${ratingDelta.toFixed(1)} vs last month` : '→ steady vs last month'}
@@ -939,7 +942,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
 
         <div className="flex items-center gap-2 flex-shrink-0 flex-wrap">
           {lastAnalyzedAt && (
-            <span className="text-[11px] text-[#A8A29E] hidden sm:block">Last analysed {formatDate(lastAnalyzedAt)}</span>
+            <span className="text-[11px] text-[#A8A29E] hidden sm:block">Last analyzed {formatDate(lastAnalyzedAt)}</span>
           )}
 
           <button
@@ -950,7 +953,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
             <svg className={`w-3 h-3 ${refreshing ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
-            {refreshing ? 'Analysing…' : 'Refresh AI'}
+            {refreshing ? 'Analyzing…' : 'Refresh AI'}
           </button>
 
           {/* Download dropdown */}
@@ -988,6 +991,16 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
           </div>
         </div>
       </div>
+
+      {/* Download error */}
+      {downloadError && (
+        <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 flex items-center gap-2.5">
+          <svg className="w-4 h-4 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p className="text-[13px] text-red-600">{downloadError}</p>
+        </div>
+      )}
 
       {/* ── QUICK WIN ──────────────────────────────────────────────────────── */}
       {!themesLoading && !themes.insufficient && themes.opportunities.length > 0 && (

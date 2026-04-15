@@ -62,9 +62,9 @@ function getInitials(name: string) {
 // ── Scraping progress indicator ───────────────────────────────────────────────
 
 const SCRAPE_MESSAGES = [
-  'Scanning Google reviews…',
+  'Scanning your reviews…',
   'Reading what customers said…',
-  'Crafting personalised replies…',
+  'Crafting personalized replies…',
   'Almost done…',
 ]
 
@@ -906,12 +906,7 @@ export default function ReviewsClient({ profile, initialReviews, userId }: Props
   const [lastScrapedAt, setLastScrapedAt] = useState(mostRecentSync)
   const supabase = createClient()
 
-  // Request notification permission on mount
-  useEffect(() => {
-    if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission()
-    }
-  }, [])
+  // Notification permission is requested lazily on first sync, not on mount
 
   const handleSaved = (url: string) => { setMapsUrl(url); handleScrapeNow() }
 
@@ -942,10 +937,20 @@ export default function ReviewsClient({ profile, initialReviews, userId }: Props
         setLastScrapedAt(new Date().toISOString())
         window.dispatchEvent(new CustomEvent('reviewsUpdated'))
         // Fire browser notification if new reviews found
-        if ('Notification' in window && Notification.permission === 'granted') {
-          const newCount = data?.newReviews ?? 0
-          if (newCount > 0) {
-            new Notification(`🍴 ${newCount} new review${newCount !== 1 ? 's' : ''} synced`, {
+        const newCount = data?.newReviews ?? 0
+        if (newCount > 0 && 'Notification' in window) {
+          // Ask permission lazily — only when there's actually something to notify about
+          if (Notification.permission === 'default') {
+            Notification.requestPermission().then((perm) => {
+              if (perm === 'granted') {
+                new Notification(`${newCount} new review${newCount !== 1 ? 's' : ''} synced`, {
+                  body: `${newCount} new review${newCount !== 1 ? 's' : ''} for ${profile.business_name} — replies are ready`,
+                  icon: '/favicon.svg',
+                })
+              }
+            })
+          } else if (Notification.permission === 'granted') {
+            new Notification(`${newCount} new review${newCount !== 1 ? 's' : ''} synced`, {
               body: `${newCount} new review${newCount !== 1 ? 's' : ''} for ${profile.business_name} — replies are ready`,
               icon: '/favicon.svg',
             })
@@ -960,8 +965,17 @@ export default function ReviewsClient({ profile, initialReviews, userId }: Props
   }
 
   const handleApprove = async (id: string) => {
+    // Copy reply to clipboard at the same time as approving (matches home page behaviour)
+    const review = reviews.find((r) => r.id === id)
+    if (review?.generated_reply) {
+      navigator.clipboard.writeText(review.generated_reply).catch(() => {})
+    }
     setReviews((prev) => prev.map((r) => r.id === id ? { ...r, reply_status: 'approved' as const } : r))
-    await supabase.from('scraped_reviews').update({ reply_status: 'approved' }).eq('id', id).eq('user_id', userId)
+    const { error } = await supabase.from('scraped_reviews').update({ reply_status: 'approved' }).eq('id', id).eq('user_id', userId)
+    if (error) {
+      // Revert optimistic update on failure
+      setReviews((prev) => prev.map((r) => r.id === id ? { ...r, reply_status: 'pending' as const } : r))
+    }
     window.dispatchEvent(new CustomEvent('reviewsUpdated'))
   }
 

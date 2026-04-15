@@ -869,7 +869,7 @@ export default function LandingPage() {
           </div>
 
           <div className="border-t border-[#1E1E1E] pt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1">
-            <p className="text-[12px] text-[#444]">© 2025 Replyfi · Austin, TX</p>
+            <p className="text-[12px] text-[#444]">© 2026 Replyfi · Austin, TX</p>
             <p className="text-[11px] text-[#333]">AI-powered review replies for local businesses.</p>
           </div>
         </div>

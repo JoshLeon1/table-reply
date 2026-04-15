@@ -9,6 +9,7 @@ type ScrapedReview = {
   star_rating: number
   review_text: string
   review_datetime_utc: string
+  source?: string | null
 }
 
 type RestaurantProfile = {
@@ -419,6 +420,18 @@ function platformTopBorder(platform: string): string {
   return 'border-t-2 border-t-[#E05A28]/50' // Google default
 }
 
+function sourceBadge(source?: string | null) {
+  if (source === 'yelp') return <span className="text-[10px] font-bold text-red-500 bg-red-50 border border-red-200 rounded-md px-1.5 py-0.5 leading-none">YELP</span>
+  if (source === 'tripadvisor') return <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 rounded-md px-1.5 py-0.5 leading-none">TA</span>
+  return <span className="text-[10px] font-bold text-blue-500 bg-blue-50 border border-blue-200 rounded-md px-1.5 py-0.5 leading-none">G</span>
+}
+
+function sourceTopBorder(source?: string | null): string {
+  if (source === 'yelp') return 'border-t-2 border-t-red-200'
+  if (source === 'tripadvisor') return 'border-t-2 border-t-emerald-200'
+  return 'border-t-2 border-t-blue-200'
+}
+
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 export default function SocialClient({ reviews, restaurantProfile }: Props) {
@@ -451,11 +464,11 @@ export default function SocialClient({ reviews, restaurantProfile }: Props) {
           {goodReviews.map((review) => (
             <div
               key={review.id}
-              className={`bg-white rounded-2xl border border-[#E4DED8] ${platformTopBorder('Google')} p-4 sm:p-5 flex flex-col gap-3 hover:border-[#D0C9C1] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-all duration-150`}
+              className={`bg-white rounded-2xl border border-[#E4DED8] ${sourceTopBorder(review.source)} p-4 sm:p-5 flex flex-col gap-3 hover:border-[#D0C9C1] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-all duration-150`}
             >
               {/* Header row: platform badge + timestamp */}
               <div className="flex items-center justify-between gap-2">
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#F3F0EC] border border-[#E4DED8] text-[#A8A29E]">Google</span>
+                {sourceBadge(review.source)}
                 <span className="text-[11px] text-[#A8A29E]">
                   {review.review_datetime_utc
                     ? new Date(review.review_datetime_utc).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })

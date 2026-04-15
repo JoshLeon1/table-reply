@@ -85,6 +85,10 @@ export default function BusinessProfileForm({
   const [placesAddress, setPlacesAddress] = useState('')
   // Tracks whether google_maps_url was auto-filled from Places
   const [mapsUrlAutoFilled, setMapsUrlAutoFilled] = useState(false)
+  // Tracks auto-fill state for Yelp / TripAdvisor
+  const [urlSearching, setUrlSearching] = useState(false)
+  const [yelpAutoFilled, setYelpAutoFilled] = useState(false)
+  const [taAutoFilled, setTaAutoFilled] = useState(false)
 
   // Autocomplete state
   const [dropdownOpen, setDropdownOpen] = useState(false)
@@ -142,7 +146,7 @@ export default function BusinessProfileForm({
     }
   }
 
-  const handlePlaceSelect = (place: PlaceResult) => {
+  const handlePlaceSelect = async (place: PlaceResult) => {
     setForm((prev) => ({
       ...prev,
       business_name: place.name,
@@ -154,6 +158,33 @@ export default function BusinessProfileForm({
     setPlaceResults([])
     setPlacesSearched(false)
     if (debounceRef.current) clearTimeout(debounceRef.current)
+
+    // Auto-find Yelp + TripAdvisor URLs via Outscraper search
+    setUrlSearching(true)
+    setYelpAutoFilled(false)
+    setTaAutoFilled(false)
+    try {
+      const res = await fetch('/api/find-business-urls', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ businessName: place.name, address: place.address }),
+      })
+      if (res.ok) {
+        const data = await res.json()
+        if (data.yelpUrl) {
+          setForm((prev) => ({ ...prev, yelp_url: data.yelpUrl }))
+          setYelpAutoFilled(true)
+        }
+        if (data.tripAdvisorUrl) {
+          setForm((prev) => ({ ...prev, tripadvisor_url: data.tripAdvisorUrl }))
+          setTaAutoFilled(true)
+        }
+      }
+    } catch {
+      // Silently fail — user can still fill manually
+    } finally {
+      setUrlSearching(false)
+    }
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -365,7 +396,21 @@ export default function BusinessProfileForm({
                 Yelp URL
               </label>
               <span className="text-[11px] text-[#A8A29E]">(optional)</span>
-              {form.business_name && (
+              {urlSearching && !yelpAutoFilled && (
+                <span className="flex items-center gap-1 text-[11px] text-[#A8A29E]">
+                  <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                  </svg>
+                  Searching…
+                </span>
+              )}
+              {yelpAutoFilled && (
+                <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                  Auto-filled ✓
+                </span>
+              )}
+              {!urlSearching && !yelpAutoFilled && form.business_name && (
                 <a
                   href={yelpSearchUrl}
                   target="_blank"
@@ -380,7 +425,10 @@ export default function BusinessProfileForm({
               id="yelp_url"
               type="url"
               value={form.yelp_url}
-              onChange={(e) => setForm({ ...form, yelp_url: e.target.value })}
+              onChange={(e) => {
+                setYelpAutoFilled(false)
+                setForm({ ...form, yelp_url: e.target.value })
+              }}
               placeholder="https://www.yelp.com/biz/your-business"
               className="w-full h-10 px-3.5 rounded-xl border border-[#E4DED8] bg-[#F8F6F3] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10 transition-all"
             />
@@ -396,7 +444,21 @@ export default function BusinessProfileForm({
                 TripAdvisor URL
               </label>
               <span className="text-[11px] text-[#A8A29E]">(optional)</span>
-              {form.business_name && (
+              {urlSearching && !taAutoFilled && (
+                <span className="flex items-center gap-1 text-[11px] text-[#A8A29E]">
+                  <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                  </svg>
+                  Searching…
+                </span>
+              )}
+              {taAutoFilled && (
+                <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                  Auto-filled ✓
+                </span>
+              )}
+              {!urlSearching && !taAutoFilled && form.business_name && (
                 <a
                   href={taSearchUrl}
                   target="_blank"
@@ -411,7 +473,10 @@ export default function BusinessProfileForm({
               id="tripadvisor_url"
               type="url"
               value={form.tripadvisor_url}
-              onChange={(e) => setForm({ ...form, tripadvisor_url: e.target.value })}
+              onChange={(e) => {
+                setTaAutoFilled(false)
+                setForm({ ...form, tripadvisor_url: e.target.value })
+              }}
               placeholder="https://www.tripadvisor.com/Restaurant_Review-..."
               className="w-full h-10 px-3.5 rounded-xl border border-[#E4DED8] bg-[#F8F6F3] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10 transition-all"
             />

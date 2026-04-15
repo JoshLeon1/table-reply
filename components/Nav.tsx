@@ -164,7 +164,7 @@ export default function Nav() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-b border-[#E4DED8]" style={{ boxShadow: '0 1px 0 rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.06)' }}>
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-b border-[#E4DED8]" style={{ boxShadow: '0 1px 0 rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.06)', paddingTop: 'env(safe-area-inset-top)' }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-16">
 
@@ -256,7 +256,7 @@ export default function Nav() {
             onClick={() => setMobileOpen(false)}
           />
 
-          <div className={`lg:hidden fixed top-16 left-0 right-0 z-50 bg-white border-b border-[#E4DED8] shadow-[0_20px_50px_rgba(0,0,0,0.10)] transition-transform duration-300 ease-out overflow-y-auto max-h-[calc(100dvh-64px)] ${mobileOpen ? 'translate-y-0' : '-translate-y-[110%]'}`}>
+          <div className={`lg:hidden fixed left-0 right-0 z-50 bg-white border-b border-[#E4DED8] shadow-[0_20px_50px_rgba(0,0,0,0.10)] transition-transform duration-300 ease-out overflow-y-auto ${mobileOpen ? 'translate-y-0' : '-translate-y-[110%]'}`} style={{ top: 'calc(64px + env(safe-area-inset-top))', maxHeight: 'calc(100dvh - 64px - env(safe-area-inset-top))' }}>
             <div className="px-3 py-2 space-y-0.5">
               {links.map((link) => {
                 const active = pathname === link.href

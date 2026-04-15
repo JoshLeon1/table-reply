@@ -16,6 +16,9 @@ export const viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
+  // Cover extends page behind the iOS notch/status bar so we can
+  // fill the gap with the nav background using safe-area-inset-top
+  viewportFit: 'cover',
 }
 
 export const metadata: Metadata = {

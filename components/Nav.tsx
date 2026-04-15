@@ -70,26 +70,10 @@ function IconChart({ active }: { active: boolean }) {
   )
 }
 
-function IconShare({ active }: { active: boolean }) {
+function IconGrow({ active }: { active: boolean }) {
   return (
     <svg className="w-4 h-4 flex-shrink-0" fill={active ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={active ? 0 : 1.75} viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-    </svg>
-  )
-}
-
-function IconUsers({ active }: { active: boolean }) {
-  return (
-    <svg className="w-4 h-4 flex-shrink-0" fill={active ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={active ? 0 : 1.75} viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-    </svg>
-  )
-}
-
-function IconStar({ active }: { active: boolean }) {
-  return (
-    <svg className="w-4 h-4 flex-shrink-0" fill={active ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={active ? 0 : 1.75} viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
     </svg>
   )
 }
@@ -172,19 +156,17 @@ export default function Nav() {
   }
 
   const links: { href: string; label: string; icon: (a: boolean) => React.ReactNode; badge?: number | null; dot?: boolean }[] = [
-    { href: '/dashboard',                  label: 'Home',            icon: (a) => <IconHome active={a} /> },
-    { href: '/dashboard/reviews',          label: 'Reviews',         icon: (a) => <IconRefresh active={a} />, badge: pendingCount > 0 ? pendingCount : null },
-    { href: '/dashboard/analytics',        label: 'Analytics',       icon: (a) => <IconChart active={a} />, dot: analyticsStale },
-    { href: '/dashboard/social',           label: 'Social',          icon: (a) => <IconShare active={a} /> },
-    { href: '/dashboard/competitors',      label: 'Competitors',     icon: (a) => <IconUsers active={a} /> },
-    { href: '/dashboard/get-more-reviews', label: 'Get Reviews',     icon: (a) => <IconStar active={a} /> },
+    { href: '/dashboard',               label: 'Home',      icon: (a) => <IconHome active={a} /> },
+    { href: '/dashboard/reviews',       label: 'Reviews',   icon: (a) => <IconRefresh active={a} />, badge: pendingCount > 0 ? pendingCount : null },
+    { href: '/dashboard/analytics',     label: 'Analytics', icon: (a) => <IconChart active={a} />, dot: analyticsStale },
+    { href: '/dashboard/grow',          label: 'Grow',      icon: (a) => <IconGrow active={a} /> },
   ]
 
   return (
     <>
       <nav className="sticky top-0 z-40 bg-white/95 backdrop-blur-xl border-b border-[#E4DED8]" style={{ boxShadow: '0 1px 0 rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.06)' }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center justify-between h-14">
+          <div className="flex items-center justify-between h-16">
 
             {/* Logo */}
             <Link href="/dashboard" className="flex items-center gap-2.5 flex-shrink-0 group">
@@ -196,14 +178,14 @@ export default function Nav() {
             </Link>
 
             {/* Desktop links */}
-            <div className="hidden lg:flex items-center gap-0.5">
+            <div className="hidden lg:flex items-center gap-1">
               {links.map((link) => {
                 const active = pathname === link.href
                 return (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all duration-150 active:scale-[0.97] ${
+                    className={`relative flex items-center gap-2 px-4 py-2 rounded-xl text-[14px] font-medium transition-all duration-150 active:scale-[0.97] ${
                       active
                         ? 'text-[#111111] bg-[#F3F0EC] border border-[#E4DED8]'
                         : 'text-[#111111]/40 hover:text-[#111111]/70 hover:bg-[#F3F0EC]'
@@ -274,7 +256,7 @@ export default function Nav() {
             onClick={() => setMobileOpen(false)}
           />
 
-          <div className={`lg:hidden fixed top-14 left-0 right-0 z-50 bg-white border-b border-[#E4DED8] shadow-[0_20px_50px_rgba(0,0,0,0.10)] transition-transform duration-300 ease-out overflow-y-auto max-h-[calc(100dvh-56px)] ${mobileOpen ? 'translate-y-0' : '-translate-y-[110%]'}`}>
+          <div className={`lg:hidden fixed top-16 left-0 right-0 z-50 bg-white border-b border-[#E4DED8] shadow-[0_20px_50px_rgba(0,0,0,0.10)] transition-transform duration-300 ease-out overflow-y-auto max-h-[calc(100dvh-64px)] ${mobileOpen ? 'translate-y-0' : '-translate-y-[110%]'}`}>
             {/* Branding strip */}
             <div className="flex items-center gap-3 px-5 py-3.5 border-b border-[#E4DED8]">
               <LogoMark size={22} />

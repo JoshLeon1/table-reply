@@ -38,7 +38,7 @@ export default function ResetPasswordPage() {
 
     setSuccess(true)
     setLoading(false)
-    setTimeout(() => router.push('/login'), 2000)
+    setTimeout(() => router.push('/dashboard'), 2000)
   }
 
   return (
@@ -57,19 +57,19 @@ export default function ResetPasswordPage() {
         </div>
 
         <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-modal p-7 sm:p-8">
-          <h1 className="text-[20px] font-bold text-[#111] tracking-[-0.02em] mb-1">Set new password</h1>
+          <h1 className="text-[20px] font-bold text-[#111] tracking-[-0.02em] mb-1">Set New Password</h1>
           <p className="text-[14px] text-[#7C7672] mb-6">Choose a strong password for your account.</p>
 
           {success ? (
             <div className="rounded-xl bg-emerald-50 border border-emerald-100 px-4 py-4">
-              <p className="text-[13px] text-emerald-700 font-medium">Password updated! Redirecting to sign in…</p>
+              <p className="text-[13px] text-emerald-700 font-medium">Password updated! Redirecting to your dashboard…</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <Input
                 id="password"
                 type="password"
-                label="New password"
+                label="New Password"
                 hint="At least 8 characters"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -81,7 +81,7 @@ export default function ResetPasswordPage() {
               <Input
                 id="confirm-password"
                 type="password"
-                label="Confirm new password"
+                label="Confirm New Password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="••••••••"
@@ -104,7 +104,7 @@ export default function ResetPasswordPage() {
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                   </svg>
                 )}
-                Update password
+                Update Password
               </button>
             </form>
           )}

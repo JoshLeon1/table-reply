@@ -1,10 +1,10 @@
 'use client'
 
-// IMPORTANT: In Supabase dashboard go to:
-// Authentication → Settings → turn OFF "Enable email confirmations"
-// This allows users to sign in immediately after signup without email verification
+// NOTE: Email confirmations are ENABLED in Supabase.
+// New users must confirm their email before signing in.
+// The login page handles the "Email not confirmed" error gracefully.
 //
-// IMPORTANT: While Google OAuth app is in testing mode, only test users can sign in.
+// NOTE: While Google OAuth app is in testing mode, only test users can sign in.
 // Go to console.cloud.google.com → OAuth consent screen → Test users → Add your email
 // To allow all users, publish the app (Audience → Publish App)
 
@@ -93,7 +93,7 @@ export default function LoginPage() {
       const supabase = createClient()
       const { data, error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo: `https://table-reply.vercel.app/auth/callback` },
+        options: { redirectTo: `${window.location.origin}/auth/callback` },
       })
       if (oauthError) {
         console.error('[TableReply] Google OAuth error:', oauthError.message, oauthError)

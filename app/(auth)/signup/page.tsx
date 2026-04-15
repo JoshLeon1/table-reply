@@ -1,11 +1,10 @@
 'use client'
 
-// NOTE: To disable email confirmation (recommended for smoother onboarding):
-// Supabase Dashboard → Authentication → Settings → uncheck "Enable email confirmations"
-// When disabled: signUp() returns a session immediately and user can proceed to onboarding
-// When enabled: signUp() returns session: null and user must confirm email first
+// NOTE: Email confirmations are ENABLED in Supabase.
+// signUp() returns session: null — user sees "Check your inbox" and must confirm before signing in.
+// On confirmation, the link hits /auth/callback which redirects to /onboarding (new) or /dashboard (returning).
 //
-// IMPORTANT: While Google OAuth app is in testing mode, only test users can sign in.
+// NOTE: While Google OAuth app is in testing mode, only test users can sign in.
 // Go to console.cloud.google.com → OAuth consent screen → Test users → Add your email
 // To allow all users, publish the app (Audience → Publish App)
 
@@ -56,7 +55,13 @@ export default function SignupPage() {
 
     try {
       const supabase = createClient()
-      const { data, error: signUpError } = await supabase.auth.signUp({ email, password })
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      })
 
       if (signUpError) {
         console.error('[TableReply] Signup error:', signUpError.message)
@@ -99,7 +104,7 @@ export default function SignupPage() {
       const supabase = createClient()
       const { data, error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo: `https://table-reply.vercel.app/auth/callback` },
+        options: { redirectTo: `${window.location.origin}/auth/callback` },
       })
       if (oauthError) {
         console.error('[TableReply] Google OAuth error:', oauthError.message, oauthError)

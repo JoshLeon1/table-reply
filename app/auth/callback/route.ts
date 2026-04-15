@@ -6,13 +6,19 @@ import { NextResponse } from 'next/server'
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
+  const next = searchParams.get('next') // e.g. /reset-password
 
   if (code) {
     const supabase = createClient()
     const { data, error } = await supabase.auth.exchangeCodeForSession(code)
 
     if (!error && data.user) {
-      // Check if user has completed onboarding
+      // If a specific next page was requested (e.g. password reset), go there
+      if (next) {
+        return NextResponse.redirect(`${origin}${next}`)
+      }
+
+      // Otherwise route by onboarding status
       const { data: profile } = await supabase
         .from('restaurant_profiles')
         .select('id')

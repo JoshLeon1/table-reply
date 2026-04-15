@@ -131,9 +131,9 @@ export default function LandingPage() {
       desc: 'Turn 5-star reviews into polished Instagram, TikTok, and Facebook posts in one click.',
     },
     {
-      icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" /></svg>,
-      title: 'Competitor Tracking',
-      desc: 'Monitor nearby competitors\' ratings and review counts automatically.',
+      icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>,
+      title: 'Direct Platform Deep Links',
+      desc: "Click 'Respond on Google/Yelp/TripAdvisor' and land directly on that specific review — no hunting through pages to find where to paste.",
     },
     {
       icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" /></svg>,
@@ -145,7 +145,7 @@ export default function LandingPage() {
   const steps = [
     { num: '1', title: 'Connect your restaurant', desc: 'Link your Google, Yelp, and TripAdvisor listings once. Takes under 2 minutes.' },
     { num: '2', title: 'Your reviews appear automatically', desc: 'TableReply pulls in your latest reviews every day — no manual work, no copy-pasting.' },
-    { num: '3', title: 'Send personalized replies in seconds', desc: 'Open a review, get an AI draft in your voice, copy it, and post. Done.' },
+    { num: '3', title: 'Approve, Edit, Then Post With One Click', desc: "Review the AI draft, edit inline if needed, then approve it. Your Approved tab collects everything ready to post — copy the reply and click 'Respond on Google/Yelp/TripAdvisor' to land directly on that specific review." },
   ]
 
   const testimonials = [
@@ -166,6 +166,8 @@ export default function LandingPage() {
   const proFeatures = [
     'Unlimited AI replies',
     'Google + Yelp + TripAdvisor auto-sync',
+    'Direct deep links to review platforms',
+    'Inline reply editing before approving',
     'Keyword alerts',
     'Staff mention tracking',
     'Multi-language replies',
@@ -174,11 +176,11 @@ export default function LandingPage() {
   ]
 
   const faqs = [
-    { q: 'Do I approve replies before they get posted?', a: 'Yes, always. TableReply generates a draft — you review it, edit if needed, then copy and paste it yourself. Nothing posts automatically.' },
+    { q: 'Do I approve replies before they get posted?', a: 'Yes, always. TableReply generates a draft — you review it, edit inline if needed, then approve it. Approved replies go to your Approved tab, where you copy and paste on the platform yourself. Nothing ever posts automatically.' },
     { q: 'Does this connect to Google, Yelp, and TripAdvisor automatically?', a: 'Yes — all three sync every day. Connect each platform once in Settings and reviews start appearing in your dashboard.' },
     { q: 'Will replies sound robotic or generic?', a: "No. You set your restaurant's name, cuisine, owner name, and tone. Every reply is written specifically for that review — it won't sound like a template." },
     { q: 'How long does setup take?', a: "About 2 minutes. Enter your restaurant name, cuisine type, and tone. That's it — you can start generating replies immediately." },
-    { q: 'Can I edit the replies before I use them?', a: 'Absolutely. Every reply is just a draft. Edit however you like before copying it to the review platform.' },
+    { q: 'Can I edit the replies before I use them?', a: 'Absolutely. Every reply has an inline edit button right in the dashboard — make changes before you approve. Once approved, copy it and respond directly on the platform.' },
   ]
 
   return (
@@ -273,7 +275,7 @@ export default function LandingPage() {
                     <div className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
                     <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50" />
                     <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/50" />
-                    <span className="ml-2 text-white/20 text-[11px]">TableReply — Auto Reviews</span>
+                    <span className="ml-2 text-white/20 text-[11px]">TableReply — Pending Reviews</span>
                   </div>
 
                   <div className="p-4">
@@ -295,9 +297,9 @@ export default function LandingPage() {
                         <p className="text-white/65 text-[11px] leading-relaxed">Thank you so much, Sarah! Chef Marco loves connecting with guests. See you again soon! 🙏</p>
                       </div>
                       <div className="mt-2.5 ml-9 flex gap-1.5">
-                        <div className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-white text-[#111] text-[10px] font-semibold">
-                          <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                          Copy &amp; Approve
+                        <div className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#E05A28] text-white text-[10px] font-semibold">
+                          <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>
+                          Approve Reply
                         </div>
                         <div className="px-2.5 py-1.5 rounded-lg border border-white/10 text-white/30 text-[10px]">Dismiss</div>
                       </div>
@@ -373,7 +375,7 @@ export default function LandingPage() {
           <div className="text-center mb-8 sm:mb-10">
             <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28] mb-2.5">Real Example</p>
             <h2 className="font-bold text-[#111111]" style={{ fontSize: 'clamp(22px, 3vw, 34px)', lineHeight: 1.15, letterSpacing: '-0.02em' }}>
-              See exactly what you&apos;ll get
+              See Exactly What You&apos;ll Get
             </h2>
             <p className="text-[14px] text-[#777] mt-2 max-w-sm mx-auto">A real 1-star review. The reply TableReply drafts in seconds.</p>
           </div>
@@ -438,7 +440,7 @@ export default function LandingPage() {
 
           {/* Section label */}
           <div className={`text-center mb-10 transition-all duration-700 ${problemAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/35 mb-2">The reality</p>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/35 mb-2">The Reality</p>
             <h2 className="font-bold text-white" style={{ fontSize: 'clamp(22px, 3vw, 32px)', lineHeight: 1.2, letterSpacing: '-0.02em' }}>
               Most owners want to reply. Few actually do.
             </h2>
@@ -486,8 +488,8 @@ export default function LandingPage() {
               <ul className="space-y-3.5">
                 {[
                   'Reviews are waiting with AI drafts every morning',
-                  'Copy, paste, done — under 30 seconds per review',
-                  'Every reviewer feels heard, even the unhappy ones',
+                  'Approve, copy, paste — under 30 seconds per review',
+                  'Deep link drops you right on the review to post',
                   'Each reply sounds personal, not templated',
                   'Higher response rate → more trust → more covers',
                 ].map((item, i) => (
@@ -509,12 +511,12 @@ export default function LandingPage() {
             ref={howItWorksAnim.ref}
             className={`mb-10 text-center transition-all duration-600 ${howItWorksAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
           >
-            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28] mb-2.5">How it works</p>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28] mb-2.5">How It Works</p>
             <h2 className="font-bold text-[#111111]" style={{ fontSize: 'clamp(22px, 3.5vw, 34px)', lineHeight: 1.2, letterSpacing: '-0.02em' }}>
-              Set up once. Replies ready every morning.
+              Set Up Once. Replies Ready Every Morning.
             </h2>
             <p className="text-[14px] text-[#777] mt-3 max-w-md mx-auto leading-relaxed">
-              TableReply connects to your review platforms and handles the heavy lifting automatically.
+              TableReply syncs your reviews automatically — you just approve, edit, and post.
             </p>
           </div>
 
@@ -551,9 +553,9 @@ export default function LandingPage() {
       <section className="py-12 sm:py-20 px-4 sm:px-6 bg-[#fafaf8] border-t border-[#e5e5e0]">
         <div ref={featuresAnim.ref} className="max-w-5xl mx-auto">
           <div className={`text-center mb-8 sm:mb-12 transition-all duration-700 ${featuresAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28] mb-2.5">Why it works</p>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28] mb-2.5">Why It Works</p>
             <h2 className="font-bold text-[#111111]" style={{ fontSize: 'clamp(22px, 3.5vw, 36px)', lineHeight: 1.12, letterSpacing: '-0.02em' }}>
-              Three things done right
+              Three Things Done Right
             </h2>
           </div>
 
@@ -561,7 +563,7 @@ export default function LandingPage() {
             {[
               {
                 num: '01',
-                title: 'Replies that sound like you',
+                title: 'Replies That Sound Like You',
                 desc: "Set your restaurant's name, cuisine, and tone once. Every reply matches your voice — warm, professional, or straight-talking. Guests can't tell it wasn't written by you.",
                 icon: (
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
@@ -572,7 +574,7 @@ export default function LandingPage() {
               },
               {
                 num: '02',
-                title: 'Every platform, hands-free',
+                title: 'Every Platform, Hands-Free',
                 desc: 'Google, Yelp, and TripAdvisor reviews sync to your dashboard every day — automatically. No browser tabs, no logging in. Just open TableReply and everything is waiting for you.',
                 icon: (
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
@@ -583,8 +585,8 @@ export default function LandingPage() {
               },
               {
                 num: '03',
-                title: 'From review to reply in seconds',
-                desc: "Click a review. Get a draft. Copy it. That's the whole workflow. No prompts, no editing required — just a thoughtful reply ready to paste wherever you need it.",
+                title: 'From Review to Posted in Seconds',
+                desc: "Get a draft, edit inline if needed, approve it — then click 'Respond on Google/Yelp/TripAdvisor' and land right on that review. Copy, paste, done.",
                 icon: (
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                 ),
@@ -634,7 +636,7 @@ export default function LandingPage() {
                   'Staff mention tracking',
                   'Multi-language replies',
                   'Social post generator',
-                  'Competitor rating tracker',
+                  'Direct platform deep links',
                 ].map((f) => (
                   <div key={f} className="flex items-center gap-1.5">
                     <svg className="w-3 h-3 text-[#A8A29E] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>
@@ -654,9 +656,9 @@ export default function LandingPage() {
             ref={testimonialsAnim.ref}
             className={`mb-8 sm:mb-12 text-center px-4 sm:px-6 transition-all duration-700 ${testimonialsAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
           >
-            <p className="text-[#E05A28] text-[11px] font-semibold uppercase tracking-wider mb-2.5">What owners say</p>
+            <p className="text-[#E05A28] text-[11px] font-semibold uppercase tracking-wider mb-2.5">What Owners Say</p>
             <h2 className="font-bold text-white" style={{ fontSize: 'clamp(22px, 3.5vw, 34px)', lineHeight: 1.2, letterSpacing: '-0.02em' }}>
-              Restaurant owners love it
+              Restaurant Owners Love It
             </h2>
           </div>
 
@@ -697,7 +699,7 @@ export default function LandingPage() {
         >
           <div className="text-center mb-8">
             <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28] mb-2.5">FAQ</p>
-            <h2 className="font-bold text-[#111111]" style={{ fontSize: 'clamp(20px, 3vw, 30px)', lineHeight: 1.2, letterSpacing: '-0.02em' }}>Common questions</h2>
+            <h2 className="font-bold text-[#111111]" style={{ fontSize: 'clamp(20px, 3vw, 30px)', lineHeight: 1.2, letterSpacing: '-0.02em' }}>Common Questions</h2>
           </div>
           <div className="space-y-2">
             {faqs.map(({ q, a }, i) => (
@@ -849,7 +851,7 @@ export default function LandingPage() {
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#444] mb-2.5">Product</p>
               <ul className="space-y-2">
-                {[{ label: 'Features', href: '#how-it-works' }, { label: 'Pricing', href: '#pricing' }, { label: 'Sign in', href: '/login' }, { label: 'Start free', href: '/signup' }].map(({ label, href }) => (
+                {[{ label: 'Features', href: '#how-it-works' }, { label: 'Pricing', href: '#pricing' }, { label: 'Sign In', href: '/login' }, { label: 'Start Free', href: '/signup' }].map(({ label, href }) => (
                   <li key={label}><Link href={href} className="text-[13px] text-[#555] hover:text-white transition-colors duration-200">{label}</Link></li>
                 ))}
               </ul>

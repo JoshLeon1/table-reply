@@ -279,9 +279,9 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
       if (tTrimmed) updates.tripadvisor_url = tTrimmed
 
       const { error: dbErr } = await supabase
-        .from('profiles')
+        .from('business_profiles')
         .update(updates)
-        .eq('id', user.id)
+        .eq('user_id', user.id)
 
       if (dbErr) throw new Error(dbErr.message)
 
@@ -430,6 +430,7 @@ const MANUAL_PLATFORMS = [
 function ManualGenerator({ prominent = false }: { prominent?: boolean }) {
   const [review, setReview] = useState('')
   const [platform, setPlatform] = useState('Google')
+  const [starRating, setStarRating] = useState(5)
   const [reply, setReply] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -440,7 +441,7 @@ function ManualGenerator({ prominent = false }: { prominent?: boolean }) {
     if (!review.trim()) return
     setLoading(true); setError(''); setReply('')
     try {
-      const res = await fetch('/api/generate-reply', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ reviewText: review, starRating: 3, platform }) })
+      const res = await fetch('/api/generate-reply', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ reviewText: review, starRating, platform }) })
       if (!res.ok) throw new Error()
       const data = await res.json()
       setReply(data.reply ?? data.generated_reply ?? '')
@@ -471,7 +472,7 @@ function ManualGenerator({ prominent = false }: { prominent?: boolean }) {
           <div className="flex-1 h-px bg-gradient-to-l from-[#E4DED8] to-transparent" />
         </button>
 
-        {open && <GeneratorBody review={review} setReview={setReview} platform={platform} setPlatform={setPlatform} reply={reply} loading={loading} error={error} copied={copied} onGenerate={generate} onCopy={handleCopy} prominent={false} />}
+        {open && <GeneratorBody review={review} setReview={setReview} platform={platform} setPlatform={setPlatform} starRating={starRating} setStarRating={setStarRating} reply={reply} loading={loading} error={error} copied={copied} onGenerate={generate} onCopy={handleCopy} prominent={false} />}
       </div>
     )
   }
@@ -488,33 +489,45 @@ function ManualGenerator({ prominent = false }: { prominent?: boolean }) {
           <p className="text-[11px] text-[#A8A29E]">Paste any review to get an AI-crafted reply instantly</p>
         </div>
       </div>
-      <GeneratorBody review={review} setReview={setReview} platform={platform} setPlatform={setPlatform} reply={reply} loading={loading} error={error} copied={copied} onGenerate={generate} onCopy={handleCopy} prominent={true} />
+      <GeneratorBody review={review} setReview={setReview} platform={platform} setPlatform={setPlatform} starRating={starRating} setStarRating={setStarRating} reply={reply} loading={loading} error={error} copied={copied} onGenerate={generate} onCopy={handleCopy} prominent={true} />
     </div>
   )
 }
 
-function GeneratorBody({ review, setReview, platform, setPlatform, reply, loading, error, copied, onGenerate, onCopy, prominent }: {
-  review: string; setReview: (v: string) => void; platform: string; setPlatform: (v: string) => void; reply: string; loading: boolean; error: string; copied: boolean; onGenerate: () => void; onCopy: () => void; prominent: boolean
+function GeneratorBody({ review, setReview, platform, setPlatform, starRating, setStarRating, reply, loading, error, copied, onGenerate, onCopy, prominent }: {
+  review: string; setReview: (v: string) => void; platform: string; setPlatform: (v: string) => void; starRating: number; setStarRating: (v: number) => void; reply: string; loading: boolean; error: string; copied: boolean; onGenerate: () => void; onCopy: () => void; prominent: boolean
 }) {
   return (
     <div className={`bg-white rounded-2xl border border-[#E4DED8] overflow-hidden ${prominent ? 'shadow-[0_2px_20px_rgba(0,0,0,0.06)]' : ''}`}>
       <div className="p-4 space-y-3">
-        {/* Platform selector */}
-        <div className="flex gap-1.5">
-          {MANUAL_PLATFORMS.map(p => (
-            <button
-              key={p.value}
-              type="button"
-              onClick={() => setPlatform(p.value)}
-              className={`px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all duration-150 ${
-                platform === p.value
-                  ? 'bg-[#E05A28]/20 text-[#E05A28] border border-[#E05A28]/30'
-                  : 'text-[#A8A29E] border border-[#E4DED8] hover:text-[#57534E] hover:border-[#D0C9C1]'
-              }`}
-            >
-              {p.label}
-            </button>
-          ))}
+        {/* Platform + star rating selectors */}
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex gap-1.5">
+            {MANUAL_PLATFORMS.map(p => (
+              <button
+                key={p.value}
+                type="button"
+                onClick={() => setPlatform(p.value)}
+                className={`px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all duration-150 ${
+                  platform === p.value
+                    ? 'bg-[#E05A28]/20 text-[#E05A28] border border-[#E05A28]/30'
+                    : 'text-[#A8A29E] border border-[#E4DED8] hover:text-[#57534E] hover:border-[#D0C9C1]'
+                }`}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+          <div className="flex items-center gap-1">
+            {[1,2,3,4,5].map(s => (
+              <button
+                key={s}
+                type="button"
+                onClick={() => setStarRating(s)}
+                className={`text-[16px] leading-none transition-all duration-100 ${s <= starRating ? 'text-amber-400' : 'text-[#E4DED8]'}`}
+              >★</button>
+            ))}
+          </div>
         </div>
         <textarea
           value={review}

@@ -38,95 +38,64 @@ export async function GET(request: NextRequest) {
   let totalNewReplies = 0
   const errors: string[] = []
 
-  for (const profile of profiles) {
-    // ── Google scrape ───────────────────────────────────────────────────
-    if (profile.google_maps_url) {
-      try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/scrape-reviews`, {
-          method:  'POST',
-          headers: {
-            'Content-Type':  'application/json',
-            'x-cron-secret': process.env.CRON_SECRET!,
-          },
-          body: JSON.stringify({
-            userId:              profile.user_id,
-            restaurantProfileId: profile.id,
-          }),
-        })
-
-        if (res.ok) {
-          const result = await res.json()
-          totalNewReplies += result.newReviews ?? 0
-          processed++
-        } else {
-          const err = await res.json().catch(() => ({}))
-          errors.push(`Google profile ${profile.id}: ${err.error ?? res.statusText}`)
-        }
-      } catch (err) {
-        const msg = err instanceof Error ? err.message : String(err)
-        console.error(`[daily-scrape] Google failed for profile ${profile.id}:`, msg)
-        errors.push(`Google profile ${profile.id}: ${msg}`)
-      }
+  async function scrape(label: string, endpoint: string, profileId: string, userId: string) {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}${endpoint}`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', 'x-cron-secret': process.env.CRON_SECRET! },
+      body: JSON.stringify({ userId, restaurantProfileId: profileId }),
+    })
+    if (res.ok) {
+      const result = await res.json()
+      return result.newReviews ?? 0
     }
-
-    // ── Yelp scrape ─────────────────────────────────────────────────────
-    if (profile.yelp_url) {
-      try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/scrape-yelp-reviews`, {
-          method:  'POST',
-          headers: {
-            'Content-Type':  'application/json',
-            'x-cron-secret': process.env.CRON_SECRET!,
-          },
-          body: JSON.stringify({
-            userId:              profile.user_id,
-            restaurantProfileId: profile.id,
-          }),
-        })
-
-        if (res.ok) {
-          const result = await res.json()
-          totalNewReplies += result.newReviews ?? 0
-        } else {
-          const err = await res.json().catch(() => ({}))
-          errors.push(`Yelp profile ${profile.id}: ${err.error ?? res.statusText}`)
-        }
-      } catch (err) {
-        const msg = err instanceof Error ? err.message : String(err)
-        console.error(`[daily-scrape] Yelp failed for profile ${profile.id}:`, msg)
-        errors.push(`Yelp profile ${profile.id}: ${msg}`)
-      }
-    }
-
-    // ── TripAdvisor scrape ───────────────────────────────────────────────
-    if (profile.tripadvisor_url) {
-      try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/scrape-tripadvisor-reviews`, {
-          method:  'POST',
-          headers: {
-            'Content-Type':  'application/json',
-            'x-cron-secret': process.env.CRON_SECRET!,
-          },
-          body: JSON.stringify({
-            userId:              profile.user_id,
-            restaurantProfileId: profile.id,
-          }),
-        })
-
-        if (res.ok) {
-          const result = await res.json()
-          totalNewReplies += result.newReviews ?? 0
-        } else {
-          const err = await res.json().catch(() => ({}))
-          errors.push(`TripAdvisor profile ${profile.id}: ${err.error ?? res.statusText}`)
-        }
-      } catch (err) {
-        const msg = err instanceof Error ? err.message : String(err)
-        console.error(`[daily-scrape] TripAdvisor failed for profile ${profile.id}:`, msg)
-        errors.push(`TripAdvisor profile ${profile.id}: ${msg}`)
-      }
-    }
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.error ?? res.statusText ?? `HTTP ${res.status}`)
   }
+
+  // Process all profiles in parallel (up to all at once — each scrape is network-bound)
+  await Promise.allSettled(
+    profiles.map(async (profile) => {
+      const tasks: Promise<void>[] = []
+
+      if (profile.google_maps_url) {
+        tasks.push(
+          scrape('Google', '/api/scrape-reviews', profile.id, profile.user_id)
+            .then((n) => { totalNewReplies += n; processed++ })
+            .catch((err) => {
+              const msg = err instanceof Error ? err.message : String(err)
+              console.error(`[daily-scrape] Google failed for profile ${profile.id}:`, msg)
+              errors.push(`Google ${profile.id}: ${msg}`)
+            })
+        )
+      }
+
+      if (profile.yelp_url) {
+        tasks.push(
+          scrape('Yelp', '/api/scrape-yelp-reviews', profile.id, profile.user_id)
+            .then((n) => { totalNewReplies += n })
+            .catch((err) => {
+              const msg = err instanceof Error ? err.message : String(err)
+              console.error(`[daily-scrape] Yelp failed for profile ${profile.id}:`, msg)
+              errors.push(`Yelp ${profile.id}: ${msg}`)
+            })
+        )
+      }
+
+      if (profile.tripadvisor_url) {
+        tasks.push(
+          scrape('TripAdvisor', '/api/scrape-tripadvisor-reviews', profile.id, profile.user_id)
+            .then((n) => { totalNewReplies += n })
+            .catch((err) => {
+              const msg = err instanceof Error ? err.message : String(err)
+              console.error(`[daily-scrape] TripAdvisor failed for profile ${profile.id}:`, msg)
+              errors.push(`TripAdvisor ${profile.id}: ${msg}`)
+            })
+        )
+      }
+
+      await Promise.allSettled(tasks)
+    })
+  )
 
   return NextResponse.json({
     processed,

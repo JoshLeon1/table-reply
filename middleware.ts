@@ -84,6 +84,11 @@ export async function middleware(request: NextRequest) {
 
     return supabaseResponse
   } catch {
+    // On Supabase error, protect routes rather than failing open
+    const isProtected = protectedRoutes.some((route) => pathname.startsWith(route))
+    if (isProtected) {
+      return NextResponse.redirect(new URL('/login', request.url))
+    }
     return NextResponse.next()
   }
 }

@@ -76,9 +76,9 @@ export default function BusinessProfileForm({
     voice_style: existingProfile?.voice_style ?? '',
     description: existingProfile?.description ?? '',
     owner_name: existingProfile?.owner_name ?? '',
-    google_maps_url: (existingProfile as any)?.google_maps_url ?? '',
-    yelp_url: (existingProfile as any)?.yelp_url ?? '',
-    tripadvisor_url: (existingProfile as any)?.tripadvisor_url ?? '',
+    google_maps_url: existingProfile?.google_maps_url ?? '',
+    yelp_url: existingProfile?.yelp_url ?? '',
+    tripadvisor_url: existingProfile?.tripadvisor_url ?? '',
   })
 
   // Tracks address from Places selection for Yelp/TA search links

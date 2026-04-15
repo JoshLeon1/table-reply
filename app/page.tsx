@@ -756,12 +756,12 @@ export default function LandingPage() {
               <p className="text-center text-white font-bold text-[17px] mb-4 tracking-tight">Replyfi Pro</p>
               <div className="flex items-end justify-center gap-1 mb-1.5">
                 <span className="font-bold text-white leading-none transition-all duration-300" style={{ fontSize: 'clamp(56px, 12vw, 76px)', letterSpacing: '-0.04em' }}>
-                  ${annual ? '19' : '29'}
+                  ${annual ? '239' : '29'}
                 </span>
-                <span className="text-[#9a9a9a] text-lg pb-2">/mo</span>
+                <span className="text-[#9a9a9a] text-lg pb-2">{annual ? '/yr' : '/mo'}</span>
               </div>
               {annual
-                ? <p className="text-center text-[#E05A28] text-[13px] mb-1">Billed $228/yr — save $120</p>
+                ? <p className="text-center text-[#E05A28] text-[13px] mb-1">Under $20/mo — save $109 vs monthly</p>
                 : null
               }
               <p className="text-center text-white/55 text-[13px] mb-4">7-day free trial — no credit card required.</p>

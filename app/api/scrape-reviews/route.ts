@@ -193,7 +193,7 @@ export async function POST(request: NextRequest) {
       console.log('[scrape-reviews] Polling:', canonicalPollUrl)
 
       let attempts = 0
-      while (result.status === 'Pending' && attempts < 20) {
+      while (result.status === 'Pending' && attempts < 10) {
         await new Promise((resolve) => setTimeout(resolve, 5000))
 
         const pollRes = await fetch(canonicalPollUrl, {
@@ -383,7 +383,7 @@ export async function POST(request: NextRequest) {
               <p style="margin:0;font-weight:600">${author_title ?? 'Anonymous'} · ${review_rating}★</p>
               <p style="margin:8px 0 0;color:#555">"${review_text.slice(0, 300)}..."</p>
             </div>
-            <a href="https://replyfi.com/dashboard/reviews" style="display:inline-block;background:#111;color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600">View Review →</a>
+            <a href="${process.env.NEXT_PUBLIC_APP_URL ?? 'https://replyfi.com'}/dashboard/reviews" style="display:inline-block;background:#111;color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600">View Review →</a>
             <p style="color:#AAA;font-size:12px;margin-top:24px">Replyfi · Manage alerts in <a href="https://replyfi.com/settings">Settings</a></p>
           </div>`
         }).catch(err => console.error('[scrape-reviews] Alert email error:', err))

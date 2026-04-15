@@ -64,7 +64,7 @@ export async function GET(request: NextRequest) {
     }[]
 
     const results = places
-      .filter(p => !p.types || p.types.some(t => foodTypes.has(t)) || true) // allow all if types missing
+      .filter(p => !p.types || p.types.some(t => foodTypes.has(t))) // filter to food/hospitality types
       .slice(0, 6)
       .map(p => ({
         placeId: p.id,

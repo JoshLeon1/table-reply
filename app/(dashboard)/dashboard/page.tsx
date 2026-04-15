@@ -67,10 +67,8 @@ export default async function DashboardPage() {
   const avgRating = ratings.length > 0 ? ratings.reduce((a: number, b: number) => a + b, 0) / ratings.length : 0
   const totalReviews = allReviews?.length ?? 0
 
-  // Response rate: use approved this month + last month as approximation over total reviews
-  // (allReviews only selects star_rating, so we can't filter by reply_status from it)
-  const approvedTotal = (approvedThisMonth ?? 0) + (approvedLastMonth ?? 0)
-  const responseRate = totalReviews > 0 ? Math.round((approvedTotal / totalReviews) * 100) : 0
+  // Response rate: approved all-time replies / all-time reviews
+  const responseRate = totalReviews > 0 ? Math.round(((approvedAllTime ?? 0) / totalReviews) * 100) : 0
 
   const themes = analyticsCache?.themes as { praised: string[]; complaints: string[]; opportunities: string[] } | null
   const hasAnalytics = !!analyticsCache

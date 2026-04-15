@@ -117,7 +117,7 @@ function buildHtml(params: {
           <!-- CTA -->
           <tr>
             <td style="padding:8px 32px 32px;text-align:center;">
-              <a href="https://replyfi.com/dashboard/reviews"
+              <a href="${process.env.NEXT_PUBLIC_APP_URL ?? 'https://replyfi.com'}/dashboard/reviews"
                  style="display:inline-block;background-color:#111827;color:#ffffff;text-decoration:none;font-size:14px;font-weight:600;padding:12px 28px;border-radius:6px;letter-spacing:.3px;">
                 View All Reviews →
               </a>
@@ -129,7 +129,7 @@ function buildHtml(params: {
             <td style="background-color:#f9fafb;padding:16px 32px;border-top:1px solid #e5e7eb;text-align:center;">
               <p style="margin:0;font-size:12px;color:#9ca3af;">
                 © Replyfi &nbsp;·&nbsp;
-                <a href="https://replyfi.com/settings" style="color:#9ca3af;text-decoration:underline;">Unsubscribe</a>
+                <a href="${process.env.NEXT_PUBLIC_APP_URL ?? 'https://replyfi.com'}/settings" style="color:#9ca3af;text-decoration:underline;">Unsubscribe</a>
               </p>
             </td>
           </tr>
@@ -156,7 +156,11 @@ export async function POST(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
-  const resend = new Resend(process.env.RESEND_API_KEY!)
+  if (!process.env.RESEND_API_KEY) {
+    console.error('[digest] RESEND_API_KEY is not set — cannot send emails')
+    return NextResponse.json({ error: 'RESEND_API_KEY not configured' }, { status: 500 })
+  }
+  const resend = new Resend(process.env.RESEND_API_KEY)
   // Auth: accept Vercel cron Bearer token or manual x-cron-secret header
   const authHeader = request.headers.get('authorization')
   const cronHeader = request.headers.get('x-cron-secret')
@@ -180,7 +184,7 @@ export async function POST(request: NextRequest) {
   const { data: profiles, error: profilesError } = await supabaseAdmin
     .from('profiles')
     .select('id, is_paid, trial_started_at, email_notifications')
-    .eq('email_notifications->>newReviewsScrapped', 'true')
+    .eq('email_notifications->>newReviewsScraped', 'true')
 
   if (profilesError) {
     console.error('[digest] Failed to fetch profiles:', profilesError)

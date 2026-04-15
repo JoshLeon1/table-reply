@@ -177,7 +177,7 @@ function PendingCard({ review, onAction, animDelay = 0 }: { review: ScrapedRevie
               <div className="flex items-center gap-1.5 flex-wrap min-w-0">
                 <span className="text-[13px] font-semibold text-[#111111] truncate leading-none">{review.reviewer_name}</span>
                 <PlatformBadge source={review.source} />
-                {review.alert_triggered && <span className="text-[10px] font-bold text-red-400 bg-red-950/30 border border-red-900/30 rounded-md px-1.5 py-0.5 leading-none">⚠ Alert</span>}
+                {review.alert_triggered && <span className="text-[10px] font-bold text-red-500 bg-red-50 border border-red-200 rounded-md px-1.5 py-0.5 leading-none">⚠ Alert</span>}
               </div>
               <span className="text-[11px] text-[#C4BEB8] flex-shrink-0 tabular-nums leading-none">{review.review_datetime_utc ? formatTimeAgo(review.review_datetime_utc) : ''}</span>
             </div>
@@ -251,9 +251,9 @@ interface PlatformDef {
 }
 
 const PLATFORMS: PlatformDef[] = [
-  { key: 'google',      label: 'Google Maps',  tag: 'Recommended', tagColor: 'text-blue-400 bg-blue-950/30 border-blue-900/30',    Logo: GoogleLogo },
-  { key: 'yelp',        label: 'Yelp',         tag: 'Recommended', tagColor: 'text-red-400 bg-red-950/30 border-red-900/30',        Logo: YelpLogo },
-  { key: 'tripadvisor', label: 'TripAdvisor',  tag: 'Optional',    tagColor: 'text-emerald-400 bg-emerald-950/30 border-emerald-900/30', Logo: TripAdvisorLogo },
+  { key: 'google',      label: 'Google Maps',  tag: 'Recommended', tagColor: 'text-blue-500 bg-blue-50 border-blue-200',    Logo: GoogleLogo },
+  { key: 'yelp',        label: 'Yelp',         tag: 'Recommended', tagColor: 'text-red-500 bg-red-50 border-red-200',        Logo: YelpLogo },
+  { key: 'tripadvisor', label: 'TripAdvisor',  tag: 'Optional',    tagColor: 'text-emerald-600 bg-emerald-50 border-emerald-200', Logo: TripAdvisorLogo },
 ]
 
 function OnboardingPanel({ ownerName, onEnterManual }: { ownerName: string; onEnterManual: () => void }) {
@@ -329,7 +329,7 @@ function OnboardingPanel({ ownerName, onEnterManual }: { ownerName: string; onEn
       {/* CTAs */}
       <div className="flex flex-col items-center gap-4">
         <Link
-          href="/dashboard/get-more-reviews"
+          href="/dashboard/grow"
           className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-2xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.97] text-white text-[15px] font-bold shadow-[0_4px_20px_rgba(224,90,40,0.35)] hover:shadow-[0_6px_28px_rgba(224,90,40,0.50)] transition-all duration-200"
         >
           <svg className="w-4 h-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
@@ -359,7 +359,7 @@ function ConnectNudge({ onExitManual }: { onExitManual: () => void }) {
         </p>
       </div>
       <div className="flex items-center gap-3 flex-shrink-0 pl-7 sm:pl-0">
-        <Link href="/dashboard/get-more-reviews" className="text-[12px] font-bold text-[#E05A28] hover:text-[#C94E21] transition-colors whitespace-nowrap">
+        <Link href="/dashboard/grow" className="text-[12px] font-bold text-[#E05A28] hover:text-[#C94E21] transition-colors whitespace-nowrap">
           Connect accounts →
         </Link>
         <button onClick={() => { onExitManual(); setDismissed(true) }} className="text-[11px] text-[#C4BEB8] hover:text-[#A8A29E] transition-colors whitespace-nowrap">
@@ -687,7 +687,7 @@ export default function HomeClient({
               <>
                 <Link href="/dashboard/reviews" className="flex items-center gap-2.5 px-6 py-3 rounded-xl bg-white text-[#C94E21] text-[14px] font-bold shadow-[0_4px_20px_rgba(0,0,0,0.20)] hover:shadow-[0_6px_28px_rgba(0,0,0,0.30)] active:scale-[0.97] transition-all duration-200 whitespace-nowrap">
                   <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd"/></svg>
-                  Review Replies
+                  Reviews
                 </Link>
                 <button onClick={handleSync} disabled={syncing} className="group flex items-center gap-1.5 text-[12px] font-medium text-white/45 hover:text-white/80 disabled:opacity-40 transition-colors duration-150">
                   <svg className={`w-3 h-3 transition-transform duration-700 ${syncing ? 'animate-spin' : 'group-hover:rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>

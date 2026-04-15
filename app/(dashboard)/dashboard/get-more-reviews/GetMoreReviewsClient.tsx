@@ -160,7 +160,7 @@ function PlatformCard({
   const urlChanged = url.trim() !== (savedUrl ?? '')
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E4DED8] p-4 sm:p-5 space-y-4">
+    <div className="bg-white rounded-xl border border-[#E4DED8] p-4 sm:p-5 space-y-4">
       {/* Header row */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
@@ -473,7 +473,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
       </div>
 
       {/* ── Section 2: Review Request Messages ──────────────────────────────── */}
-      <div className="bg-white rounded-2xl border border-[#E4DED8] p-4 sm:p-6 space-y-5">
+      <div className="bg-white rounded-xl border border-[#E4DED8] p-4 sm:p-6 space-y-5">
         <div>
           <h2 className="text-[14px] font-semibold text-[#111111]">Review Request Messages</h2>
           <p className="text-[12px] text-[#57534E] mt-0.5">
@@ -607,7 +607,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
         {/* Empty state */}
         {!showSkeletons && !showCards && (
           <div className="text-center py-10">
-            <div className="w-10 h-10 rounded-2xl bg-[#FEF0E8] border border-[#F5C9AD] flex items-center justify-center mx-auto mb-3">
+            <div className="w-10 h-10 rounded-xl bg-[#FEF0E8] border border-[#F5C9AD] flex items-center justify-center mx-auto mb-3">
               <svg className="w-5 h-5 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-4 4v-4z"/>
               </svg>
@@ -621,7 +621,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
       </div>
 
       {/* ── Section 3: QR Code ───────────────────────────────────────────────── */}
-      <div className="bg-white rounded-2xl border border-[#E4DED8] p-4 sm:p-6 space-y-4">
+      <div className="bg-white rounded-xl border border-[#E4DED8] p-4 sm:p-6 space-y-4">
         <div>
           <h2 className="text-[14px] font-semibold text-[#111111]">QR Code for your Google review page</h2>
           <p className="text-[12px] text-[#57534E] mt-0.5">Add this to your menu, receipt, or table card</p>
@@ -640,7 +640,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
             )}
             {qrDataUrl && (
               <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
-                <div className="p-4 bg-white rounded-2xl flex-shrink-0">
+                <div className="p-4 bg-white rounded-xl flex-shrink-0">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={qrDataUrl} alt="Google Review QR Code" width={180} height={180} className="block w-40 h-40 sm:w-[180px] sm:h-[180px]" />
                 </div>
@@ -675,7 +675,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
             { title: 'Timing matters', body: 'Ask within 24 hours while the memory is fresh. Saturday dinner guests who had a great time are your best reviewers.' },
             { title: 'Make it easy', body: 'The fewer steps the better. A QR code on the table or receipt removes all friction.' },
           ].map((tip) => (
-            <div key={tip.title} className="bg-white rounded-2xl border border-[#E4DED8] p-4 sm:p-5">
+            <div key={tip.title} className="bg-white rounded-xl border border-[#E4DED8] p-4 sm:p-5">
               <h3 className="text-[13px] font-semibold text-[#111111] mb-1.5">{tip.title}</h3>
               <p className="text-[12px] text-[#57534E] leading-relaxed">{tip.body}</p>
             </div>

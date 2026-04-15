@@ -1008,7 +1008,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       )}
 
       {/* ── RATING HERO ────────────────────────────────────────────────────── */}
-      <div className="rounded-3xl bg-white border border-[#E4DED8] overflow-hidden shadow-[0_2px_16px_rgba(0,0,0,0.06)]">
+      <div className="rounded-2xl bg-white border border-[#E4DED8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
 
           {/* Big number */}
@@ -1111,7 +1111,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
             color: criticalUnanswered === 0 ? 'text-emerald-600' : 'text-red-500',
           },
         ].map((stat, i) => (
-          <div key={i} className={`bg-white rounded-2xl border border-[#E4DED8] p-3.5 sm:p-4 stagger-${i + 1} animate-fade-up shadow-[0_1px_3px_rgba(0,0,0,0.04)]`}>
+          <div key={i} className={`bg-white rounded-xl border border-[#E4DED8] p-3.5 sm:p-4 stagger-${i + 1} animate-fade-up shadow-[0_1px_3px_rgba(0,0,0,0.04)]`}>
             <p className="text-[11px] font-medium text-[#A8A29E] mb-2 leading-tight">{stat.label}</p>
             <p className={`text-[20px] sm:text-[26px] font-bold leading-none mb-1 tracking-tight ${stat.color}`}>{stat.value}</p>
             <p className="text-[11px] text-[#A8A29E] leading-tight">{stat.sub}</p>
@@ -1138,8 +1138,6 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                 emptyText: 'Sync more reviews',
                 chipClass: 'bg-emerald-50 text-emerald-700 border-emerald-100',
                 iconClass: 'text-emerald-500',
-                topBorder: 'border-t-[3px] border-t-emerald-300',
-                cardBg: 'bg-white',
               },
               {
                 icon: <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>,
@@ -1148,8 +1146,6 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                 emptyText: 'No recurring topics found',
                 chipClass: 'bg-[#F3F0EC] text-[#57534E] border-[#E4DED8]',
                 iconClass: 'text-[#A8A29E]',
-                topBorder: 'border-t-[3px] border-t-[#D0C9C1]',
-                cardBg: 'bg-white',
               },
               {
                 icon: <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>,
@@ -1158,11 +1154,9 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                 emptyText: 'No opportunities found',
                 chipClass: 'bg-[#FEF0E8] text-[#C94E21] border-[#F5C9AD]',
                 iconClass: 'text-[#E05A28]',
-                topBorder: 'border-t-[3px] border-t-[#E05A28]',
-                cardBg: 'bg-white',
               },
-            ].map(({ icon, title, items, emptyText, chipClass, iconClass, topBorder, cardBg }) => (
-              <div key={title} className={`${cardBg} rounded-2xl border border-[#E4DED8] p-5 ${topBorder} shadow-[0_1px_3px_rgba(0,0,0,0.04)]`}>
+            ].map(({ icon, title, items, emptyText, chipClass, iconClass }) => (
+              <div key={title} className="bg-white rounded-xl border border-[#E4DED8] p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
                 <div className={`flex items-center gap-1.5 mb-4 ${iconClass}`}>
                   {icon}
                   <span className="text-[13px] font-semibold text-[#111111]">{title}</span>

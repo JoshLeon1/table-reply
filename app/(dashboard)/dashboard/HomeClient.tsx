@@ -170,7 +170,7 @@ function PendingCard({ review, onAction, animDelay = 0 }: { review: ScrapedRevie
   }
 
   return (
-    <div className="animate-fade-up bg-white rounded-2xl border border-[#E4DED8] overflow-hidden transition-all duration-200 hover:border-[#D0C9C1] hover:shadow-[0_6px_24px_rgba(0,0,0,0.07)]" style={{ animationDelay: `${animDelay}ms` }}>
+    <div className="animate-fade-up bg-white rounded-xl border border-[#E4DED8] overflow-hidden transition-all duration-200 hover:border-[#D0C9C1] hover:shadow-[0_4px_16px_rgba(0,0,0,0.07)]" style={{ animationDelay: `${animDelay}ms` }}>
       <div className="px-4 pt-4 pb-3">
         <div className="flex items-start gap-3">
           <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${avatarBg} border border-[#E4DED8] flex items-center justify-center text-[11px] font-bold ${avatarText} flex-shrink-0 mt-0.5`}>{initials}</div>
@@ -222,7 +222,7 @@ function PendingCard({ review, onAction, animDelay = 0 }: { review: ScrapedRevie
 // ── Stat card ─────────────────────────────────────────────────────────────────
 function StatCard({ label, value, sub, icon, iconBg, extra, delay }: { label: string; value: React.ReactNode; sub: React.ReactNode; icon: React.ReactNode; iconBg: string; extra?: React.ReactNode; delay: number }) {
   return (
-    <div className="animate-fade-up bg-white rounded-2xl p-3.5 sm:p-5 border border-[#E4DED8] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] hover:-translate-y-0.5 transition-all duration-200" style={{ animationDelay: `${delay}ms` }}>
+    <div className="animate-fade-up bg-white rounded-xl p-3.5 sm:p-5 border border-[#E4DED8] shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.06)] hover:-translate-y-0.5 transition-all duration-200" style={{ animationDelay: `${delay}ms` }}>
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 mb-2.5">
@@ -706,46 +706,41 @@ export default function HomeClient({
       )}
 
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
-      <div className="relative overflow-hidden rounded-2xl px-5 py-6 sm:px-8 sm:py-8 animate-fade-up" style={{ background: 'linear-gradient(140deg, #E8623A 0%, #D14E22 45%, #A83A18 100%)' }}>
-        <div className="absolute top-0 left-0 right-0 h-px bg-white/20" />
-        <div className="absolute -top-16 -right-16 w-56 h-56 bg-white/[0.06] rounded-full blur-2xl pointer-events-none" />
-        <div className="absolute bottom-0 left-1/3 w-40 h-24 bg-black/[0.08] rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute inset-0 opacity-[0.06] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
-
-        <div className="relative flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5">
+      <div className="animate-fade-up bg-white rounded-xl border border-[#E4DED8] px-5 py-5 sm:px-6 sm:py-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 flex-wrap mb-2">
-              <span className="text-[12px] font-semibold text-white/60">{restaurantName}</span>
-              {lastScrapedAt && <><span className="w-1 h-1 rounded-full bg-white/30 flex-shrink-0" /><span className="text-[11px] text-white/40">synced {formatTimeAgo(lastScrapedAt)}</span></>}
+            <div className="flex items-center gap-2 flex-wrap mb-1">
+              <span className="text-[12px] text-[#A8A29E]">{restaurantName}</span>
+              {lastScrapedAt && <><span className="w-1 h-1 rounded-full bg-[#D0C9C1] flex-shrink-0" /><span className="text-[11px] text-[#C4BEB8]">synced {formatTimeAgo(lastScrapedAt)}</span></>}
             </div>
-            <div className="flex items-baseline gap-3 mb-2">
-              <h1 className="text-[36px] sm:text-[48px] font-black text-white tracking-[-0.04em] leading-none tabular-nums">{pendingList.length}</h1>
-              <span className="text-[18px] sm:text-[22px] font-bold text-white/80 tracking-[-0.02em] leading-none">{pendingList.length === 1 ? 'review needs a reply' : 'reviews need replies'}</span>
+            <div className="flex items-baseline gap-2.5">
+              <h1 className="text-[32px] sm:text-[40px] font-bold text-[#111111] tracking-[-0.04em] leading-none tabular-nums">{pendingList.length}</h1>
+              <span className="text-[16px] sm:text-[18px] font-semibold text-[#57534E] leading-none">{pendingList.length === 1 ? 'review needs a reply' : 'reviews need replies'}</span>
             </div>
-            <p className="text-[13px] text-white/55 leading-snug">
-              {pendingList.length > 0 ? 'Respond in seconds below — AI drafts are ready.' : "You're all caught up. Sync to check for new reviews."}
+            <p className="text-[13px] text-[#A8A29E] mt-1.5 leading-snug">
+              {pendingList.length > 0 ? 'AI drafts are ready — respond in seconds.' : "You're all caught up. Sync to check for new reviews."}
             </p>
           </div>
 
           <div className="flex flex-col items-start sm:items-end gap-2 flex-shrink-0">
             {!lastScrapedAt ? (
-              <button onClick={handleSync} disabled={syncing} className="group flex items-center gap-2.5 px-6 py-3 rounded-xl bg-white text-[#C94E21] text-[14px] font-bold shadow-[0_4px_20px_rgba(0,0,0,0.20)] hover:shadow-[0_6px_28px_rgba(0,0,0,0.30)] active:scale-[0.97] disabled:opacity-50 transition-all duration-200 whitespace-nowrap">
+              <button onClick={handleSync} disabled={syncing} className="group flex items-center gap-2.5 px-5 py-2.5 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] text-white text-[13px] font-semibold shadow-[0_2px_8px_rgba(224,90,40,0.2)] active:scale-[0.97] disabled:opacity-50 transition-all duration-200 whitespace-nowrap">
                 <svg className={`w-4 h-4 flex-shrink-0 transition-transform duration-700 ${syncing ? 'animate-spin' : 'group-hover:rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.25} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                 {syncing ? 'Syncing…' : 'Sync Reviews'}
               </button>
             ) : (
               <>
-                <Link href="/dashboard/reviews" className="flex items-center gap-2.5 px-6 py-3 rounded-xl bg-white text-[#C94E21] text-[14px] font-bold shadow-[0_4px_20px_rgba(0,0,0,0.20)] hover:shadow-[0_6px_28px_rgba(0,0,0,0.30)] active:scale-[0.97] transition-all duration-200 whitespace-nowrap">
+                <Link href="/dashboard/reviews" className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] text-white text-[13px] font-semibold active:scale-[0.97] transition-all duration-200 whitespace-nowrap">
                   <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd"/></svg>
-                  Reviews
+                  View Reviews
                 </Link>
-                <button onClick={handleSync} disabled={syncing} className="group flex items-center gap-1.5 text-[12px] font-medium text-white/45 hover:text-white/80 disabled:opacity-40 transition-colors duration-150">
+                <button onClick={handleSync} disabled={syncing} className="group flex items-center gap-1.5 text-[12px] font-medium text-[#A8A29E] hover:text-[#57534E] disabled:opacity-40 transition-colors duration-150">
                   <svg className={`w-3 h-3 transition-transform duration-700 ${syncing ? 'animate-spin' : 'group-hover:rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                   {syncing ? 'Syncing…' : 'Sync reviews'}
                 </button>
               </>
             )}
-            {syncMsg && <span className={`text-[11px] font-semibold animate-fade-in ${syncMsg.type === 'success' ? 'text-emerald-300' : 'text-red-300'}`}>{syncMsg.type === 'success' ? '✓ ' : '✕ '}{syncMsg.text}</span>}
+            {syncMsg && <span className={`text-[11px] font-semibold animate-fade-in ${syncMsg.type === 'success' ? 'text-emerald-600' : 'text-red-500'}`}>{syncMsg.type === 'success' ? '✓ ' : '✕ '}{syncMsg.text}</span>}
           </div>
         </div>
       </div>
@@ -794,7 +789,7 @@ export default function HomeClient({
         <div className="lg:col-span-2">
           <div className="animate-fade-up" style={{ animationDelay: '120ms' }}>
             <SectionLabel>Recent activity</SectionLabel>
-            <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden">
+            <div className="bg-white rounded-xl border border-[#E4DED8] overflow-hidden">
               {recentApproved.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-10 px-4 text-center">
                   <div className="w-10 h-10 rounded-2xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mb-3"><svg className="text-[#C4BEB8]" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ width: 18, height: 18 }}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg></div>
@@ -805,7 +800,7 @@ export default function HomeClient({
                 <div className="divide-y divide-[#EDE9E4]">
                   {recentApproved.map(review => (
                     <div key={review.id} className="flex items-center gap-3 px-4 py-3 hover:bg-[#F8F6F3] transition-colors duration-150">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#E05A28]/20 to-[#E05A28]/10 border border-[#E05A28]/20 flex items-center justify-center text-[11px] font-bold text-[#E05A28]/70 flex-shrink-0">{review.reviewer_name.charAt(0).toUpperCase()}</div>
+                      <div className="w-8 h-8 rounded-full bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center text-[11px] font-bold text-[#A8A29E] flex-shrink-0">{review.reviewer_name.charAt(0).toUpperCase()}</div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5 mb-0.5">
                           <span className="text-[12px] font-semibold text-[#111111]/80 truncate">{review.reviewer_name}</span>
@@ -845,13 +840,13 @@ export default function HomeClient({
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             {([
-              { label: 'Customers love', value: themes?.praised?.[0], fallback: 'Run analytics to see what resonates most.', dotColor: 'bg-emerald-400', dotGlow: 'shadow-[0_0_8px_rgba(52,211,153,0.6)]', tint: 'bg-emerald-50', border: 'border-emerald-100', pulse: false },
-              { label: 'Needs attention', value: themes?.complaints?.[0], fallback: 'No recurring complaints — great sign.', dotColor: 'bg-[#E05A28]', dotGlow: 'shadow-[0_0_8px_rgba(224,90,40,0.5)]', tint: 'bg-red-50', border: 'border-red-100', pulse: true },
-              { label: 'Top opportunity', value: themes?.opportunities?.[0], fallback: 'Run analytics to find your growth lever.', dotColor: 'bg-blue-400', dotGlow: 'shadow-[0_0_8px_rgba(96,165,250,0.5)]', tint: 'bg-amber-50', border: 'border-amber-100', pulse: false },
-            ] as const).map(({ label, value, fallback, dotColor, dotGlow, tint, border, pulse }) => (
-              <div key={label} className={`${tint} rounded-2xl px-5 py-5 border ${border} shadow-[0_1px_4px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.07)] hover:-translate-y-0.5 transition-all duration-200`}>
+              { label: 'Customers love', value: themes?.praised?.[0], fallback: 'Run analytics to see what resonates most.', dotColor: 'bg-emerald-400', tint: 'bg-white', border: 'border-[#E4DED8]' },
+              { label: 'Needs attention', value: themes?.complaints?.[0], fallback: 'No recurring complaints — great sign.', dotColor: 'bg-[#E05A28]', tint: 'bg-white', border: 'border-[#E4DED8]' },
+              { label: 'Top opportunity', value: themes?.opportunities?.[0], fallback: 'Run analytics to find your growth lever.', dotColor: 'bg-blue-400', tint: 'bg-white', border: 'border-[#E4DED8]' },
+            ] as const).map(({ label, value, fallback, dotColor, tint, border }) => (
+              <div key={label} className={`${tint} rounded-xl px-5 py-5 border ${border} hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all duration-200`}>
                 <div className="flex items-center gap-2 mb-3">
-                  <span className={`w-2 h-2 rounded-full ${dotColor} flex-shrink-0 ${dotGlow} ${pulse ? 'animate-pulse' : ''}`} />
+                  <span className={`w-2 h-2 rounded-full ${dotColor} flex-shrink-0`} />
                   <p className="text-[10px] font-bold uppercase tracking-[0.13em] text-[#A8A29E]">{label}</p>
                 </div>
                 <p className={`text-[13px] leading-snug ${value ? 'font-semibold text-[#111]' : 'text-[#C4BEB8] italic'}`}>{value ?? fallback}</p>

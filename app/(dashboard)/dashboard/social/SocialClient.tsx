@@ -413,11 +413,14 @@ function CreatePostModal({
   )
 }
 
-function platformTopBorder(platform: string): string {
-  if (platform === 'Instagram') return 'border-t-2 border-t-purple-300'
-  if (platform === 'Facebook') return 'border-t-2 border-t-blue-300'
-  if (platform === 'Twitter/X') return 'border-t-2 border-t-sky-300'
-  return 'border-t-2 border-t-[#E05A28]/50' // Google default
+const AVATAR_COLORS = [
+  'bg-emerald-500', 'bg-blue-500', 'bg-violet-500', 'bg-pink-500',
+  'bg-amber-500', 'bg-cyan-500', 'bg-rose-500', 'bg-indigo-500',
+]
+function getAvatarColor(name: string): string {
+  let hash = 0
+  for (const c of name) hash = (hash * 31 + c.charCodeAt(0)) & 0xffff
+  return AVATAR_COLORS[hash % AVATAR_COLORS.length]
 }
 
 function sourceBadge(source?: string | null) {
@@ -426,11 +429,6 @@ function sourceBadge(source?: string | null) {
   return <span className="text-[10px] font-bold text-blue-500 bg-blue-50 border border-blue-200 rounded-md px-1.5 py-0.5 leading-none">G</span>
 }
 
-function sourceTopBorder(source?: string | null): string {
-  if (source === 'yelp') return 'border-t-2 border-t-red-200'
-  if (source === 'tripadvisor') return 'border-t-2 border-t-emerald-200'
-  return 'border-t-2 border-t-blue-200'
-}
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
@@ -449,8 +447,8 @@ export default function SocialClient({ reviews, restaurantProfile }: Props) {
       </div>
 
       {goodReviews.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-[#E4DED8] px-6 py-12 sm:p-14 text-center">
-          <div className="w-14 h-14 rounded-2xl bg-[#FEF0E8] border border-[#F5C9AD] flex items-center justify-center mx-auto mb-4 shadow-sm animate-float">
+        <div className="bg-white rounded-xl border border-[#E4DED8] px-6 py-12 sm:p-14 text-center">
+          <div className="w-14 h-14 rounded-xl bg-[#FEF0E8] border border-[#F5C9AD] flex items-center justify-center mx-auto mb-4">
             <svg className="w-7 h-7 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/>
             </svg>
@@ -464,7 +462,7 @@ export default function SocialClient({ reviews, restaurantProfile }: Props) {
           {goodReviews.map((review) => (
             <div
               key={review.id}
-              className={`bg-white rounded-2xl border border-[#E4DED8] ${sourceTopBorder(review.source)} p-4 sm:p-5 flex flex-col gap-3 hover:border-[#D0C9C1] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-all duration-150`}
+              className="bg-white rounded-xl border border-[#E4DED8] p-4 sm:p-5 flex flex-col gap-3 hover:border-[#D0C9C1] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-all duration-150"
             >
               {/* Header row: platform badge + timestamp */}
               <div className="flex items-center justify-between gap-2">
@@ -478,7 +476,7 @@ export default function SocialClient({ reviews, restaurantProfile }: Props) {
 
               {/* Reviewer: avatar + name + stars */}
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#E05A28]/15 to-[#E05A28]/08 border border-[#E05A28]/20 flex items-center justify-center text-[11px] font-bold text-[#C94E21] flex-shrink-0">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0 ${getAvatarColor(review.reviewer_name)}`}>
                   {review.reviewer_name.charAt(0).toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">

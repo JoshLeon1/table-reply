@@ -909,6 +909,69 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
         ))}
       </div>
 
+      {/* ── WHAT CUSTOMERS ARE SAYING ──────────────────────────────────────── */}
+      <div className="pt-4">
+        <SectionLabel>What customers are saying</SectionLabel>
+        {themesLoading ? (
+          <ThemeSkeleton />
+        ) : themes.insufficient ? (
+          <div className="text-center py-12">
+            <p className="text-[#A8A29E] text-[13px]">Sync at least 5 reviews to unlock AI sentiment analysis.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {[
+              {
+                icon: <svg className="w-4 h-4 text-[#E05A28]" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd"/></svg>,
+                title: 'They love',
+                items: themes.praised,
+                emptyText: 'Sync more reviews',
+                itemClass: 'text-[#57534E]',
+                bullet: <svg className="w-3 h-3 text-[#E05A28] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>,
+                topBorder: 'border-t-2 border-t-emerald-200',
+              },
+              {
+                icon: <svg className="w-4 h-4 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>,
+                title: 'They mention',
+                items: themes.complaints,
+                emptyText: 'No recurring topics found',
+                itemClass: 'text-[#57534E]',
+                bullet: <span className="w-1.5 h-1.5 rounded-full bg-[#D0C9C1] mt-1.5 flex-shrink-0 inline-block" />,
+                topBorder: 'border-t-2 border-t-[#E4DED8]',
+              },
+              {
+                icon: <svg className="w-4 h-4 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>,
+                title: 'Opportunities',
+                items: themes.opportunities,
+                emptyText: 'No opportunities found',
+                itemClass: 'text-[#57534E]',
+                bullet: null,
+                topBorder: 'border-t-2 border-t-[#E05A28]/30',
+              },
+            ].map(({ icon, title, items, emptyText, itemClass, bullet, topBorder }) => (
+              <div key={title} className={`bg-white rounded-2xl border border-[#E4DED8] p-5 ${topBorder} shadow-[0_1px_3px_rgba(0,0,0,0.04)]`}>
+                <div className="flex items-center gap-2 mb-4">
+                  {icon}
+                  <span className="text-[13px] font-semibold text-[#111111]">{title}</span>
+                </div>
+                {items.length === 0 ? (
+                  <p className="text-[12px] text-[#C4BEB8]">{emptyText}</p>
+                ) : (
+                  <ul className="space-y-2.5">
+                    {items.map((item, i) => (
+                      <li key={i} className="flex items-start gap-2.5">
+                        {bullet ?? <span className="text-[#C4BEB8] mt-0.5 flex-shrink-0 text-[11px] font-bold">{i + 1}.</span>}
+                        <span className={`text-[13px] ${itemClass} leading-snug`}>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* ── YOUR IMPACT ────────────────────────────────────────────────────── */}
       <div>
         <SectionLabel>Your impact</SectionLabel>
@@ -1049,69 +1112,6 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                 </ResponsiveContainer>
               </div>
             )}
-          </div>
-        )}
-      </div>
-
-      {/* ── WHAT CUSTOMERS ARE SAYING ──────────────────────────────────────── */}
-      <div className="pt-4">
-        <SectionLabel>What customers are saying</SectionLabel>
-        {themesLoading ? (
-          <ThemeSkeleton />
-        ) : themes.insufficient ? (
-          <div className="text-center py-12">
-            <p className="text-[#A8A29E] text-[13px]">Sync at least 5 reviews to unlock AI sentiment analysis.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {[
-              {
-                icon: <svg className="w-4 h-4 text-[#E05A28]" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd"/></svg>,
-                title: 'They love',
-                items: themes.praised,
-                emptyText: 'Sync more reviews',
-                itemClass: 'text-[#57534E]',
-                bullet: <svg className="w-3 h-3 text-[#E05A28] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>,
-                topBorder: 'border-t-2 border-t-emerald-200',
-              },
-              {
-                icon: <svg className="w-4 h-4 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>,
-                title: 'They mention',
-                items: themes.complaints,
-                emptyText: 'No recurring topics found',
-                itemClass: 'text-[#57534E]',
-                bullet: <span className="w-1.5 h-1.5 rounded-full bg-[#D0C9C1] mt-1.5 flex-shrink-0 inline-block" />,
-                topBorder: 'border-t-2 border-t-[#E4DED8]',
-              },
-              {
-                icon: <svg className="w-4 h-4 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>,
-                title: 'Opportunities',
-                items: themes.opportunities,
-                emptyText: 'No opportunities found',
-                itemClass: 'text-[#57534E]',
-                bullet: null,
-                topBorder: 'border-t-2 border-t-[#E05A28]/30',
-              },
-            ].map(({ icon, title, items, emptyText, itemClass, bullet, topBorder }) => (
-              <div key={title} className={`bg-white rounded-2xl border border-[#E4DED8] p-5 ${topBorder} shadow-[0_1px_3px_rgba(0,0,0,0.04)]`}>
-                <div className="flex items-center gap-2 mb-4">
-                  {icon}
-                  <span className="text-[13px] font-semibold text-[#111111]">{title}</span>
-                </div>
-                {items.length === 0 ? (
-                  <p className="text-[12px] text-[#C4BEB8]">{emptyText}</p>
-                ) : (
-                  <ul className="space-y-2.5">
-                    {items.map((item, i) => (
-                      <li key={i} className="flex items-start gap-2.5">
-                        {bullet ?? <span className="text-[#C4BEB8] mt-0.5 flex-shrink-0 text-[11px] font-bold">{i + 1}.</span>}
-                        <span className={`text-[13px] ${itemClass} leading-snug`}>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            ))}
           </div>
         )}
       </div>

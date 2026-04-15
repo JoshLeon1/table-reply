@@ -170,6 +170,18 @@ export async function POST(request: NextRequest) {
     console.log('[scrape-reviews] Initial response (first 500 chars):', JSON.stringify(result).slice(0, 500))
     console.log('[scrape-reviews] Initial status:', result.status)
 
+    // ── Check for body-level errors (HTTP 200 but error payload) ────────
+    if (result.error || result.errorMessage) {
+      const errMsg: string = result.error ?? result.errorMessage
+      console.error('[scrape-reviews] Outscraper body error:', errMsg)
+      throw new Error(`Review sync failed: ${errMsg}`)
+    }
+    const lowerStatus = (result.status ?? '').toLowerCase()
+    if (lowerStatus && lowerStatus !== 'pending' && lowerStatus !== 'success' && lowerStatus !== 'completed') {
+      console.error('[scrape-reviews] Outscraper returned unexpected status:', result.status)
+      throw new Error(`Review sync failed (status: ${result.status}). Please try again.`)
+    }
+
     // ── Poll if async (202 Pending) ──────────────────────────────────────
     if (result.status === 'Pending') {
       // Extract the request ID and always poll via api.app.outscraper.com —

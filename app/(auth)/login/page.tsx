@@ -120,7 +120,7 @@ export default function LoginPage() {
 
         {/* Card */}
         <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-modal p-6 sm:p-8">
-          <h1 className="text-[20px] font-bold text-[#111] tracking-[-0.02em] mb-1">Welcome back</h1>
+          <h1 className="text-[20px] font-bold text-[#111] tracking-[-0.02em] mb-1">Welcome Back</h1>
           <p className="text-[13px] text-[#A8A29E] mb-6">Sign in to manage your reviews</p>
 
           {/* Google */}
@@ -169,7 +169,7 @@ export default function LoginPage() {
               />
               <div className="mt-1.5 text-right">
                 <Link href="/forgot-password" className="text-[12px] text-[#E05A28] hover:text-[#C94E21] transition-colors">
-                  Forgot password?
+                  Forgot Password?
                 </Link>
               </div>
             </div>
@@ -194,7 +194,7 @@ export default function LoginPage() {
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
               )}
-              Sign in
+              Sign In
             </button>
           </form>
 

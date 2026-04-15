@@ -227,7 +227,7 @@ function PlatformCard({
             disabled={syncing}
             className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-[#E4DED8] hover:border-[#E05A28] hover:text-[#E05A28] text-[12px] font-medium text-[#57534E] transition-all duration-150 disabled:opacity-40"
           >
-            {syncing ? <><SpinIcon />Syncing…</> : <><SyncIcon />Sync now</>}
+            {syncing ? <><SpinIcon />Syncing…</> : <><SyncIcon />Sync Now</>}
           </button>
         ) : (
           <button
@@ -237,7 +237,7 @@ function PlatformCard({
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
             </svg>
-            Connect to sync →
+            Connect to Sync →
           </button>
         )}
       </div>
@@ -369,7 +369,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
       {/* ── Section 1: Platform Connections ─────────────────────────────────── */}
       <div className="space-y-4">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-1">Review platforms</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-1">Review Platforms</p>
           <p className="text-[13px] text-[#57534E]">Connect your listings so TableReply can pull in new reviews automatically every day.</p>
         </div>
 

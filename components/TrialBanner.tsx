@@ -50,7 +50,7 @@ export default function TrialBanner({ daysRemaining, trialExpired, onUpgrade }: 
         <div className="flex items-center gap-2.5 min-w-0">
           <span className="w-1.5 h-1.5 rounded-full bg-red-400 flex-shrink-0" />
           <p className="text-[13px] truncate">
-            <span className="font-semibold text-white">Trial ended</span>
+            <span className="font-semibold text-white">Trial Ended</span>
             <span className="text-white/45 hidden sm:inline"> — upgrade to keep generating replies</span>
           </p>
         </div>

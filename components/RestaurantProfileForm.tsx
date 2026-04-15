@@ -38,25 +38,25 @@ const cuisineOptions = [
 
 const vibeOptions = [
   { value: '', label: 'Select vibe...' },
-  { value: 'casual', label: 'Casual & relaxed' },
-  { value: 'upscale', label: 'Upscale & fine dining' },
-  { value: 'family_friendly', label: 'Family-friendly' },
-  { value: 'trendy', label: 'Trendy & modern' },
-  { value: 'cozy', label: 'Cozy & intimate' },
-  { value: 'lively', label: 'Lively & social' },
-  { value: 'rustic', label: 'Rustic & homey' },
-  { value: 'fast-casual', label: 'Fast casual' },
+  { value: 'casual', label: 'Casual & Relaxed' },
+  { value: 'upscale', label: 'Upscale & Fine Dining' },
+  { value: 'family_friendly', label: 'Family-Friendly' },
+  { value: 'trendy', label: 'Trendy & Modern' },
+  { value: 'cozy', label: 'Cozy & Intimate' },
+  { value: 'lively', label: 'Lively & Social' },
+  { value: 'rustic', label: 'Rustic & Homey' },
+  { value: 'fast-casual', label: 'Fast Casual' },
 ]
 
 const voiceOptions = [
   { value: '', label: 'Select voice style...' },
-  { value: 'warm and personal', label: 'Warm & personal' },
-  { value: 'professional and polished', label: 'Professional & polished' },
-  { value: 'fun and playful', label: 'Fun & playful' },
-  { value: 'formal and reserved', label: 'Formal & reserved' },
-  { value: 'friendly and casual', label: 'Friendly & casual' },
-  { value: 'sincere and humble', label: 'Sincere & humble' },
-  { value: 'enthusiastic and energetic', label: 'Enthusiastic & energetic' },
+  { value: 'warm and personal', label: 'Warm & Personal' },
+  { value: 'professional and polished', label: 'Professional & Polished' },
+  { value: 'fun and playful', label: 'Fun & Playful' },
+  { value: 'formal and reserved', label: 'Formal & Reserved' },
+  { value: 'friendly and casual', label: 'Friendly & Casual' },
+  { value: 'sincere and humble', label: 'Sincere & Humble' },
+  { value: 'enthusiastic and energetic', label: 'Enthusiastic & Energetic' },
 ]
 
 export default function RestaurantProfileForm({
@@ -114,7 +114,7 @@ export default function RestaurantProfileForm({
     <form onSubmit={handleSubmit} className="space-y-5">
       <Input
         id="restaurant_name"
-        label="Restaurant name"
+        label="Restaurant Name"
         required
         value={form.restaurant_name}
         onChange={(e) => setForm({ ...form, restaurant_name: e.target.value })}
@@ -122,7 +122,7 @@ export default function RestaurantProfileForm({
       />
       <Input
         id="owner_name"
-        label="Your name (owner)"
+        label="Your Name (Owner)"
         required
         value={form.owner_name}
         onChange={(e) => setForm({ ...form, owner_name: e.target.value })}
@@ -130,7 +130,7 @@ export default function RestaurantProfileForm({
       />
       <Select
         id="cuisine_type"
-        label="Cuisine type"
+        label="Cuisine Type"
         required
         value={form.cuisine_type}
         onChange={(e) => setForm({ ...form, cuisine_type: e.target.value })}
@@ -138,7 +138,7 @@ export default function RestaurantProfileForm({
       />
       <Select
         id="vibe"
-        label="Restaurant vibe"
+        label="Restaurant Vibe"
         required
         value={form.vibe}
         onChange={(e) => setForm({ ...form, vibe: e.target.value })}
@@ -146,7 +146,7 @@ export default function RestaurantProfileForm({
       />
       <Select
         id="voice_style"
-        label="Reply voice style"
+        label="Reply Voice Style"
         required
         value={form.voice_style}
         onChange={(e) => setForm({ ...form, voice_style: e.target.value })}
@@ -154,7 +154,7 @@ export default function RestaurantProfileForm({
       />
       <Textarea
         id="description"
-        label="Tell us about your restaurant"
+        label="Tell Us About Your Restaurant"
         required
         value={form.description}
         onChange={(e) => setForm({ ...form, description: e.target.value })}
@@ -172,7 +172,7 @@ export default function RestaurantProfileForm({
       )}
 
       <Button type="submit" loading={loading} size="lg" className="w-full">
-        {existingProfile ? 'Save changes' : 'Set up my restaurant →'}
+        {existingProfile ? 'Save Changes' : 'Set Up My Restaurant →'}
       </Button>
     </form>
   )

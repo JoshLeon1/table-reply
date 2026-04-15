@@ -126,7 +126,7 @@ export default function SignupPage() {
 
         {/* Card */}
         <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-modal p-6 sm:p-8">
-          <h1 className="text-[20px] font-bold text-[#111] tracking-[-0.02em] mb-1">Start your free trial</h1>
+          <h1 className="text-[20px] font-bold text-[#111] tracking-[-0.02em] mb-1">Start Your Free Trial</h1>
           <p className="text-[13px] text-[#A8A29E] mb-6">7 days free — no credit card required.</p>
 
           {successMessage ? (
@@ -201,7 +201,7 @@ export default function SignupPage() {
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
                   )}
-                  Create free account
+                  Create Free Account
                 </button>
               </form>
             </>
@@ -216,7 +216,7 @@ export default function SignupPage() {
         </div>
 
         <p className="mt-5 text-center text-[11px] text-[#A8A29E] px-4">
-          By creating an account you agree to our terms of service and privacy policy.
+          By creating an account you agree to our Terms of Service and Privacy Policy.
         </p>
       </div>
     </div>

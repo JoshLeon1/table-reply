@@ -44,9 +44,9 @@ export default function BillingButtons() {
       >
         <div className="text-left">
           <div className="flex items-center gap-2 mb-0.5">
-            <span className="text-[13px] font-semibold">Annual plan</span>
+            <span className="text-[13px] font-semibold">Annual Plan</span>
             <span className="px-1.5 py-0.5 rounded bg-[#E05A28] text-white text-[9px] font-bold uppercase tracking-wide leading-none">
-              Best value
+              Best Value
             </span>
           </div>
           <p className="text-white/50 text-[11px]">$239/yr · save $109 · under $20/month</p>
@@ -69,7 +69,7 @@ export default function BillingButtons() {
         disabled={loading !== null}
         className="w-full flex items-center justify-between px-5 py-3 rounded-xl border border-[#E4DED8] hover:border-[#D4CFC6] disabled:opacity-60 bg-white text-[#111] text-[13px] transition-all duration-150"
       >
-        <span className="font-medium">Monthly plan</span>
+        <span className="font-medium">Monthly Plan</span>
         <span className="text-[#888] flex items-center gap-1">
           {loading === 'monthly' ? (
             <svg className="w-4 h-4 animate-spin text-[#E05A28]" fill="none" viewBox="0 0 24 24">

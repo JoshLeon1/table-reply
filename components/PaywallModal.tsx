@@ -48,7 +48,7 @@ export default function PaywallModal({ onClose }: PaywallModalProps) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
           </div>
-          <h2 className="text-[22px] font-semibold text-[#111] tracking-tight mb-1.5">Your trial has ended</h2>
+          <h2 className="text-[22px] font-semibold text-[#111] tracking-tight mb-1.5">Your Trial Has Ended</h2>
           <p className="text-[#7C7672] text-[14px] mb-5 leading-relaxed">
             Keep replying to every review with AI. No contracts, cancel anytime.
           </p>
@@ -69,7 +69,7 @@ export default function PaywallModal({ onClose }: PaywallModalProps) {
               </span>
               {plan === 'annual' && (
                 <span className="mt-1 px-1.5 py-0.5 rounded bg-[#E05A28] text-white text-[9px] font-bold uppercase tracking-wide leading-none">
-                  Best value
+                  Best Value
                 </span>
               )}
             </button>

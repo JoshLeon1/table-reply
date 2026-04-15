@@ -176,7 +176,7 @@ export default function SettingsClient({
         <div className="divide-y divide-[#EDE9E4]">
           <div className="px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
             <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-medium text-[#111111]">End reply with owner name</p>
+              <p className="text-[13px] font-medium text-[#111111]">End Reply With Owner Name</p>
               <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">Sign off each reply with your name (e.g. — Maria)</p>
             </div>
             <Toggle
@@ -200,7 +200,7 @@ export default function SettingsClient({
 
           <div className="px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
             <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-medium text-[#111111]">Invite customer back</p>
+              <p className="text-[13px] font-medium text-[#111111]">Invite Customer Back</p>
               <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">End positive replies with an invitation to return</p>
             </div>
             <Toggle
@@ -234,7 +234,7 @@ export default function SettingsClient({
 
         <div className="px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
           <div className="min-w-0 flex-1">
-            <p className="text-[13px] font-medium text-[#111111]">New reviews scraped</p>
+            <p className="text-[13px] font-medium text-[#111111]">New Reviews Scraped</p>
             <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">Get notified when your Auto Review sync pulls in new reviews</p>
           </div>
           <Toggle
@@ -256,7 +256,7 @@ export default function SettingsClient({
           {/* Export */}
           <div className="px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between gap-4">
             <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-medium text-[#111111]">Export my data</p>
+              <p className="text-[13px] font-medium text-[#111111]">Export My Data</p>
               <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">Download all your reviews and replies as a JSON file</p>
             </div>
             <button
@@ -271,7 +271,7 @@ export default function SettingsClient({
           {/* Delete */}
           <div className="px-4 sm:px-6 py-4 sm:py-5 space-y-3">
             <div>
-              <p className="text-[13px] font-medium text-[#111111]">Delete all my data</p>
+              <p className="text-[13px] font-medium text-[#111111]">Delete All My Data</p>
               <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">
                 Permanently deletes your account, restaurant profile, all reviews, and generated replies. Type{' '}
                 <code className="font-mono text-red-500 bg-red-50 px-1 rounded">DELETE</code> to confirm.
@@ -297,7 +297,7 @@ export default function SettingsClient({
                 disabled={deleteInput !== 'DELETE' || deleteLoading}
                 className="sm:flex-shrink-0 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 disabled:bg-red-200 disabled:cursor-not-allowed text-white text-[13px] font-medium transition-all duration-150 min-h-[42px]"
               >
-                {deleteLoading ? 'Deleting…' : 'Delete everything'}
+                {deleteLoading ? 'Deleting…' : 'Delete Everything'}
               </button>
             </div>
           </div>

@@ -59,7 +59,7 @@ function Stars({ rating }: { rating: number }) {
   return (
     <div className="flex items-center gap-0.5">
       {[1, 2, 3, 4, 5].map((i) => (
-        <svg key={i} className={`w-3.5 h-3.5 ${i <= Math.round(rating) ? 'text-amber-400' : 'text-white/20'}`} fill="currentColor" viewBox="0 0 20 20">
+        <svg key={i} className={`w-3.5 h-3.5 ${i <= Math.round(rating) ? 'text-amber-400' : 'text-[#E4DED8]'}`} fill="currentColor" viewBox="0 0 20 20">
           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
         </svg>
       ))}
@@ -71,7 +71,7 @@ function Stars({ rating }: { rating: number }) {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/35 mb-5">{children}</p>
+    <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-5">{children}</p>
   )
 }
 
@@ -82,9 +82,9 @@ function ThemeSkeleton() {
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16">
       {[4, 3, 4].map((lines, col) => (
         <div key={col}>
-          <div className="h-3 w-16 bg-white/[0.08] rounded-full animate-pulse mb-5" />
+          <div className="h-3 w-16 bg-[#E4DED8] rounded-full animate-pulse mb-5" />
           {Array.from({ length: lines }).map((_, i) => (
-            <div key={i} className="h-3 bg-white/[0.08] rounded-full animate-pulse mb-3" style={{ width: `${75 - i * 10}%` }} />
+            <div key={i} className="h-3 bg-[#E4DED8] rounded-full animate-pulse mb-3" style={{ width: `${75 - i * 10}%` }} />
           ))}
         </div>
       ))}
@@ -97,8 +97,8 @@ function ThemeSkeleton() {
 function SparkTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-white/10 backdrop-blur-sm text-white text-[11px] px-2.5 py-1.5 rounded-lg border border-white/10">
-      <span className="text-white/60">{label} · </span>
+    <div className="bg-white text-[#111] text-[11px] px-2.5 py-1.5 rounded-lg border border-[#E4DED8] shadow-sm">
+      <span className="text-[#A8A29E]">{label} · </span>
       <span className="font-semibold">{Number(payload[0].value).toFixed(1)}★</span>
     </div>
   )
@@ -107,8 +107,8 @@ function SparkTooltip({ active, payload, label }: any) {
 function LineTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-[#111] text-white text-[12px] px-3 py-2 rounded-xl shadow-lg">
-      <p className="text-white/50 text-[11px] mb-0.5">{label}</p>
+    <div className="bg-white text-[#111] text-[12px] px-3 py-2 rounded-xl shadow-lg border border-[#E4DED8]">
+      <p className="text-[#A8A29E] text-[11px] mb-0.5">{label}</p>
       {payload.map((p: any, i: number) => (
         <p key={i} className="font-semibold">
           {p.name === 'count' ? `${p.value} review${p.value !== 1 ? 's' : ''}` : `${Number(p.value).toFixed(1)} ★`}
@@ -121,8 +121,8 @@ function LineTooltip({ active, payload, label }: any) {
 function BarChartTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-[#111] text-white text-[12px] px-3 py-2 rounded-xl shadow-lg">
-      <p className="text-white/50 text-[11px] mb-0.5">{label}</p>
+    <div className="bg-white text-[#111] text-[12px] px-3 py-2 rounded-xl shadow-lg border border-[#E4DED8]">
+      <p className="text-[#A8A29E] text-[11px] mb-0.5">{label}</p>
       {payload.map((p: any, i: number) => (
         <p key={i} className="font-semibold">{p.value} review{p.value !== 1 ? 's' : ''}</p>
       ))}
@@ -135,16 +135,16 @@ function BarChartTooltip({ active, payload, label }: any) {
 function EmptyState({ restaurantName }: { restaurantName: string }) {
   return (
     <div className="flex flex-col items-center justify-center min-h-[55vh] text-center">
-      <div className="w-12 h-12 rounded-2xl bg-[#111] flex items-center justify-center mb-6">
+      <div className="w-12 h-12 rounded-2xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mb-6">
         <svg className="w-6 h-6 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
         </svg>
       </div>
-      <h2 className="text-lg font-semibold text-white mb-2">No data yet</h2>
-      <p className="text-[13px] text-white/50 max-w-sm leading-relaxed mb-6">
+      <h2 className="text-lg font-semibold text-[#111111] mb-2">No data yet</h2>
+      <p className="text-[13px] text-[#57534E] max-w-sm leading-relaxed mb-6">
         Connect Google Maps, Yelp, or TripAdvisor and sync reviews to see analytics for {restaurantName}.
       </p>
-      <a href="/dashboard/reviews" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#111] hover:bg-[#1C1C1C] text-white text-[13px] font-medium transition-all">
+      <a href="/dashboard/reviews" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#F3F0EC] hover:bg-[#E9E5E0] border border-[#E4DED8] text-[#111111] text-[13px] font-medium transition-all">
         Set up Auto Reviews →
       </a>
     </div>
@@ -178,24 +178,24 @@ function StaffMentionsSection({ reviews }: { reviews: ScrapedReview[] }) {
         {staff.map((member) => {
           const avatarStyles = [
             'bg-[#E05A28]/15 text-[#E05A28]',
-            'bg-blue-950/40 text-blue-400',
-            'bg-violet-950/40 text-violet-400',
-            'bg-emerald-950/40 text-emerald-400',
-            'bg-amber-950/40 text-amber-400',
+            'bg-blue-50 text-blue-500',
+            'bg-violet-50 text-violet-500',
+            'bg-emerald-50 text-emerald-600',
+            'bg-amber-50 text-amber-500',
           ]
           const avatarClass = avatarStyles[member.name.charCodeAt(0) % 5]
           return (
-          <div key={member.name} className="bg-[#111111] rounded-2xl border border-white/[0.07] p-5 shadow-card">
-            <div className={`w-10 h-10 rounded-full ${avatarClass} border border-current/10 flex items-center justify-center font-bold text-[16px] mb-3`}>
+          <div key={member.name} className="bg-white rounded-2xl border border-[#E4DED8] p-5">
+            <div className={`w-10 h-10 rounded-full ${avatarClass} flex items-center justify-center font-bold text-[16px] mb-3`}>
               {member.name.charAt(0)}
             </div>
-            <p className="text-[14px] font-semibold text-white mb-1">{member.name}</p>
+            <p className="text-[14px] font-semibold text-[#111111] mb-1">{member.name}</p>
             <div className="flex items-center gap-1.5 mb-2">
-              <span className="text-[12px] text-white/55">{member.count} mention{member.count !== 1 ? 's' : ''}</span>
-              <span className="text-white/20">·</span>
+              <span className="text-[12px] text-[#57534E]">{member.count} mention{member.count !== 1 ? 's' : ''}</span>
+              <span className="text-[#E4DED8]">·</span>
               <span className="text-[12px] text-[#E05A28] font-medium">{member.avgRating.toFixed(1)}★</span>
             </div>
-            {member.quote && <p className="text-[11px] text-white/35 italic leading-relaxed line-clamp-3">"{member.quote}…"</p>}
+            {member.quote && <p className="text-[11px] text-[#A8A29E] italic leading-relaxed line-clamp-3">"{member.quote}…"</p>}
           </div>
         )})}
       </div>
@@ -720,11 +720,11 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       {/* ── PAGE HEADER ────────────────────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div>
-          <h1 className="text-[22px] font-bold tracking-tight text-white leading-tight">{restaurantName}</h1>
-          <p className="text-white/35 text-[13px] mt-1">
+          <h1 className="text-[22px] font-bold tracking-tight text-[#111111] leading-tight">{restaurantName}</h1>
+          <p className="text-[#A8A29E] text-[13px] mt-1">
             {totalReviews} review{totalReviews !== 1 ? 's' : ''} analysed
             {ratingDelta !== null && (
-              <span className={`ml-2 font-semibold ${ratingDelta > 0 ? 'text-emerald-500' : ratingDelta < 0 ? 'text-red-400' : 'text-white/35'}`}>
+              <span className={`ml-2 font-semibold ${ratingDelta > 0 ? 'text-emerald-600' : ratingDelta < 0 ? 'text-red-500' : 'text-[#A8A29E]'}`}>
                 {ratingDelta > 0 ? `↑ +${ratingDelta.toFixed(1)} vs last month` : ratingDelta < 0 ? `↓ ${ratingDelta.toFixed(1)} vs last month` : '→ steady vs last month'}
               </span>
             )}
@@ -733,13 +733,13 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
 
         <div className="flex items-center gap-2 flex-shrink-0 flex-wrap">
           {lastAnalyzedAt && (
-            <span className="text-[11px] text-white/35 hidden sm:block">Last analysed {formatDate(lastAnalyzedAt)}</span>
+            <span className="text-[11px] text-[#A8A29E] hidden sm:block">Last analysed {formatDate(lastAnalyzedAt)}</span>
           )}
 
           <button
             onClick={handleRefresh}
             disabled={refreshing}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/[0.06] border border-white/[0.10] text-white/45 hover:text-white text-[12px] font-medium disabled:opacity-40 transition-all"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#F3F0EC] border border-[#E4DED8] text-[#57534E] hover:text-[#111111] text-[12px] font-medium disabled:opacity-40 transition-all"
           >
             <svg className={`w-3 h-3 ${refreshing ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -752,7 +752,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
             <button
               onClick={(e) => { e.stopPropagation(); setShowDownloadMenu((v) => !v) }}
               disabled={downloadingReport || downloadingCsv}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#111] hover:bg-[#1C1C1C] text-white text-[12px] font-medium disabled:opacity-40 transition-all"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#F3F0EC] border border-[#E4DED8] hover:bg-[#E9E5E0] text-[#111111] text-[12px] font-medium disabled:opacity-40 transition-all"
             >
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -763,15 +763,15 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
               </svg>
             </button>
             {showDownloadMenu && (
-              <div className="absolute right-0 top-full mt-1.5 w-44 bg-[#1A1A1A] rounded-xl border border-white/[0.10] shadow-modal z-20 overflow-hidden animate-scale-in" onClick={(e) => e.stopPropagation()}>
-                <button onClick={handleDownloadReport} className="w-full flex items-center gap-2.5 px-4 py-3 text-[13px] text-white hover:bg-white/[0.06] transition-colors text-left">
+              <div className="absolute right-0 top-full mt-1.5 w-44 bg-white rounded-xl border border-[#E4DED8] shadow-lg z-20 overflow-hidden animate-scale-in" onClick={(e) => e.stopPropagation()}>
+                <button onClick={handleDownloadReport} className="w-full flex items-center gap-2.5 px-4 py-3 text-[13px] text-[#111111] hover:bg-[#F3F0EC] transition-colors text-left">
                   <svg className="w-4 h-4 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                   Export PDF
                 </button>
-                <div className="h-px bg-white/[0.06]" />
-                <button onClick={handleDownloadCsv} className="w-full flex items-center gap-2.5 px-4 py-3 text-[13px] text-white hover:bg-white/[0.06] transition-colors text-left">
+                <div className="h-px bg-[#EDE9E4]" />
+                <button onClick={handleDownloadCsv} className="w-full flex items-center gap-2.5 px-4 py-3 text-[13px] text-[#111111] hover:bg-[#F3F0EC] transition-colors text-left">
                   <svg className="w-4 h-4 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                   </svg>
@@ -785,11 +785,11 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
 
       {/* ── CRITICAL ALERT ─────────────────────────────────────────────────── */}
       {criticalUnanswered > 0 && (
-        <div className="flex items-center gap-3 px-4 py-3.5 bg-red-950/30 border border-red-900/30 rounded-2xl animate-fade-in">
-          <svg className="w-5 h-5 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="flex items-center gap-3 px-4 py-3.5 bg-red-50 border border-red-200 rounded-2xl animate-fade-in">
+          <svg className="w-5 h-5 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
-          <p className="text-[13px] text-red-400">
+          <p className="text-[13px] text-red-600">
             <span className="font-semibold">{criticalUnanswered} unanswered 1–2★ review{criticalUnanswered !== 1 ? 's' : ''}</span>
             {' '}— negative reviews with no reply hurt your search ranking.{' '}
             <a href="/dashboard/reviews" className="underline font-medium">Reply now →</a>
@@ -798,40 +798,40 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       )}
 
       {/* ── RATING HERO ────────────────────────────────────────────────────── */}
-      <div className="rounded-3xl bg-[#0A0A0A] overflow-hidden">
+      <div className="rounded-3xl bg-white border border-[#E4DED8] overflow-hidden shadow-[0_2px_16px_rgba(0,0,0,0.06)]">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
 
           {/* Big number */}
-          <div className="order-1 md:order-2 flex flex-col items-center justify-center px-5 sm:px-8 py-7 sm:py-12 text-center border-b md:border-b-0 border-white/[0.07]">
-            <p className="text-white leading-none mb-3 sm:mb-4" style={{ fontSize: 'clamp(56px, 10vw, 120px)', fontWeight: 700, letterSpacing: '-0.02em' }}>
+          <div className="order-1 md:order-2 flex flex-col items-center justify-center px-5 sm:px-8 py-7 sm:py-12 text-center border-b md:border-b-0 border-[#EDE9E4]">
+            <p className="text-[#111111] leading-none mb-3 sm:mb-4" style={{ fontSize: 'clamp(56px, 10vw, 120px)', fontWeight: 700, letterSpacing: '-0.02em' }}>
               {avgRating.toFixed(1)}
             </p>
             <Stars rating={avgRating} />
-            <p className="text-white/40 text-[12px] mt-3 sm:mt-4">
+            <p className="text-[#A8A29E] text-[12px] mt-3 sm:mt-4">
               {totalReviews} reviews ·{' '}
-              <span className={responseRate >= 80 ? 'text-emerald-400 font-medium' : responseRate < 50 ? 'text-[#E05A28] font-medium' : 'text-white/40'}>
+              <span className={responseRate >= 80 ? 'text-emerald-600 font-medium' : responseRate < 50 ? 'text-[#E05A28] font-medium' : 'text-[#A8A29E]'}>
                 {responseRate}% replied
               </span>
             </p>
             {responseRate < 50 && (
-              <p className="text-white/20 text-[10px] mt-1 max-w-[180px] leading-relaxed">Replying to more reviews boosts local SEO</p>
+              <p className="text-[#C4BEB8] text-[10px] mt-1 max-w-[180px] leading-relaxed">Replying to more reviews boosts local SEO</p>
             )}
           </div>
 
           {/* Breakdown */}
-          <div className="order-2 md:order-1 px-5 sm:px-8 py-6 sm:py-12 border-b md:border-b-0 md:border-r border-white/[0.07]">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28]/60 mb-4 sm:mb-6">Breakdown</p>
+          <div className="order-2 md:order-1 px-5 sm:px-8 py-6 sm:py-12 border-b md:border-b-0 md:border-r border-[#EDE9E4]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28]/70 mb-4 sm:mb-6">Breakdown</p>
             <div className="space-y-2.5 sm:space-y-3">
               {[5, 4, 3, 2, 1].map((star) => {
                 const count = ratingDist[star] ?? 0
                 const pct = totalReviews > 0 ? (count / totalReviews) * 100 : 0
                 return (
                   <div key={star} className="flex items-center gap-2.5 sm:gap-3">
-                    <span className="text-[11px] text-white/40 w-5 flex-shrink-0 text-right">{star}★</span>
-                    <div className="flex-1 h-1.5 sm:h-2 bg-white/10 rounded-full overflow-hidden">
+                    <span className="text-[11px] text-[#A8A29E] w-5 flex-shrink-0 text-right">{star}★</span>
+                    <div className="flex-1 h-1.5 sm:h-2 bg-[#EDE9E4] rounded-full overflow-hidden">
                       <div className="h-full rounded-full bg-[#E05A28] transition-all duration-700" style={{ width: `${pct}%` }} />
                     </div>
-                    <span className="text-[11px] text-white/40 w-12 sm:w-14 flex-shrink-0 text-right tabular-nums">{count} · {Math.round(pct)}%</span>
+                    <span className="text-[11px] text-[#A8A29E] w-12 sm:w-14 flex-shrink-0 text-right tabular-nums">{count} · {Math.round(pct)}%</span>
                   </div>
                 )
               })}
@@ -839,18 +839,18 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
           </div>
 
           {/* Trend */}
-          <div className="order-3 px-5 sm:px-8 py-6 sm:py-12 md:border-l border-white/[0.07]">
+          <div className="order-3 px-5 sm:px-8 py-6 sm:py-12 md:border-l border-[#EDE9E4]">
             <div className="flex items-center justify-between mb-1">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28]/60">Trend</p>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28]/70">Trend</p>
               {hasSparkData && (
-                <span className={`text-[11px] font-semibold ${sparkTrend === 'up' ? 'text-emerald-400' : sparkTrend === 'down' ? 'text-red-400' : 'text-white/30'}`}>
+                <span className={`text-[11px] font-semibold ${sparkTrend === 'up' ? 'text-emerald-600' : sparkTrend === 'down' ? 'text-red-500' : 'text-[#A8A29E]'}`}>
                   {sparkTrend === 'up' ? '▲ Improving' : sparkTrend === 'down' ? '▼ Declining' : '→ Steady'}
                 </span>
               )}
             </div>
             {hasSparkData ? (
               <>
-                <p className="text-white/25 text-[10px] mb-3">Rolling avg · last {sparkData.length} reviews</p>
+                <p className="text-[#C4BEB8] text-[10px] mb-3">Rolling avg · last {sparkData.length} reviews</p>
                 <ResponsiveContainer width="100%" height={80}>
                   <LineChart data={sparkData} margin={{ top: 4, right: 4, bottom: 4, left: 4 }}>
                     <YAxis domain={[1, 5]} hide />
@@ -860,13 +860,13 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                   </LineChart>
                 </ResponsiveContainer>
                 <div className="flex justify-between items-center mt-2">
-                  <span className="text-white/20 text-[10px]">Oldest</span>
-                  <span className="text-white/20 text-[10px]">Latest</span>
+                  <span className="text-[#C4BEB8] text-[10px]">Oldest</span>
+                  <span className="text-[#C4BEB8] text-[10px]">Latest</span>
                 </div>
               </>
             ) : (
               <div className="flex flex-col justify-center h-[100px]">
-                <p className="text-white/30 text-[12px] leading-relaxed">More data coming soon</p>
+                <p className="text-[#A8A29E] text-[12px] leading-relaxed">More data coming soon</p>
               </div>
             )}
           </div>
@@ -886,13 +886,13 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
             label: 'Last month',
             value: lastMonthReviews.length ? lastMonthAvg.toFixed(1) + ' ★' : '—',
             sub: `${lastMonthReviews.length} review${lastMonthReviews.length !== 1 ? 's' : ''}`,
-            color: 'text-white',
+            color: 'text-[#111111]',
           },
           {
             label: 'Response rate',
             value: `${responseRate}%`,
             sub: `${approvedCount} of ${totalReviews} replied`,
-            color: responseRate >= 80 ? 'text-emerald-400' : responseRate >= 50 ? 'text-white' : 'text-[#E05A28]',
+            color: responseRate >= 80 ? 'text-emerald-600' : responseRate >= 50 ? 'text-[#111111]' : 'text-[#E05A28]',
           },
           {
             label: 'Critical unanswered',
@@ -901,10 +901,10 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
             color: criticalUnanswered === 0 ? 'text-emerald-400' : 'text-red-400',
           },
         ].map((stat, i) => (
-          <div key={i} className={`bg-[#111111] rounded-2xl border border-white/[0.07] p-3.5 sm:p-4 stagger-${i + 1} animate-fade-up`}>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-white/35 mb-2 leading-tight">{stat.label}</p>
+          <div key={i} className={`bg-white rounded-2xl border border-[#E4DED8] p-3.5 sm:p-4 stagger-${i + 1} animate-fade-up shadow-[0_1px_3px_rgba(0,0,0,0.04)]`}>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-2 leading-tight">{stat.label}</p>
             <p className={`text-[18px] sm:text-2xl font-bold leading-none mb-1 ${stat.color}`}>{stat.value}</p>
-            <p className="text-[11px] text-white/35 leading-tight">{stat.sub}</p>
+            <p className="text-[11px] text-[#A8A29E] leading-tight">{stat.sub}</p>
           </div>
         ))}
       </div>
@@ -912,24 +912,24 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       {/* ── YOUR IMPACT ────────────────────────────────────────────────────── */}
       <div>
         <SectionLabel>Your impact</SectionLabel>
-        <div className="rounded-2xl border border-white/[0.07] bg-[#111111] p-5 sm:p-8">
+        <div className="rounded-2xl border border-[#E4DED8] bg-white p-5 sm:p-8">
           <div className="flex flex-col sm:flex-row gap-6 sm:gap-8 mb-8">
             <div className="flex-shrink-0">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-white/25 mb-1">Industry avg</p>
-              <p className="text-white/35 leading-none mb-1 text-4xl sm:text-5xl font-bold">~15%</p>
-              <p className="text-[11px] text-white/35">respond to reviews</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#C4BEB8] mb-1">Industry avg</p>
+              <p className="text-[#A8A29E] leading-none mb-1 text-4xl sm:text-5xl font-bold">~15%</p>
+              <p className="text-[11px] text-[#A8A29E]">respond to reviews</p>
             </div>
-            <div className="w-px bg-white/[0.06] self-stretch hidden sm:block" />
+            <div className="w-px bg-[#EDE9E4] self-stretch hidden sm:block" />
             <div className="flex-1">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-white/35 mb-1">{restaurantName}</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-1">{restaurantName}</p>
               <p className="leading-none mb-2 text-4xl sm:text-5xl font-bold"
-                style={{ color: responseRate >= 80 ? '#22c55e' : responseRate >= 50 ? '#ffffff' : '#E05A28' }}>
+                style={{ color: responseRate >= 80 ? '#16a34a' : responseRate >= 50 ? '#111111' : '#E05A28' }}>
                 {responseRate}%
               </p>
               {responseRate >= 80 ? (
-                <p className="text-[13px] font-semibold text-emerald-400">You're in the top tier of restaurants</p>
+                <p className="text-[13px] font-semibold text-emerald-600">You're in the top tier of restaurants</p>
               ) : responseRate >= 50 ? (
-                <p className="text-[13px] font-medium text-white/55">Above average — keep it up</p>
+                <p className="text-[13px] font-medium text-[#57534E]">Above average — keep it up</p>
               ) : (
                 <p className="text-[13px] font-medium text-[#E05A28]">Responding to more reviews increases profile visits by up to 16%</p>
               )}
@@ -942,24 +942,24 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
               { label: 'Top chains', pct: 60, highlight: false },
             ] as const).map(({ label, pct, highlight }) => (
               <div key={label} className="flex items-center gap-3">
-                <span className={`text-[12px] flex-shrink-0 w-24 sm:w-28 truncate ${highlight ? 'font-semibold text-white' : 'text-white/35'}`}>{label}</span>
-                <div className="flex-1 h-2 bg-white/[0.05] rounded-full overflow-hidden">
-                  <div className={`h-full rounded-full transition-all duration-700 ${highlight ? (responseRate >= 50 ? 'bg-emerald-400' : 'bg-[#E05A28]') : 'bg-white/[0.07]'}`}
+                <span className={`text-[12px] flex-shrink-0 w-24 sm:w-28 truncate ${highlight ? 'font-semibold text-[#111111]' : 'text-[#A8A29E]'}`}>{label}</span>
+                <div className="flex-1 h-2 bg-[#EDE9E4] rounded-full overflow-hidden">
+                  <div className={`h-full rounded-full transition-all duration-700 ${highlight ? (responseRate >= 50 ? 'bg-emerald-500' : 'bg-[#E05A28]') : 'bg-[#D0C9C1]'}`}
                     style={{ width: `${pct}%` }} />
                 </div>
-                <span className={`text-[12px] w-8 flex-shrink-0 text-right ${highlight ? 'font-semibold text-white' : 'text-white/35'}`}>{pct}%</span>
+                <span className={`text-[12px] w-8 flex-shrink-0 text-right ${highlight ? 'font-semibold text-[#111111]' : 'text-[#A8A29E]'}`}>{pct}%</span>
               </div>
             ))}
           </div>
-          {responseRate < 50 && <p className="text-[10px] text-white/25 mt-5">Source: SOCi research</p>}
+          {responseRate < 50 && <p className="text-[10px] text-[#C4BEB8] mt-5">Source: SOCi research</p>}
         </div>
       </div>
 
       {/* ── RESPONSE RATE BY RATING ─────────────────────────────────────────── */}
       <div>
         <SectionLabel>Response rate by star rating</SectionLabel>
-        <div className="bg-[#111111] rounded-2xl border border-white/[0.07] p-5 sm:p-6">
-          <p className="text-[12px] text-white/35 mb-5">Are you replying to the reviews that matter most? Low-star reviews with no reply damage trust.</p>
+        <div className="bg-white rounded-2xl border border-[#E4DED8] p-5 sm:p-6">
+          <p className="text-[12px] text-[#A8A29E] mb-5">Are you replying to the reviews that matter most? Low-star reviews with no reply damage trust.</p>
           <div className="space-y-4">
             {[1, 2, 3, 4, 5].reverse().map((star) => {
               const d = responseByRating[star]
@@ -975,14 +975,14 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                       </svg>
                     ))}
                   </div>
-                  <div className="flex-1 h-2.5 bg-white/[0.05] rounded-full overflow-hidden">
+                  <div className="flex-1 h-2.5 bg-[#EDE9E4] rounded-full overflow-hidden">
                     <div
-                      className={`h-full rounded-full transition-all duration-700 ${pct === 100 ? 'bg-emerald-400' : isLow && pct < 50 ? 'bg-red-400' : 'bg-[#E05A28]'}`}
+                      className={`h-full rounded-full transition-all duration-700 ${pct === 100 ? 'bg-emerald-500' : isLow && pct < 50 ? 'bg-red-400' : 'bg-[#E05A28]'}`}
                       style={{ width: `${pct}%` }}
                     />
                   </div>
-                  <span className={`text-[12px] font-semibold w-10 text-right ${pct === 100 ? 'text-emerald-400' : isLow && pct < 50 ? 'text-red-400' : 'text-white'}`}>{pct}%</span>
-                  <span className="text-[11px] text-white/35 w-16 sm:w-20 flex-shrink-0 tabular-nums">{d.replied}/{d.total}</span>
+                  <span className={`text-[12px] font-semibold w-10 text-right ${pct === 100 ? 'text-emerald-600' : isLow && pct < 50 ? 'text-red-500' : 'text-[#111111]'}`}>{pct}%</span>
+                  <span className="text-[11px] text-[#A8A29E] w-16 sm:w-20 flex-shrink-0 tabular-nums">{d.replied}/{d.total}</span>
                 </div>
               )
             })}

@@ -257,12 +257,6 @@ export default function Nav() {
           />
 
           <div className={`lg:hidden fixed top-16 left-0 right-0 z-50 bg-white border-b border-[#E4DED8] shadow-[0_20px_50px_rgba(0,0,0,0.10)] transition-transform duration-300 ease-out overflow-y-auto max-h-[calc(100dvh-64px)] ${mobileOpen ? 'translate-y-0' : '-translate-y-[110%]'}`}>
-            {/* Branding strip */}
-            <div className="flex items-center gap-3 px-5 py-3.5 border-b border-[#E4DED8]">
-              <LogoMark size={22} />
-              <span className="text-[12px] font-semibold text-[#57534E] tracking-tight">TableReply</span>
-            </div>
-
             <div className="px-3 py-2 space-y-0.5">
               {links.map((link) => {
                 const active = pathname === link.href

@@ -38,17 +38,17 @@ function formatRating(val: number | null) {
 }
 
 function StarRating({ rating }: { rating: number | null }) {
-  if (rating === null) return <span className="text-[14px] font-semibold text-white">—</span>
+  if (rating === null) return <span className="text-[14px] font-semibold text-[#111111]">—</span>
   return (
     <div className="flex items-center gap-1">
       <div className="flex gap-0.5">
         {[1,2,3,4,5].map((i) => (
-          <svg key={i} className={`w-3 h-3 ${i <= Math.round(rating) ? 'text-amber-400' : 'text-white/[0.15]'}`} fill="currentColor" viewBox="0 0 20 20">
+          <svg key={i} className={`w-3 h-3 ${i <= Math.round(rating) ? 'text-amber-400' : 'text-[#E4DED8]'}`} fill="currentColor" viewBox="0 0 20 20">
             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
           </svg>
         ))}
       </div>
-      <span className="text-[13px] font-semibold text-white">{rating.toFixed(1)}</span>
+      <span className="text-[13px] font-semibold text-[#111111]">{rating.toFixed(1)}</span>
     </div>
   )
 }
@@ -118,15 +118,15 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
 
   return (
     <div className="flex items-center justify-center py-12 sm:py-16">
-      <div className="w-full max-w-lg bg-[#111111] rounded-2xl border border-white/[0.07] shadow-card p-7 sm:p-8">
+      <div className="w-full max-w-lg bg-white rounded-2xl border border-[#E4DED8] shadow-card p-7 sm:p-8">
         <div className="mb-7 text-center">
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#E05A28]/10 border border-[#E05A28]/25 mb-4">
             <svg className="w-6 h-6 text-[#E05A28]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
           </div>
-          <h2 className="text-[18px] font-bold text-white tracking-tight mb-1">Track up to 3 competitors</h2>
-          <p className="text-[13px] text-white/35">Monitor nearby restaurants to see how you compare</p>
+          <h2 className="text-[18px] font-bold text-[#111111] tracking-tight mb-1">Track up to 3 competitors</h2>
+          <p className="text-[13px] text-[#57534E]">Monitor nearby restaurants to see how you compare</p>
         </div>
 
         {/* Auto-find button */}
@@ -143,20 +143,20 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
         </button>
 
         {suggestError && (
-          <div className="flex items-start gap-2 text-[12px] text-amber-400 bg-amber-950/40 border border-amber-900/30 rounded-xl px-3.5 py-2.5 mb-4">
+          <div className="flex items-start gap-2 text-[12px] text-amber-600 bg-amber-50 border border-amber-200 rounded-xl px-3.5 py-2.5 mb-4">
             <svg className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
             {suggestError}
           </div>
         )}
 
         {suggestions.length > 0 && (
-          <div className="mb-4 p-4 bg-emerald-950/30 border border-emerald-900/30 rounded-xl">
+          <div className="mb-4 p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
             <p className="text-[11px] font-semibold uppercase tracking-[0.10em] text-emerald-700 mb-3">Found {suggestions.length} nearby — review below</p>
             <div className="space-y-2">
               {suggestions.map((s, i) => (
                 <div key={s.placeId} className="flex items-center gap-2 text-[13px]">
-                  <span className="text-emerald-500 font-bold w-4 flex-shrink-0">{i + 1}.</span>
-                  <span className="font-medium text-white flex-1 truncate">{s.name}</span>
+                  <span className="text-emerald-600 font-bold w-4 flex-shrink-0">{i + 1}.</span>
+                  <span className="font-medium text-[#111111] flex-1 truncate">{s.name}</span>
                   {s.rating && <span className="text-amber-500 text-[12px] flex-shrink-0">{s.rating.toFixed(1)}★</span>}
                   <button
                     onClick={() => {
@@ -165,7 +165,7 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
                       setUrls(next)
                       setSuggestions(prev => prev.filter((_, j) => j !== i))
                     }}
-                    className="ml-2 text-white/30 hover:text-red-400 transition text-[11px] flex-shrink-0"
+                    className="ml-2 text-[#A8A29E] hover:text-red-500 transition text-[11px] flex-shrink-0"
                   >
                     Remove
                   </button>
@@ -176,15 +176,15 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
         )}
 
         <div className="relative flex items-center gap-3 mb-5">
-          <div className="flex-1 h-px bg-white/[0.08]" />
-          <span className="text-[11px] text-white/25 font-medium whitespace-nowrap">or enter Google Maps URLs manually</span>
-          <div className="flex-1 h-px bg-white/[0.08]" />
+          <div className="flex-1 h-px bg-[#E4DED8]" />
+          <span className="text-[11px] text-[#A8A29E] font-medium whitespace-nowrap">or enter Google Maps URLs manually</span>
+          <div className="flex-1 h-px bg-[#E4DED8]" />
         </div>
 
         <div className="space-y-3 mb-6">
           {[0, 1, 2].map((i) => (
             <div key={i}>
-              <label className="block text-[11px] font-semibold uppercase tracking-[0.10em] text-white/35 mb-1.5">
+              <label className="block text-[11px] font-semibold uppercase tracking-[0.10em] text-[#A8A29E] mb-1.5">
                 Competitor {i + 1}
               </label>
               <input
@@ -196,14 +196,14 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
                   setUrls(next)
                 }}
                 placeholder="https://google.com/maps/place/restaurant-name..."
-                className="w-full px-3.5 py-2.5 rounded-xl border border-white/[0.10] text-[13px] text-white placeholder:text-white/25 focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] bg-[#1A1A1A] focus:bg-[#1E1E1E] transition-all"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] text-[13px] text-[#111111] placeholder:text-[#C4BEB8] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] bg-[#F8F6F3] focus:bg-white transition-all"
               />
             </div>
           ))}
         </div>
 
         {error && (
-          <div className="flex items-center gap-2 text-[12px] text-red-400 mb-4">
+          <div className="flex items-center gap-2 text-[12px] text-red-500 mb-4">
             <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             {error}
           </div>
@@ -265,12 +265,12 @@ function AddMoreForm({
   }
 
   return (
-    <div className="bg-[#111111] rounded-2xl border border-white/[0.07] shadow-card p-5 mb-6">
-      <p className="text-[13px] font-semibold text-white mb-4">Add more competitors</p>
+    <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-card p-5 mb-6">
+      <p className="text-[13px] font-semibold text-[#111111] mb-4">Add more competitors</p>
       <div className="space-y-3 mb-4">
         {Array.from({ length: slots }).map((_, i) => (
           <div key={i}>
-            <label className="block text-[11px] font-semibold uppercase tracking-[0.10em] text-white/35 mb-1.5">
+            <label className="block text-[11px] font-semibold uppercase tracking-[0.10em] text-[#A8A29E] mb-1.5">
               Competitor {existingCount + i + 1}
             </label>
             <input
@@ -282,12 +282,12 @@ function AddMoreForm({
                 setUrls(next)
               }}
               placeholder="https://google.com/maps/place/restaurant..."
-              className="w-full px-3.5 py-2.5 rounded-xl border border-white/[0.10] text-[13px] text-white placeholder:text-white/25 focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] bg-[#1A1A1A] focus:bg-[#1E1E1E] transition-all"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] text-[13px] text-[#111111] placeholder:text-[#C4BEB8] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] bg-[#F8F6F3] focus:bg-white transition-all"
             />
           </div>
         ))}
       </div>
-      {error && <p className="text-[12px] text-red-400 mb-3">{error}</p>}
+      {error && <p className="text-[12px] text-red-500 mb-3">{error}</p>}
       <div className="flex items-center gap-2">
         <button
           onClick={handleSubmit}
@@ -298,7 +298,7 @@ function AddMoreForm({
         </button>
         <button
           onClick={onCancel}
-          className="h-9 px-4 rounded-xl border border-white/[0.10] text-[13px] font-medium text-white/40 hover:bg-white/[0.06] transition-all"
+          className="h-9 px-4 rounded-xl border border-[#E4DED8] text-[13px] font-medium text-[#57534E] hover:bg-[#F3F0EC] transition-all"
         >
           Cancel
         </button>
@@ -375,7 +375,7 @@ function ComparisonTable({
         key={String(value)}
         className={`px-4 py-3 text-[13px] text-center ${
           isYou ? 'bg-[#E05A28]/[0.06]' : ''
-        } ${highlight ? 'text-emerald-400 font-semibold' : 'text-white'}`}
+        } ${highlight ? 'text-emerald-600 font-semibold' : 'text-[#111111]'}`}
       >
         {value ?? '—'}
       </td>
@@ -383,17 +383,17 @@ function ComparisonTable({
   }
 
   return (
-    <div className="bg-[#111111] rounded-2xl border border-white/[0.07] overflow-hidden mb-6">
+    <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden mb-6">
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-white/[0.07]">
-              <th className="px-4 py-3 text-left text-[12px] font-medium text-white/40 w-36">Metric</th>
+            <tr className="border-b border-[#E4DED8]">
+              <th className="px-4 py-3 text-left text-[12px] font-medium text-[#A8A29E] w-36">Metric</th>
               {colHeaders.slice(0, activeCount).map((name, i) => (
                 <th
                   key={i}
                   className={`px-4 py-3 text-[12px] font-medium text-center ${
-                    i === 0 ? 'bg-[#E05A28]/08 text-white' : 'text-white/35'
+                    i === 0 ? 'bg-[#E05A28]/[0.06] text-[#111111]' : 'text-[#57534E]'
                   }`}
                 >
                   {i === 0 ? (
@@ -408,10 +408,10 @@ function ComparisonTable({
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/[0.06]">
+          <tbody className="divide-y divide-[#EDE9E4]">
             {/* Average Rating */}
             <tr>
-              <td className="px-4 py-3 text-[13px] text-white/40">Avg Rating</td>
+              <td className="px-4 py-3 text-[13px] text-[#57534E]">Avg Rating</td>
               {[
                 userAvgRating ? `${userAvgRating.toFixed(1)} ★` : '—',
                 c(0) ? (c(0)!.avg_rating !== null ? `${c(0)!.avg_rating!.toFixed(1)} ★` : '—') : null,
@@ -426,7 +426,7 @@ function ComparisonTable({
 
             {/* Total Reviews */}
             <tr>
-              <td className="px-4 py-3 text-[13px] text-white/40">Total Reviews</td>
+              <td className="px-4 py-3 text-[13px] text-[#57534E]">Total Reviews</td>
               {[
                 null,
                 c(0)?.review_count ?? null,
@@ -445,7 +445,7 @@ function ComparisonTable({
 
             {/* Response Rate */}
             <tr>
-              <td className="px-4 py-3 text-[13px] text-white/40">Response Rate</td>
+              <td className="px-4 py-3 text-[13px] text-[#57534E]">Response Rate</td>
               {[null, c(0), c(1), c(2)]
                 .slice(0, activeCount)
                 .map((comp, i) => {
@@ -457,7 +457,7 @@ function ComparisonTable({
 
             {/* Last Synced */}
             <tr>
-              <td className="px-4 py-3 text-[13px] text-white/40">Last Synced</td>
+              <td className="px-4 py-3 text-[13px] text-[#57534E]">Last Synced</td>
               {[null, c(0), c(1), c(2)]
                 .slice(0, activeCount)
                 .map((comp, i) => {
@@ -465,7 +465,7 @@ function ComparisonTable({
                   return (
                     <td
                       key={i}
-                      className={`px-4 py-3 text-[13px] text-center text-white/40 ${i === 0 ? 'bg-[#E05A28]/[0.06]' : ''}`}
+                      className={`px-4 py-3 text-[13px] text-center text-[#A8A29E] ${i === 0 ? 'bg-[#E05A28]/[0.06]' : ''}`}
                     >
                       {date}
                     </td>
@@ -500,32 +500,32 @@ function RatingChart({
   ]
 
   return (
-    <div className="bg-[#111111] rounded-2xl border border-white/[0.07] p-5 sm:p-6 mb-6">
-      <p className="text-[13px] font-semibold text-white mb-5">Rating comparison</p>
+    <div className="bg-white rounded-2xl border border-[#E4DED8] p-5 sm:p-6 mb-6">
+      <p className="text-[13px] font-semibold text-[#111111] mb-5">Rating comparison</p>
       <ResponsiveContainer width="100%" height={220}>
         <BarChart data={data} margin={{ top: 20, right: 16, left: -20, bottom: 0 }} barSize={40}>
           <XAxis
             dataKey="name"
-            tick={{ fontSize: 12, fill: 'rgba(255,255,255,0.35)' }}
+            tick={{ fontSize: 12, fill: '#57534E' }}
             axisLine={false}
             tickLine={false}
           />
           <YAxis
             domain={[1, 5]}
             ticks={[1, 2, 3, 4, 5]}
-            tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.20)' }}
+            tick={{ fontSize: 11, fill: '#A8A29E' }}
             axisLine={false}
             tickLine={false}
           />
           <Tooltip
             contentStyle={{
-              background: '#1a1a1a',
-              border: '1px solid rgba(255,255,255,0.10)',
+              background: '#ffffff',
+              border: '1px solid #E4DED8',
               borderRadius: 12,
               fontSize: 12,
-              color: '#fff',
+              color: '#111111',
             }}
-            cursor={{ fill: 'rgba(255,255,255,0.04)' }}
+            cursor={{ fill: 'rgba(0,0,0,0.03)' }}
             formatter={(value: unknown) => [`${Number(value).toFixed(1)} ★`, 'Rating']}
           />
           <Bar dataKey="rating" radius={[6, 6, 0, 0]}>
@@ -533,12 +533,12 @@ function RatingChart({
               dataKey="rating"
               position="top"
               formatter={(v: unknown) => (Number(v) > 0 ? Number(v).toFixed(1) : '')}
-              style={{ fontSize: 11, fill: 'rgba(255,255,255,0.35)' }}
+              style={{ fontSize: 11, fill: '#57534E' }}
             />
             {data.map((entry, index) => (
               <Cell
                 key={`cell-${index}`}
-                fill={entry.isYou ? '#E05A28' : '#333333'}
+                fill={entry.isYou ? '#E05A28' : '#D0C9C1'}
               />
             ))}
           </Bar>
@@ -603,9 +603,9 @@ function InsightCallout({
       {insights.map((ins) => (
         <div
           key={ins.key}
-          className="bg-[#111111] rounded-2xl border border-white/[0.07] border-l-4 border-l-[#E05A28] px-5 py-4"
+          className="bg-white rounded-2xl border border-[#E4DED8] border-l-4 border-l-[#E05A28] px-5 py-4"
         >
-          <p className="text-[13px] text-white/80 leading-relaxed">{ins.text}</p>
+          <p className="text-[13px] text-[#57534E] leading-relaxed">{ins.text}</p>
         </div>
       ))}
     </div>
@@ -640,10 +640,10 @@ function CompetitorCard({
     : null
 
   return (
-    <div className="bg-[#111111] rounded-2xl border border-white/[0.07] hover:border-white/[0.14] p-5 transition-all duration-200">
+    <div className="bg-white rounded-2xl border border-[#E4DED8] hover:border-[#D0C9C1] p-5 transition-all duration-200">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-[14px] font-semibold text-white truncate">
+          <p className="text-[14px] font-semibold text-[#111111] truncate">
             {competitor.name ?? 'Unnamed Competitor'}
           </p>
           <a
@@ -658,20 +658,20 @@ function CompetitorCard({
         <button
           onClick={handleRemove}
           disabled={removing}
-          className="flex-shrink-0 px-3.5 min-h-[36px] rounded-xl border border-white/[0.10] bg-white/[0.05] text-[12px] font-medium text-white/35 hover:bg-red-950/30 hover:text-red-400 hover:border-red-900/30 active:scale-[0.97] transition-all disabled:opacity-50"
+          className="flex-shrink-0 px-3.5 min-h-[36px] rounded-xl border border-[#E4DED8] bg-[#F8F6F3] text-[12px] font-medium text-[#A8A29E] hover:bg-red-50 hover:text-red-500 hover:border-red-200 active:scale-[0.97] transition-all disabled:opacity-50"
         >
           {removing ? 'Removing…' : 'Remove'}
         </button>
       </div>
 
-      <div className="flex items-center gap-5 mt-4 pt-4 border-t border-white/[0.07]">
+      <div className="flex items-center gap-5 mt-4 pt-4 border-t border-[#E4DED8]">
         <div>
-          <p className="text-[11px] font-medium text-white/35 mb-1">Avg Rating</p>
+          <p className="text-[11px] font-medium text-[#A8A29E] mb-1">Avg Rating</p>
           <div className="flex items-center gap-2">
             <StarRating rating={competitor.avg_rating} />
             {ratingDiff !== null && (
               <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-md ${
-                ratingDiff > 0 ? 'bg-red-950/30 text-red-400' : ratingDiff < 0 ? 'bg-emerald-950/30 text-emerald-400' : 'bg-white/[0.07] text-white/35'
+                ratingDiff > 0 ? 'bg-red-50 text-red-500' : ratingDiff < 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-[#F3F0EC] text-[#A8A29E]'
               }`}>
                 {ratingDiff > 0 ? `+${ratingDiff.toFixed(1)} vs you` : ratingDiff < 0 ? `${ratingDiff.toFixed(1)} vs you` : '= you'}
               </span>
@@ -679,14 +679,14 @@ function CompetitorCard({
           </div>
         </div>
         <div>
-          <p className="text-[11px] font-medium text-white/35 mb-0.5">Reviews</p>
-          <p className="text-[14px] font-semibold text-white">
+          <p className="text-[11px] font-medium text-[#A8A29E] mb-0.5">Reviews</p>
+          <p className="text-[14px] font-semibold text-[#111111]">
             {competitor.review_count !== null ? competitor.review_count.toLocaleString() : '—'}
           </p>
         </div>
         <div>
-          <p className="text-[11px] font-medium text-white/35 mb-0.5">Last Synced</p>
-          <p className="text-[13px] text-white/40">{formatDate(competitor.last_scraped_at)}</p>
+          <p className="text-[11px] font-medium text-[#A8A29E] mb-0.5">Last Synced</p>
+          <p className="text-[13px] text-[#57534E]">{formatDate(competitor.last_scraped_at)}</p>
         </div>
       </div>
     </div>
@@ -719,15 +719,15 @@ export default function CompetitorsClient({
         {/* Header */}
         <div className="flex items-start justify-between mb-6 gap-4">
           <div>
-            <h1 className="text-[22px] font-semibold text-white leading-tight tracking-tight">Competitor Tracker</h1>
-            <p className="text-[13px] text-white/35 mt-1">
+            <h1 className="text-[22px] font-semibold text-[#111111] leading-tight tracking-tight">Competitor Tracker</h1>
+            <p className="text-[13px] text-[#57534E] mt-1">
               See how {restaurantProfile.restaurant_name} stacks up
             </p>
           </div>
           {competitors.length < 3 && !showAddMore && (
             <button
               onClick={() => setShowAddMore(true)}
-              className="flex-shrink-0 h-9 px-4 rounded-xl border border-white/[0.10] bg-white/[0.07] text-[13px] font-medium text-white hover:bg-white/[0.12] transition-all"
+              className="flex-shrink-0 h-9 px-4 rounded-xl border border-[#E4DED8] bg-[#F3F0EC] text-[13px] font-medium text-[#57534E] hover:bg-[#EDE9E4] transition-all"
             >
               + Add competitor
             </button>
@@ -769,7 +769,7 @@ export default function CompetitorsClient({
 
         {/* Competitor Cards */}
         <div className="space-y-3">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/35">Your competitors</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E]">Your competitors</p>
           {competitors.map((c) => (
             <CompetitorCard key={c.id} competitor={c} userAvgRating={userAvgRating} onRemove={handleRemove} />
           ))}

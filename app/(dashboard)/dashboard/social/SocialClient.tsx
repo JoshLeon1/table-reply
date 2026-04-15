@@ -34,7 +34,7 @@ function Stars({ rating }: { rating: number }) {
   return (
     <span className="flex items-center gap-0.5">
       {[1,2,3,4,5].map((i) => (
-        <svg key={i} className={`w-3 h-3 ${i <= rating ? 'text-[#E05A28]' : 'text-white/[0.15]'}`} fill="currentColor" viewBox="0 0 20 20">
+        <svg key={i} className={`w-3 h-3 ${i <= rating ? 'text-[#E05A28]' : 'text-[#E4DED8]'}`} fill="currentColor" viewBox="0 0 20 20">
           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
         </svg>
       ))}
@@ -187,20 +187,20 @@ function CreatePostModal({
       style={{ background: 'rgba(0,0,0,0.6)' }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
     >
-      <div className="w-full sm:max-w-[560px] bg-[#141414] rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col max-h-[92vh] sm:max-h-[88vh] overflow-hidden">
+      <div className="w-full sm:max-w-[560px] bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col max-h-[92vh] sm:max-h-[88vh] overflow-hidden">
 
         {/* Header */}
         <div className="px-5 pt-5 pb-4 flex-shrink-0">
           {/* Review pill */}
           <div className="flex items-center gap-2 mb-4">
-            <div className="flex-1 min-w-0 flex items-center gap-2 px-3 py-2 bg-white/[0.08] rounded-xl border border-white/[0.10]">
+            <div className="flex-1 min-w-0 flex items-center gap-2 px-3 py-2 bg-[#F3F0EC] rounded-xl border border-[#E4DED8]">
               <Stars rating={review.star_rating} />
-              <span className="text-[12px] font-semibold text-white/70 truncate">{review.reviewer_name}</span>
-              <span className="text-[12px] text-white/40 truncate flex-1">
+              <span className="text-[12px] font-semibold text-[#111111] truncate">{review.reviewer_name}</span>
+              <span className="text-[12px] text-[#57534E] truncate flex-1">
                 — {review.review_text.length > 60 ? review.review_text.slice(0, 60) + '…' : review.review_text}
               </span>
             </div>
-            <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center text-white/40 hover:text-white hover:bg-white/[0.08] transition-all flex-shrink-0">
+            <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center text-[#A8A29E] hover:text-[#111111] hover:bg-[#F3F0EC] transition-all flex-shrink-0">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -208,13 +208,13 @@ function CreatePostModal({
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-1 p-1 bg-white/[0.08] rounded-xl">
+          <div className="flex gap-1 p-1 bg-[#F3F0EC] rounded-xl">
             {(['caption', 'graphic'] as Tab[]).map(t => (
               <button
                 key={t}
                 onClick={() => setTab(t)}
                 className={`flex-1 py-2 rounded-lg text-[13px] font-semibold transition-all duration-150 ${
-                  tab === t ? 'bg-white/[0.15] text-white shadow-sm' : 'text-white/40 hover:text-white/70'
+                  tab === t ? 'bg-white text-[#111111] shadow-sm' : 'text-[#A8A29E] hover:text-[#57534E]'
                 }`}
               >
                 {t === 'caption' ? 'Caption' : 'Graphic'}
@@ -231,7 +231,7 @@ function CreatePostModal({
             <div className="space-y-4">
               {/* Platform */}
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-white/35 mb-2">Platform</p>
+                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#A8A29E] mb-2">Platform</p>
                 <div className="flex flex-wrap gap-1.5">
                   {platforms.map(p => (
                     <button
@@ -239,8 +239,8 @@ function CreatePostModal({
                       onClick={() => { setPlatform(p); setCaption(''); setHashtags([]) }}
                       className={`px-3 py-1.5 rounded-lg text-[12px] font-semibold border transition-all ${
                         platform === p
-                          ? 'bg-white/[0.15] text-white border-white/[0.20]'
-                          : 'bg-white/[0.06] text-white/50 border-white/[0.09] hover:border-white/[0.18]'
+                          ? 'bg-[#E05A28]/10 text-[#E05A28] border-[#E05A28]/20'
+                          : 'bg-transparent text-[#A8A29E] border-[#E4DED8] hover:border-[#D0C9C1]'
                       }`}
                     >
                       {p}
@@ -251,7 +251,7 @@ function CreatePostModal({
 
               {/* Style */}
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-white/35 mb-2">Tone</p>
+                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#A8A29E] mb-2">Tone</p>
                 <div className="flex flex-wrap gap-1.5">
                   {captionStyles.map(s => (
                     <button
@@ -260,7 +260,7 @@ function CreatePostModal({
                       className={`px-3 py-1.5 rounded-lg text-[12px] font-semibold border transition-all ${
                         captionStyle === s
                           ? 'bg-[#E05A28] text-white border-[#E05A28]'
-                          : 'bg-white/[0.06] text-white/50 border-white/[0.09] hover:border-white/[0.18]'
+                          : 'bg-transparent text-[#A8A29E] border-[#E4DED8] hover:border-[#D0C9C1]'
                       }`}
                     >
                       {s}
@@ -282,20 +282,20 @@ function CreatePostModal({
               </button>
 
               {captionError && (
-                <p className="text-[12px] text-red-400 bg-red-950/30 border border-red-900/30 rounded-lg px-3 py-2">{captionError}</p>
+                <p className="text-[12px] text-red-500 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{captionError}</p>
               )}
 
               {caption && (
                 <>
                   {/* Caption text with char count */}
                   <div className="relative">
-                    <div className="bg-white/[0.08] rounded-xl border border-white/[0.10] p-4">
-                      <p className="text-[14px] text-white/85 leading-relaxed font-medium">{caption}</p>
+                    <div className="bg-[#F8F6F3] rounded-xl border border-[#E4DED8] p-4">
+                      <p className="text-[14px] text-[#111111] leading-relaxed font-medium">{caption}</p>
                       {hashtags.length > 0 && (
                         <p className="text-[13px] text-[#C94E21] mt-2 leading-relaxed">{hashtags.join(' ')}</p>
                       )}
                     </div>
-                    <span className={`absolute bottom-2 right-3 text-[10px] font-medium ${caption.length > 280 ? 'text-red-400' : caption.length > 200 ? 'text-amber-400' : 'text-white/35'}`}>
+                    <span className={`absolute bottom-2 right-3 text-[10px] font-medium ${caption.length > 280 ? 'text-red-500' : caption.length > 200 ? 'text-amber-600' : 'text-[#A8A29E]'}`}>
                       {caption.length}/300
                     </span>
                   </div>
@@ -305,8 +305,8 @@ function CreatePostModal({
                     onClick={copyCaption}
                     className={`w-full h-[44px] rounded-xl text-[13px] font-semibold border transition-all flex items-center justify-center gap-2 ${
                       copied
-                        ? 'bg-emerald-950/40 text-emerald-400 border-emerald-900/30'
-                        : 'bg-white/[0.06] text-white/55 border-white/[0.10] hover:border-white/[0.20] hover:text-white'
+                        ? 'bg-emerald-50 text-emerald-600 border-emerald-200'
+                        : 'bg-[#F3F0EC] text-[#57534E] border-[#E4DED8] hover:border-[#D0C9C1] hover:text-[#111111]'
                     }`}
                   >
                     {copied ? (
@@ -325,7 +325,7 @@ function CreatePostModal({
             <div className="space-y-4">
               {/* Style */}
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-white/35 mb-2">Style</p>
+                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#A8A29E] mb-2">Style</p>
                 <div className="grid grid-cols-2 gap-1.5">
                   {graphicStyles.map(s => {
                     const preview: Record<string, string> = {
@@ -341,14 +341,14 @@ function CreatePostModal({
                         className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-left transition-all ${
                           graphicStyle === s
                             ? 'border-[#E05A28] ring-2 ring-[#E05A28]/20 bg-[#E05A28]/10'
-                            : 'border-white/[0.08] bg-white/[0.05] hover:border-white/[0.15]'
+                            : 'border-[#E4DED8] bg-[#F8F6F3] hover:border-[#D0C9C1]'
                         }`}
                       >
                         <div
                           className="w-5 h-5 rounded-md flex-shrink-0 border border-black/10"
                           style={{ background: preview[s] }}
                         />
-                        <span className="text-[12px] font-semibold text-white/80">{s}</span>
+                        <span className="text-[12px] font-semibold text-[#111111]">{s}</span>
                         {graphicStyle === s && (
                           <svg className="w-3.5 h-3.5 text-[#E05A28] ml-auto flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -373,13 +373,13 @@ function CreatePostModal({
               </button>
 
               {graphicError && (
-                <p className="text-[12px] text-red-400 bg-red-950/30 border border-red-900/30 rounded-lg px-3 py-2">{graphicError}</p>
+                <p className="text-[12px] text-red-500 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{graphicError}</p>
               )}
 
               {graphicHtml && (
                 <div className="flex flex-col items-center gap-4">
                   {/* Preview */}
-                  <div className="rounded-2xl overflow-hidden shadow-lg border border-white/[0.10] w-full" style={{ maxWidth: 320, aspectRatio: '1 / 1' }}>
+                  <div className="rounded-2xl overflow-hidden shadow-lg border border-[#E4DED8] w-full" style={{ maxWidth: 320, aspectRatio: '1 / 1' }}>
                     <iframe
                       ref={iframeRef}
                       srcDoc={graphicHtml}
@@ -429,34 +429,34 @@ export default function SocialClient({ reviews, restaurantProfile }: Props) {
   return (
     <div className="space-y-5 sm:space-y-6">
       <div>
-        <h1 className="text-[22px] font-semibold text-white tracking-tight">Social Posts</h1>
-        <p className="text-[13px] text-white/55 mt-0.5">
+        <h1 className="text-[22px] font-semibold text-[#111111] tracking-tight">Social Posts</h1>
+        <p className="text-[13px] text-[#57534E] mt-0.5">
           Turn your best reviews into captions and shareable graphics.
         </p>
       </div>
 
       {goodReviews.length === 0 ? (
-        <div className="bg-[#111111] rounded-2xl border border-white/[0.07] px-6 py-12 sm:p-14 text-center">
+        <div className="bg-white rounded-2xl border border-[#E4DED8] px-6 py-12 sm:p-14 text-center">
           <div className="w-14 h-14 rounded-2xl bg-[#FEF0E8] border border-[#F5C9AD] flex items-center justify-center mx-auto mb-4 shadow-sm animate-float">
             <svg className="w-7 h-7 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/>
             </svg>
           </div>
-          <p className="text-[15px] font-semibold text-white mb-1">Create your first social post</p>
-          <p className="text-[13px] text-white/35 mt-1 max-w-[260px] mx-auto leading-relaxed">Turn your best reviews into ready-to-post captions and shareable graphics.</p>
-          <p className="text-[12px] text-white/35 mt-3">Sync some reviews first to unlock social post creation.</p>
+          <p className="text-[15px] font-semibold text-[#111111] mb-1">Create your first social post</p>
+          <p className="text-[13px] text-[#57534E] mt-1 max-w-[260px] mx-auto leading-relaxed">Turn your best reviews into ready-to-post captions and shareable graphics.</p>
+          <p className="text-[12px] text-[#A8A29E] mt-3">Sync some reviews first to unlock social post creation.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {goodReviews.map((review) => (
             <div
               key={review.id}
-              className={`bg-[#111111] rounded-2xl border border-white/[0.07] ${platformTopBorder('Google')} p-4 sm:p-5 flex flex-col gap-3 hover:border-white/[0.14] hover:shadow-[0_4px_16px_rgba(0,0,0,0.3)] transition-all duration-150`}
+              className={`bg-white rounded-2xl border border-[#E4DED8] ${platformTopBorder('Google')} p-4 sm:p-5 flex flex-col gap-3 hover:border-[#D0C9C1] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-all duration-150`}
             >
               {/* Header row: platform badge + timestamp */}
               <div className="flex items-center justify-between gap-2">
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/[0.07] border border-white/[0.08] text-white/35">Google</span>
-                <span className="text-[11px] text-white/35">
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#F3F0EC] border border-[#E4DED8] text-[#A8A29E]">Google</span>
+                <span className="text-[11px] text-[#A8A29E]">
                   {review.review_datetime_utc
                     ? new Date(review.review_datetime_utc).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
                     : ''}
@@ -469,7 +469,7 @@ export default function SocialClient({ reviews, restaurantProfile }: Props) {
                   {review.reviewer_name.charAt(0).toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-white text-[13px] truncate leading-tight">{review.reviewer_name}</p>
+                  <p className="font-semibold text-[#111111] text-[13px] truncate leading-tight">{review.reviewer_name}</p>
                   <div className="mt-0.5">
                     <Stars rating={review.star_rating} />
                   </div>
@@ -477,7 +477,7 @@ export default function SocialClient({ reviews, restaurantProfile }: Props) {
               </div>
 
               {/* Review text */}
-              <p className="text-[14px] text-white/55 leading-relaxed flex-1">
+              <p className="text-[14px] text-[#57534E] leading-relaxed flex-1">
                 &ldquo;{review.review_text.length > 110
                   ? review.review_text.slice(0, 110) + '…'
                   : review.review_text}&rdquo;

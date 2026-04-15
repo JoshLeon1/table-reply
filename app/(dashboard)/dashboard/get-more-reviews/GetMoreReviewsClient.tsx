@@ -160,23 +160,23 @@ function PlatformCard({
   const urlChanged = url.trim() !== (savedUrl ?? '')
 
   return (
-    <div className="bg-[#111111] rounded-2xl border border-white/[0.07] p-4 sm:p-5 space-y-4">
+    <div className="bg-white rounded-2xl border border-[#E4DED8] p-4 sm:p-5 space-y-4">
       {/* Header row */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           {logo}
-          <span className="text-[14px] font-semibold text-white">{name}</span>
+          <span className="text-[14px] font-semibold text-[#111111]">{name}</span>
         </div>
         <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border ${
           isConnected
-            ? 'bg-emerald-950/40 text-emerald-400 border-emerald-900/30'
-            : 'bg-white/[0.05] text-white/35 border-white/[0.08]'
+            ? 'bg-emerald-50 text-emerald-600 border-emerald-200'
+            : 'bg-[#F3F0EC] text-[#A8A29E] border-[#E4DED8]'
         }`}>
           {isConnected ? '● Connected' : '○ Not connected'}
         </span>
       </div>
 
-      <p className="text-[12px] text-white/40 leading-relaxed">{description}</p>
+      <p className="text-[12px] text-[#57534E] leading-relaxed">{description}</p>
 
       {/* URL input + save */}
       <div className="flex gap-2">
@@ -186,10 +186,10 @@ function PlatformCard({
           value={url}
           onChange={(e) => { setUrl(e.target.value); setError(''); setSyncResult(null) }}
           placeholder={placeholder}
-          className={`flex-1 min-w-0 text-[13px] px-3.5 py-2.5 rounded-xl border bg-[#1A1A1A] text-white placeholder:text-white/25 focus:outline-none focus:ring-2 focus:border-[#E05A28] transition-all ${
+          className={`flex-1 min-w-0 text-[13px] px-3.5 py-2.5 rounded-xl border bg-[#F8F6F3] text-[#111111] placeholder:text-[#C4BEB8] focus:outline-none focus:ring-2 focus:border-[#E05A28] focus:bg-white transition-all ${
             inputHighlighted
               ? 'border-[#E05A28] ring-2 ring-[#E05A28]/30'
-              : 'border-white/[0.10] focus:ring-[#E05A28]/20'
+              : 'border-[#E4DED8] focus:ring-[#E05A28]/20'
           }`}
         />
         <button
@@ -197,8 +197,8 @@ function PlatformCard({
           disabled={saving || (!urlChanged && !justSaved)}
           className={`px-4 py-2.5 rounded-xl text-[13px] font-semibold transition-all duration-150 disabled:opacity-40 whitespace-nowrap flex-shrink-0 ${
             justSaved
-              ? 'bg-emerald-950/40 border border-emerald-900/30 text-emerald-400'
-              : 'bg-white/[0.08] hover:bg-white/[0.13] border border-white/[0.10] text-white'
+              ? 'bg-emerald-50 border border-emerald-200 text-emerald-600'
+              : 'bg-[#F3F0EC] hover:bg-[#EDE9E4] border border-[#E4DED8] text-[#57534E]'
           }`}
         >
           {saving ? 'Saving…' : justSaved ? '✓ Saved' : 'Save'}
@@ -206,7 +206,7 @@ function PlatformCard({
       </div>
 
       {error && (
-        <p className="text-[12px] text-red-400 flex items-center gap-1.5">
+        <p className="text-[12px] text-red-500 flex items-center gap-1.5">
           <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
@@ -215,8 +215,8 @@ function PlatformCard({
       )}
 
       {/* Sync row — always visible */}
-      <div className="flex items-center justify-between pt-3 border-t border-white/[0.07]">
-        <p className="text-[12px] text-white/30">
+      <div className="flex items-center justify-between pt-3 border-t border-[#E4DED8]">
+        <p className="text-[12px] text-[#A8A29E]">
           {isConnected
             ? (lastSynced ? `Last synced ${formatRelativeTime(lastSynced)}` : 'Never synced')
             : 'Not connected yet'}
@@ -225,14 +225,14 @@ function PlatformCard({
           <button
             onClick={handleSyncNow}
             disabled={syncing}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-white/[0.10] hover:border-[#E05A28] hover:text-[#E05A28] text-[12px] font-medium text-white/50 transition-all duration-150 disabled:opacity-40"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-[#E4DED8] hover:border-[#E05A28] hover:text-[#E05A28] text-[12px] font-medium text-[#57534E] transition-all duration-150 disabled:opacity-40"
           >
             {syncing ? <><SpinIcon />Syncing…</> : <><SyncIcon />Sync now</>}
           </button>
         ) : (
           <button
             onClick={focusInput}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-white/[0.10] hover:border-[#E05A28] hover:text-[#E05A28] text-[12px] font-medium text-white/40 transition-all duration-150"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-[#E4DED8] hover:border-[#E05A28] hover:text-[#E05A28] text-[12px] font-medium text-[#A8A29E] transition-all duration-150"
           >
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
@@ -243,13 +243,13 @@ function PlatformCard({
       </div>
 
       {syncResult && (
-        <p className={`text-[12px] font-medium flex items-center gap-1.5 ${syncResult.ok ? 'text-emerald-400' : 'text-red-400'}`}>
+        <p className={`text-[12px] font-medium flex items-center gap-1.5 ${syncResult.ok ? 'text-emerald-600' : 'text-red-500'}`}>
           {syncResult.ok ? '✓' : '✕'} {syncResult.message}
         </p>
       )}
 
       {/* How to find URL hint */}
-      <div className="bg-white/[0.04] border border-white/[0.07] rounded-xl px-4 py-3 text-[12px] text-white/40 leading-relaxed">
+      <div className="bg-[#F8F6F3] border border-[#E4DED8] rounded-xl px-4 py-3 text-[12px] text-[#57534E] leading-relaxed">
         {hint}
       </div>
     </div>
@@ -362,21 +362,21 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
 
       {/* Page Header */}
       <div>
-        <h1 className="text-[22px] font-semibold text-white tracking-tight">Get More Reviews</h1>
-        <p className="text-[13px] text-white/55 mt-1">Connect your review platforms and generate tools to earn more 5-star reviews.</p>
+        <h1 className="text-[22px] font-semibold text-[#111111] tracking-tight">Get More Reviews</h1>
+        <p className="text-[13px] text-[#57534E] mt-1">Connect your review platforms and generate tools to earn more 5-star reviews.</p>
       </div>
 
       {/* ── Section 1: Platform Connections ─────────────────────────────────── */}
       <div className="space-y-4">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/35 mb-1">Review platforms</p>
-          <p className="text-[13px] text-white/40">Connect your listings so TableReply can pull in new reviews automatically every day.</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-1">Review platforms</p>
+          <p className="text-[13px] text-[#57534E]">Connect your listings so TableReply can pull in new reviews automatically every day.</p>
         </div>
 
         {/* Google Maps */}
         <PlatformCard
           logo={
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-white/[0.07] border border-white/[0.10]">
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-[#F3F0EC] border border-[#E4DED8]">
               <svg width="15" height="15" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908C16.658 14.226 17.64 11.918 17.64 9.2z" fill="#4285F4"/>
                 <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
@@ -397,8 +397,8 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
           }}
           hint={
             <>
-              <span className="font-medium text-white/60">How to find it:</span> Open{' '}
-              <span className="text-white/60">maps.google.com</span>, search your restaurant, click your listing, then copy the URL from your browser.
+              <span className="font-medium text-[#57534E]">How to find it:</span> Open{' '}
+              <span className="text-[#57534E]">maps.google.com</span>, search your restaurant, click your listing, then copy the URL from your browser.
             </>
           }
           apiRoute="/api/scrape-reviews"
@@ -426,10 +426,10 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
           }}
           hint={
             <>
-              <span className="font-medium text-white/60">How to find it:</span> Go to{' '}
+              <span className="font-medium text-[#57534E]">How to find it:</span> Go to{' '}
               <a href="https://biz.yelp.com" target="_blank" rel="noopener noreferrer" className="text-[#E05A28] underline underline-offset-2">biz.yelp.com</a>
               , click your business → &ldquo;Public Business Page&rdquo; → copy the URL.
-              Format: <span className="font-mono text-[11px] text-white/50 bg-white/[0.05] px-1.5 py-0.5 rounded">yelp.com/biz/your-restaurant-city</span>
+              Format: <span className="font-mono text-[11px] text-[#57534E] bg-[#F3F0EC] px-1.5 py-0.5 rounded">yelp.com/biz/your-restaurant-city</span>
             </>
           }
           apiRoute="/api/scrape-yelp-reviews"
@@ -457,10 +457,10 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
           }}
           hint={
             <>
-              <span className="font-medium text-white/60">How to find it:</span> Search your restaurant on{' '}
+              <span className="font-medium text-[#57534E]">How to find it:</span> Search your restaurant on{' '}
               <a href="https://www.tripadvisor.com" target="_blank" rel="noopener noreferrer" className="text-[#E05A28] underline underline-offset-2">tripadvisor.com</a>
               , open your page, copy the URL.
-              Format: <span className="font-mono text-[11px] text-white/50 bg-white/[0.05] px-1.5 py-0.5 rounded">tripadvisor.com/Restaurant_Review-g...-your_restaurant.html</span>
+              Format: <span className="font-mono text-[11px] text-[#57534E] bg-[#F3F0EC] px-1.5 py-0.5 rounded">tripadvisor.com/Restaurant_Review-g...-your_restaurant.html</span>
             </>
           }
           apiRoute="/api/scrape-tripadvisor-reviews"
@@ -473,10 +473,10 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
       </div>
 
       {/* ── Section 2: Review Request Messages ──────────────────────────────── */}
-      <div className="bg-[#111111] rounded-2xl border border-white/[0.07] p-4 sm:p-6 space-y-5">
+      <div className="bg-white rounded-2xl border border-[#E4DED8] p-4 sm:p-6 space-y-5">
         <div>
-          <h2 className="text-[14px] font-semibold text-white">Review Request Messages</h2>
-          <p className="text-[12px] text-white/35 mt-0.5">
+          <h2 className="text-[14px] font-semibold text-[#111111]">Review Request Messages</h2>
+          <p className="text-[12px] text-[#57534E] mt-0.5">
             Personalized messages to send via SMS, email, receipt, or table card
           </p>
         </div>
@@ -497,23 +497,23 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
           )}
         </button>
 
-        {generateError && <p className="text-red-400 text-sm">{generateError}</p>}
+        {generateError && <p className="text-red-500 text-sm">{generateError}</p>}
 
         {/* Skeletons */}
         {showSkeletons && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {CHANNELS.map((ch) => (
-              <div key={ch.key} className="rounded-xl border border-white/[0.07] p-4 space-y-3 animate-pulse">
+              <div key={ch.key} className="rounded-xl border border-[#E4DED8] p-4 space-y-3 animate-pulse">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 bg-white/[0.10] rounded-md" />
-                  <div className="w-20 h-4 bg-white/[0.10] rounded" />
+                  <div className="w-6 h-6 bg-[#F3F0EC] rounded-md" />
+                  <div className="w-20 h-4 bg-[#F3F0EC] rounded" />
                 </div>
                 <div className="space-y-2">
-                  <div className="w-full h-3 bg-white/[0.10] rounded" />
-                  <div className="w-4/5 h-3 bg-white/[0.10] rounded" />
-                  <div className="w-3/5 h-3 bg-white/[0.10] rounded" />
+                  <div className="w-full h-3 bg-[#F3F0EC] rounded" />
+                  <div className="w-4/5 h-3 bg-[#F3F0EC] rounded" />
+                  <div className="w-3/5 h-3 bg-[#F3F0EC] rounded" />
                 </div>
-                <div className="w-20 h-8 bg-white/[0.10] rounded-lg ml-auto" />
+                <div className="w-20 h-8 bg-[#F3F0EC] rounded-lg ml-auto" />
               </div>
             ))}
           </div>
@@ -527,23 +527,23 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
               const isEmail = ch.key === 'email'
               const isReceipt = ch.key === 'receipt'
               return (
-                <div key={ch.key} className="rounded-xl border border-white/[0.07] bg-white/[0.04] p-4 space-y-3 hover:border-white/[0.12] transition-colors">
+                <div key={ch.key} className="rounded-xl border border-[#E4DED8] bg-white p-4 space-y-3 hover:border-[#D0C9C1] transition-colors">
                   <div className="flex items-center gap-2">
                     <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                      isSms ? 'bg-blue-950/40 border border-blue-900/30 text-blue-400'
-                      : isEmail ? 'bg-violet-950/40 border border-violet-900/30 text-violet-400'
-                      : 'bg-white/[0.08] border border-white/[0.10] text-white/55'
+                      isSms ? 'bg-blue-50 border border-blue-200 text-blue-500'
+                      : isEmail ? 'bg-violet-50 border border-violet-200 text-violet-500'
+                      : 'bg-[#F3F0EC] border border-[#E4DED8] text-[#57534E]'
                     }`}>
                       <ChannelIcon channel={ch.key} className="w-3.5 h-3.5" />
                     </div>
-                    <span className="text-[13px] font-semibold text-white">{ch.label}</span>
-                    <span className="text-[11px] text-white/35 ml-auto">{ch.desc}</span>
+                    <span className="text-[13px] font-semibold text-[#111111]">{ch.label}</span>
+                    <span className="text-[11px] text-[#A8A29E] ml-auto">{ch.desc}</span>
                   </div>
 
                   {isSms && (
                     <div className="flex items-start gap-2">
-                      <div className="w-6 h-6 rounded-full bg-white/[0.10] flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <svg className="w-3 h-3 text-white/35" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="w-6 h-6 rounded-full bg-[#F3F0EC] flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <svg className="w-3 h-3 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                         </svg>
                       </div>
@@ -554,27 +554,27 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
                   )}
 
                   {isEmail && (
-                    <div className="rounded-xl border border-white/[0.07] overflow-hidden">
-                      <div className="bg-white/[0.06] border-b border-white/[0.07] px-3 py-2 space-y-0.5">
-                        <p className="text-[11px] text-white/35"><span className="font-medium text-white/55">From:</span> {restaurantProfile.restaurant_name}</p>
-                        <p className="text-[11px] text-white/35"><span className="font-medium text-white/55">Subject:</span> We&apos;d love your feedback!</p>
+                    <div className="rounded-xl border border-[#E4DED8] overflow-hidden">
+                      <div className="bg-[#F8F6F3] border-b border-[#E4DED8] px-3 py-2 space-y-0.5">
+                        <p className="text-[11px] text-[#A8A29E]"><span className="font-medium text-[#57534E]">From:</span> {restaurantProfile.restaurant_name}</p>
+                        <p className="text-[11px] text-[#A8A29E]"><span className="font-medium text-[#57534E]">Subject:</span> We&apos;d love your feedback!</p>
                       </div>
                       <div className="px-3 py-2.5">
-                        <p className="text-[12px] text-white/55 leading-relaxed whitespace-pre-wrap">{editedMessages[ch.key]}</p>
+                        <p className="text-[12px] text-[#57534E] leading-relaxed whitespace-pre-wrap">{editedMessages[ch.key]}</p>
                       </div>
                     </div>
                   )}
 
                   {(isReceipt || ch.key === 'tablecard') && (
-                    <div className="rounded-xl border-2 border-dashed border-white/[0.12] bg-white/[0.03] px-4 py-3">
-                      <p className="text-[12px] text-white/55 leading-relaxed whitespace-pre-wrap font-mono">{editedMessages[ch.key]}</p>
+                    <div className="rounded-xl border-2 border-dashed border-[#D0C9C1] bg-[#F8F6F3] px-4 py-3">
+                      <p className="text-[12px] text-[#57534E] leading-relaxed whitespace-pre-wrap font-mono">{editedMessages[ch.key]}</p>
                     </div>
                   )}
 
                   <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.10em] text-white/35 mb-1.5">Edit message</p>
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.10em] text-[#A8A29E] mb-1.5">Edit message</p>
                     <textarea
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-white/[0.10] bg-[#1A1A1A] text-[13px] text-white placeholder:text-white/25 focus:bg-[#1E1E1E] focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] focus:outline-none resize-none transition-all"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] bg-[#F8F6F3] text-[13px] text-[#111111] placeholder:text-[#C4BEB8] focus:bg-white focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] focus:outline-none resize-none transition-all"
                       rows={ch.key === 'email' ? 5 : 3}
                       value={editedMessages[ch.key]}
                       onChange={(e) =>
@@ -587,8 +587,8 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
                       onClick={() => handleCopy(ch.key)}
                       className={`text-[12px] font-semibold px-3.5 min-h-[36px] rounded-xl border transition-all flex items-center gap-1.5 ${
                         copiedChannel === ch.key
-                          ? 'bg-emerald-950/40 border-emerald-900/30 text-emerald-400'
-                          : 'border-white/[0.10] hover:border-white/[0.20] bg-white/[0.06] text-white/55 hover:text-white'
+                          ? 'bg-emerald-50 border-emerald-200 text-emerald-600'
+                          : 'border-[#E4DED8] hover:border-[#D0C9C1] bg-[#F3F0EC] text-[#57534E] hover:text-[#111111]'
                       }`}
                     >
                       {copiedChannel === ch.key ? (
@@ -612,19 +612,19 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-4 4v-4z"/>
               </svg>
             </div>
-            <p className="text-[14px] font-medium text-white">Generate your message templates</p>
-            <p className="text-[13px] text-white/35 mt-1 max-w-[280px] mx-auto leading-relaxed">
-              AI-crafted messages for <span className="text-white font-medium">{restaurantProfile.restaurant_name}</span> — ready to copy and send.
+            <p className="text-[14px] font-medium text-[#111111]">Generate your message templates</p>
+            <p className="text-[13px] text-[#57534E] mt-1 max-w-[280px] mx-auto leading-relaxed">
+              AI-crafted messages for <span className="text-[#111111] font-medium">{restaurantProfile.restaurant_name}</span> — ready to copy and send.
             </p>
           </div>
         )}
       </div>
 
       {/* ── Section 3: QR Code ───────────────────────────────────────────────── */}
-      <div className="bg-[#111111] rounded-2xl border border-white/[0.07] p-4 sm:p-6 space-y-4">
+      <div className="bg-white rounded-2xl border border-[#E4DED8] p-4 sm:p-6 space-y-4">
         <div>
-          <h2 className="text-[14px] font-semibold text-white">QR Code for your Google review page</h2>
-          <p className="text-[12px] text-white/35 mt-0.5">Add this to your menu, receipt, or table card</p>
+          <h2 className="text-[14px] font-semibold text-[#111111]">QR Code for your Google review page</h2>
+          <p className="text-[12px] text-[#57534E] mt-0.5">Add this to your menu, receipt, or table card</p>
         </div>
 
         {googleUrl ? (
@@ -645,22 +645,22 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
                   <img src={qrDataUrl} alt="Google Review QR Code" width={180} height={180} className="block w-40 h-40 sm:w-[180px] sm:h-[180px]" />
                 </div>
                 <div className="flex flex-col items-center sm:items-start gap-3 text-center sm:text-left">
-                  <p className="text-[13px] text-white/55 leading-relaxed max-w-[280px]">
+                  <p className="text-[13px] text-[#57534E] leading-relaxed max-w-[280px]">
                     Print this QR code and add it to your menu, receipt, or table tent card to collect more reviews.
                   </p>
-                  <button onClick={handleDownloadQr} className="flex items-center gap-2 bg-white/[0.08] hover:bg-white/[0.13] border border-white/[0.10] text-white font-semibold text-[13px] px-4 py-2.5 rounded-xl transition-colors min-h-[44px]">
+                  <button onClick={handleDownloadQr} className="flex items-center gap-2 bg-[#F3F0EC] hover:bg-[#EDE9E4] border border-[#E4DED8] text-[#111111] font-semibold text-[13px] px-4 py-2.5 rounded-xl transition-colors min-h-[44px]">
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
                     Download QR Code
                   </button>
-                  <button onClick={() => setQrDataUrl(null)} className="text-[12px] text-white/35 hover:text-white/55 transition-colors">Regenerate</button>
+                  <button onClick={() => setQrDataUrl(null)} className="text-[12px] text-[#A8A29E] hover:text-[#57534E] transition-colors">Regenerate</button>
                 </div>
               </div>
             )}
           </div>
         ) : (
-          <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-5 text-[13px] text-white/40">
+          <div className="rounded-xl border border-[#E4DED8] bg-[#F8F6F3] px-4 py-5 text-[13px] text-[#57534E]">
             Connect your Google Maps listing above to generate a QR code.
           </div>
         )}
@@ -668,16 +668,16 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
 
       {/* ── Section 4: Tips ──────────────────────────────────────────────────── */}
       <div className="space-y-3">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/35">Tips for getting more reviews</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E]">Tips for getting more reviews</p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
           {[
             { title: 'Ask in person', body: "The best time to ask is right after a positive experience. A simple 'Would you mind leaving us a review? It really helps.' goes a long way." },
             { title: 'Timing matters', body: 'Ask within 24 hours while the memory is fresh. Saturday dinner guests who had a great time are your best reviewers.' },
             { title: 'Make it easy', body: 'The fewer steps the better. A QR code on the table or receipt removes all friction.' },
           ].map((tip) => (
-            <div key={tip.title} className="bg-[#111111] rounded-2xl border border-white/[0.07] p-4 sm:p-5">
-              <h3 className="text-[13px] font-semibold text-white mb-1.5">{tip.title}</h3>
-              <p className="text-[12px] text-white/55 leading-relaxed">{tip.body}</p>
+            <div key={tip.title} className="bg-white rounded-2xl border border-[#E4DED8] p-4 sm:p-5">
+              <h3 className="text-[13px] font-semibold text-[#111111] mb-1.5">{tip.title}</h3>
+              <p className="text-[12px] text-[#57534E] leading-relaxed">{tip.body}</p>
             </div>
           ))}
         </div>

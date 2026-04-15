@@ -151,58 +151,6 @@ function EmptyState({ restaurantName }: { restaurantName: string }) {
   )
 }
 
-// ─── Staff Mentions ───────────────────────────────────────────────────────────
-
-function StaffMentionsSection({ reviews }: { reviews: ScrapedReview[] }) {
-  const staffMap = new Map<string, { count: number; totalRating: number; quotes: string[] }>()
-  for (const review of reviews) {
-    const mentions = review.staff_mentions
-    if (!mentions || !Array.isArray(mentions) || mentions.length === 0) continue
-    for (const name of mentions) {
-      const key = name.toLowerCase()
-      const existing = staffMap.get(key) ?? { count: 0, totalRating: 0, quotes: [] }
-      existing.count++
-      existing.totalRating += review.star_rating
-      if (review.review_text && existing.quotes.length < 2) existing.quotes.push(review.review_text.slice(0, 120))
-      staffMap.set(key, existing)
-    }
-  }
-  const staff = Array.from(staffMap.entries())
-    .map(([key, data]) => ({ name: key.charAt(0).toUpperCase() + key.slice(1), count: data.count, avgRating: data.totalRating / data.count, quote: data.quotes[0] ?? null }))
-    .sort((a, b) => b.count - a.count).slice(0, 8)
-  if (staff.length === 0) return null
-  return (
-    <div>
-      <SectionLabel>Your team in customers' words</SectionLabel>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
-        {staff.map((member) => {
-          const avatarStyles = [
-            'bg-[#E05A28]/15 text-[#E05A28]',
-            'bg-blue-50 text-blue-500',
-            'bg-violet-50 text-violet-500',
-            'bg-emerald-50 text-emerald-600',
-            'bg-amber-50 text-amber-500',
-          ]
-          const avatarClass = avatarStyles[member.name.charCodeAt(0) % 5]
-          return (
-          <div key={member.name} className="bg-white rounded-2xl border border-[#E4DED8] p-5">
-            <div className={`w-10 h-10 rounded-full ${avatarClass} flex items-center justify-center font-bold text-[16px] mb-3`}>
-              {member.name.charAt(0)}
-            </div>
-            <p className="text-[14px] font-semibold text-[#111111] mb-1">{member.name}</p>
-            <div className="flex items-center gap-1.5 mb-2">
-              <span className="text-[12px] text-[#57534E]">{member.count} mention{member.count !== 1 ? 's' : ''}</span>
-              <span className="text-[#E4DED8]">·</span>
-              <span className="text-[12px] text-[#E05A28] font-medium">{member.avgRating.toFixed(1)}★</span>
-            </div>
-            {member.quote && <p className="text-[11px] text-[#A8A29E] italic leading-relaxed line-clamp-3">"{member.quote}…"</p>}
-          </div>
-        )})}
-      </div>
-    </div>
-  )
-}
-
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function AnalyticsClient({ reviews, restaurantName, userId }: Props) {
@@ -715,7 +663,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
 
   // ── Full dashboard ─────────────────────────────────────────────────────────
   return (
-    <div className="space-y-12 pb-20" onClick={() => showDownloadMenu && setShowDownloadMenu(false)}>
+    <div className="space-y-8 pb-20" onClick={() => showDownloadMenu && setShowDownloadMenu(false)}>
 
       {/* ── PAGE HEADER ────────────────────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
@@ -786,7 +734,6 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       {/* ── QUICK WIN ──────────────────────────────────────────────────────── */}
       {!themesLoading && !themes.insufficient && themes.opportunities.length > 0 && (
         <div>
-          <SectionLabel>Quick win</SectionLabel>
           <div className="bg-[#E05A28]/10 rounded-2xl border border-[#E05A28]/25 px-6 py-5 flex items-start gap-4">
             <div className="w-10 h-10 rounded-xl bg-[#E05A28]/10 border border-[#E05A28]/25 flex items-center justify-center flex-shrink-0 mt-0.5">
               <svg className="w-5 h-5 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -934,6 +881,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                 itemClass: 'text-[#57534E]',
                 bullet: <svg className="w-3 h-3 text-[#E05A28] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>,
                 topBorder: 'border-t-2 border-t-emerald-200',
+                cardBg: 'bg-emerald-50/40',
               },
               {
                 icon: <svg className="w-4 h-4 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>,
@@ -943,6 +891,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                 itemClass: 'text-[#57534E]',
                 bullet: <span className="w-1.5 h-1.5 rounded-full bg-[#D0C9C1] mt-1.5 flex-shrink-0 inline-block" />,
                 topBorder: 'border-t-2 border-t-[#E4DED8]',
+                cardBg: 'bg-white',
               },
               {
                 icon: <svg className="w-4 h-4 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>,
@@ -952,9 +901,10 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                 itemClass: 'text-[#57534E]',
                 bullet: null,
                 topBorder: 'border-t-2 border-t-[#E05A28]/30',
+                cardBg: 'bg-[#FEF6F2]',
               },
-            ].map(({ icon, title, items, emptyText, itemClass, bullet, topBorder }) => (
-              <div key={title} className={`bg-white rounded-2xl border border-[#E4DED8] p-5 ${topBorder} shadow-[0_1px_3px_rgba(0,0,0,0.04)]`}>
+            ].map(({ icon, title, items, emptyText, itemClass, bullet, topBorder, cardBg }) => (
+              <div key={title} className={`${cardBg} rounded-2xl border border-[#E4DED8] p-5 ${topBorder} shadow-[0_1px_3px_rgba(0,0,0,0.04)]`}>
                 <div className="flex items-center gap-2 mb-4">
                   {icon}
                   <span className="text-[13px] font-semibold text-[#111111]">{title}</span>
@@ -975,52 +925,6 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
             ))}
           </div>
         )}
-      </div>
-
-      {/* ── YOUR IMPACT ────────────────────────────────────────────────────── */}
-      <div>
-        <SectionLabel>Your impact</SectionLabel>
-        <div className="rounded-2xl border border-[#E4DED8] bg-white p-5 sm:p-8">
-          <div className="flex flex-col sm:flex-row gap-6 sm:gap-8 mb-8">
-            <div className="flex-shrink-0">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#C4BEB8] mb-1">Industry avg</p>
-              <p className="text-[#A8A29E] leading-none mb-1 text-4xl sm:text-5xl font-bold">~15%</p>
-              <p className="text-[11px] text-[#A8A29E]">respond to reviews</p>
-            </div>
-            <div className="w-px bg-[#EDE9E4] self-stretch hidden sm:block" />
-            <div className="flex-1">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-1">{restaurantName}</p>
-              <p className="leading-none mb-2 text-4xl sm:text-5xl font-bold"
-                style={{ color: responseRate >= 80 ? '#16a34a' : responseRate >= 50 ? '#111111' : '#E05A28' }}>
-                {responseRate}%
-              </p>
-              {responseRate >= 80 ? (
-                <p className="text-[13px] font-semibold text-emerald-600">You're in the top tier of restaurants</p>
-              ) : responseRate >= 50 ? (
-                <p className="text-[13px] font-medium text-[#57534E]">Above average — keep it up</p>
-              ) : (
-                <p className="text-[13px] font-medium text-[#E05A28]">Responding to more reviews increases profile visits by up to 16%</p>
-              )}
-            </div>
-          </div>
-          <div className="space-y-3">
-            {([
-              { label: 'Industry avg', pct: 15, highlight: false },
-              { label: restaurantName, pct: Math.min(responseRate, 100), highlight: true },
-              { label: 'Top chains', pct: 60, highlight: false },
-            ] as const).map(({ label, pct, highlight }) => (
-              <div key={label} className="flex items-center gap-3">
-                <span className={`text-[12px] flex-shrink-0 w-24 sm:w-28 truncate ${highlight ? 'font-semibold text-[#111111]' : 'text-[#A8A29E]'}`}>{label}</span>
-                <div className="flex-1 h-2 bg-[#EDE9E4] rounded-full overflow-hidden">
-                  <div className={`h-full rounded-full transition-all duration-700 ${highlight ? (responseRate >= 50 ? 'bg-emerald-500' : 'bg-[#E05A28]') : 'bg-[#D0C9C1]'}`}
-                    style={{ width: `${pct}%` }} />
-                </div>
-                <span className={`text-[12px] w-8 flex-shrink-0 text-right ${highlight ? 'font-semibold text-[#111111]' : 'text-[#A8A29E]'}`}>{pct}%</span>
-              </div>
-            ))}
-          </div>
-          {responseRate < 50 && <p className="text-[10px] text-[#C4BEB8] mt-5">Source: SOCi research</p>}
-        </div>
       </div>
 
       {/* ── RESPONSE RATE BY RATING ─────────────────────────────────────────── */}
@@ -1186,9 +1090,6 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
           </div>
         </div>
       )}
-
-      {/* ── STAFF MENTIONS ─────────────────────────────────────────────────── */}
-      <StaffMentionsSection reviews={reviews} />
 
     </div>
   )

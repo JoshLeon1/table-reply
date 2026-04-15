@@ -203,6 +203,29 @@ function SkeletonCard() {
 
 const REVIEW_TRUNCATE_LENGTH = 200
 
+// ── Platform deep-link builder ────────────────────────────────────────────────
+// Returns the most direct URL for the owner to find and respond to this review.
+function buildPlatformDeepLink(
+  source: string | null | undefined,
+  reviewId: string,
+  profileUrls: { google?: string | null; yelp?: string | null; tripadvisor?: string | null } | undefined
+): string | null {
+  if (source === 'yelp') {
+    // Yelp's ?hrid= param scrolls directly to the specific review
+    if (!profileUrls?.yelp) return null
+    const rawId = reviewId.startsWith('yelp-') ? reviewId.slice(5) : reviewId
+    const base = profileUrls.yelp.split('?')[0]
+    return `${base}?hrid=${encodeURIComponent(rawId)}`
+  }
+  if (source === 'tripadvisor') {
+    // No public deep link to individual TA reviews — link to listing
+    return profileUrls?.tripadvisor ?? null
+  }
+  // Google: link to Google Business Profile review inbox — this is where owners
+  // actually respond, not the public Maps listing.
+  return 'https://business.google.com/reviews'
+}
+
 function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, showStatus, profileUrls }: {
   review: ScrapedReview
   onApprove: (id: string) => void
@@ -277,11 +300,12 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
   }
 
   const platformLabel = review.source === 'yelp' ? 'Yelp' : review.source === 'tripadvisor' ? 'TripAdvisor' : 'Google'
-  const platformUrl = review.source === 'yelp'
-    ? profileUrls?.yelp
+  const platformUrl = buildPlatformDeepLink(review.source, review.review_id, profileUrls)
+  const platformHint = review.source === 'yelp'
+    ? 'Opens this review on Yelp'
     : review.source === 'tripadvisor'
-    ? profileUrls?.tripadvisor
-    : profileUrls?.google
+    ? 'Opens your TripAdvisor listing'
+    : 'Opens your Google Business Profile inbox'
 
   const handleDismiss = () => {
     setActioning(true)
@@ -494,18 +518,19 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
                 <><svg className="w-3.5 h-3.5 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>Copy Reply</>
               )}
             </button>
-            {/* Platform link */}
+            {/* Platform deep link */}
             {platformUrl && (
               <a
                 href={platformUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-1.5 px-4 min-h-[44px] rounded-xl border border-[#E4DED8] hover:border-[#D0C9C1] bg-white hover:bg-[#F8F6F3] text-[#57534E] hover:text-[#111111] text-[13px] font-medium active:scale-[0.97] transition-all duration-150"
+                title={platformHint}
+                className="flex items-center justify-center gap-1.5 px-4 min-h-[44px] rounded-xl border border-[#E4DED8] hover:border-[#D0C9C1] bg-white hover:bg-[#F8F6F3] text-[#57534E] hover:text-[#111111] text-[13px] font-medium active:scale-[0.97] transition-all duration-150 group"
               >
-                <svg className="w-3.5 h-3.5 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3.5 h-3.5 opacity-50 group-hover:opacity-80 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                 </svg>
-                Post on {platformLabel}
+                Respond on {platformLabel}
               </a>
             )}
             <button

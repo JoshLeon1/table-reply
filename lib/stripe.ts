@@ -28,7 +28,7 @@ export async function createCheckoutSession(
   plan: StripePlan = 'monthly'
 ) {
   const priceId = PRICE_IDS[plan]
-  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || 'https://table-reply.vercel.app').replace(/\/$/, '')
+  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || 'https://replyfi.vercel.app').replace(/\/$/, '')
 
   const session = await stripe.checkout.sessions.create({
     customer_email: email,

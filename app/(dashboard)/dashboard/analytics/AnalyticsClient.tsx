@@ -797,6 +797,25 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
         </div>
       )}
 
+      {/* ── QUICK WIN ──────────────────────────────────────────────────────── */}
+      {!themesLoading && !themes.insufficient && themes.opportunities.length > 0 && (
+        <div>
+          <SectionLabel>Quick win</SectionLabel>
+          <div className="bg-[#E05A28]/10 rounded-2xl border border-[#E05A28]/25 px-6 py-5 flex items-start gap-4">
+            <div className="w-10 h-10 rounded-xl bg-[#E05A28]/10 border border-[#E05A28]/25 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg className="w-5 h-5 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/>
+              </svg>
+            </div>
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28] mb-1.5">Your #1 opportunity right now</p>
+              <p className="text-[16px] font-semibold text-[#111111] leading-snug mb-2">{themes.opportunities[0]}</p>
+              <p className="text-[12px] text-[#A8A29E]">Based on patterns across your {totalReviews} review{totalReviews !== 1 ? 's' : ''}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── RATING HERO ────────────────────────────────────────────────────── */}
       <div className="rounded-3xl bg-white border border-[#E4DED8] overflow-hidden shadow-[0_2px_16px_rgba(0,0,0,0.06)]">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
@@ -971,25 +990,6 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
           </div>
         )}
       </div>
-
-      {/* ── QUICK WIN ──────────────────────────────────────────────────────── */}
-      {!themesLoading && !themes.insufficient && themes.opportunities.length > 0 && (
-        <div>
-          <SectionLabel>Quick win</SectionLabel>
-          <div className="bg-[#E05A28]/10 rounded-2xl border border-[#E05A28]/25 px-6 py-5 flex items-start gap-4">
-            <div className="w-10 h-10 rounded-xl bg-[#E05A28]/10 border border-[#E05A28]/25 flex items-center justify-center flex-shrink-0 mt-0.5">
-              <svg className="w-5 h-5 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/>
-              </svg>
-            </div>
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28] mb-1.5">Your #1 opportunity right now</p>
-              <p className="text-[16px] font-semibold text-[#111111] leading-snug mb-2">{themes.opportunities[0]}</p>
-              <p className="text-[12px] text-[#A8A29E]">Based on patterns across your {totalReviews} review{totalReviews !== 1 ? 's' : ''}</p>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* ── YOUR IMPACT ────────────────────────────────────────────────────── */}
       <div>

@@ -146,6 +146,11 @@ function buildHtml(params: {
 // POST /api/digest
 // ---------------------------------------------------------------------------
 
+// Vercel cron always sends GET — alias it to the same handler
+export async function GET(request: NextRequest) {
+  return POST(request)
+}
+
 export async function POST(request: NextRequest) {
   const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -243,11 +248,12 @@ export async function POST(request: NextRequest) {
       }
 
       // Fetch scraped reviews from the past 7 days
+      // NOTE: actual DB column is scraped_at (not created_at)
       const { data: reviews, error: reviewsError } = await supabaseAdmin
         .from('scraped_reviews')
         .select('id, reviewer_name, star_rating, review_text, generated_reply, reply_status')
         .eq('user_id', profile.id)
-        .gte('created_at', sevenDaysAgo)
+        .gte('scraped_at', sevenDaysAgo)
         .order('star_rating', { ascending: false })
 
       if (reviewsError) {

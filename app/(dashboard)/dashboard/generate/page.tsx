@@ -54,6 +54,11 @@ export default async function GeneratePage() {
       trialExpired={trialExpired}
       hasGeneratedReply={(replyCount ?? 0) > 0}
       hasAutoSync={!!(restaurantProfile?.google_maps_url || restaurantProfile?.yelp_url || restaurantProfile?.tripadvisor_url)}
+      restaurantProfile={restaurantProfile ? {
+        restaurant_name: restaurantProfile.restaurant_name,
+        cuisine_type: restaurantProfile.cuisine_type,
+        vibe: restaurantProfile.vibe,
+      } : null}
     />
   )
 }

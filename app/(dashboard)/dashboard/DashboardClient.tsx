@@ -6,12 +6,19 @@ import ReplyGenerator from '@/components/ReplyGenerator'
 import TrialBanner from '@/components/TrialBanner'
 import PaywallModal from '@/components/PaywallModal'
 
+interface RestaurantProfileSnippet {
+  restaurant_name: string
+  cuisine_type?: string | null
+  vibe?: string | null
+}
+
 interface DashboardClientProps {
   isPaid: boolean
   daysRemaining: number
   trialExpired: boolean
   hasGeneratedReply: boolean
   hasAutoSync: boolean
+  restaurantProfile?: RestaurantProfileSnippet | null
 }
 
 export default function DashboardClient({
@@ -19,6 +26,7 @@ export default function DashboardClient({
   daysRemaining,
   trialExpired,
   hasAutoSync,
+  restaurantProfile,
 }: DashboardClientProps) {
   const [showPaywall, setShowPaywall] = useState(false)
   const generateRef = useRef<(() => void) | null>(null)
@@ -88,6 +96,7 @@ export default function DashboardClient({
           isPaid={isPaid}
           onUpgrade={handleUpgrade}
           onGenerateTriggerRef={(fn) => { generateRef.current = fn }}
+          restaurantProfile={restaurantProfile}
         />
       </div>
     </>

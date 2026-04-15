@@ -27,7 +27,21 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
   }
 
-  const { reviewText, restaurantName, cuisineType, vibe, platform, style } = body
+  let { reviewText, restaurantName, cuisineType, vibe, platform, style } = body
+
+  // If caller didn't supply restaurant details, fetch them from the DB
+  if (!restaurantName) {
+    const { data: rp } = await supabase
+      .from('restaurant_profiles')
+      .select('restaurant_name, cuisine_type, vibe')
+      .eq('user_id', user.id)
+      .single()
+    if (rp) {
+      restaurantName = restaurantName || rp.restaurant_name
+      cuisineType    = cuisineType    || rp.cuisine_type
+      vibe           = vibe           || rp.vibe
+    }
+  }
 
   if (!reviewText || !restaurantName || !platform || !style) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })

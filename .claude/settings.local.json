@@ -12,7 +12,13 @@
       "Bash(sed -i '' 's/hover:bg-\\\\[#FAFAF8\\\\]/hover:bg-[#F3F0EC]/g' \"components/ui/Button.tsx\")",
       "Bash(npm run:*)",
       "Bash(find \"/Users/joshleon/Table Reply\" -name \"*.tsx\" ! -path \"*/node_modules/*\" ! -path \"*/.next/*\" -exec sed -i '' 's/#F0EDE8/#EDE9E4/g' {} \\\\;)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(node -e \"require\\('canvas'\\)\")",
+      "Bash(sips --help)",
+      "Bash(qlmanage -t -s 512 -o . logo-stripe.svg)",
+      "Bash(ls -la logo-stripe*)",
+      "Bash(sips -z 512 512 \"/Users/joshleon/Table Reply/public/logo-stripe.png\")",
+      "Bash(python3 -m json.tool)"
     ]
   }
 }

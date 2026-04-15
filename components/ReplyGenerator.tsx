@@ -4,12 +4,19 @@ import { useState, useMemo, useEffect } from 'react'
 import StarRating from './StarRating'
 import CopyButton from './CopyButton'
 
+interface RestaurantProfileSnippet {
+  restaurant_name: string
+  cuisine_type?: string | null
+  vibe?: string | null
+}
+
 interface ReplyGeneratorProps {
   isPaid: boolean
   onUpgrade: () => void
   initialReview?: string
   initialRating?: number
   onGenerateTriggerRef?: (fn: () => void) => void
+  restaurantProfile?: RestaurantProfileSnippet | null
 }
 
 const platforms = ['Google', 'Yelp', 'TripAdvisor', 'OpenTable', 'Facebook', 'Other']
@@ -96,7 +103,7 @@ function PersonalizationBadge({ score }: { score: ReturnType<typeof getPersonali
   return <span className="text-[11px] font-medium text-white/35 bg-white/[0.05] border border-white/[0.07] px-2 py-0.5 rounded-full">Generic</span>
 }
 
-export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', initialRating = 5, onGenerateTriggerRef }: ReplyGeneratorProps) {
+export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', initialRating = 5, onGenerateTriggerRef, restaurantProfile }: ReplyGeneratorProps) {
   const [reviewText, setReviewText] = useState(initialReview)
   const [starRating, setStarRating] = useState(initialRating)
   const [platform, setPlatform] = useState('Google')
@@ -169,10 +176,18 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
     if (!isPaid) { onUpgrade(); return }
     setSocialLoading(true)
     try {
-      const res = await fetch('/api/generate-social-post', {
+      const res = await fetch('/api/generate-social', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reviewText, starRating, platform }),
+        body: JSON.stringify({
+          reviewText,
+          starRating,
+          platform,
+          restaurantName: restaurantProfile?.restaurant_name ?? '',
+          cuisineType: restaurantProfile?.cuisine_type ?? '',
+          vibe: restaurantProfile?.vibe ?? '',
+          style: 'Grateful & warm',
+        }),
       })
       const data = await res.json()
       if (res.ok) setSocialPost(data.caption)

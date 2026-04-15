@@ -10,6 +10,20 @@ interface Props {
   userId: string
 }
 
+// ── Avatar color helpers ──────────────────────────────────────────────────────
+
+const AVATAR_COLORS = [
+  'bg-emerald-500', 'bg-blue-500', 'bg-violet-500', 'bg-pink-500',
+  'bg-amber-500', 'bg-cyan-500', 'bg-rose-500', 'bg-indigo-500'
+]
+function getAvatarColor(name: string): string {
+  let hash = 0
+  for (const c of name) hash = (hash * 31 + c.charCodeAt(0)) & 0xffff
+  return AVATAR_COLORS[hash % AVATAR_COLORS.length]
+}
+
+// ── Shared helpers ────────────────────────────────────────────────────────────
+
 function StarRow({ rating }: { rating: number }) {
   return (
     <div className="flex items-center gap-0.5">
@@ -43,13 +57,6 @@ function formatDate(utcStr: string) {
 
 function getInitials(name: string) {
   return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
-}
-
-function starTopBorder(rating: number) {
-  if (rating >= 5) return 'border-t-2 border-t-emerald-300'
-  if (rating >= 4) return 'border-t-2 border-t-amber-300'
-  if (rating >= 3) return 'border-t-2 border-t-yellow-200'
-  return 'border-t-2 border-t-red-300'
 }
 
 // ── Scraping progress indicator ───────────────────────────────────────────────
@@ -175,7 +182,7 @@ function SetupPanel({ profile, onSaved }: { profile: BusinessProfile; onSaved: (
 
 function SkeletonCard() {
   return (
-    <div className="bg-white rounded-2xl overflow-hidden border border-[#E4DED8] animate-pulse">
+    <div className="bg-white rounded-xl overflow-hidden border border-[#E4DED8] animate-pulse">
       <div className="flex items-center gap-3 px-5 py-4 border-b border-[#EDE9E4]">
         <div className="w-8 h-8 rounded-full bg-[#F3F0EC] flex-shrink-0" />
         <div className="flex-1 space-y-1.5">
@@ -184,12 +191,10 @@ function SkeletonCard() {
         </div>
       </div>
       <div className="px-5 py-4 border-b border-[#EDE9E4] space-y-2">
-        <div className="h-2.5 w-16 bg-[#F3F0EC] rounded-full" />
         <div className="h-3 w-full bg-[#F3F0EC] rounded-full" />
         <div className="h-3 w-[85%] bg-[#F3F0EC] rounded-full" />
       </div>
       <div className="px-5 py-4 space-y-2">
-        <div className="h-2.5 w-16 bg-[#F3F0EC] rounded-full" />
         <div className="h-3 w-full bg-[#F3F0EC] rounded-full" />
         <div className="h-3 w-[70%] bg-[#F3F0EC] rounded-full" />
       </div>
@@ -321,16 +326,22 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
 
   const status = review.reply_status
 
-  // Status badge
-  const statusBadge = showStatus ? (
-    status === 'pending' ? (
-      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#E05A28]/10 text-[#E05A28] border border-[#E05A28]/25">Pending</span>
-    ) : status === 'approved' ? (
-      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200">Approved</span>
-    ) : (
-      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#F3F0EC] text-[#A8A29E] border border-[#E4DED8]">Dismissed</span>
-    )
-  ) : null
+  // Status chip — shown on card header right side
+  const statusChip = (() => {
+    if (status === 'pending' && review.generated_reply) {
+      return <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 flex-shrink-0">Draft Ready</span>
+    }
+    if (status === 'pending' && !review.generated_reply) {
+      return <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-50 text-amber-600 border border-amber-200 flex-shrink-0">Needs Response</span>
+    }
+    if (status === 'approved') {
+      return <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 border border-blue-200 flex-shrink-0">Approved</span>
+    }
+    if (status === 'dismissed') {
+      return <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#F3F0EC] text-[#A8A29E] border border-[#E4DED8] flex-shrink-0">Dismissed</span>
+    }
+    return null
+  })()
 
   const displayText = isLong && !expanded
     ? review.review_text.slice(0, REVIEW_TRUNCATE_LENGTH) + '…'
@@ -340,7 +351,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
   if (noText) {
     return (
       <div className="flex items-center gap-3 px-4 py-2.5 bg-white rounded-xl border border-[#E4DED8] hover:border-[#D0C9C1] transition-all duration-150 opacity-60 hover:opacity-80">
-        <div className="w-7 h-7 rounded-full bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center text-[10px] font-bold text-[#A8A29E] flex-shrink-0">
+        <div className={`w-7 h-7 rounded-full ${getAvatarColor(review.reviewer_name)} flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0`}>
           {getInitials(review.reviewer_name)}
         </div>
         <span className="text-[12px] font-medium text-[#57534E] truncate flex-shrink-0 max-w-[120px]">{review.reviewer_name}</span>
@@ -348,7 +359,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
         <StarRow rating={review.star_rating} />
         <span className="text-[11px] text-[#C4BEB8] flex-shrink-0">{formatDate(review.review_datetime_utc)}</span>
         <span className="text-[10px] text-[#C4BEB8] italic flex-1 hidden sm:block">No written review</span>
-        {statusBadge && <div className="flex-shrink-0">{statusBadge}</div>}
+        {statusChip && <div className="flex-shrink-0">{statusChip}</div>}
         {(status === 'pending' || status === 'dismissed') && (
           <button
             onClick={status === 'dismissed' ? handleRestore : handleDismiss}
@@ -363,19 +374,18 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
   }
 
   return (
-    <div className={`bg-white rounded-2xl overflow-hidden border border-[#E4DED8] ${starTopBorder(review.star_rating)} shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.04)] transition-all duration-200 hover:shadow-[0_2px_16px_rgba(0,0,0,0.07)] hover:border-[#D0C9C1] hover:-translate-y-px`}>
+    <div className="bg-white rounded-xl overflow-hidden border border-[#E4DED8] shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] hover:border-[#D0C9C1]">
       {/* Header */}
       <div className="flex items-center justify-between px-4 sm:px-5 py-3.5 sm:py-4 border-b border-[#EDE9E4]">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           {/* Initials avatar */}
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#E05A28]/15 to-[#E05A28]/[0.08] border border-[#E05A28]/15 flex items-center justify-center text-[12px] font-bold text-[#E05A28] flex-shrink-0 shadow-sm">
+          <div className={`w-9 h-9 rounded-full ${getAvatarColor(review.reviewer_name)} flex items-center justify-center text-[12px] font-bold text-white flex-shrink-0`}>
             {getInitials(review.reviewer_name)}
           </div>
-          <div>
+          <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-[13px] font-semibold text-[#111111]">{review.reviewer_name}</span>
               <PlatformBadge source={review.source} />
-              {statusBadge}
               {review.star_rating >= 4 ? (
                 <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200">Positive</span>
               ) : review.star_rating <= 2 ? (
@@ -397,12 +407,13 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
             </div>
           </div>
         </div>
+        {/* Status chip on right */}
+        {statusChip}
       </div>
 
       <div className="divide-y divide-[#EDE9E4]">
         {/* Review text */}
         <div className="px-4 sm:px-5 py-3.5 sm:py-4">
-          <p className="text-[11px] font-medium text-[#A8A29E] mb-2">Their review</p>
           <>
             <p className="text-[13px] text-[#57534E] leading-relaxed">&ldquo;{displayText}&rdquo;</p>
             {isLong && (
@@ -420,16 +431,8 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
         <div className="px-4 sm:px-5 py-3.5 sm:py-4">
             {review.generated_reply ? (
               /* AI reply card */
-              <div className="rounded-xl bg-[#E05A28]/[0.08] border border-[#E05A28]/20 px-4 py-3.5">
-                <div className="flex items-center justify-between gap-2 mb-2">
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-4 h-4 rounded-md bg-[#E05A28]/10 flex items-center justify-center">
-                      <svg className="w-2.5 h-2.5 text-[#E05A28]" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <p className="text-[11px] font-semibold text-[#E05A28]">AI Reply</p>
-                  </div>
+              <div className="rounded-xl bg-[#F8F6F3] border border-[#E4DED8] border-l-2 border-l-[#E05A28] px-4 py-3.5">
+                <div className="flex items-center justify-end gap-2 mb-2">
                   {status === 'pending' && !editing && (
                     <button
                       onClick={() => { setEditedReply(review.generated_reply ?? ''); setEditing(true) }}
@@ -473,7 +476,6 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
               </div>
             ) : (
               <div>
-                <p className="text-[11px] font-medium text-[#A8A29E] mb-2">AI Reply</p>
                 {generating ? (
                   <div className="flex items-center gap-2.5 text-[13px] text-[#57534E] py-1">
                     <svg className="animate-spin w-3.5 h-3.5 text-[#E05A28] flex-shrink-0" fill="none" viewBox="0 0 24 24">
@@ -562,6 +564,13 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
               Approve Reply
             </button>
             <button
+              onClick={handleGenerateReply}
+              disabled={generating || actioning}
+              className="px-3.5 min-h-[44px] rounded-xl text-[13px] font-medium text-[#A8A29E] hover:text-[#57534E] hover:bg-[#F3F0EC] border border-[#E4DED8] active:scale-[0.97] disabled:opacity-40 transition-all duration-150"
+            >
+              Regenerate
+            </button>
+            <button
               onClick={handleDismiss}
               disabled={actioning}
               className="px-3.5 min-h-[44px] rounded-xl text-[13px] font-medium text-[#A8A29E] hover:text-[#57534E] hover:bg-[#F3F0EC] active:scale-[0.97] disabled:opacity-40 transition-all duration-150"
@@ -639,6 +648,29 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
         </div>
       )}
 
+      {/* Stat cards */}
+      {reviews.length > 0 && (() => {
+        const negCount = reviews.filter(r => r.star_rating <= 2).length
+        const avgRat = reviews.filter(r => r.star_rating).length > 0
+          ? (reviews.reduce((s, r) => s + (r.star_rating || 0), 0) / reviews.filter(r => r.star_rating).length).toFixed(1)
+          : '—'
+        return (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+            {[
+              { label: 'Total Reviews', value: reviews.length, color: 'text-[#111111]' },
+              { label: 'Negative Reviews', value: negCount, color: 'text-red-600' },
+              { label: 'Avg Rating', value: `${avgRat} / 5`, color: 'text-[#111111]' },
+              { label: 'Pending', value: pending.length, color: 'text-amber-600' },
+            ].map(({ label, value, color }) => (
+              <div key={label} className="bg-white rounded-xl border border-[#E4DED8] p-4">
+                <p className="text-[12px] text-[#A8A29E] font-medium">{label}</p>
+                <p className={`text-[22px] font-bold mt-1 ${color}`}>{value}</p>
+              </div>
+            ))}
+          </div>
+        )
+      })()}
+
       {/* Page header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
@@ -707,7 +739,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
       )}
 
       {/* Tab bar */}
-      <div className="flex gap-1 p-1 bg-[#F3F0EC] rounded-xl mb-5 w-full sm:w-fit">
+      <div className="flex gap-1 p-1 bg-white rounded-xl border border-[#E4DED8] mb-5 w-full sm:w-fit">
         {tabs.map((tab) => (
           <button
             key={tab.key}

@@ -823,7 +823,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       // ═══════════════════════════════════════════════════════════════════════
       // PAGE 5 — NOTABLE REVIEWS
       // ═══════════════════════════════════════════════════════════════════════
-      if (bestReview || (worstReview && worstReview.id !== bestReview?.id)) {
+      if (bestReview || worstReview) {
         doc.addPage()
         pageChrome()
 

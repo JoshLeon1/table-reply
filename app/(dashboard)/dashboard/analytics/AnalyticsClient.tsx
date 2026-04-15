@@ -71,7 +71,7 @@ function Stars({ rating }: { rating: number }) {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-5">{children}</p>
+    <p className="text-[13px] font-semibold text-[#57534E] mb-5">{children}</p>
   )
 }
 
@@ -741,7 +741,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
               </svg>
             </div>
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28] mb-1.5">Your #1 opportunity right now</p>
+              <p className="text-[11px] font-semibold text-[#E05A28] mb-1.5">Your #1 opportunity right now</p>
               <p className="text-[16px] font-semibold text-[#111111] leading-snug mb-2">{themes.opportunities[0]}</p>
               <p className="text-[12px] text-[#A8A29E]">Based on patterns across your {totalReviews} review{totalReviews !== 1 ? 's' : ''}</p>
             </div>
@@ -772,7 +772,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
 
           {/* Breakdown */}
           <div className="order-2 md:order-1 px-5 sm:px-8 py-6 sm:py-12 border-b md:border-b-0 md:border-r border-[#EDE9E4]">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28]/70 mb-4 sm:mb-6">Breakdown</p>
+            <p className="text-[11px] font-semibold text-[#E05A28]/70 mb-4 sm:mb-6">Breakdown</p>
             <div className="space-y-2.5 sm:space-y-3">
               {[5, 4, 3, 2, 1].map((star) => {
                 const count = ratingDist[star] ?? 0
@@ -793,7 +793,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
           {/* Trend */}
           <div className="order-3 px-5 sm:px-8 py-6 sm:py-12 md:border-l border-[#EDE9E4]">
             <div className="flex items-center justify-between mb-1">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28]/70">Trend</p>
+              <p className="text-[11px] font-semibold text-[#E05A28]/70">Trend</p>
               {hasSparkData && (
                 <span className={`text-[11px] font-semibold ${sparkTrend === 'up' ? 'text-emerald-600' : sparkTrend === 'down' ? 'text-red-500' : 'text-[#A8A29E]'}`}>
                   {sparkTrend === 'up' ? '▲ Improving' : sparkTrend === 'down' ? '▼ Declining' : '→ Steady'}
@@ -854,8 +854,8 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
           },
         ].map((stat, i) => (
           <div key={i} className={`bg-white rounded-2xl border border-[#E4DED8] p-3.5 sm:p-4 stagger-${i + 1} animate-fade-up shadow-[0_1px_3px_rgba(0,0,0,0.04)]`}>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-2 leading-tight">{stat.label}</p>
-            <p className={`text-[18px] sm:text-2xl font-bold leading-none mb-1 ${stat.color}`}>{stat.value}</p>
+            <p className="text-[11px] font-medium text-[#A8A29E] mb-2 leading-tight">{stat.label}</p>
+            <p className={`text-[20px] sm:text-[26px] font-bold leading-none mb-1 tracking-tight ${stat.color}`}>{stat.value}</p>
             <p className="text-[11px] text-[#A8A29E] leading-tight">{stat.sub}</p>
           </div>
         ))}
@@ -874,52 +874,51 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {[
               {
-                icon: <svg className="w-4 h-4 text-[#E05A28]" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd"/></svg>,
+                icon: <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd"/></svg>,
                 title: 'They love',
                 items: themes.praised,
                 emptyText: 'Sync more reviews',
-                itemClass: 'text-[#57534E]',
-                bullet: <svg className="w-3 h-3 text-[#E05A28] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>,
-                topBorder: 'border-t-2 border-t-emerald-200',
-                cardBg: 'bg-emerald-50/40',
-              },
-              {
-                icon: <svg className="w-4 h-4 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>,
-                title: 'They mention',
-                items: themes.complaints,
-                emptyText: 'No recurring topics found',
-                itemClass: 'text-[#57534E]',
-                bullet: <span className="w-1.5 h-1.5 rounded-full bg-[#D0C9C1] mt-1.5 flex-shrink-0 inline-block" />,
-                topBorder: 'border-t-2 border-t-[#E4DED8]',
+                chipClass: 'bg-emerald-50 text-emerald-700 border-emerald-100',
+                iconClass: 'text-emerald-500',
+                topBorder: 'border-t-[3px] border-t-emerald-300',
                 cardBg: 'bg-white',
               },
               {
-                icon: <svg className="w-4 h-4 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>,
+                icon: <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>,
+                title: 'They mention',
+                items: themes.complaints,
+                emptyText: 'No recurring topics found',
+                chipClass: 'bg-[#F3F0EC] text-[#57534E] border-[#E4DED8]',
+                iconClass: 'text-[#A8A29E]',
+                topBorder: 'border-t-[3px] border-t-[#D0C9C1]',
+                cardBg: 'bg-white',
+              },
+              {
+                icon: <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>,
                 title: 'Opportunities',
                 items: themes.opportunities,
                 emptyText: 'No opportunities found',
-                itemClass: 'text-[#57534E]',
-                bullet: null,
-                topBorder: 'border-t-2 border-t-[#E05A28]/30',
-                cardBg: 'bg-[#FEF6F2]',
+                chipClass: 'bg-[#FEF0E8] text-[#C94E21] border-[#F5C9AD]',
+                iconClass: 'text-[#E05A28]',
+                topBorder: 'border-t-[3px] border-t-[#E05A28]',
+                cardBg: 'bg-white',
               },
-            ].map(({ icon, title, items, emptyText, itemClass, bullet, topBorder, cardBg }) => (
+            ].map(({ icon, title, items, emptyText, chipClass, iconClass, topBorder, cardBg }) => (
               <div key={title} className={`${cardBg} rounded-2xl border border-[#E4DED8] p-5 ${topBorder} shadow-[0_1px_3px_rgba(0,0,0,0.04)]`}>
-                <div className="flex items-center gap-2 mb-4">
+                <div className={`flex items-center gap-1.5 mb-4 ${iconClass}`}>
                   {icon}
                   <span className="text-[13px] font-semibold text-[#111111]">{title}</span>
                 </div>
                 {items.length === 0 ? (
                   <p className="text-[12px] text-[#C4BEB8]">{emptyText}</p>
                 ) : (
-                  <ul className="space-y-2.5">
+                  <div className="flex flex-wrap gap-2">
                     {items.map((item, i) => (
-                      <li key={i} className="flex items-start gap-2.5">
-                        {bullet ?? <span className="text-[#C4BEB8] mt-0.5 flex-shrink-0 text-[11px] font-bold">{i + 1}.</span>}
-                        <span className={`text-[13px] ${itemClass} leading-snug`}>{item}</span>
-                      </li>
+                      <span key={i} className={`inline-flex items-center px-2.5 py-1 rounded-full text-[12px] font-medium border ${chipClass} leading-none`}>
+                        {item}
+                      </span>
                     ))}
-                  </ul>
+                  </div>
                 )}
               </div>
             ))}
@@ -985,7 +984,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
           <div className="bg-white rounded-2xl border border-[#E4DED8] p-4 sm:p-6 space-y-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
             {/* Rating trend */}
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.10em] text-[#A8A29E] mb-3">Average rating per month</p>
+              <p className="text-[11px] font-medium text-[#A8A29E] mb-3">Average rating per month</p>
               <ResponsiveContainer width="100%" height={140}>
                 <AreaChart data={trendData} margin={{ top: 8, right: 4, bottom: 0, left: -20 }}>
                   <defs>
@@ -1006,7 +1005,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
             {/* Volume bar chart */}
             {hasVolumeData && (
               <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.10em] text-[#A8A29E] mb-3">Review volume per month</p>
+                <p className="text-[11px] font-medium text-[#A8A29E] mb-3">Review volume per month</p>
                 <ResponsiveContainer width="100%" height={120}>
                   <BarChart data={trendData} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
                     <XAxis dataKey="month" tick={{ fontSize: 11, fill: 'rgba(0,0,0,0.35)' }} axisLine={false} tickLine={false} />

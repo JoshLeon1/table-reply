@@ -353,7 +353,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
       <div className="divide-y divide-[#EDE9E4]">
         {/* Review text */}
         <div className="px-4 sm:px-5 py-3.5 sm:py-4">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-2">Their review</p>
+          <p className="text-[11px] font-medium text-[#A8A29E] mb-2">Their review</p>
           <>
             <p className="text-[13px] text-[#57534E] leading-relaxed">&ldquo;{displayText}&rdquo;</p>
             {isLong && (
@@ -378,13 +378,13 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
                       <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
                     </svg>
                   </div>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-[#E05A28]/70">AI Draft</p>
+                  <p className="text-[11px] font-semibold text-[#E05A28]">AI reply</p>
                 </div>
                 <p className="text-[13px] text-[#57534E] leading-relaxed">{review.generated_reply}</p>
               </div>
             ) : (
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-2">AI reply</p>
+                <p className="text-[11px] font-medium text-[#A8A29E] mb-2">AI reply</p>
                 {generating ? (
                   <div className="flex items-center gap-2.5 text-[13px] text-[#57534E] py-1">
                     <svg className="animate-spin w-3.5 h-3.5 text-[#E05A28] flex-shrink-0" fill="none" viewBox="0 0 24 24">
@@ -414,7 +414,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
       </div>
 
       {/* Actions */}
-      <div className="flex flex-wrap items-center gap-2 px-4 sm:px-5 py-3.5 bg-[#F8F6F3] border-t border-[#EDE9E4]">
+      <div className="flex flex-wrap items-center gap-2 px-4 sm:px-5 py-3.5 border-t border-[#EDE9E4]">
         {status === 'approved' ? (
           <>
             <button
@@ -569,7 +569,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
         <div className="flex items-center gap-4 px-5 py-4 rounded-2xl bg-white border border-[#E4DED8] shadow-[0_1px_4px_rgba(0,0,0,0.04)] mb-5">
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-[12px] font-semibold text-[#A8A29E] uppercase tracking-[0.10em]">Response Rate</p>
+              <p className="text-[12px] font-medium text-[#A8A29E]">Response rate</p>
               <span className={`text-[13px] font-bold ${responseRate >= 80 ? 'text-emerald-600' : responseRate >= 50 ? 'text-[#111111]' : 'text-[#E05A28]'}`}>
                 {approvedCount} / {totalWithText} &nbsp;·&nbsp; {responseRate}%
               </span>

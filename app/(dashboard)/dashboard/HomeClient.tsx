@@ -110,7 +110,7 @@ function PlatformBadge({ source }: { source?: string | null }) {
 function SectionLabel({ children, badge }: { children: React.ReactNode; badge?: React.ReactNode }) {
   return (
     <div className="flex items-center gap-2.5 mb-4">
-      <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#A8A29E] whitespace-nowrap flex-shrink-0">{children}</span>
+      <span className="text-[13px] font-semibold text-[#57534E] whitespace-nowrap flex-shrink-0">{children}</span>
       {badge}
       <div className="flex-1 h-px bg-gradient-to-r from-[#E4DED8] to-transparent" />
     </div>
@@ -199,7 +199,7 @@ function PendingCard({ review, onAction, animDelay = 0 }: { review: ScrapedRevie
                 <div className="w-4 h-4 rounded-md bg-[#E05A28]/10 flex items-center justify-center">
                   <svg className="w-2.5 h-2.5 text-[#E05A28]" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd"/></svg>
                 </div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#E05A28]/70">AI Draft</span>
+                <span className="text-[11px] font-semibold text-[#E05A28]">AI reply</span>
               </div>
               <p className="text-[12px] text-[#57534E] leading-relaxed">{review.generated_reply}</p>
             </div>
@@ -225,7 +225,7 @@ function StatCard({ label, value, sub, icon, iconBg, extra, delay }: { label: st
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 mb-2.5">
             <div className={`w-6 h-6 sm:w-7 sm:h-7 rounded-lg ${iconBg} flex items-center justify-center flex-shrink-0`}>{icon}</div>
-            <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.08em] sm:tracking-[0.11em] text-[#A8A29E] leading-tight line-clamp-2">{label}</p>
+            <p className="text-[11px] font-medium text-[#A8A29E] leading-tight line-clamp-2">{label}</p>
           </div>
           <p className="text-[22px] sm:text-[28px] font-bold text-[#111111] leading-none tracking-[-0.03em] mb-2">{value}</p>
           {sub}

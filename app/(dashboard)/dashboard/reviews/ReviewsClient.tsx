@@ -287,8 +287,34 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
     ? review.review_text.slice(0, REVIEW_TRUNCATE_LENGTH) + '…'
     : review.review_text
 
+  // ── Compact row for rating-only (no text) reviews ──────────────────────────
+  if (noText) {
+    return (
+      <div className="flex items-center gap-3 px-4 py-2.5 bg-white rounded-xl border border-[#E4DED8] hover:border-[#D0C9C1] transition-all duration-150 opacity-60 hover:opacity-80">
+        <div className="w-7 h-7 rounded-full bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center text-[10px] font-bold text-[#A8A29E] flex-shrink-0">
+          {getInitials(review.reviewer_name)}
+        </div>
+        <span className="text-[12px] font-medium text-[#57534E] truncate flex-shrink-0 max-w-[120px]">{review.reviewer_name}</span>
+        <PlatformBadge source={review.source} />
+        <StarRow rating={review.star_rating} />
+        <span className="text-[11px] text-[#C4BEB8] flex-shrink-0">{formatDate(review.review_datetime_utc)}</span>
+        <span className="text-[10px] text-[#C4BEB8] italic flex-1 hidden sm:block">No written review</span>
+        {statusBadge && <div className="flex-shrink-0">{statusBadge}</div>}
+        {(status === 'pending' || status === 'dismissed') && (
+          <button
+            onClick={status === 'dismissed' ? handleRestore : handleDismiss}
+            disabled={actioning}
+            className="flex-shrink-0 text-[11px] text-[#C4BEB8] hover:text-[#A8A29E] transition-colors disabled:opacity-40"
+          >
+            {status === 'dismissed' ? 'Restore' : 'Dismiss'}
+          </button>
+        )}
+      </div>
+    )
+  }
+
   return (
-    <div className={`bg-white rounded-2xl overflow-hidden border border-[#E4DED8] ${starTopBorder(review.star_rating)} shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.04)] transition-all duration-200 hover:shadow-[0_2px_16px_rgba(0,0,0,0.07)] hover:border-[#D0C9C1] hover:-translate-y-px ${noText ? 'opacity-50' : ''}`}>
+    <div className={`bg-white rounded-2xl overflow-hidden border border-[#E4DED8] ${starTopBorder(review.star_rating)} shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.04)] transition-all duration-200 hover:shadow-[0_2px_16px_rgba(0,0,0,0.07)] hover:border-[#D0C9C1] hover:-translate-y-px`}>
       {/* Header */}
       <div className="flex items-center justify-between px-4 sm:px-5 py-3.5 sm:py-4 border-b border-[#EDE9E4]">
         <div className="flex items-center gap-3">
@@ -301,9 +327,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
               <span className="text-[13px] font-semibold text-[#111111]">{review.reviewer_name}</span>
               <PlatformBadge source={review.source} />
               {statusBadge}
-              {noText ? (
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#F3F0EC] text-[#A8A29E] border border-[#E4DED8]">Rating only</span>
-              ) : review.star_rating >= 4 ? (
+              {review.star_rating >= 4 ? (
                 <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200">Positive</span>
               ) : review.star_rating <= 2 ? (
                 <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-red-50 text-red-500 border border-red-200">Critical</span>
@@ -330,26 +354,21 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
         {/* Review text */}
         <div className="px-4 sm:px-5 py-3.5 sm:py-4">
           <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-2">Their review</p>
-          {noText ? (
-            <p className="text-[13px] text-[#C4BEB8] italic">Rating only — no written review</p>
-          ) : (
-            <>
-              <p className="text-[13px] text-[#57534E] leading-relaxed">&ldquo;{displayText}&rdquo;</p>
-              {isLong && (
-                <button
-                  onClick={() => setExpanded(!expanded)}
-                  className="text-[12px] text-[#E05A28] hover:text-[#C94E21] font-medium mt-1.5 transition-colors"
-                >
-                  {expanded ? 'Show less' : 'Read more'}
-                </button>
-              )}
-            </>
-          )}
+          <>
+            <p className="text-[13px] text-[#57534E] leading-relaxed">&ldquo;{displayText}&rdquo;</p>
+            {isLong && (
+              <button
+                onClick={() => setExpanded(!expanded)}
+                className="text-[12px] text-[#E05A28] hover:text-[#C94E21] font-medium mt-1.5 transition-colors"
+              >
+                {expanded ? 'Show less' : 'Read more'}
+              </button>
+            )}
+          </>
         </div>
 
         {/* Reply section */}
-        {!noText && (
-          <div className="px-4 sm:px-5 py-3.5 sm:py-4">
+        <div className="px-4 sm:px-5 py-3.5 sm:py-4">
             {review.generated_reply ? (
               /* AI reply card */
               <div className="rounded-xl bg-[#E05A28]/[0.08] border border-[#E05A28]/20 px-4 py-3.5">
@@ -392,14 +411,11 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
               </div>
             )}
           </div>
-        )}
       </div>
 
       {/* Actions */}
       <div className="flex flex-wrap items-center gap-2 px-4 sm:px-5 py-3.5 bg-[#F8F6F3] border-t border-[#EDE9E4]">
-        {noText ? (
-          <span className="text-[12px] text-[#C4BEB8] italic flex-1">No reply needed</span>
-        ) : status === 'approved' ? (
+        {status === 'approved' ? (
           <>
             <button
               onClick={handleApprove}

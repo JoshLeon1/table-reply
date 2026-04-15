@@ -9,7 +9,7 @@ interface ReplyPreferences {
 }
 
 interface EmailNotifications {
-  newReviewsScrapped: boolean
+  newReviewsScraped: boolean
 }
 
 interface SettingsClientProps {
@@ -17,6 +17,8 @@ interface SettingsClientProps {
   userEmail: string
   replyPreferences: ReplyPreferences
   emailNotifications: EmailNotifications
+  businessName?: string
+  isPaid?: boolean
 }
 
 function Toggle({
@@ -53,6 +55,8 @@ export default function SettingsClient({
   userEmail,
   replyPreferences: initialReplyPrefs,
   emailNotifications: initialEmailNotifs,
+  businessName,
+  isPaid,
 }: SettingsClientProps) {
   const [replyPrefs, setReplyPrefs] = useState<ReplyPreferences>(initialReplyPrefs)
   const [emailNotifs, setEmailNotifs] = useState<EmailNotifications>(initialEmailNotifs)
@@ -153,6 +157,42 @@ export default function SettingsClient({
 
   return (
     <div className="space-y-6">
+      {/* Account info */}
+      {(businessName || userEmail) && (
+        <div className="rounded-2xl border border-[#E4DED8] bg-white p-4 sm:p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-0 sm:justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-[#E05A28]/10 border border-[#E05A28]/20 flex items-center justify-center flex-shrink-0">
+                <svg className="w-4 h-4 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+              </div>
+              <div>
+                {businessName && <p className="text-[14px] font-semibold text-[#111111]">{businessName}</p>}
+                <p className="text-[12px] text-[#A8A29E]">{userEmail}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 sm:flex-shrink-0">
+              <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full ${
+                isPaid
+                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                  : 'bg-[#FEF0E8] text-[#B34419] border border-[#F5C9AD]'
+              }`}>
+                {isPaid ? 'Pro' : 'Free Trial'}
+              </span>
+              {!isPaid && (
+                <a
+                  href="/settings#billing"
+                  className="text-[12px] font-semibold text-[#E05A28] hover:text-[#C94E21] transition-colors"
+                >
+                  Upgrade →
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Reply preferences */}
       <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
         <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-[#EDE9E4] flex items-center justify-between gap-3">
@@ -176,7 +216,7 @@ export default function SettingsClient({
         <div className="divide-y divide-[#EDE9E4]">
           <div className="px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
             <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-medium text-[#111111]">End Reply With Owner Name</p>
+              <p className="text-[13px] font-medium text-[#111111]">End reply with owner name</p>
               <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">Sign off each reply with your name (e.g. — Maria)</p>
             </div>
             <Toggle
@@ -188,7 +228,7 @@ export default function SettingsClient({
 
           <div className="px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
             <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-medium text-[#111111]">Include business name</p>
+              <p className="text-[13px] font-medium text-[#111111]">Include business name in reply</p>
               <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">Mention your business name naturally in the reply</p>
             </div>
             <Toggle
@@ -200,7 +240,7 @@ export default function SettingsClient({
 
           <div className="px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
             <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-medium text-[#111111]">Invite Customer Back</p>
+              <p className="text-[13px] font-medium text-[#111111]">Invite customer to return</p>
               <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">End positive replies with an invitation to return</p>
             </div>
             <Toggle
@@ -234,14 +274,35 @@ export default function SettingsClient({
 
         <div className="px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
           <div className="min-w-0 flex-1">
-            <p className="text-[13px] font-medium text-[#111111]">New Reviews Scraped</p>
+            <p className="text-[13px] font-medium text-[#111111]">New reviews scraped</p>
             <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">Get notified when your Auto Review sync pulls in new reviews</p>
           </div>
           <Toggle
-            checked={emailNotifs.newReviewsScrapped}
-            onChange={(v) => handleEmailNotifChange('newReviewsScrapped', v)}
+            checked={emailNotifs.newReviewsScraped}
+            onChange={(v) => handleEmailNotifChange('newReviewsScraped', v)}
             disabled={savingEmail}
           />
+        </div>
+      </div>
+
+      {/* Data & Privacy */}
+      <div className="rounded-2xl border border-[#E4DED8] bg-white overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-[#EDE9E4]">
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E]">Data &amp; Privacy</h2>
+          <p className="text-[12px] text-[#57534E] mt-1">Download a copy of your data at any time.</p>
+        </div>
+        <div className="px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between gap-4">
+          <div className="min-w-0 flex-1">
+            <p className="text-[13px] font-medium text-[#111111]">Export my data</p>
+            <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">Download all your reviews and replies as a JSON file</p>
+          </div>
+          <button
+            onClick={handleExport}
+            disabled={exportLoading}
+            className="flex-shrink-0 px-3.5 py-2 rounded-xl border border-[#E4DED8] hover:border-[#D0C9C1] bg-[#F3F0EC] text-[13px] font-medium text-[#57534E] hover:text-[#111111] transition-all duration-150 disabled:opacity-50 min-h-[40px]"
+          >
+            {exportLoading ? 'Exporting…' : 'Export JSON'}
+          </button>
         </div>
       </div>
 
@@ -252,22 +313,7 @@ export default function SettingsClient({
           <p className="text-[12px] text-[#57534E] mt-1">These actions are permanent and cannot be undone.</p>
         </div>
 
-        <div className="divide-y divide-[#EDE9E4]">
-          {/* Export */}
-          <div className="px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between gap-4">
-            <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-medium text-[#111111]">Export My Data</p>
-              <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">Download all your reviews and replies as a JSON file</p>
-            </div>
-            <button
-              onClick={handleExport}
-              disabled={exportLoading}
-              className="flex-shrink-0 px-3.5 py-2 rounded-xl border border-[#E4DED8] hover:border-[#D0C9C1] bg-[#F3F0EC] text-[13px] font-medium text-[#57534E] hover:text-[#111111] transition-all duration-150 disabled:opacity-50 min-h-[40px]"
-            >
-              {exportLoading ? 'Exporting…' : 'Export JSON'}
-            </button>
-          </div>
-
+        <div>
           {/* Delete */}
           <div className="px-4 sm:px-6 py-4 sm:py-5 space-y-3">
             <div>

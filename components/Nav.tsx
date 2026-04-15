@@ -78,6 +78,14 @@ function IconGrow({ active }: { active: boolean }) {
   )
 }
 
+function IconSocial({ active }: { active: boolean }) {
+  return (
+    <svg className="w-4 h-4 flex-shrink-0" fill={active ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={active ? 0 : 1.75} viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+    </svg>
+  )
+}
+
 function IconSettings({ active }: { active: boolean }) {
   return (
     <svg className="w-4 h-4 flex-shrink-0" fill={active ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={active ? 0 : 1.75} viewBox="0 0 24 24">
@@ -104,6 +112,7 @@ export default function Nav() {
   const [pendingCount, setPendingCount] = useState(0)
   const [analyticsStale, setAnalyticsStale] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [displayName, setDisplayName] = useState<string | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -132,6 +141,17 @@ export default function Nav() {
         } else if ((count ?? 0) > 0) {
           setAnalyticsStale(true)
         }
+      }
+
+      const { data: profile } = await supabase
+        .from('business_profiles')
+        .select('owner_name, business_name')
+        .eq('user_id', user.id)
+        .maybeSingle()
+
+      if (!cancelled && profile) {
+        const name = (profile.owner_name || profile.business_name || '').trim()
+        if (name) setDisplayName(name.slice(0, 15) + (name.length > 15 ? '…' : ''))
       }
     }
 
@@ -165,6 +185,7 @@ export default function Nav() {
     { href: '/dashboard',               label: 'Home',      icon: (a) => <IconHome active={a} /> },
     { href: '/dashboard/reviews',       label: 'Reviews',   icon: (a) => <IconRefresh active={a} />, badge: pendingCount > 0 ? pendingCount : null },
     { href: '/dashboard/analytics',     label: 'Analytics', icon: (a) => <IconChart active={a} />, dot: analyticsStale },
+    { href: '/dashboard/social',        label: 'Social',    icon: (a) => <IconSocial active={a} /> },
     { href: '/dashboard/grow',          label: 'Grow',      icon: (a) => <IconGrow active={a} /> },
   ]
 
@@ -194,7 +215,7 @@ export default function Nav() {
                     className={`relative flex items-center gap-2 px-4 py-2 rounded-xl text-[14px] font-medium transition-all duration-150 active:scale-[0.97] ${
                       active
                         ? 'text-[#111111] bg-[#F3F0EC] border border-[#E4DED8]'
-                        : 'text-[#111111]/40 hover:text-[#111111]/70 hover:bg-[#F3F0EC]'
+                        : 'text-[#111111]/60 hover:text-[#111111]/70 hover:bg-[#F3F0EC]'
                     }`}
                     style={active ? { boxShadow: '0 1px 0 rgba(0,0,0,0.04) inset' } : undefined}
                   >
@@ -218,24 +239,30 @@ export default function Nav() {
 
               <div className="w-px h-4 bg-[#E4DED8] mx-2" />
 
+              {displayName && (
+                <span className="bg-[#F3F0EC] border border-[#E4DED8] rounded-full px-3 py-1 text-[12px] text-[#57534E] font-medium max-w-[140px] truncate mr-1">
+                  {displayName}
+                </span>
+              )}
+
               <Link
                 href="/settings"
-                className={`w-9 h-9 flex items-center justify-center rounded-lg transition-all duration-150 active:scale-[0.97] ${
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-[14px] font-medium transition-all duration-150 active:scale-[0.97] ${
                   pathname === '/settings'
                     ? 'text-[#E05A28] bg-[#F3F0EC] border border-[#E4DED8]'
-                    : 'text-[#111111]/35 hover:text-[#111111]/70 hover:bg-[#F3F0EC]'
+                    : 'text-[#111111]/60 hover:text-[#111111]/70 hover:bg-[#F3F0EC]'
                 }`}
-                title="Settings"
               >
                 <IconSettings active={pathname === '/settings'} />
+                <span>Settings</span>
               </Link>
 
               <button
                 onClick={handleLogout}
-                className="w-9 h-9 flex items-center justify-center rounded-lg text-[#111111]/30 hover:text-[#111111]/65 hover:bg-[#F3F0EC] transition-all duration-150 active:scale-[0.97]"
-                title="Log Out"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-[14px] font-medium text-[#111111]/60 hover:text-[#111111]/65 hover:bg-[#F3F0EC] transition-all duration-150 active:scale-[0.97]"
               >
                 <IconLogout />
+                <span>Sign Out</span>
               </button>
             </div>
 
@@ -264,6 +291,13 @@ export default function Nav() {
 
           <div className="lg:hidden fixed left-0 right-0 z-50 bg-white border-b border-[#E4DED8] shadow-[0_20px_50px_rgba(0,0,0,0.10)] transition-transform duration-300 ease-out overflow-y-auto" style={{ top: 'calc(64px + env(safe-area-inset-top))', maxHeight: 'calc(100dvh - 64px - env(safe-area-inset-top))', transform: mobileOpen ? 'translateY(0)' : 'translateY(calc(-100% - 64px - env(safe-area-inset-top)))' }}>
             <div className="px-3 py-2 space-y-0.5">
+              {displayName && (
+                <div className="px-4 pt-2 pb-1">
+                  <span className="bg-[#F3F0EC] border border-[#E4DED8] rounded-full px-3 py-1 text-[12px] text-[#57534E] font-medium inline-block max-w-full truncate">
+                    {displayName}
+                  </span>
+                </div>
+              )}
               {links.map((link) => {
                 const active = pathname === link.href
                 return (
@@ -273,7 +307,7 @@ export default function Nav() {
                     className={`flex items-center gap-3 px-4 rounded-xl text-[14px] font-medium transition-all duration-150 min-h-[48px] ${
                       active
                         ? 'bg-[#F3F0EC] text-[#111111]'
-                        : 'text-[#111111]/50 hover:text-[#111111]/90 hover:bg-[#F3F0EC]'
+                        : 'text-[#111111]/60 hover:text-[#111111]/90 hover:bg-[#F3F0EC]'
                     }`}
                   >
                     {/* Active left-border accent */}
@@ -298,7 +332,7 @@ export default function Nav() {
                 className={`flex items-center gap-3 w-full px-4 rounded-xl text-[14px] font-medium transition-all duration-150 min-h-[48px] ${
                   pathname === '/settings'
                     ? 'bg-[#F3F0EC] text-[#111111]'
-                    : 'text-[#111111]/50 hover:text-[#111111]/90 hover:bg-[#F3F0EC]'
+                    : 'text-[#111111]/60 hover:text-[#111111]/90 hover:bg-[#F3F0EC]'
                 }`}
               >
                 <span className={`w-0.5 h-5 rounded-full flex-shrink-0 ${pathname === '/settings' ? 'bg-[#E05A28]' : 'bg-transparent'}`} />
@@ -307,7 +341,7 @@ export default function Nav() {
               </Link>
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-3 w-full px-4 min-h-[48px] rounded-xl text-[14px] font-medium text-[#111111]/40 hover:text-[#111111]/70 hover:bg-[#F3F0EC] transition-all"
+                className="flex items-center gap-3 w-full px-4 min-h-[48px] rounded-xl text-[14px] font-medium text-[#111111]/60 hover:text-[#111111]/70 hover:bg-[#F3F0EC] transition-all"
               >
                 <span className="w-0.5 h-5 rounded-full flex-shrink-0 bg-transparent" />
                 <IconLogout />

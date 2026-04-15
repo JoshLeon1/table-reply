@@ -328,7 +328,7 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
             placeholder="https://maps.google.com/maps?cid=..."
             className="w-full h-10 px-3.5 rounded-xl bg-[#F8F6F3] border border-[#E4DED8] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10 transition-all"
           />
-          <p className="mt-1.5 text-[11px] text-[#A8A29E]">Find your restaurant on Google Maps, click Share, and copy the link.</p>
+          <p className="mt-1.5 text-[11px] text-[#A8A29E]">Find your listing on Google Maps, click Share, and copy the link.</p>
         </div>
 
         {/* Yelp */}
@@ -410,7 +410,7 @@ function ConnectNudge({ onExitManual }: { onExitManual: () => void }) {
       </div>
       <div className="flex items-center gap-3 flex-shrink-0 pl-7 sm:pl-0">
         <Link href="/dashboard/grow" className="text-[12px] font-bold text-[#E05A28] hover:text-[#C94E21] transition-colors whitespace-nowrap">
-          Connect accounts →
+          Add platform URLs →
         </Link>
         <button onClick={() => { onExitManual(); setDismissed(true) }} className="text-[11px] text-[#C4BEB8] hover:text-[#A8A29E] transition-colors whitespace-nowrap">
           Keep manual
@@ -461,11 +461,11 @@ function ManualGenerator({ prominent = false }: { prominent?: boolean }) {
       <div className="animate-fade-up" style={{ animationDelay: '200ms' }}>
         <button
           onClick={() => setOpen(v => !v)}
-          className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C4BEB8] hover:text-[#A8A29E] transition-colors duration-150 mb-4"
+          className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.12em] text-[#A8A29E] hover:text-[#57534E] transition-colors duration-150 mb-4"
         >
           <div className="flex-1 h-px bg-gradient-to-r from-[#E4DED8] to-transparent" />
           <span className="flex items-center gap-1.5 px-3">
-            Manual Reply Generator (Optional)
+            Generate a Reply Manually
             <svg className={`w-3 h-3 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"/></svg>
           </span>
           <div className="flex-1 h-px bg-gradient-to-l from-[#E4DED8] to-transparent" />
@@ -845,9 +845,9 @@ export default function HomeClient({
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             {([
-              { label: 'Customers love', value: themes?.praised?.[0], fallback: 'Run analytics to see what resonates most.', dotColor: 'bg-emerald-400', dotGlow: 'shadow-[0_0_8px_rgba(52,211,153,0.6)]', tint: 'bg-gradient-to-br from-white via-white to-emerald-50/60', border: 'border-emerald-100', pulse: false },
-              { label: 'Needs attention', value: themes?.complaints?.[0], fallback: 'No recurring complaints — great sign.', dotColor: 'bg-[#E05A28]', dotGlow: 'shadow-[0_0_8px_rgba(224,90,40,0.5)]', tint: 'bg-gradient-to-br from-white via-white to-[#FEF0E8]/60', border: 'border-[#F5C9AD]/40', pulse: true },
-              { label: 'Top opportunity', value: themes?.opportunities?.[0], fallback: 'Run analytics to find your growth lever.', dotColor: 'bg-blue-400', dotGlow: 'shadow-[0_0_8px_rgba(96,165,250,0.5)]', tint: 'bg-gradient-to-br from-white via-white to-blue-50/60', border: 'border-blue-100', pulse: false },
+              { label: 'Customers love', value: themes?.praised?.[0], fallback: 'Run analytics to see what resonates most.', dotColor: 'bg-emerald-400', dotGlow: 'shadow-[0_0_8px_rgba(52,211,153,0.6)]', tint: 'bg-emerald-50', border: 'border-emerald-100', pulse: false },
+              { label: 'Needs attention', value: themes?.complaints?.[0], fallback: 'No recurring complaints — great sign.', dotColor: 'bg-[#E05A28]', dotGlow: 'shadow-[0_0_8px_rgba(224,90,40,0.5)]', tint: 'bg-red-50', border: 'border-red-100', pulse: true },
+              { label: 'Top opportunity', value: themes?.opportunities?.[0], fallback: 'Run analytics to find your growth lever.', dotColor: 'bg-blue-400', dotGlow: 'shadow-[0_0_8px_rgba(96,165,250,0.5)]', tint: 'bg-amber-50', border: 'border-amber-100', pulse: false },
             ] as const).map(({ label, value, fallback, dotColor, dotGlow, tint, border, pulse }) => (
               <div key={label} className={`${tint} rounded-2xl px-5 py-5 border ${border} shadow-[0_1px_4px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.07)] hover:-translate-y-0.5 transition-all duration-200`}>
                 <div className="flex items-center gap-2 mb-3">

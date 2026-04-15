@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from 'react'
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer,
-  Area, AreaChart, BarChart, Bar, Cell,
+  Area, AreaChart, BarChart, Bar, Cell, ComposedChart,
 } from 'recharts'
 import type { ScrapedReview } from '@/types'
 
@@ -484,7 +484,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       doc.setFontSize(9)
       doc.setFont('helvetica', 'bold')
       doc.setTextColor(...ORANGE)
-      doc.text('TABLEREPLY', L, 28)
+      doc.text('REPLYFI', L, 28)
       // Restaurant name
       doc.setFontSize(30)
       doc.setFont('helvetica', 'bold')
@@ -1218,6 +1218,40 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
           </div>
         </div>
       </div>
+
+      {/* ── BUSIEST REVIEW DAYS ────────────────────────────────────────────── */}
+      {hasDowData && (
+        <div>
+          <SectionLabel>Busiest review days</SectionLabel>
+          <div className="rounded-2xl border border-[#E4DED8] bg-white p-5 sm:p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+            <p className="text-[12px] text-[#A8A29E] mb-5">Which days of the week generate the most reviews for your business.</p>
+            <ResponsiveContainer width="100%" height={200}>
+              <ComposedChart data={dowData} margin={{ top: 8, right: 20, bottom: 0, left: -20 }}>
+                <XAxis dataKey="label" tick={{ fontSize: 11, fill: 'rgba(0,0,0,0.35)' }} axisLine={false} tickLine={false} />
+                <YAxis yAxisId="left" allowDecimals={false} tick={{ fontSize: 10, fill: 'rgba(0,0,0,0.25)' }} axisLine={false} tickLine={false} />
+                <YAxis yAxisId="right" orientation="right" domain={[0, 5]} tick={{ fontSize: 10, fill: 'rgba(0,0,0,0.25)' }} axisLine={false} tickLine={false} />
+                <Tooltip content={({ active, payload, label }: any) => {
+                  if (!active || !payload?.length) return null
+                  return (
+                    <div className="bg-white text-[#111] text-[12px] px-3 py-2 rounded-xl shadow-lg border border-[#E4DED8]">
+                      <p className="text-[#A8A29E] text-[11px] mb-0.5">{label}</p>
+                      {payload.map((p: any, i: number) => (
+                        <p key={i} className="font-semibold">
+                          {p.dataKey === 'count'
+                            ? `${p.value} review${p.value !== 1 ? 's' : ''}`
+                            : `${Number(p.value).toFixed(1)} ★ avg`}
+                        </p>
+                      ))}
+                    </div>
+                  )
+                }} />
+                <Bar yAxisId="left" dataKey="count" radius={[4, 4, 0, 0]} fill="#E05A28" fillOpacity={0.85} name="count" />
+                <Line yAxisId="right" type="monotone" dataKey="avgRating" stroke="#10b981" strokeWidth={2} dot={{ fill: '#10b981', r: 3, strokeWidth: 0 }} name="avgRating" connectNulls />
+              </ComposedChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
 
       {/* ── RATING + VOLUME OVER TIME ────────────────────────────────────────── */}
       <div>

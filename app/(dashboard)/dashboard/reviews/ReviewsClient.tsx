@@ -599,6 +599,8 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
   const dismissed = reviews.filter((r) => r.reply_status === 'dismissed')
   const [activeTab, setActiveTab] = useState<ReviewTab>('pending')
   const [copiedAll, setCopiedAll] = useState(false)
+  const [readyBannerDismissed, setReadyBannerDismissed] = useState(false)
+  const [filterStars, setFilterStars] = useState<number | null>(null)
 
   const totalWithText  = reviews.filter((r) => r.review_text?.trim()).length
   const approvedCount  = approved.length
@@ -734,6 +736,25 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
         ))}
       </div>
 
+      {/* Star filter */}
+      {!scraping && (
+        <div className="flex items-center gap-1.5 flex-wrap mb-4">
+          {([null, 5, 4, 3, 2, 1] as (number | null)[]).map((star) => (
+            <button
+              key={star ?? 'all'}
+              onClick={() => setFilterStars(star)}
+              className={`px-3 py-1 rounded-full text-[12px] font-semibold border transition-colors ${
+                filterStars === star
+                  ? 'bg-[#E05A28] text-white border-[#E05A28]'
+                  : 'bg-white text-[#57534E] border-[#E4DED8] hover:border-[#D0C9C1] hover:text-[#111111]'
+              }`}
+            >
+              {star === null ? 'All' : `${star}★`}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* Skeleton loading */}
       {scraping && (
         <div className="space-y-3 mb-8">
@@ -742,25 +763,31 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
       )}
 
       {/* Pending tab */}
-      {!scraping && activeTab === 'pending' && (pending.length > 0 ? (
-        <div className="space-y-3">
-          {pending.map((r, i) => (
-            <div key={r.id} className={i < 5 ? `animate-fade-up stagger-${i + 1}` : ''}>
-              <ReviewCard review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }}/>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="text-center py-14 bg-white rounded-2xl border border-[#E4DED8]">
-          <div className="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center mx-auto mb-4">
-            <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/>
-            </svg>
+      {!scraping && activeTab === 'pending' && (
+        filterStars !== null
+          ? pending.filter((r) => r.star_rating === filterStars)
+          : pending
+      ).length > 0
+        ? (
+          <div className="space-y-3">
+            {(filterStars !== null ? pending.filter((r) => r.star_rating === filterStars) : pending).map((r, i) => (
+              <div key={r.id} className={i < 5 ? `animate-fade-up stagger-${i + 1}` : ''}>
+                <ReviewCard review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }}/>
+              </div>
+            ))}
           </div>
-          <p className="text-[14px] font-semibold text-[#111111]">You&apos;re all caught up!</p>
-          <p className="text-[12px] text-[#A8A29E] mt-1 max-w-[220px] mx-auto leading-relaxed">New reviews will appear here after your next sync.</p>
-        </div>
-      ))}
+        ) : !scraping && activeTab === 'pending' && (
+          <div className="text-center py-14 bg-white rounded-2xl border border-[#E4DED8]">
+            <div className="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center mx-auto mb-4">
+              <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <p className="text-[14px] font-semibold text-[#111111]">You&apos;re all caught up!</p>
+            <p className="text-[12px] text-[#A8A29E] mt-1 max-w-[220px] mx-auto leading-relaxed">New reviews will appear here after your next sync.</p>
+          </div>
+        )
+      }
 
       {/* Approved tab */}
       {!scraping && activeTab === 'approved' && (
@@ -768,17 +795,28 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
           {approved.length > 0 ? (
             <>
               {/* Instruction banner */}
-              <div className="flex items-start gap-3 px-4 py-3.5 mb-4 rounded-xl bg-emerald-50 border border-emerald-200/70">
-                <svg className="w-4 h-4 flex-shrink-0 mt-0.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                <p className="text-[13px] text-emerald-700 leading-snug">
-                  <span className="font-semibold">Ready to post.</span>{' '}
-                  Copy each reply and paste it directly on the review platform.
-                </p>
-              </div>
+              {!readyBannerDismissed && (
+                <div className="flex items-start gap-3 px-4 py-3.5 mb-4 rounded-xl bg-emerald-50 border border-emerald-200/70">
+                  <svg className="w-4 h-4 flex-shrink-0 mt-0.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  <p className="text-[13px] text-emerald-700 leading-snug flex-1">
+                    <span className="font-semibold">Ready to post.</span>{' '}
+                    Copy each reply and paste it directly on the review platform.
+                  </p>
+                  <button
+                    onClick={() => setReadyBannerDismissed(true)}
+                    className="text-[#A8A29E] hover:text-[#57534E] transition-colors ml-auto flex-shrink-0"
+                    aria-label="Dismiss"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                  </button>
+                </div>
+              )}
               <div className="space-y-3">
-                {approved.map((r) => (
+                {(filterStars !== null ? approved.filter((r) => r.star_rating === filterStars) : approved).map((r) => (
                   <ReviewCard key={r.id} review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }}/>
                 ))}
               </div>
@@ -802,7 +840,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
         <div>
           {dismissed.length > 0 ? (
             <div className="space-y-3">
-              {dismissed.map((r) => (
+              {(filterStars !== null ? dismissed.filter((r) => r.star_rating === filterStars) : dismissed).map((r) => (
                 <ReviewCard key={r.id} review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} showStatus profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }}/>
               ))}
             </div>

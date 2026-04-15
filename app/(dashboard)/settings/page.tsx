@@ -47,7 +47,7 @@ export default async function SettingsPage() {
   }
 
   const defaultEmailNotifs = {
-    newReviewsScrapped: true,
+    newReviewsScraped: true,
   }
 
   const replyPreferences = {
@@ -201,6 +201,8 @@ export default async function SettingsPage() {
         userEmail={user.email ?? ''}
         replyPreferences={replyPreferences}
         emailNotifications={emailNotifications}
+        businessName={restaurantProfile?.business_name ?? undefined}
+        isPaid={isPaid ?? false}
       />
     </div>
   )

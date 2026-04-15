@@ -78,7 +78,7 @@ function WordCountBadge({ count }: { count: number }) {
   return (
     <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${
       ideal
-        ? 'bg-emerald-950/40 text-emerald-400 border border-emerald-900/30'
+        ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
         : 'bg-[#E05A28]/10 border border-[#E05A28]/25 text-[#E05A28]'
     }`}>
       {count}w · {ideal ? 'Ideal length' : tooShort ? 'Too short' : 'Too long'}
@@ -98,9 +98,9 @@ function PersonalizationBadge({ score }: { score: ReturnType<typeof getPersonali
     )
   }
   if (score === 'personalized') {
-    return <span className="text-[11px] font-medium text-white/40 bg-white/[0.05] border border-white/[0.07] px-2 py-0.5 rounded-full">Personalized</span>
+    return <span className="text-[11px] font-medium text-[#57534E] bg-[#F8F6F3] border border-[#E4DED8] px-2 py-0.5 rounded-full">Personalized</span>
   }
-  return <span className="text-[11px] font-medium text-white/35 bg-white/[0.05] border border-white/[0.07] px-2 py-0.5 rounded-full">Generic</span>
+  return <span className="text-[11px] font-medium text-[#A8A29E] bg-[#F8F6F3] border border-[#E4DED8] px-2 py-0.5 rounded-full">Generic</span>
 }
 
 export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', initialRating = 5, onGenerateTriggerRef, restaurantProfile }: ReplyGeneratorProps) {
@@ -200,28 +200,28 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
     <div className="space-y-4">
 
       {/* Input card */}
-      <div className="bg-[#111111] rounded-2xl border border-white/[0.07] shadow-card p-5 sm:p-6">
+      <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-card p-5 sm:p-6">
         <div className="space-y-5">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/35 mb-5">Review Details</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-5">Review Details</p>
           <div>
-            <label className="block text-[13px] font-semibold text-white mb-2">Review</label>
+            <label className="block text-[13px] font-semibold text-[#111111] mb-2">Review</label>
             <textarea
               value={reviewText}
               onChange={(e) => setReviewText(e.target.value)}
               placeholder="Paste the customer review here…"
               rows={5}
-              className="w-full px-3.5 py-3 rounded-xl border border-white/[0.10] text-white text-[14px] placeholder:text-white/25 bg-[#1A1A1A] hover:bg-[#1E1E1E] focus:bg-[#1E1E1E] resize-y focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] transition-all duration-150 leading-relaxed min-h-[100px]"
+              className="w-full px-3.5 py-3 rounded-xl border border-[#E4DED8] text-[#111111] text-[14px] placeholder:text-[#C4BEB8] bg-[#F8F6F3] hover:bg-white focus:bg-white resize-y focus:outline-none focus:ring-2 focus:ring-[#E05A28]/10 focus:border-[#E05A28]/50 transition-all duration-150 leading-relaxed min-h-[100px]"
             />
           </div>
 
           <div className="flex flex-col gap-4">
             <div>
-              <label className="block text-[13px] font-semibold text-white mb-2">Rating</label>
+              <label className="block text-[13px] font-semibold text-[#111111] mb-2">Rating</label>
               <StarRating value={starRating} onChange={setStarRating} />
             </div>
 
             <div>
-              <label className="block text-[13px] font-semibold text-white mb-2">Platform</label>
+              <label className="block text-[13px] font-semibold text-[#111111] mb-2">Platform</label>
               <div className="flex gap-1.5 flex-wrap">
                 {platforms.map((p) => (
                   <button
@@ -229,8 +229,8 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
                     onClick={() => setPlatform(p)}
                     className={`px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150 min-h-[38px] ${
                       platform === p
-                        ? 'bg-white/[0.12] border border-white/[0.18] text-white font-semibold ring-1 ring-[#E05A28]/30'
-                        : 'bg-white/[0.05] text-white/50 hover:bg-white/[0.09] border border-white/[0.08]'
+                        ? 'bg-[#E05A28]/10 border border-[#E05A28]/30 text-[#E05A28] font-semibold'
+                        : 'bg-[#F8F6F3] text-[#57534E] hover:bg-[#F3F0EC] border border-[#E4DED8]'
                     }`}
                   >
                     {p}
@@ -238,7 +238,7 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
                 ))}
               </div>
               {PLATFORM_TIPS[platform] && (
-                <p className="text-[11px] text-white/35 mt-2 flex items-start gap-1.5">
+                <p className="text-[11px] text-[#A8A29E] mt-2 flex items-start gap-1.5">
                   <svg className="w-3 h-3 flex-shrink-0 text-[#E05A28] mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"/>
                   </svg>
@@ -249,7 +249,7 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
           </div>
 
           {error && (
-            <p className="text-[13px] text-red-400 bg-red-950/30 border border-red-900/30 rounded-xl px-3.5 py-3">
+            <p className="text-[13px] text-red-600 bg-red-50 border border-red-200 rounded-xl px-3.5 py-3">
               {error}
             </p>
           )}
@@ -277,7 +277,7 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
               </>
             )}
           </button>
-          <kbd className="hidden sm:inline-flex items-center gap-0.5 bg-white/[0.08] border border-white/[0.12] text-white/35 text-[10px] font-mono px-1.5 py-0.5 rounded-md select-none">
+          <kbd className="hidden sm:inline-flex items-center gap-0.5 bg-[#F8F6F3] border border-[#E4DED8] text-[#A8A29E] text-[10px] font-mono px-1.5 py-0.5 rounded-md select-none">
             ⌘ Enter
           </kbd>
           </div>
@@ -286,18 +286,18 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
 
       {/* Output card */}
       {generatedReply && (
-        <div className="bg-[#111111] rounded-2xl border border-white/[0.07] border-l-[3px] border-l-[#E05A28] shadow-card overflow-hidden animate-fade-up">
-          <div className="px-4 sm:px-6 py-3.5 border-b border-white/[0.06]">
+        <div className="bg-white rounded-2xl border border-[#E4DED8] border-l-[3px] border-l-[#E05A28] shadow-card overflow-hidden animate-fade-up">
+          <div className="px-4 sm:px-6 py-3.5 border-b border-[#EDE9E4]">
             <div className="flex items-center justify-between gap-2 mb-2">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-[#E05A28] flex-shrink-0" />
-                <span className="text-[13px] font-semibold text-white">Generated reply</span>
+                <span className="text-[13px] font-semibold text-[#111111]">Generated reply</span>
               </div>
               <div className="flex items-center gap-1.5 flex-shrink-0">
                 <button
                   onClick={() => handleGenerate(activeTone)}
                   disabled={loading}
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[12px] font-medium text-white/55 hover:text-white hover:bg-white/[0.06] border border-transparent hover:border-white/[0.07] disabled:opacity-40 transition-all min-h-[34px]"
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[12px] font-medium text-[#A8A29E] hover:text-[#111111] hover:bg-[#F8F6F3] border border-transparent hover:border-[#E4DED8] disabled:opacity-40 transition-all min-h-[34px]"
                 >
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
@@ -314,12 +314,12 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
           </div>
 
           <div className="px-5 sm:px-6 py-5">
-            <p className="text-white/80 text-[14px] leading-relaxed whitespace-pre-wrap">{generatedReply}</p>
+            <p className="text-[#111111] text-[14px] leading-relaxed whitespace-pre-wrap">{generatedReply}</p>
           </div>
 
           {/* Tone picker */}
-          <div className="px-4 sm:px-6 py-4 border-t border-white/[0.06]">
-            <p className="text-[10px] font-semibold text-white/35 uppercase tracking-[0.12em] mb-2.5">
+          <div className="px-4 sm:px-6 py-4 border-t border-[#EDE9E4]">
+            <p className="text-[10px] font-semibold text-[#A8A29E] uppercase tracking-[0.12em] mb-2.5">
               Adjust tone
             </p>
             <div className="flex gap-1.5 flex-wrap">
@@ -330,8 +330,8 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
                   disabled={loading}
                   className={`px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all active:scale-[0.97] disabled:opacity-40 ${
                     activeTone === value
-                      ? 'bg-white text-[#111] border border-white'
-                      : 'bg-white/[0.07] text-white/55 border border-white/[0.08] hover:bg-white/[0.12]'
+                      ? 'bg-[#E05A28] text-white border border-[#E05A28]'
+                      : 'bg-[#F8F6F3] text-[#57534E] border border-[#E4DED8] hover:bg-[#F3F0EC]'
                   }`}
                 >
                   {label}
@@ -341,12 +341,12 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
           </div>
 
           {/* Feedback */}
-          <div className="px-5 sm:px-6 py-3.5 border-t border-white/[0.06] flex items-center justify-between">
-            <span className="text-[12px] text-white/35">Was this good?</span>
+          <div className="px-5 sm:px-6 py-3.5 border-t border-[#EDE9E4] flex items-center justify-between">
+            <span className="text-[12px] text-[#A8A29E]">Was this good?</span>
             <div className="flex items-center gap-1.5">
               <button
                 onClick={() => handleFeedback('good')}
-                className={`p-1.5 rounded-lg transition-all ${feedback === 'good' ? 'bg-emerald-950/40 text-emerald-400' : 'text-white/25 hover:text-emerald-400 hover:bg-emerald-950/40'}`}
+                className={`p-1.5 rounded-lg transition-all ${feedback === 'good' ? 'bg-emerald-50 text-emerald-600' : 'text-[#C4BEB8] hover:text-emerald-600 hover:bg-emerald-50'}`}
               >
                 <svg className="w-4 h-4" fill={feedback === 'good' ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/>
@@ -354,24 +354,24 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
               </button>
               <button
                 onClick={() => handleFeedback('bad')}
-                className={`p-1.5 rounded-lg transition-all ${feedback === 'bad' ? 'bg-red-950/30 text-red-400' : 'text-white/25 hover:text-red-400 hover:bg-red-950/30'}`}
+                className={`p-1.5 rounded-lg transition-all ${feedback === 'bad' ? 'bg-red-50 text-red-500' : 'text-[#C4BEB8] hover:text-red-500 hover:bg-red-50'}`}
               >
                 <svg className="w-4 h-4" fill={feedback === 'bad' ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5"/>
                 </svg>
               </button>
               {feedback && (
-                <span className="text-[11px] text-white/35 ml-1">{feedback === 'good' ? 'Thanks!' : 'Got it, we\'ll improve'}</span>
+                <span className="text-[11px] text-[#A8A29E] ml-1">{feedback === 'good' ? 'Thanks!' : 'Got it, we\'ll improve'}</span>
               )}
             </div>
           </div>
 
           {/* Social post */}
-          <div className="px-5 sm:px-6 py-4 border-t border-white/[0.06]">
+          <div className="px-5 sm:px-6 py-4 border-t border-[#EDE9E4]">
             <button
               onClick={handleGenerateSocial}
               disabled={socialLoading}
-              className="flex items-center gap-2 text-[13px] font-medium text-white/50 hover:text-white disabled:opacity-40 transition-colors"
+              className="flex items-center gap-2 text-[13px] font-medium text-[#A8A29E] hover:text-[#111111] disabled:opacity-40 transition-colors"
             >
               {socialLoading ? (
                 <svg className="animate-spin h-3.5 w-3.5" fill="none" viewBox="0 0 24 24">
@@ -389,12 +389,12 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
               )}
             </button>
             {socialPost && (
-              <div className="mt-4 p-4 bg-white/[0.06] rounded-xl border border-white/[0.08]">
+              <div className="mt-4 p-4 bg-[#F8F6F3] rounded-xl border border-[#E4DED8]">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-[11px] font-semibold text-white/35 uppercase tracking-wide">Instagram / Facebook</span>
+                  <span className="text-[11px] font-semibold text-[#A8A29E] uppercase tracking-wide">Instagram / Facebook</span>
                   <CopyButton text={socialPost} />
                 </div>
-                <p className="text-[13px] text-white/75 whitespace-pre-wrap leading-relaxed">{socialPost}</p>
+                <p className="text-[13px] text-[#57534E] whitespace-pre-wrap leading-relaxed">{socialPost}</p>
               </div>
             )}
           </div>
@@ -403,59 +403,59 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
 
       {/* Loading skeleton */}
       {loading && !generatedReply && (
-        <div className="bg-[#111111] rounded-2xl border border-white/[0.07] shadow-card p-5 sm:p-6 animate-fade-in">
+        <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-card p-5 sm:p-6 animate-fade-in">
           <div className="flex items-center gap-3 mb-5">
             <div className="w-2 h-2 rounded-full bg-[#E05A28] animate-pulse" />
-            <div className="skeleton-dark h-3.5 w-32" />
+            <div className="animate-pulse bg-[#F3F0EC] rounded h-3.5 w-32" />
           </div>
           <div className="space-y-2.5">
-            <div className="skeleton-dark h-3.5 w-full" />
-            <div className="skeleton-dark h-3.5 w-[92%]" />
-            <div className="skeleton-dark h-3.5 w-[85%]" />
-            <div className="skeleton-dark h-3.5 w-[78%]" />
-            <div className="skeleton-dark h-3.5 w-[60%]" />
+            <div className="animate-pulse bg-[#F3F0EC] rounded h-3.5 w-full" />
+            <div className="animate-pulse bg-[#F3F0EC] rounded h-3.5 w-[92%]" />
+            <div className="animate-pulse bg-[#F3F0EC] rounded h-3.5 w-[85%]" />
+            <div className="animate-pulse bg-[#F3F0EC] rounded h-3.5 w-[78%]" />
+            <div className="animate-pulse bg-[#F3F0EC] rounded h-3.5 w-[60%]" />
           </div>
         </div>
       )}
 
       {/* Examples */}
-      <div className="bg-[#111111] rounded-2xl border border-white/[0.07] shadow-card overflow-hidden">
+      <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-card overflow-hidden">
         <button
           onClick={() => setShowExamples((p) => !p)}
-          className="w-full flex items-center justify-between px-5 sm:px-6 py-4 text-left hover:bg-white/[0.05] rounded-xl transition-colors"
+          className="w-full flex items-center justify-between px-5 sm:px-6 py-4 text-left hover:bg-[#F8F6F3] rounded-xl transition-colors"
         >
           <div className="flex items-center gap-2">
-            <svg className="w-4 h-4 text-white/35" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
             </svg>
-            <span className="text-[13px] font-medium text-white/55">See example replies</span>
+            <span className="text-[13px] font-medium text-[#57534E]">See example replies</span>
           </div>
-          <svg className={`w-4 h-4 text-white/35 transition-transform duration-200 ${showExamples ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className={`w-4 h-4 text-[#A8A29E] transition-transform duration-200 ${showExamples ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"/>
           </svg>
         </button>
 
         {showExamples && (
-          <div className="border-t border-white/[0.06] divide-y divide-white/[0.06]">
+          <div className="border-t border-[#EDE9E4] divide-y divide-[#EDE9E4]">
             {EXAMPLES.map((ex, i) => (
               <div key={i} className="px-5 sm:px-6 py-5">
                 <div className="flex items-center gap-2 mb-3">
                   <div className="flex gap-0.5">
                     {[1,2,3,4,5].map((s) => (
-                      <svg key={s} className={`w-3.5 h-3.5 ${s <= ex.stars ? 'text-amber-400' : 'text-white/[0.12]'}`} fill="currentColor" viewBox="0 0 20 20">
+                      <svg key={s} className={`w-3.5 h-3.5 ${s <= ex.stars ? 'text-amber-400' : 'text-[#E4DED8]'}`} fill="currentColor" viewBox="0 0 20 20">
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                       </svg>
                     ))}
                   </div>
-                  <span className="text-[11px] text-white/35 font-medium">{ex.stars}-star</span>
+                  <span className="text-[11px] text-[#A8A29E] font-medium">{ex.stars}-star</span>
                 </div>
-                <p className="text-[12px] text-white/40 italic mb-3 leading-relaxed">"{ex.review}"</p>
-                <div className="bg-white/[0.06] rounded-xl p-4 border border-white/[0.07]">
+                <p className="text-[12px] text-[#A8A29E] italic mb-3 leading-relaxed">"{ex.review}"</p>
+                <div className="bg-[#F8F6F3] rounded-xl p-4 border border-[#E4DED8]">
                   <div className="flex items-center gap-1.5 mb-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#E05A28]" />
-                    <span className="text-[10px] font-semibold uppercase tracking-wide text-white/35">Example reply</span>
+                    <span className="text-[10px] font-semibold uppercase tracking-wide text-[#A8A29E]">Example reply</span>
                   </div>
-                  <p className="text-[12px] text-white/70 leading-relaxed whitespace-pre-wrap">{ex.reply}</p>
+                  <p className="text-[12px] text-[#57534E] leading-relaxed whitespace-pre-wrap">{ex.reply}</p>
                 </div>
               </div>
             ))}

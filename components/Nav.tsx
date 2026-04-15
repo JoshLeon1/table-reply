@@ -137,8 +137,14 @@ export default function Nav() {
 
     fetchData()
     const onFocus = () => fetchData()
+    const onReviewsUpdated = () => fetchData()
     window.addEventListener('focus', onFocus)
-    return () => { cancelled = true; window.removeEventListener('focus', onFocus) }
+    window.addEventListener('reviewsUpdated', onReviewsUpdated)
+    return () => {
+      cancelled = true
+      window.removeEventListener('focus', onFocus)
+      window.removeEventListener('reviewsUpdated', onReviewsUpdated)
+    }
   }, [supabase])
 
   useEffect(() => { setMobileOpen(false) }, [pathname])

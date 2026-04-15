@@ -513,7 +513,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
               disabled={actioning}
               className="px-3.5 min-h-[44px] rounded-xl text-[13px] font-medium text-[#A8A29E] hover:text-[#57534E] hover:bg-[#F3F0EC] active:scale-[0.97] disabled:opacity-40 transition-all duration-150"
             >
-              Undo
+              Undo Approval
             </button>
           </>
         ) : status === 'dismissed' ? (
@@ -845,6 +845,7 @@ export default function ReviewsClient({ profile, initialReviews, userId }: Props
           .limit(50)
         if (fresh) setReviews(fresh as ScrapedReview[])
         setLastScrapedAt(new Date().toISOString())
+        window.dispatchEvent(new CustomEvent('reviewsUpdated'))
         // Fire browser notification if new reviews found
         if ('Notification' in window && Notification.permission === 'granted') {
           const newCount = data?.newReviews ?? 0
@@ -866,16 +867,19 @@ export default function ReviewsClient({ profile, initialReviews, userId }: Props
   const handleApprove = async (id: string) => {
     setReviews((prev) => prev.map((r) => r.id === id ? { ...r, reply_status: 'approved' as const } : r))
     await supabase.from('scraped_reviews').update({ reply_status: 'approved' }).eq('id', id).eq('user_id', userId)
+    window.dispatchEvent(new CustomEvent('reviewsUpdated'))
   }
 
   const handleDismiss = async (id: string) => {
     setReviews((prev) => prev.map((r) => r.id === id ? { ...r, reply_status: 'dismissed' as const } : r))
     await supabase.from('scraped_reviews').update({ reply_status: 'dismissed' }).eq('id', id).eq('user_id', userId)
+    window.dispatchEvent(new CustomEvent('reviewsUpdated'))
   }
 
   const handleRestore = async (id: string) => {
     setReviews((prev) => prev.map((r) => r.id === id ? { ...r, reply_status: 'pending' as const } : r))
     await supabase.from('scraped_reviews').update({ reply_status: 'pending' }).eq('id', id).eq('user_id', userId)
+    window.dispatchEvent(new CustomEvent('reviewsUpdated'))
   }
 
   const hasAnyPlatform = !!(mapsUrl || profile.yelp_url || profile.tripadvisor_url)

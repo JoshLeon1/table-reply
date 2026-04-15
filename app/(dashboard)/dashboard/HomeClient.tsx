@@ -131,6 +131,7 @@ function PendingCard({ review, onAction, animDelay = 0 }: { review: ScrapedRevie
       await navigator.clipboard.writeText(review.generated_reply).catch(() => {})
       setCopied(true)
       await supabase.from('scraped_reviews').update({ reply_status: 'approved' }).eq('id', review.id)
+      window.dispatchEvent(new CustomEvent('reviewsUpdated'))
       setTimeout(() => onAction(review.id, 'approved'), 1400)
     } finally { setActioning(false) }
   }
@@ -139,6 +140,7 @@ function PendingCard({ review, onAction, animDelay = 0 }: { review: ScrapedRevie
     setActioning(true)
     try {
       await supabase.from('scraped_reviews').update({ reply_status: 'dismissed' }).eq('id', review.id)
+      window.dispatchEvent(new CustomEvent('reviewsUpdated'))
       onAction(review.id, 'dismissed')
     } finally { setActioning(false) }
   }

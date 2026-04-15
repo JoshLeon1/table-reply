@@ -9,7 +9,6 @@ import KeywordAlertsManager from '@/components/KeywordAlertsManager'
 import GoogleConnectSection from '@/components/GoogleConnectSection'
 import YelpConnectSection from '@/components/YelpConnectSection'
 import TripAdvisorConnectSection from '@/components/TripAdvisorConnectSection'
-import Link from 'next/link'
 
 export default async function SettingsPage() {
   const supabase = createClient()
@@ -118,7 +117,7 @@ export default async function SettingsPage() {
           ) : (
             <div className="space-y-3">
               {/* Annual — best value */}
-              <Link
+              <a
                 href="/api/stripe/create-checkout?plan=annual"
                 className="flex items-center justify-between px-5 py-3.5 rounded-xl bg-[#111] hover:bg-[#2a2a2a] text-white transition-all duration-150 group ring-2 ring-[#E05A28]/20"
               >
@@ -135,16 +134,16 @@ export default async function SettingsPage() {
                   $239/yr
                   <span className="inline-block group-hover:translate-x-0.5 transition-transform duration-150">→</span>
                 </span>
-              </Link>
+              </a>
 
               {/* Monthly */}
-              <Link
-                href="/api/stripe/create-checkout"
+              <a
+                href="/api/stripe/create-checkout?plan=monthly"
                 className="flex items-center justify-between px-5 py-3 rounded-xl border border-[#E4DED8] hover:border-[#D4CFC6] bg-white text-[#111] text-[13px] transition-all duration-150"
               >
                 <span className="font-medium">Monthly plan</span>
                 <span className="text-[#888]">$29/mo →</span>
-              </Link>
+              </a>
             </div>
           )}
         </div>

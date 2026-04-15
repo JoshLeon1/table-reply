@@ -238,110 +238,158 @@ function StatCard({ label, value, sub, icon, iconBg, extra, delay }: { label: st
   )
 }
 
-// ── Onboarding panel — shown when no platforms connected ──────────────────────
+// ── Setup panel — shown when no platforms connected ───────────────────────────
 const LS_MANUAL = 'tr_manual_mode'
-const LS_PLATFORMS = 'tr_platform_prefs'
 
-type PlatformKey = 'google' | 'yelp' | 'tripadvisor'
+function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: string; onEnterManual: () => void; onConnected: () => void }) {
+  const [googleUrl, setGoogleUrl] = useState('')
+  const [yelpUrl, setYelpUrl] = useState('')
+  const [taUrl, setTaUrl] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
 
-interface PlatformDef {
-  key: PlatformKey
-  label: string
-  tag: string
-  tagColor: string
-  Logo: React.FC<{ size?: number }>
-}
+  const handleConnect = async () => {
+    setError('')
+    const gTrimmed = googleUrl.trim()
+    const yTrimmed = yelpUrl.trim()
+    const tTrimmed = taUrl.trim()
 
-const PLATFORMS: PlatformDef[] = [
-  { key: 'google',      label: 'Google Maps',  tag: 'Recommended', tagColor: 'text-blue-500 bg-blue-50 border-blue-200',    Logo: GoogleLogo },
-  { key: 'yelp',        label: 'Yelp',         tag: 'Recommended', tagColor: 'text-red-500 bg-red-50 border-red-200',        Logo: YelpLogo },
-  { key: 'tripadvisor', label: 'TripAdvisor',  tag: 'Optional',    tagColor: 'text-emerald-600 bg-emerald-50 border-emerald-200', Logo: TripAdvisorLogo },
-]
+    if (!gTrimmed && !yTrimmed && !tTrimmed) {
+      setError('Add at least one platform URL to continue.')
+      return
+    }
+    if (gTrimmed && !gTrimmed.includes('google.com/maps') && !gTrimmed.includes('maps.google') && !gTrimmed.includes('goo.gl/maps')) {
+      setError("That Google Maps URL doesn't look right. Find your listing on maps.google.com and copy the full URL.")
+      return
+    }
+    if (yTrimmed && !yTrimmed.includes('yelp.com/biz/')) {
+      setError("That Yelp URL doesn't look right. It should contain \"yelp.com/biz/\".")
+      return
+    }
 
-function OnboardingPanel({ ownerName, onEnterManual }: { ownerName: string; onEnterManual: () => void }) {
-  const [selected, setSelected] = useState<PlatformKey[]>(['google', 'yelp', 'tripadvisor'])
-  const [hydrated, setHydrated] = useState(false)
-
-  useEffect(() => {
+    setSaving(true)
     try {
-      const stored = localStorage.getItem(LS_PLATFORMS)
-      if (stored) setSelected(JSON.parse(stored))
-    } catch { /* ignore */ }
-    setHydrated(true)
-  }, [])
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) throw new Error('Not authenticated')
 
-  const toggle = (key: PlatformKey) => {
-    const next = selected.includes(key) ? selected.filter(k => k !== key) : [...selected, key]
-    setSelected(next)
-    try { localStorage.setItem(LS_PLATFORMS, JSON.stringify(next)) } catch { /* ignore */ }
+      const updates: Record<string, string> = {}
+      if (gTrimmed) updates.google_maps_url = gTrimmed
+      if (yTrimmed) updates.yelp_url = yTrimmed
+      if (tTrimmed) updates.tripadvisor_url = tTrimmed
+
+      const { error: dbErr } = await supabase
+        .from('profiles')
+        .update(updates)
+        .eq('id', user.id)
+
+      if (dbErr) throw new Error(dbErr.message)
+
+      // Kick off first sync in background
+      fetch('/api/sync-all', { method: 'POST', headers: { 'Content-Type': 'application/json' } }).catch(() => {})
+
+      onConnected()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+      setSaving(false)
+    }
   }
-
-  if (!hydrated) return (
-    <div className="flex items-center justify-center py-24">
-      <svg className="animate-spin h-5 w-5 text-[#E05A28]" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-    </div>
-  )
 
   return (
     <div className="animate-fade-up pb-16">
-      {/* Top bar */}
+      {/* Header */}
       <div className="mb-8 text-center">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#E05A28]/10 border border-[#E05A28]/20 mb-5">
           <span className="w-1.5 h-1.5 rounded-full bg-[#E05A28] animate-pulse" />
-          <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#E05A28]/80">Setup</span>
+          <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#E05A28]/80">One-time setup</span>
         </div>
-        <h1 className="text-[26px] sm:text-[32px] font-black text-[#111111] tracking-[-0.03em] mb-3">
-          Hey {ownerName}, connect your review platforms
+        <h1 className="text-[26px] sm:text-[30px] font-black text-[#111111] tracking-[-0.03em] mb-3">
+          Hey {ownerName}, where are your reviews?
         </h1>
-        <p className="text-[14px] text-[#57534E]/80 max-w-lg mx-auto leading-relaxed">
-          TableReply automatically pulls reviews from Google, Yelp, and TripAdvisor so you never miss one — or generate replies manually anytime.
+        <p className="text-[14px] text-[#57534E]/80 max-w-md mx-auto leading-relaxed">
+          Paste your listing URL from any platform below. TableReply will pull in your reviews automatically.
         </p>
       </div>
 
-      {/* Platform cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8 max-w-2xl mx-auto">
-        {PLATFORMS.map(({ key, label, tag, tagColor, Logo }) => {
-          const on = selected.includes(key)
-          return (
-            <button
-              key={key}
-              type="button"
-              onClick={() => toggle(key)}
-              className={`relative flex flex-col items-center gap-3 px-5 py-6 rounded-2xl border-2 text-left transition-all duration-200 active:scale-[0.97] ${
-                on
-                  ? 'bg-[#FEF0E8] border-[#E05A28]/50 shadow-[0_0_0_1px_rgba(224,90,40,0.15),0_4px_20px_rgba(224,90,40,0.08)]'
-                  : 'bg-[#F8F6F3] border-[#E4DED8] opacity-50'
-              }`}
-            >
-              {/* Checkmark */}
-              <div className={`absolute top-3 right-3 w-5 h-5 rounded-full flex items-center justify-center transition-all duration-200 ${on ? 'bg-[#E05A28] shadow-[0_0_8px_rgba(224,90,40,0.4)]' : 'border border-[#D0C9C1]'}`}>
-                {on && <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/></svg>}
-              </div>
+      {/* URL inputs */}
+      <div className="max-w-lg mx-auto space-y-3 mb-6">
 
-              <Logo size={32} />
-              <div className="text-center">
-                <p className="text-[13px] font-bold text-[#111111] mb-1">{label}</p>
-                <span className={`inline-flex text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full border ${tagColor}`}>{tag}</span>
-              </div>
-            </button>
-          )
-        })}
+        {/* Google */}
+        <div className="bg-white rounded-2xl border border-[#E4DED8] p-4">
+          <div className="flex items-center gap-2.5 mb-3">
+            <GoogleLogo size={20} />
+            <span className="text-[13px] font-bold text-[#111]">Google Maps</span>
+            <span className="text-[10px] font-bold text-blue-500 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full uppercase tracking-wide ml-auto">Recommended</span>
+          </div>
+          <input
+            type="url"
+            value={googleUrl}
+            onChange={e => setGoogleUrl(e.target.value)}
+            placeholder="https://maps.google.com/maps?cid=..."
+            className="w-full h-10 px-3.5 rounded-xl bg-[#F8F6F3] border border-[#E4DED8] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10 transition-all"
+          />
+          <p className="mt-1.5 text-[11px] text-[#A8A29E]">Find your restaurant on Google Maps, click Share, and copy the link.</p>
+        </div>
+
+        {/* Yelp */}
+        <div className="bg-white rounded-2xl border border-[#E4DED8] p-4">
+          <div className="flex items-center gap-2.5 mb-3">
+            <YelpLogo size={20} />
+            <span className="text-[13px] font-bold text-[#111]">Yelp</span>
+            <span className="text-[10px] font-bold text-[#A8A29E] bg-[#F8F6F3] border border-[#E4DED8] px-2 py-0.5 rounded-full uppercase tracking-wide ml-auto">Optional</span>
+          </div>
+          <input
+            type="url"
+            value={yelpUrl}
+            onChange={e => setYelpUrl(e.target.value)}
+            placeholder="https://www.yelp.com/biz/your-restaurant"
+            className="w-full h-10 px-3.5 rounded-xl bg-[#F8F6F3] border border-[#E4DED8] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10 transition-all"
+          />
+        </div>
+
+        {/* TripAdvisor */}
+        <div className="bg-white rounded-2xl border border-[#E4DED8] p-4">
+          <div className="flex items-center gap-2.5 mb-3">
+            <TripAdvisorLogo size={20} />
+            <span className="text-[13px] font-bold text-[#111]">TripAdvisor</span>
+            <span className="text-[10px] font-bold text-[#A8A29E] bg-[#F8F6F3] border border-[#E4DED8] px-2 py-0.5 rounded-full uppercase tracking-wide ml-auto">Optional</span>
+          </div>
+          <input
+            type="url"
+            value={taUrl}
+            onChange={e => setTaUrl(e.target.value)}
+            placeholder="https://www.tripadvisor.com/Restaurant_Review-..."
+            className="w-full h-10 px-3.5 rounded-xl bg-[#F8F6F3] border border-[#E4DED8] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10 transition-all"
+          />
+        </div>
       </div>
 
+      {/* Error */}
+      {error && (
+        <div className="max-w-lg mx-auto mb-4 rounded-xl bg-red-50 border border-red-100 px-4 py-3 flex items-start gap-2.5">
+          <svg className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <p className="text-[13px] text-red-600">{error}</p>
+        </div>
+      )}
+
       {/* CTAs */}
-      <div className="flex flex-col items-center gap-4">
-        <Link
-          href="/dashboard/grow"
-          className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-2xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.97] text-white text-[15px] font-bold shadow-[0_4px_20px_rgba(224,90,40,0.35)] hover:shadow-[0_6px_28px_rgba(224,90,40,0.50)] transition-all duration-200"
+      <div className="flex flex-col items-center gap-3">
+        <button
+          onClick={handleConnect}
+          disabled={saving}
+          className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-2xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.97] text-white text-[15px] font-bold shadow-[0_4px_20px_rgba(224,90,40,0.35)] hover:shadow-[0_6px_28px_rgba(224,90,40,0.50)] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <svg className="w-4 h-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
-          Connect Accounts
-        </Link>
+          {saving ? (
+            <><svg className="animate-spin w-4 h-4 opacity-80" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>Connecting…</>
+          ) : (
+            <><svg className="w-4 h-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>Connect &amp; Start Syncing</>
+          )}
+        </button>
         <button
           onClick={onEnterManual}
           className="text-[13px] text-[#A8A29E] hover:text-[#57534E] transition-colors duration-150 underline underline-offset-4 decoration-[#D0C9C1] hover:decoration-[#A8A29E]"
         >
-          Skip for now and use manual mode
+          Skip — I'll add these later
         </button>
       </div>
     </div>
@@ -619,10 +667,10 @@ export default function HomeClient({
         </div>
       )
     }
-    // State A — default: show onboarding panel (also shown during pre-hydration)
+    // State A — default: show setup panel (also shown during pre-hydration)
     return (
       <div className="pb-16">
-        <OnboardingPanel ownerName={ownerName} onEnterManual={enterManual} />
+        <SetupPanel ownerName={ownerName} onEnterManual={enterManual} onConnected={() => router.refresh()} />
       </div>
     )
   }

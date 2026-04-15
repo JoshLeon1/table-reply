@@ -170,9 +170,9 @@ function PlatformCard({
         <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border ${
           isConnected
             ? 'bg-emerald-50 text-emerald-600 border-emerald-200'
-            : 'bg-[#F3F0EC] text-[#A8A29E] border-[#E4DED8]'
+            : 'bg-[#FEF0E8] text-[#E05A28] border-[#E05A28]/30'
         }`}>
-          {isConnected ? '● Connected' : '○ Not connected'}
+          {isConnected ? '● Connected' : '+ Add URL'}
         </span>
       </div>
 
@@ -219,7 +219,7 @@ function PlatformCard({
         <p className="text-[12px] text-[#A8A29E]">
           {isConnected
             ? (lastSynced ? `Last synced ${formatRelativeTime(lastSynced)}` : 'Never synced')
-            : 'Not connected yet'}
+            : 'Add a URL above to start syncing'}
         </p>
         {isConnected ? (
           <button

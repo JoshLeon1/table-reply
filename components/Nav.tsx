@@ -185,7 +185,6 @@ export default function Nav() {
     { href: '/dashboard',               label: 'Home',      icon: (a) => <IconHome active={a} /> },
     { href: '/dashboard/reviews',       label: 'Reviews',   icon: (a) => <IconRefresh active={a} />, badge: pendingCount > 0 ? pendingCount : null },
     { href: '/dashboard/analytics',     label: 'Analytics', icon: (a) => <IconChart active={a} />, dot: analyticsStale },
-    { href: '/dashboard/social',        label: 'Social',    icon: (a) => <IconSocial active={a} /> },
     { href: '/dashboard/grow',          label: 'Grow',      icon: (a) => <IconGrow active={a} /> },
   ]
 

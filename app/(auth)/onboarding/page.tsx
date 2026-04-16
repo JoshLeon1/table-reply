@@ -280,6 +280,7 @@ export default function OnboardingPage() {
                       placeholder="e.g. Bright Smile Dental"
                       required
                       autoFocus
+                      maxLength={100}
                       className={inputClass}
                     />
                   </div>
@@ -292,6 +293,7 @@ export default function OnboardingPage() {
                       onChange={(e) => setOwnerName(e.target.value)}
                       placeholder="Alex"
                       required
+                      maxLength={80}
                       className={inputClass}
                     />
                   </div>
@@ -391,6 +393,7 @@ export default function OnboardingPage() {
                     value={googleUrl}
                     onChange={(e) => { setGoogleUrl(e.target.value); setError('') }}
                     placeholder="https://maps.google.com/place/Your-Business/..."
+                    maxLength={500}
                     className={inputClass}
                   />
                   <p className="text-[11px] text-[#A8A29E] leading-relaxed">
@@ -410,6 +413,7 @@ export default function OnboardingPage() {
                     value={yelpUrl}
                     onChange={(e) => { setYelpUrl(e.target.value); setError('') }}
                     placeholder="https://yelp.com/biz/your-business-city"
+                    maxLength={500}
                     className={inputClass}
                   />
                 </div>
@@ -426,6 +430,7 @@ export default function OnboardingPage() {
                     value={taUrl}
                     onChange={(e) => { setTaUrl(e.target.value); setError('') }}
                     placeholder="https://tripadvisor.com/Restaurant_Review-..."
+                    maxLength={500}
                     className={inputClass}
                   />
                 </div>
@@ -479,6 +484,7 @@ export default function OnboardingPage() {
                   onChange={(e) => setVoiceTrainingText(e.target.value)}
                   placeholder="Paste your past review replies here…"
                   rows={6}
+                  maxLength={1000}
                   className="w-full px-3.5 py-3 rounded-xl border border-[#E4DED8] hover:border-[#CEC8C1] text-[#111] text-[13px] placeholder:text-[#C4BEB8] bg-[#F8F6F3] hover:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] transition-all duration-150 resize-none leading-relaxed"
                 />
                 {error && <ErrorBox message={error} />}

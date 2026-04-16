@@ -7,6 +7,15 @@ import { callClaude } from '@/lib/anthropic'
 import { Resend } from 'resend'
 import { hasActiveAccess } from '@/lib/subscription'
 
+function escapeRegExp(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+function matchesKeyword(reviewText: string, keyword: string): boolean {
+  const pattern = new RegExp(`\\b${escapeRegExp(keyword.toLowerCase())}\\b`, 'i')
+  return pattern.test(reviewText)
+}
+
 interface OutscraperTripAdvisorReview {
   review_id: string
   author_title: string
@@ -105,10 +114,10 @@ export async function POST(request: NextRequest) {
 
     // ── Call Outscraper TripAdvisor reviews endpoint ──────────────────────
     let reviews: OutscraperTripAdvisorReview[] = []
-    console.log('[scrape-tripadvisor] Using TripAdvisor URL:', profile.tripadvisor_url)
+    if (process.env.NODE_ENV === 'development') console.log('[scrape-tripadvisor] Using TripAdvisor URL:', profile.tripadvisor_url)
 
     try {
-      console.log('[scrape-tripadvisor] Submitting Outscraper request…')
+      if (process.env.NODE_ENV === 'development') console.log('[scrape-tripadvisor] Submitting Outscraper request…')
       const outscrapeRes = await fetch(
         `https://api.app.outscraper.com/tripadvisor/reviews` +
           `?query=${encodeURIComponent(profile.tripadvisor_url)}` +
@@ -122,7 +131,7 @@ export async function POST(request: NextRequest) {
         }
       )
 
-      console.log('[scrape-tripadvisor] HTTP status:', outscrapeRes.status, outscrapeRes.statusText)
+      if (process.env.NODE_ENV === 'development') console.log('[scrape-tripadvisor] HTTP status:', outscrapeRes.status, outscrapeRes.statusText)
 
       if (!outscrapeRes.ok) {
         const errBody = await outscrapeRes.text().catch(() => '(unreadable)')
@@ -131,14 +140,14 @@ export async function POST(request: NextRequest) {
       }
 
       let result = await outscrapeRes.json()
-      console.log('[scrape-tripadvisor] Initial status:', result.status)
+      if (process.env.NODE_ENV === 'development') console.log('[scrape-tripadvisor] Initial status:', result.status)
 
       // ── Poll if async ─────────────────────────────────────────────────
       if (result.status === 'Pending') {
         const requestId = result.results_location?.split('/').pop()
         if (!requestId) throw new Error('Outscraper job missing results_location')
         const pollUrl = `https://api.app.outscraper.com/requests/${requestId}`
-        console.log('[scrape-tripadvisor] Async job — polling:', pollUrl)
+        if (process.env.NODE_ENV === 'development') console.log('[scrape-tripadvisor] Async job — polling:', pollUrl)
 
         let attempts = 0
         while (result.status === 'Pending' && attempts < 20) {
@@ -147,7 +156,7 @@ export async function POST(request: NextRequest) {
             headers: { 'X-API-KEY': process.env.OUTSCRAPER_API_KEY! },
           })
           const pollBody = await pollRes.json()
-          console.log(`[scrape-tripadvisor] Poll ${attempts + 1} status:`, pollBody.status)
+          if (process.env.NODE_ENV === 'development') console.log(`[scrape-tripadvisor] Poll ${attempts + 1} status:`, pollBody.status)
           if (!pollRes.ok) throw new Error(`Poll ${attempts + 1} failed: ${pollRes.status}`)
           result = pollBody
           attempts++
@@ -156,7 +165,7 @@ export async function POST(request: NextRequest) {
         if (result.status !== 'Success') {
           throw new Error(`TripAdvisor job did not complete — final status: ${result.status}`)
         }
-        console.log('[scrape-tripadvisor] Completed after', attempts, 'poll(s)')
+        if (process.env.NODE_ENV === 'development') console.log('[scrape-tripadvisor] Completed after', attempts, 'poll(s)')
       }
 
       reviews = result?.data?.[0]?.reviews_data ?? result?.[0]?.reviews_data ?? []
@@ -164,7 +173,7 @@ export async function POST(request: NextRequest) {
         console.warn('[scrape-tripadvisor] reviews_data not an array — defaulting to []')
         reviews = []
       }
-      console.log('[scrape-tripadvisor] Reviews returned:', reviews.length)
+      if (process.env.NODE_ENV === 'development') console.log('[scrape-tripadvisor] Reviews returned:', reviews.length)
     } catch (err) {
       console.error('[scrape-tripadvisor] Outscraper error:', err)
       return NextResponse.json(
@@ -203,7 +212,7 @@ export async function POST(request: NextRequest) {
       const { review_id, author_title, review_rating, review_text, review_datetime_utc } = review
 
       const taReviewId = `ta-${review_id}`
-      console.log(`[scrape-tripadvisor] Processing ${taReviewId} — ${review_rating}★ by ${author_title}`)
+      if (process.env.NODE_ENV === 'development') console.log(`[scrape-tripadvisor] Processing ${taReviewId} — ${review_rating}★ by ${author_title}`)
 
       const { data: existing } = await supabaseAdmin
         .from('scraped_reviews')
@@ -253,8 +262,7 @@ export async function POST(request: NextRequest) {
           ...(keywordAlerts ?? []).map((a: { keyword: string }) => a.keyword.toLowerCase()),
           'food poisoning', 'cockroach', 'roach', 'health department', 'sick',
         ]
-        const reviewLower = (review_text ?? '').toLowerCase()
-        matchedKeyword = allKeywords.find(kw => reviewLower.includes(kw))
+        matchedKeyword = allKeywords.find(kw => matchesKeyword(review_text ?? '', kw))
         alertTriggered = !!matchedKeyword
 
         // Generate reply
@@ -321,6 +329,7 @@ export async function POST(request: NextRequest) {
 
       let insertErr = fullInsertErr
       if (fullInsertErr) {
+        if (process.env.NODE_ENV === 'development') console.warn(`[scrape-tripadvisor] Full insert failed — trying base insert without new columns`)
         const { error: baseErr } = await supabaseAdmin.from('scraped_reviews').insert(baseInsert)
         insertErr = baseErr
       }
@@ -332,7 +341,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    console.log(`[scrape-tripadvisor] Done — total: ${reviews.length}, new: ${newReviewsCount}, skipped: ${skippedExisting}`)
+    if (process.env.NODE_ENV === 'development') console.log(`[scrape-tripadvisor] Done — total: ${reviews.length}, new: ${newReviewsCount}, skipped: ${skippedExisting}`)
 
     await supabaseAdmin
       .from('business_profiles')

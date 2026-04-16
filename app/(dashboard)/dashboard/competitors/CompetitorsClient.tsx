@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   BarChart,
@@ -67,29 +67,33 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
   const [suggestions, setSuggestions] = useState<SuggestedPlace[]>([])
   const [suggesting, setSuggesting] = useState(false)
   const [suggestError, setSuggestError] = useState<string | null>(null)
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>()
 
   async function handleFindCompetitors() {
-    setSuggesting(true)
-    setSuggestError(null)
-    setSuggestions([])
-    try {
-      const res = await fetch('/api/competitors/suggest')
-      const data = await res.json()
-      if (data.apiError) {
-        setSuggestError(data.apiError)
-        return
+    clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(async () => {
+      setSuggesting(true)
+      setSuggestError(null)
+      setSuggestions([])
+      try {
+        const res = await fetch('/api/competitors/suggest')
+        const data = await res.json()
+        if (data.apiError) {
+          setSuggestError(data.apiError)
+          return
+        }
+        const found: SuggestedPlace[] = data.results ?? []
+        setSuggestions(found)
+        // Pre-fill the URL inputs
+        const nextUrls = ['', '', '']
+        found.slice(0, 3).forEach((s, i) => { nextUrls[i] = s.mapsUrl })
+        setUrls(nextUrls)
+      } catch {
+        setSuggestError('Could not find competitors. Enter URLs manually.')
+      } finally {
+        setSuggesting(false)
       }
-      const found: SuggestedPlace[] = data.results ?? []
-      setSuggestions(found)
-      // Pre-fill the URL inputs
-      const nextUrls = ['', '', '']
-      found.slice(0, 3).forEach((s, i) => { nextUrls[i] = s.mapsUrl })
-      setUrls(nextUrls)
-    } catch {
-      setSuggestError('Could not find competitors. Enter URLs manually.')
-    } finally {
-      setSuggesting(false)
-    }
+    }, 400)
   }
 
   async function handleSubmit() {

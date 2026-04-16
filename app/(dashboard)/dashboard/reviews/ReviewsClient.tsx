@@ -298,13 +298,17 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
 
   const handleSaveEdit = async () => {
     setSavingEdit(true)
-    await supabase
+    const { error: saveErr } = await supabase
       .from('scraped_reviews')
       .update({ generated_reply: editedReply })
       .eq('id', review.id)
       .eq('user_id', review.user_id)
-    setReview(prev => ({ ...prev, generated_reply: editedReply }))
-    setEditing(false)
+    if (saveErr) {
+      setGenError('Failed to save edit. Please try again.')
+    } else {
+      setReview(prev => ({ ...prev, generated_reply: editedReply }))
+      setEditing(false)
+    }
     setSavingEdit(false)
   }
 
@@ -1002,14 +1006,26 @@ export default function ReviewsClient({ profile, initialReviews, userId }: Props
 
   const handleDismiss = async (id: string) => {
     setReviews((prev) => prev.map((r) => r.id === id ? { ...r, reply_status: 'dismissed' as const } : r))
-    await supabase.from('scraped_reviews').update({ reply_status: 'dismissed' }).eq('id', id).eq('user_id', userId)
-    window.dispatchEvent(new CustomEvent('reviewsUpdated'))
+    const { error } = await supabase.from('scraped_reviews').update({ reply_status: 'dismissed' }).eq('id', id).eq('user_id', userId)
+    if (error) {
+      // Revert optimistic update on failure
+      setReviews((prev) => prev.map((r) => r.id === id ? { ...r, reply_status: 'pending' as const } : r))
+      setScrapeError('Failed to dismiss review. Please try again.')
+    } else {
+      window.dispatchEvent(new CustomEvent('reviewsUpdated'))
+    }
   }
 
   const handleRestore = async (id: string) => {
     setReviews((prev) => prev.map((r) => r.id === id ? { ...r, reply_status: 'pending' as const } : r))
-    await supabase.from('scraped_reviews').update({ reply_status: 'pending' }).eq('id', id).eq('user_id', userId)
-    window.dispatchEvent(new CustomEvent('reviewsUpdated'))
+    const { error } = await supabase.from('scraped_reviews').update({ reply_status: 'pending' }).eq('id', id).eq('user_id', userId)
+    if (error) {
+      // Revert optimistic update on failure
+      setReviews((prev) => prev.map((r) => r.id === id ? { ...r, reply_status: 'dismissed' as const } : r))
+      setScrapeError('Failed to restore review. Please try again.')
+    } else {
+      window.dispatchEvent(new CustomEvent('reviewsUpdated'))
+    }
   }
 
   const hasAnyPlatform = !!(mapsUrl || profile.yelp_url || profile.tripadvisor_url)

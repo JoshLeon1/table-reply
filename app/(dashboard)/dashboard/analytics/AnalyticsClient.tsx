@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, useCallback } from 'react'
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer,
   Area, AreaChart, BarChart, Bar, Cell, ComposedChart,
@@ -156,6 +156,7 @@ function EmptyState({ restaurantName }: { restaurantName: string }) {
 export default function AnalyticsClient({ reviews, restaurantName, userId }: Props) {
   const [themes, setThemes] = useState<ThemeResult>({ praised: [], complaints: [], opportunities: [] })
   const [themesLoading, setThemesLoading] = useState(true)
+  const [themesError, setThemesError] = useState<string | null>(null)
   const [lastAnalyzedAt, setLastAnalyzedAt] = useState<string | null>(null)
   const [refreshing, setRefreshing] = useState(false)
   const [downloadingReport, setDownloadingReport] = useState(false)
@@ -346,8 +347,9 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
   , [filteredReviews])
 
   // ── Fetch themes ───────────────────────────────────────────────────────────
-  const fetchThemes = async (force = false) => {
+  const fetchThemes = useCallback(async (force = false) => {
     const reviewTexts = filteredReviews.filter((r) => r.review_text?.trim()).map((r) => r.review_text)
+    setThemesError(null)
     if (reviewTexts.length < 3) {
       setThemes({ praised: [], complaints: [], opportunities: [], insufficient: true })
       setThemesLoading(false)
@@ -363,6 +365,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       if (data.error) {
         setThemesLoading(false)
         setRefreshing(false)
+        setThemesError('Failed to load themes. Try again.')
         console.error('[analytics] theme error:', data.error)
         return
       }
@@ -375,11 +378,12 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       if (data.lastAnalyzedAt) setLastAnalyzedAt(data.lastAnalyzedAt)
     } catch (err) {
       console.error('[analytics] fetch error:', err)
+      setThemesError('Failed to load themes. Try again.')
     } finally {
       setThemesLoading(false)
       setRefreshing(false)
     }
-  }
+  }, [filteredReviews])
 
   useEffect(() => {
     if (reviews.length === 0) { setThemesLoading(false); return }
@@ -387,8 +391,15 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
     // Debounce so rapid date-range changes don't fire multiple Claude calls
     const timer = setTimeout(() => fetchThemes(false), 400)
     return () => clearTimeout(timer)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId, dateRange, reviews.length])
+  }, [userId, dateRange, reviews.length, fetchThemes])
+
+  // ── Escape key closes download dropdown ───────────────────────────────────
+  useEffect(() => {
+    if (!showDownloadMenu) return
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setShowDownloadMenu(false) }
+    document.addEventListener('keydown', handler)
+    return () => document.removeEventListener('keydown', handler)
+  }, [showDownloadMenu])
 
   const handleRefresh = () => {
     // Keep existing results visible — just show a subtle refreshing indicator
@@ -1183,6 +1194,21 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
         <SectionLabel>What customers are saying</SectionLabel>
         {themesLoading && !refreshing ? (
           <ThemeSkeleton />
+        ) : themesError && !themesLoading ? (
+          <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-4 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <svg className="w-4 h-4 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <p className="text-[13px] text-red-600">{themesError}</p>
+            </div>
+            <button
+              onClick={() => fetchThemes(true)}
+              className="flex-shrink-0 px-3 py-1.5 rounded-lg bg-red-100 hover:bg-red-200 text-red-600 text-[12px] font-semibold transition-colors"
+            >
+              Retry
+            </button>
+          </div>
         ) : themes.insufficient ? (
           <div className="text-center py-12">
             <p className="text-[#A8A29E] text-[13px]">Sync at least 5 reviews to unlock AI sentiment analysis.</p>

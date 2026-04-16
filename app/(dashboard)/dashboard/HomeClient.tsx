@@ -120,6 +120,7 @@ function SectionLabel({ children, badge }: { children: React.ReactNode; badge?: 
 // ── Pending review card ───────────────────────────────────────────────────────
 function PendingCard({ review, userId, onAction, animDelay = 0 }: { review: ScrapedReview; userId: string; onAction: (id: string, a: 'approved' | 'dismissed') => void; animDelay?: number }) {
   const supabase = createClient()
+  const router = useRouter()
   const [expanded, setExpanded] = useState(false)
   const [actioning, setActioning] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -130,18 +131,24 @@ function PendingCard({ review, userId, onAction, animDelay = 0 }: { review: Scra
     try {
       await navigator.clipboard.writeText(review.generated_reply).catch(() => {})
       setCopied(true)
-      await supabase.from('scraped_reviews').update({ reply_status: 'approved' }).eq('id', review.id).eq('user_id', userId)
-      window.dispatchEvent(new CustomEvent('reviewsUpdated'))
-      setTimeout(() => onAction(review.id, 'approved'), 1400)
+      const { error } = await supabase.from('scraped_reviews').update({ reply_status: 'approved' }).eq('id', review.id).eq('user_id', userId)
+      if (!error) {
+        window.dispatchEvent(new CustomEvent('reviewsUpdated'))
+        router.refresh()
+        setTimeout(() => onAction(review.id, 'approved'), 1400)
+      }
     } finally { setActioning(false) }
   }
 
   const handleDismiss = async () => {
     setActioning(true)
     try {
-      await supabase.from('scraped_reviews').update({ reply_status: 'dismissed' }).eq('id', review.id).eq('user_id', userId)
-      window.dispatchEvent(new CustomEvent('reviewsUpdated'))
-      onAction(review.id, 'dismissed')
+      const { error } = await supabase.from('scraped_reviews').update({ reply_status: 'dismissed' }).eq('id', review.id).eq('user_id', userId)
+      if (!error) {
+        window.dispatchEvent(new CustomEvent('reviewsUpdated'))
+        router.refresh()
+        onAction(review.id, 'dismissed')
+      }
     } finally { setActioning(false) }
   }
 

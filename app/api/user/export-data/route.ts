@@ -11,12 +11,12 @@ export async function GET() {
   const [
     { data: profile },
     { data: restaurantProfile },
-    { data: reviews },
+    { data: scrapedReviews },
     { data: replies },
   ] = await Promise.all([
     supabase.from('profiles').select('*').eq('id', user.id).single(),
     supabase.from('business_profiles').select('*').eq('user_id', user.id).single(),
-    supabase.from('reviews').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
+    supabase.from('scraped_reviews').select('id, reviewer_name, star_rating, review_text, review_datetime_utc, platform, reply_status, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
     supabase.from('replies').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
   ])
 
@@ -38,13 +38,14 @@ export async function GET() {
           reply_preferences: restaurantProfile.reply_preferences,
         }
       : null,
-    reviews: (reviews ?? []).map((r) => ({
+    reviews: (scrapedReviews ?? []).map((r) => ({
       id: r.id,
-      platform: r.platform,
-      author: r.author,
+      reviewer_name: r.reviewer_name,
       star_rating: r.star_rating,
       review_text: r.review_text,
-      review_date: r.review_date,
+      review_datetime_utc: r.review_datetime_utc,
+      platform: r.platform,
+      reply_status: r.reply_status,
       created_at: r.created_at,
     })),
     replies: (replies ?? []).map((r) => ({

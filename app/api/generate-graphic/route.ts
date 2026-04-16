@@ -2,7 +2,13 @@ export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { callClaude } from '@/lib/anthropic'
+import { hasActiveAccess } from '@/lib/subscription'
+
+function escHtml(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')
+}
 
 export async function POST(request: NextRequest) {
   const supabase = createClient()
@@ -11,6 +17,13 @@ export async function POST(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const supabaseAdmin = createServiceClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+  const allowed = await hasActiveAccess(supabaseAdmin, user.id)
+  if (!allowed) return NextResponse.json({ error: 'Subscription required' }, { status: 402 })
 
   let body: {
     reviewText?: string
@@ -157,11 +170,11 @@ export async function POST(request: NextRequest) {
 
   <div class="stars">${stars}</div>
   <span class="quote-mark">"</span>
-  <p class="review">${shortReview}</p>
+  <p class="review">${escHtml(shortReview)}</p>
   <div class="divider"></div>
   <div class="footer">
-    <div class="restaurant-name">${restaurantName}</div>
-    <div class="reviewer">— ${reviewerName}</div>
+    <div class="restaurant-name">${escHtml(restaurantName)}</div>
+    <div class="reviewer">— ${escHtml(reviewerName)}</div>
   </div>
 </body>
 </html>`

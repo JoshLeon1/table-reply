@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic'
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
+import { stripe } from '@/lib/stripe'
 
 export async function DELETE() {
   const supabase = createClient()
@@ -34,6 +35,22 @@ export async function DELETE() {
     serviceClient.from('business_profiles').delete().eq('user_id', user.id),
     serviceClient.from('profiles').delete().eq('id', user.id),
   ])
+
+  // Cancel Stripe subscription before deleting the user
+  const { data: profile } = await serviceClient
+    .from('profiles')
+    .select('stripe_subscription_id')
+    .eq('id', user.id)
+    .maybeSingle()
+
+  if (profile?.stripe_subscription_id) {
+    try {
+      await stripe.subscriptions.cancel(profile.stripe_subscription_id)
+    } catch (err) {
+      console.error('Failed to cancel Stripe subscription:', err)
+      // Don't block account deletion if Stripe cancel fails
+    }
+  }
 
   // Delete the auth user
   const { error: authError } = await serviceClient.auth.admin.deleteUser(user.id)

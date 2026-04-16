@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
   const isTestMode = isCron && body.testMode === true
 
   if (isTestMode) {
-    console.log('[scrape-reviews] TEST MODE — using fake reviews, skipping Outscraper')
+    if (process.env.NODE_ENV === 'development') console.log('[scrape-reviews] TEST MODE — using fake reviews, skipping Outscraper')
   }
 
   // ── Outscraper API key guard ──────────────────────────────────────────
@@ -159,12 +159,12 @@ export async function POST(request: NextRequest) {
         review_datetime_utc: new Date().toISOString(),
       },
     ]
-    console.log('[scrape-reviews] Injected', reviews.length, 'fake reviews')
+    if (process.env.NODE_ENV === 'development') console.log('[scrape-reviews] Injected', reviews.length, 'fake reviews')
   } else {
-  console.log('[scrape-reviews] Using Google Maps URL:', profile.google_maps_url)
+  if (process.env.NODE_ENV === 'development') console.log('[scrape-reviews] Using Google Maps URL:', profile.google_maps_url)
 
   try {
-    console.log('[scrape-reviews] Submitting Outscraper request…')
+    if (process.env.NODE_ENV === 'development') console.log('[scrape-reviews] Submitting Outscraper request…')
     const outscrapeRes = await fetch(
       `https://api.app.outscraper.com/maps/reviews-v3` +
         `?query=${encodeURIComponent(profile.google_maps_url)}` +
@@ -178,7 +178,7 @@ export async function POST(request: NextRequest) {
       }
     )
 
-    console.log('[scrape-reviews] Outscraper HTTP status:', outscrapeRes.status, outscrapeRes.statusText)
+    if (process.env.NODE_ENV === 'development') console.log('[scrape-reviews] Outscraper HTTP status:', outscrapeRes.status, outscrapeRes.statusText)
 
     if (!outscrapeRes.ok) {
       const errBody = await outscrapeRes.text().catch(() => '(unreadable)')
@@ -193,8 +193,10 @@ export async function POST(request: NextRequest) {
 
     let result = await outscrapeRes.json()
 
-    console.log('[scrape-reviews] Initial response (first 500 chars):', JSON.stringify(result).slice(0, 500))
-    console.log('[scrape-reviews] Initial status:', result.status)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[scrape-reviews] Initial response (first 500 chars):', JSON.stringify(result).slice(0, 500))
+      console.log('[scrape-reviews] Initial status:', result.status)
+    }
 
     // ── Check for body-level errors (HTTP 200 but error payload) ────────
     if (result.error || result.errorMessage) {
@@ -216,8 +218,10 @@ export async function POST(request: NextRequest) {
       const requestId = result.results_location?.split('/').pop()
       if (!requestId) throw new Error('Outscraper job missing results_location')
       const canonicalPollUrl = `https://api.app.outscraper.com/requests/${requestId}`
-      console.log('[scrape-reviews] Job is async — request ID:', requestId)
-      console.log('[scrape-reviews] Polling:', canonicalPollUrl)
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[scrape-reviews] Job is async — request ID:', requestId)
+        console.log('[scrape-reviews] Polling:', canonicalPollUrl)
+      }
 
       let attempts = 0
       while (result.status === 'Pending' && attempts < 10) {
@@ -228,7 +232,7 @@ export async function POST(request: NextRequest) {
         })
 
         const pollBody = await pollRes.json()
-        console.log(`[scrape-reviews] Poll ${attempts + 1} status:`, pollBody.status)
+        if (process.env.NODE_ENV === 'development') console.log(`[scrape-reviews] Poll ${attempts + 1} status:`, pollBody.status)
 
         if (!pollRes.ok) {
           console.error(`[scrape-reviews] Poll ${attempts + 1} HTTP error (${pollRes.status}):`, JSON.stringify(pollBody).slice(0, 500))
@@ -243,10 +247,10 @@ export async function POST(request: NextRequest) {
         throw new Error(`Outscraper job did not complete after ${attempts} polls — final status: ${result.status}`)
       }
 
-      console.log('[scrape-reviews] Job completed after', attempts, 'poll(s)')
+      if (process.env.NODE_ENV === 'development') console.log('[scrape-reviews] Job completed after', attempts, 'poll(s)')
     }
 
-    console.log('[scrape-reviews] Final response (first 500 chars):', JSON.stringify(result).slice(0, 500))
+    if (process.env.NODE_ENV === 'development') console.log('[scrape-reviews] Final response (first 500 chars):', JSON.stringify(result).slice(0, 500))
 
     // Outscraper wraps results: { data: [{ reviews_data: [...] }] }
     reviews = result?.data?.[0]?.reviews_data ?? result?.[0]?.reviews_data ?? []
@@ -256,7 +260,7 @@ export async function POST(request: NextRequest) {
       reviews = []
     }
 
-    console.log('[scrape-reviews] Reviews returned from Outscraper:', reviews.length)
+    if (process.env.NODE_ENV === 'development') console.log('[scrape-reviews] Reviews returned from Outscraper:', reviews.length)
   } catch (err) {
     console.error('[scrape-reviews] Outscraper error:', err)
     return NextResponse.json(
@@ -303,7 +307,7 @@ export async function POST(request: NextRequest) {
       review_datetime_utc,
     } = review
 
-    console.log(`[scrape-reviews] Processing review ${review_id} — ${review_rating}★ by ${author_title}`)
+    if (process.env.NODE_ENV === 'development') console.log(`[scrape-reviews] Processing review ${review_id} — ${review_rating}★ by ${author_title}`)
 
     // Skip if we've already stored this review
     const { data: existing } = await supabaseAdmin
@@ -314,7 +318,7 @@ export async function POST(request: NextRequest) {
       .maybeSingle()
 
     if (existing) {
-      console.log(`[scrape-reviews] ↳ Skipping — already in DB (id: ${existing.id})`)
+      if (process.env.NODE_ENV === 'development') console.log(`[scrape-reviews] ↳ Skipping — already in DB (id: ${existing.id})`)
       skippedExisting++
       continue
     }
@@ -330,7 +334,7 @@ export async function POST(request: NextRequest) {
     let matchedKeyword: string | undefined
 
     if (!hasText) {
-      console.log(`[scrape-reviews] ↳ Skipping — no review text`)
+      if (process.env.NODE_ENV === 'development') console.log(`[scrape-reviews] ↳ Skipping — no review text`)
       replyStatus = 'skipped'
     } else {
       // ── Feature 9: Detect language ──────────────────────────────────────
@@ -340,7 +344,7 @@ export async function POST(request: NextRequest) {
           system: 'You detect languages. Reply with ONLY the language name in English, nothing else.',
           userMessage: `What language is this text written in?\n\n"${review_text.slice(0, 200)}"`,
         })).trim()
-        console.log(`[scrape-reviews] ↳ Detected language: ${detectedLanguage}`)
+        if (process.env.NODE_ENV === 'development') console.log(`[scrape-reviews] ↳ Detected language: ${detectedLanguage}`)
       } catch { /* silent fail */ }
 
       // ── Feature 9: Build language instruction for reply ─────────────────
@@ -365,11 +369,11 @@ export async function POST(request: NextRequest) {
       matchedKeyword = allKeywords.find(kw => matchesKeyword(review_text ?? '', kw))
       alertTriggered = !!matchedKeyword
 
-      if (alertTriggered) {
+      if (alertTriggered && process.env.NODE_ENV === 'development') {
         console.log(`[scrape-reviews] ↳ Alert triggered — keyword: "${matchedKeyword}"`)
       }
 
-      console.log(`[scrape-reviews] ↳ New review — generating reply…`)
+      if (process.env.NODE_ENV === 'development') console.log(`[scrape-reviews] ↳ New review — generating reply…`)
 
       // ── Generate reply via Anthropic ────────────────────────────────────
       try {
@@ -378,7 +382,7 @@ export async function POST(request: NextRequest) {
           system: systemPrompt + languageInstruction,
           userMessage: `Write a response to this ${review_rating}-star review (${review_text.trim().split(/\s+/).length} words):\n\n"${review_text}"`,
         })
-        console.log(`[scrape-reviews] ↳ Reply generated (${generatedReply.length} chars)`)
+        if (process.env.NODE_ENV === 'development') console.log(`[scrape-reviews] ↳ Reply generated (${generatedReply.length} chars)`)
       } catch (err) {
         console.error(`[scrape-reviews] Anthropic error for review ${review_id}:`, err)
         // Still insert the review, just with a null reply
@@ -393,7 +397,7 @@ export async function POST(request: NextRequest) {
         })
         const parsed = JSON.parse(staffRaw.trim())
         if (Array.isArray(parsed)) staffMentions = parsed
-        if (staffMentions.length > 0) console.log(`[scrape-reviews] ↳ Staff mentions: ${staffMentions.join(', ')}`)
+        if (staffMentions.length > 0 && process.env.NODE_ENV === 'development') console.log(`[scrape-reviews] ↳ Staff mentions: ${staffMentions.join(', ')}`)
       } catch { /* silent fail */ }
 
       // ── Feature 2: Send alert email if triggered ─────────────────────────
@@ -441,7 +445,7 @@ export async function POST(request: NextRequest) {
 
     let insertErr = fullInsertErr
     if (fullInsertErr) {
-      console.warn(`[scrape-reviews] ↳ Full insert failed (${fullInsertErr.message}) — trying base insert without new columns…`)
+      if (process.env.NODE_ENV === 'development') console.warn(`[scrape-reviews] ↳ Full insert failed (${fullInsertErr.message}) — trying base insert without new columns…`)
       const { error: baseInsertErr } = await supabaseAdmin.from('scraped_reviews').insert(baseInsert)
       insertErr = baseInsertErr
     }
@@ -449,12 +453,12 @@ export async function POST(request: NextRequest) {
     if (insertErr) {
       console.error(`[scrape-reviews] ↳ Insert error for review ${review_id}:`, insertErr)
     } else {
-      console.log(`[scrape-reviews] ↳ Inserted successfully`)
+      if (process.env.NODE_ENV === 'development') console.log(`[scrape-reviews] ↳ Inserted successfully`)
       newReviewsCount++
     }
   }
 
-  console.log(
+  if (process.env.NODE_ENV === 'development') console.log(
     `[scrape-reviews] Done — total: ${reviews.length}, new: ${newReviewsCount}, skipped (existing): ${skippedExisting}`
   )
 
@@ -466,7 +470,7 @@ export async function POST(request: NextRequest) {
 
   // ── Invalidate analytics cache when new reviews were found ─────────────
   if (newReviewsCount > 0) {
-    console.log(`[scrape-reviews] ${newReviewsCount} new reviews — invalidating analytics cache`)
+    if (process.env.NODE_ENV === 'development') console.log(`[scrape-reviews] ${newReviewsCount} new reviews — invalidating analytics cache`)
     await supabaseAdmin
       .from('business_analytics')
       .update({ reviews_count_at_analysis: -1 }) // force stale on next analytics load

@@ -265,12 +265,11 @@ export async function POST(request: NextRequest) {
       }
 
       // Fetch scraped reviews from the past 7 days
-      // NOTE: actual DB column is scraped_at (not created_at)
       const { data: reviews, error: reviewsError } = await supabaseAdmin
         .from('scraped_reviews')
         .select('id, reviewer_name, star_rating, review_text, generated_reply, reply_status')
         .eq('user_id', profile.id)
-        .gte('scraped_at', sevenDaysAgo)
+        .gte('created_at', sevenDaysAgo)
         .order('star_rating', { ascending: false })
 
       if (reviewsError) {

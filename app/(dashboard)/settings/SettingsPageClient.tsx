@@ -316,26 +316,35 @@ export default function SettingsPageClient({
     <div className="space-y-4">
       {/* Subscription */}
       <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-        <div className="px-5 sm:px-6 py-4 sm:py-5 border-b border-[#EDE9E4]">
-          <div className="flex items-center justify-between">
-            <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E]">Subscription</h2>
-            <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full uppercase tracking-wide ${
-              isPaid
-                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                : daysRemaining > 0
-                ? 'bg-[#FEF0E8] text-[#B34419] border border-[#F5C9AD]'
-                : 'bg-red-50 text-red-600 border border-red-200'
-            }`}>
-              {isPaid ? 'Pro' : daysRemaining > 0 ? `Trial · ${daysRemaining}d left` : 'Trial expired'}
-            </span>
-          </div>
-          {!isPaid && daysRemaining > 0 && (
-            <div className="w-full h-1 bg-[#EDE9E4] rounded-full mt-3">
-              <div className="h-full bg-[#E05A28] rounded-full" style={{ width: `${Math.round(((7 - daysRemaining) / 7) * 100)}%` }} />
-            </div>
-          )}
+        {/* Header row */}
+        <div className="px-5 sm:px-6 py-4 border-b border-[#EDE9E4] flex items-center justify-between gap-3">
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E]">Subscription</h2>
+          <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full uppercase tracking-wide flex-shrink-0 ${
+            isPaid
+              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+              : daysRemaining > 0
+              ? 'bg-[#FEF0E8] text-[#B34419] border border-[#F5C9AD]'
+              : 'bg-red-50 text-red-600 border border-red-200'
+          }`}>
+            {isPaid ? 'Pro' : daysRemaining > 0 ? `Trial · ${daysRemaining}d left` : 'Trial expired'}
+          </span>
         </div>
-        <div className="px-5 sm:px-6 py-4 sm:py-5 space-y-2.5">
+
+        {/* Trial progress bar */}
+        {!isPaid && daysRemaining > 0 && (
+          <div className="px-5 sm:px-6 pt-3 pb-0">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-[11px] text-[#A8A29E]">Trial progress</span>
+              <span className="text-[11px] font-medium text-[#57534E]">{daysRemaining}d remaining</span>
+            </div>
+            <div className="w-full h-1.5 bg-[#EDE9E4] rounded-full">
+              <div className="h-full bg-[#E05A28] rounded-full transition-all" style={{ width: `${Math.round(((7 - daysRemaining) / 7) * 100)}%` }} />
+            </div>
+          </div>
+        )}
+
+        {/* Account info row */}
+        <div className="px-5 sm:px-6 py-4 space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-[13px] text-[#57534E]">Account</span>
             <span className="text-[13px] font-medium text-[#111] truncate max-w-[55%] text-right">{userEmail}</span>
@@ -349,7 +358,9 @@ export default function SettingsPageClient({
             </div>
           )}
         </div>
-        <div className="px-5 sm:px-6 py-4 sm:py-5 bg-[#F3F0EC] border-t border-[#EDE9E4]">
+
+        {/* Billing CTA */}
+        <div className="px-5 sm:px-6 py-4 bg-[#F8F6F3] border-t border-[#EDE9E4]">
           {isPaid ? <ManageBillingButton /> : <BillingButtons />}
         </div>
       </div>

@@ -145,7 +145,7 @@ function EmptyState({ restaurantName }: { restaurantName: string }) {
         Connect Google Maps, Yelp, or TripAdvisor and sync reviews to see analytics for {restaurantName}.
       </p>
       <a href="/dashboard/reviews" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#F3F0EC] hover:bg-[#E9E5E0] border border-[#E4DED8] text-[#111111] text-[13px] font-medium transition-all">
-        Set up Auto Reviews →
+        Connect a Platform →
       </a>
     </div>
   )
@@ -384,13 +384,15 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
   useEffect(() => {
     if (reviews.length === 0) { setThemesLoading(false); return }
     setThemesLoading(true)
-    fetchThemes(false)
+    // Debounce so rapid date-range changes don't fire multiple Claude calls
+    const timer = setTimeout(() => fetchThemes(false), 400)
+    return () => clearTimeout(timer)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, dateRange, reviews.length])
 
   const handleRefresh = () => {
+    // Keep existing results visible — just show a subtle refreshing indicator
     setRefreshing(true)
-    setThemesLoading(true)
     fetchThemes(true)
   }
 
@@ -1179,20 +1181,25 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       {/* ── WHAT CUSTOMERS ARE SAYING ──────────────────────────────────────── */}
       <div className="pt-4">
         <SectionLabel>What customers are saying</SectionLabel>
-        {themesLoading ? (
+        {themesLoading && !refreshing ? (
           <ThemeSkeleton />
         ) : themes.insufficient ? (
           <div className="text-center py-12">
             <p className="text-[#A8A29E] text-[13px]">Sync at least 5 reviews to unlock AI sentiment analysis.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className={`grid grid-cols-1 md:grid-cols-3 gap-5 relative transition-opacity duration-200 ${refreshing ? 'opacity-50 pointer-events-none' : ''}`}>
+            {refreshing && (
+              <div className="absolute inset-0 flex items-center justify-center z-10">
+                <span className="text-[12px] text-[#A8A29E] font-medium bg-white/90 px-3 py-1.5 rounded-full border border-[#E4DED8] shadow-sm">Re-analyzing…</span>
+              </div>
+            )}
             {[
               {
                 icon: <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd"/></svg>,
                 title: 'They love',
                 items: themes.praised,
-                emptyText: 'Sync more reviews',
+                emptyText: 'Nothing notable yet',
                 chipClass: 'bg-emerald-50 text-emerald-700 border-emerald-100',
                 iconClass: 'text-emerald-500',
               },

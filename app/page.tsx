@@ -1,7 +1,5 @@
 'use client'
 
-export const dynamic = 'force-dynamic'
-
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 
@@ -97,7 +95,7 @@ export default function LandingPage() {
   // Stat counters
   const stat1 = useCounter(63, 1000, problemAnim.inView)
   const stat2 = useCounter(45, 1200, problemAnim.inView)
-  const stat3 = useCounter(97, 1100, problemAnim.inView)
+  const stat3 = useCounter(80, 1100, problemAnim.inView)
 
   const features = [
     {
@@ -179,7 +177,7 @@ export default function LandingPage() {
     { q: 'Do I approve replies before they get posted?', a: 'Yes, always. Replyfi generates a draft — you review it, edit inline if needed, then approve it. Approved replies go to your Approved tab, where you copy and paste on the platform yourself. Nothing ever posts automatically.' },
     { q: 'Does this connect to Google, Yelp, and TripAdvisor automatically?', a: 'Yes — all three sync every day. Connect each platform once in Settings and reviews start appearing in your dashboard.' },
     { q: 'Will replies sound robotic or generic?', a: "No. You set your business name, owner name, and tone. Every reply is written specifically for that review — it won't sound like a template." },
-    { q: 'How long does setup take?', a: "About 2 minutes. Enter your business name and tone. That's it — you can start generating replies immediately." },
+    { q: 'How long does setup take?', a: "Under 5 minutes. Enter your business name, tone, and connect a platform. You can start generating replies right away." },
     { q: 'Can I edit the replies before I use them?', a: 'Absolutely. Every reply has an inline edit button right in the dashboard — make changes before you approve. Once approved, copy it and respond directly on the platform.' },
   ]
 
@@ -421,7 +419,7 @@ export default function LandingPage() {
             {[
               { val: stat1, suffix: '%', label: 'of reviews go unanswered' },
               { val: stat2, suffix: '%', label: 'of reviewers read replies' },
-              { val: stat3, suffix: '%', label: 'time saved per reply' },
+              { val: stat3, suffix: '%', label: 'less time per reply' },
             ].map(({ val, suffix, label }, i) => (
               <div key={label} className="flex flex-col items-center text-center" style={{ transitionDelay: `${i * 80}ms` }}>
                 <p className="font-bold text-[#E05A28] tabular-nums mb-1" style={{ fontSize: 'clamp(28px, 6vw, 44px)', lineHeight: 1, letterSpacing: '-0.03em' }}>
@@ -740,7 +738,7 @@ export default function LandingPage() {
             <button onClick={() => setAnnual(false)} className={`px-5 py-2 rounded-full text-[13px] font-medium transition-all duration-200 ${!annual ? 'bg-white text-[#111111] shadow-sm' : 'text-[#6b6b6b]'}`}>Monthly</button>
             <button onClick={() => setAnnual(true)} className={`flex items-center gap-2 px-5 py-2 rounded-full text-[13px] font-medium transition-all duration-200 ${annual ? 'bg-white text-[#111111] shadow-sm' : 'text-[#6b6b6b]'}`}>
               Annual
-              <span className="px-1.5 py-0.5 rounded-full bg-[#E05A28] text-white text-[10px] font-bold leading-none">SAVE 33%</span>
+              <span className="px-1.5 py-0.5 rounded-full bg-[#E05A28] text-white text-[10px] font-bold leading-none">SAVE 31%</span>
             </button>
           </div>
 
@@ -870,7 +868,6 @@ export default function LandingPage() {
 
           <div className="border-t border-[#1E1E1E] pt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1">
             <p className="text-[12px] text-[#444]">© 2026 Replyfi · Austin, TX</p>
-            <p className="text-[11px] text-[#333]">AI-powered review replies for local businesses.</p>
           </div>
         </div>
       </footer>

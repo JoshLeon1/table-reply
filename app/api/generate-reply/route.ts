@@ -25,6 +25,21 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Subscription required' }, { status: 402 })
   }
 
+  // Rate limit: max 20 AI generations per 60 seconds per user
+  const oneMinuteAgo = new Date(Date.now() - 60_000).toISOString()
+  const { count: recentCount } = await supabaseAdmin
+    .from('replies')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', user.id)
+    .gte('created_at', oneMinuteAgo)
+
+  if ((recentCount ?? 0) >= 20) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please wait a moment before generating more replies.' },
+      { status: 429, headers: { 'Retry-After': '60' } }
+    )
+  }
+
   const body = await request.json().catch(() => ({}))
   const { reviewText, starRating, platform, tone } = body
 

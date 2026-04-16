@@ -7,6 +7,15 @@ import { callClaude } from '@/lib/anthropic'
 import { Resend } from 'resend'
 import { hasActiveAccess } from '@/lib/subscription'
 
+function escapeRegExp(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+function matchesKeyword(reviewText: string, keyword: string): boolean {
+  const pattern = new RegExp(`\\b${escapeRegExp(keyword.toLowerCase())}\\b`, 'i')
+  return pattern.test(reviewText)
+}
+
 interface OutscraperReview {
   review_id: string
   author_title: string
@@ -353,8 +362,7 @@ export async function POST(request: NextRequest) {
         ...(keywordAlerts ?? []).map((a: { keyword: string }) => a.keyword.toLowerCase()),
         'food poisoning', 'cockroach', 'roach', 'health department', 'sick'
       ]
-      const reviewLower = (review_text ?? '').toLowerCase()
-      matchedKeyword = allKeywords.find(kw => reviewLower.includes(kw))
+      matchedKeyword = allKeywords.find(kw => matchesKeyword(review_text ?? '', kw))
       alertTriggered = !!matchedKeyword
 
       if (alertTriggered) {

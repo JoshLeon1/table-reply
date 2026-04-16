@@ -43,6 +43,28 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Keyword must be 50 characters or fewer.' }, { status: 400 })
   }
 
+  // Limit check: max 20 keyword alerts per user
+  const { count } = await supabase
+    .from('keyword_alerts')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', user.id)
+
+  if ((count ?? 0) >= 20) {
+    return NextResponse.json({ error: 'Maximum 20 keyword alerts allowed.' }, { status: 400 })
+  }
+
+  // Check for duplicate
+  const { data: existing } = await supabase
+    .from('keyword_alerts')
+    .select('id')
+    .eq('user_id', user.id)
+    .eq('keyword', keyword)
+    .maybeSingle()
+
+  if (existing) {
+    return NextResponse.json({ error: 'This keyword alert already exists.' }, { status: 409 })
+  }
+
   const { data, error } = await supabase
     .from('keyword_alerts')
     .insert({ user_id: user.id, keyword, alert_type: 'email' })

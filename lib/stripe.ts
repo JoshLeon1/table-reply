@@ -10,9 +10,14 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 
 export type StripePlan = 'monthly' | 'annual'
 
-// Trim to guard against accidental whitespace/tabs copied from env var tables
-const MONTHLY_PRICE_ID = (process.env.STRIPE_PRICE_ID_MONTHLY || 'price_1TLwjc2IRuOunZUQTdms55bJ').trim()
-const ANNUAL_PRICE_ID  = (process.env.STRIPE_PRICE_ID_ANNUAL  || 'price_1TMMPT2IRuOunZUQ7qayYYPV').trim()
+if (!process.env.STRIPE_PRICE_ID_MONTHLY) {
+  throw new Error('STRIPE_PRICE_ID_MONTHLY is not set in environment variables')
+}
+if (!process.env.STRIPE_PRICE_ID_ANNUAL) {
+  throw new Error('STRIPE_PRICE_ID_ANNUAL is not set in environment variables')
+}
+const MONTHLY_PRICE_ID = process.env.STRIPE_PRICE_ID_MONTHLY.trim()
+const ANNUAL_PRICE_ID  = process.env.STRIPE_PRICE_ID_ANNUAL.trim()
 
 export const PRICE_IDS: Record<StripePlan, string> = {
   monthly: MONTHLY_PRICE_ID,

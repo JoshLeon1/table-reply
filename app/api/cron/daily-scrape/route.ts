@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
       if (profile.yelp_url) {
         tasks.push(
           scrape('Yelp', '/api/scrape-yelp-reviews', profile.id, profile.user_id)
-            .then((n) => { totalNewReplies += n })
+            .then((n) => { totalNewReplies += n; processed++ })
             .catch((err) => {
               const msg = err instanceof Error ? err.message : String(err)
               console.error(`[daily-scrape] Yelp failed for profile ${profile.id}:`, msg)
@@ -89,7 +89,7 @@ export async function GET(request: NextRequest) {
       if (profile.tripadvisor_url) {
         tasks.push(
           scrape('TripAdvisor', '/api/scrape-tripadvisor-reviews', profile.id, profile.user_id)
-            .then((n) => { totalNewReplies += n })
+            .then((n) => { totalNewReplies += n; processed++ })
             .catch((err) => {
               const msg = err instanceof Error ? err.message : String(err)
               console.error(`[daily-scrape] TripAdvisor failed for profile ${profile.id}:`, msg)

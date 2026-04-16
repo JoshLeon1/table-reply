@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   BarChart,
   Bar,
@@ -59,6 +60,7 @@ function StarRating({ rating }: { rating: number | null }) {
 type SuggestedPlace = { placeId: string; name: string; address: string; rating?: number; mapsUrl: string }
 
 function SetupFlow({ restaurantName }: { restaurantName: string }) {
+  const router = useRouter()
   const [urls, setUrls] = useState(['', '', ''])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -109,7 +111,7 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
         setError(data.error ?? 'Failed to add competitors.')
         return
       }
-      window.location.reload()
+      router.refresh()
     } catch {
       setError('Something went wrong. Please try again.')
     } finally {
@@ -233,6 +235,7 @@ function AddMoreForm({
   onAdded: () => void
   onCancel: () => void
 }) {
+  const router = useRouter()
   const slots = 3 - existingCount
   const [urls, setUrls] = useState(Array(slots).fill(''))
   const [loading, setLoading] = useState(false)
@@ -333,7 +336,7 @@ function ComparisonTable({
   function isHighest(vals: (number | null)[], idx: number): boolean {
     const num = vals[idx]
     if (num === null || num === undefined) return false
-    return vals.every((v, i) => i === idx || v === null || v <= num)
+    return vals.every((v, i) => i === idx || v === null || v < num)
   }
 
   const allRatings: (number | null)[] = [
@@ -626,13 +629,22 @@ function CompetitorCard({
   onRemove: (id: string) => void
 }) {
   const [removing, setRemoving] = useState(false)
+  const [removeError, setRemoveError] = useState<string | null>(null)
 
   async function handleRemove() {
     setRemoving(true)
+    setRemoveError(null)
     try {
-      await fetch(`/api/competitors/${competitor.id}`, { method: 'DELETE' })
+      const res = await fetch(`/api/competitors/${competitor.id}`, { method: 'DELETE' })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        setRemoveError(data.error ?? 'Failed to remove competitor.')
+        setRemoving(false)
+        return
+      }
       onRemove(competitor.id)
     } catch {
+      setRemoveError('Something went wrong. Please try again.')
       setRemoving(false)
     }
   }
@@ -665,6 +677,7 @@ function CompetitorCard({
           {removing ? 'Removing…' : 'Remove'}
         </button>
       </div>
+      {removeError && <p className="text-[12px] text-red-500 mt-2">{removeError}</p>}
 
       <div className="flex items-center gap-5 mt-4 pt-4 border-t border-[#E4DED8]">
         <div>
@@ -703,6 +716,7 @@ export default function CompetitorsClient({
   userAvgRating,
   userReviewCount,
 }: Props) {
+  const router = useRouter()
   const [competitors, setCompetitors] = useState<CompetitorProfile[]>(initialCompetitors)
   const [showAddMore, setShowAddMore] = useState(false)
 
@@ -743,7 +757,7 @@ export default function CompetitorsClient({
             existingCount={competitors.length}
             onAdded={() => {
               setShowAddMore(false)
-              window.location.reload()
+              router.refresh()
             }}
             onCancel={() => setShowAddMore(false)}
           />

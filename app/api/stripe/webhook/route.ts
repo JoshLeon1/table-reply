@@ -40,18 +40,25 @@ export async function POST(request: NextRequest) {
     // ── Subscription created / first payment succeeded ──────────────────────
     case 'checkout.session.completed': {
       const session = event.data.object as Stripe.Checkout.Session
+      // Only handle subscription checkouts (not one-time payments)
+      if (session.mode !== 'subscription') break
+
       const userId = session.metadata?.userId
       const plan = session.metadata?.plan ?? 'monthly'
 
       if (userId) {
+        const updates: Record<string, unknown> = {
+          is_paid: true,
+          stripe_customer_id: session.customer as string,
+          stripe_plan: plan,
+        }
+        // Only write subscription ID if it exists (may be null for async webhook delivery)
+        if (session.subscription) {
+          updates.stripe_subscription_id = session.subscription as string
+        }
         await supabase
           .from('profiles')
-          .update({
-            is_paid: true,
-            stripe_customer_id: session.customer as string,
-            stripe_subscription_id: session.subscription as string,
-            stripe_plan: plan,
-          })
+          .update(updates)
           .eq('id', userId)
       }
       break

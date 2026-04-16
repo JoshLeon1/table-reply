@@ -573,7 +573,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
                   <svg className="w-3.5 h-3.5 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/>
                   </svg>
-                  Approve Reply
+                  Copy &amp; Approve
                 </>
               )}
             </button>
@@ -594,6 +594,9 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
           </>
         )}
       </div>
+      {status !== 'approved' && status !== 'dismissed' && review.generated_reply && (
+        <p className="text-[11px] text-[#C4BEB8] text-center mt-1 pb-3">Copies reply to clipboard — then paste it on the platform</p>
+      )}
     </div>
   )
 }
@@ -758,7 +761,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
         {tabs.map((tab) => (
           <button
             key={tab.key}
-            onClick={() => setActiveTab(tab.key)}
+            onClick={() => { setActiveTab(tab.key); setFilterStars(null) }}
             className={`flex flex-1 sm:flex-none items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2 text-[12px] sm:text-[13px] font-semibold rounded-lg transition-all duration-200 whitespace-nowrap ${
               activeTab === tab.key
                 ? 'bg-white text-[#111111] shadow-[0_1px_3px_rgba(0,0,0,0.08)]'

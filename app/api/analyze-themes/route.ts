@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient as createServerClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
+import { hasActiveAccess } from '@/lib/subscription'
 
 
 /** Extract the first complete JSON object from a string, regardless of code fences or surrounding text */
@@ -32,6 +33,11 @@ export async function POST(request: NextRequest) {
   const supabase = createServerClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const allowed = await hasActiveAccess(supabaseAdmin, user.id)
+  if (!allowed) {
+    return NextResponse.json({ error: 'Subscription required' }, { status: 402 })
+  }
 
   const body = await request.json().catch(() => ({}))
   const reviews: string[] = Array.isArray(body.reviews) ? body.reviews : []

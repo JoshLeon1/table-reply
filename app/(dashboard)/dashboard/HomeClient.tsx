@@ -118,7 +118,7 @@ function SectionLabel({ children, badge }: { children: React.ReactNode; badge?: 
 }
 
 // ── Pending review card ───────────────────────────────────────────────────────
-function PendingCard({ review, onAction, animDelay = 0 }: { review: ScrapedReview; onAction: (id: string, a: 'approved' | 'dismissed') => void; animDelay?: number }) {
+function PendingCard({ review, userId, onAction, animDelay = 0 }: { review: ScrapedReview; userId: string; onAction: (id: string, a: 'approved' | 'dismissed') => void; animDelay?: number }) {
   const supabase = createClient()
   const [expanded, setExpanded] = useState(false)
   const [actioning, setActioning] = useState(false)
@@ -130,7 +130,7 @@ function PendingCard({ review, onAction, animDelay = 0 }: { review: ScrapedRevie
     try {
       await navigator.clipboard.writeText(review.generated_reply).catch(() => {})
       setCopied(true)
-      await supabase.from('scraped_reviews').update({ reply_status: 'approved' }).eq('id', review.id)
+      await supabase.from('scraped_reviews').update({ reply_status: 'approved' }).eq('id', review.id).eq('user_id', userId)
       window.dispatchEvent(new CustomEvent('reviewsUpdated'))
       setTimeout(() => onAction(review.id, 'approved'), 1400)
     } finally { setActioning(false) }
@@ -139,7 +139,7 @@ function PendingCard({ review, onAction, animDelay = 0 }: { review: ScrapedRevie
   const handleDismiss = async () => {
     setActioning(true)
     try {
-      await supabase.from('scraped_reviews').update({ reply_status: 'dismissed' }).eq('id', review.id)
+      await supabase.from('scraped_reviews').update({ reply_status: 'dismissed' }).eq('id', review.id).eq('user_id', userId)
       window.dispatchEvent(new CustomEvent('reviewsUpdated'))
       onAction(review.id, 'dismissed')
     } finally { setActioning(false) }
@@ -595,7 +595,7 @@ export default function HomeClient({
   ownerName,
   restaurantName,
   lastScrapedAt,
-  userId: _userId,
+  userId,
   googleMapsUrl,
   yelpUrl,
   tripadvisorUrl,
@@ -807,7 +807,7 @@ export default function HomeClient({
             </div>
           ) : (
             <div className="space-y-3">
-              {pendingList.map((review, i) => <PendingCard key={review.id} review={review} onAction={handlePendingAction} animDelay={i * 60} />)}
+              {pendingList.map((review, i) => <PendingCard key={review.id} review={review} userId={userId} onAction={handlePendingAction} animDelay={i * 60} />)}
               {pendingList.length > 3 && (
                 <Link href="/dashboard/reviews" className="inline-flex items-center gap-1.5 text-[13px] text-[#E05A28] font-semibold hover:text-[#C94E21] transition-colors pt-1 group">
                   View all {pendingList.length} pending
@@ -841,7 +841,7 @@ export default function HomeClient({
                         </div>
                         <div className="flex items-center gap-1.5">
                           <span className="text-amber-400 text-[10px]">{'★'.repeat(review.star_rating)}</span>
-                          <span className="text-[10px] text-[#C4BEB8]">{formatTimeAgo(review.created_at)}</span>
+                          <span className="text-[10px] text-[#C4BEB8]">{formatTimeAgo(review.review_datetime_utc ?? review.created_at)}</span>
                         </div>
                       </div>
                       <div className="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0" />

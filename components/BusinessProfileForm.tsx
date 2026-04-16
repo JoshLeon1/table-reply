@@ -172,11 +172,11 @@ export default function BusinessProfileForm({
       if (res.ok) {
         const data = await res.json()
         if (data.yelpUrl) {
-          setForm((prev) => ({ ...prev, yelp_url: data.yelpUrl }))
+          setForm((prev) => ({ ...prev, yelp_url: prev.yelp_url || data.yelpUrl }))
           setYelpAutoFilled(true)
         }
         if (data.tripAdvisorUrl) {
-          setForm((prev) => ({ ...prev, tripadvisor_url: data.tripAdvisorUrl }))
+          setForm((prev) => ({ ...prev, tripadvisor_url: prev.tripadvisor_url || data.tripAdvisorUrl }))
           setTaAutoFilled(true)
         }
       }
@@ -220,6 +220,7 @@ export default function BusinessProfileForm({
         .from('business_profiles')
         .update(payload)
         .eq('id', existingProfile.id)
+        .eq('user_id', userId)
     } else {
       result = await supabase
         .from('business_profiles')

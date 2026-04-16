@@ -59,13 +59,19 @@ export async function GET(request: NextRequest) {
 
     const results = places
       .slice(0, 6)
-      .map(p => ({
-        placeId: p.id,
-        name: p.displayName?.text ?? '',
-        address: p.formattedAddress ?? '',
-        rating: p.rating,
-        mapsUrl: `https://www.google.com/maps/place/?q=place_id:${p.id}`,
-      }))
+      .map(p => {
+        const name = p.displayName?.text ?? ''
+        const address = p.formattedAddress ?? ''
+        const query = address ? `${name} ${address}` : name
+        const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}&query_place_id=${p.id}`
+        return {
+          placeId: p.id,
+          name,
+          address,
+          rating: p.rating,
+          mapsUrl,
+        }
+      })
       .filter(p => p.name) // remove blank names
 
     return NextResponse.json({ results })

@@ -64,6 +64,12 @@ export interface KeywordAlert {
   created_at: string
 }
 
+export interface ThemesShape {
+  praised: string[]
+  complaints: string[]
+  opportunities: string[]
+}
+
 export interface CompetitorProfile {
   id: string
   user_id: string

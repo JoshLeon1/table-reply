@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient as createServerClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { hasActiveAccess } from '@/lib/subscription'
+import type { ThemesShape } from '@/types'
 
 
 /** Extract the first complete JSON object from a string, regardless of code fences or surrounding text */
@@ -60,7 +61,7 @@ export async function POST(request: NextRequest) {
 
       if (fresh && sameCount) {
         console.log('[analyze-themes] Returning cached result')
-        const t = cached.themes as any
+        const t = cached.themes as ThemesShape
         return NextResponse.json({
           praised:       Array.isArray(t.praised)       ? t.praised       : [],
           complaints:    Array.isArray(t.complaints)    ? t.complaints    : [],

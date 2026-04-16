@@ -61,6 +61,21 @@ function GoogleIcon() {
   )
 }
 
+const DRAFT_KEY = 'replyfi_onboarding_draft'
+
+interface OnboardingDraft {
+  step: number
+  businessName: string
+  businessType: string
+  ownerName: string
+  vibe: string
+  replyTone: string
+  googleUrl: string
+  yelpUrl: string
+  taUrl: string
+  voiceTrainingText: string
+}
+
 export default function OnboardingPage() {
   const router = useRouter()
   const [step, setStep] = useState(1)
@@ -85,7 +100,7 @@ export default function OnboardingPage() {
   // Step 4 — training
   const [voiceTrainingText, setVoiceTrainingText] = useState('')
 
-  // Auth guard
+  // Auth guard + load draft from localStorage on mount
   useEffect(() => {
     const checkAuth = async () => {
       const supabase = createClient()
@@ -97,10 +112,45 @@ export default function OnboardingPage() {
         .eq('user_id', user.id)
         .maybeSingle()
       if (profile) { router.replace('/dashboard'); return }
+
+      // Restore draft if present
+      try {
+        const saved = localStorage.getItem(DRAFT_KEY)
+        if (saved) {
+          const draft: OnboardingDraft = JSON.parse(saved)
+          setStep(draft.step ?? 1)
+          setBusinessName(draft.businessName ?? '')
+          setBusinessType(draft.businessType ?? '')
+          setOwnerName(draft.ownerName ?? '')
+          setVibe(draft.vibe ?? '')
+          setReplyTone(draft.replyTone ?? '')
+          setGoogleUrl(draft.googleUrl ?? '')
+          setYelpUrl(draft.yelpUrl ?? '')
+          setTaUrl(draft.taUrl ?? '')
+          setVoiceTrainingText(draft.voiceTrainingText ?? '')
+        }
+      } catch {
+        // Ignore parse errors
+      }
+
       setChecking(false)
     }
     checkAuth()
   }, [router])
+
+  // Persist draft to localStorage whenever form state changes
+  useEffect(() => {
+    if (checking) return
+    try {
+      const draft: OnboardingDraft = {
+        step, businessName, businessType, ownerName,
+        vibe, replyTone, googleUrl, yelpUrl, taUrl, voiceTrainingText,
+      }
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(draft))
+    } catch {
+      // Ignore storage errors
+    }
+  }, [checking, step, businessName, businessType, ownerName, vibe, replyTone, googleUrl, yelpUrl, taUrl, voiceTrainingText])
 
   const handleStep1 = (e: React.FormEvent) => {
     e.preventDefault()
@@ -189,6 +239,9 @@ export default function OnboardingPage() {
       if (googleUrl.trim() || yelpUrl.trim() || taUrl.trim()) {
         fetch('/api/sync-all', { method: 'POST', headers: { 'Content-Type': 'application/json' } }).catch(() => {})
       }
+
+      // Clear draft on successful completion
+      try { localStorage.removeItem(DRAFT_KEY) } catch { /* ignore */ }
 
       router.push('/dashboard')
       router.refresh()

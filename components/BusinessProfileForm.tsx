@@ -214,23 +214,34 @@ export default function BusinessProfileForm({
       tripadvisor_url: form.tripadvisor_url,
     }
 
-    let result
     if (existingProfile) {
-      result = await supabase
+      const { data: updated, error: updateError } = await supabase
         .from('business_profiles')
         .update(payload)
         .eq('id', existingProfile.id)
         .eq('user_id', userId)
+        .select('id')
+
+      if (updateError) {
+        setError(updateError.message)
+        setLoading(false)
+        return
+      }
+      if (!updated || updated.length === 0) {
+        setError('Could not save — please refresh and try again.')
+        setLoading(false)
+        return
+      }
     } else {
-      result = await supabase
+      const { error: insertError } = await supabase
         .from('business_profiles')
         .insert({ ...payload, user_id: userId })
-    }
 
-    if (result.error) {
-      setError(result.error.message)
-      setLoading(false)
-      return
+      if (insertError) {
+        setError(insertError.message)
+        setLoading(false)
+        return
+      }
     }
 
     // New profiles get the demo moment; updates go to redirectTo

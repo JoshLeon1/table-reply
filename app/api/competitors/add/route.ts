@@ -91,6 +91,25 @@ export async function POST(request: NextRequest) {
       continue
     }
 
+    // Optimistic race-condition guard: re-count after insert.
+    // Two concurrent requests may both pass the pre-insert check; if we now
+    // exceed the limit, delete what we just inserted and return 429.
+    const { data: postInsertRows } = await supabaseAdmin
+      .from('competitor_profiles')
+      .select('id')
+      .eq('user_id', user.id)
+
+    if ((postInsertRows?.length ?? 0) > 3) {
+      await supabaseAdmin
+        .from('competitor_profiles')
+        .delete()
+        .eq('id', inserted.id)
+      return NextResponse.json(
+        { error: 'You can track a maximum of 3 competitors. Please remove one before adding another.' },
+        { status: 429 }
+      )
+    }
+
     let profile = inserted
 
     // Optionally enrich with Outscraper

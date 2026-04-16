@@ -7,6 +7,18 @@ import {
 } from 'recharts'
 import type { ScrapedReview } from '@/types'
 
+interface TooltipPayloadEntry {
+  name: string
+  value: number
+  color?: string
+}
+
+interface RechartsTooltipProps {
+  active?: boolean
+  payload?: TooltipPayloadEntry[]
+  label?: string
+}
+
 interface Props {
   reviews: ScrapedReview[]
   restaurantName: string
@@ -94,7 +106,7 @@ function ThemeSkeleton() {
 
 // ─── Tooltips ────────────────────────────────────────────────────────────────
 
-function SparkTooltip({ active, payload, label }: any) {
+function SparkTooltip({ active, payload, label }: RechartsTooltipProps) {
   if (!active || !payload?.length) return null
   return (
     <div className="bg-white text-[#111] text-[11px] px-2.5 py-1.5 rounded-lg border border-[#E4DED8] shadow-sm">
@@ -104,12 +116,12 @@ function SparkTooltip({ active, payload, label }: any) {
   )
 }
 
-function LineTooltip({ active, payload, label }: any) {
+function LineTooltip({ active, payload, label }: RechartsTooltipProps) {
   if (!active || !payload?.length) return null
   return (
     <div className="bg-white text-[#111] text-[12px] px-3 py-2 rounded-xl shadow-lg border border-[#E4DED8]">
       <p className="text-[#A8A29E] text-[11px] mb-0.5">{label}</p>
-      {payload.map((p: any, i: number) => (
+      {payload.map((p, i) => (
         <p key={i} className="font-semibold">
           {p.name === 'count' ? `${p.value} review${p.value !== 1 ? 's' : ''}` : `${Number(p.value).toFixed(1)} ★`}
         </p>
@@ -118,12 +130,12 @@ function LineTooltip({ active, payload, label }: any) {
   )
 }
 
-function BarChartTooltip({ active, payload, label }: any) {
+function BarChartTooltip({ active, payload, label }: RechartsTooltipProps) {
   if (!active || !payload?.length) return null
   return (
     <div className="bg-white text-[#111] text-[12px] px-3 py-2 rounded-xl shadow-lg border border-[#E4DED8]">
       <p className="text-[#A8A29E] text-[11px] mb-0.5">{label}</p>
-      {payload.map((p: any, i: number) => (
+      {payload.map((p, i) => (
         <p key={i} className="font-semibold">{p.value} review{p.value !== 1 ? 's' : ''}</p>
       ))}
     </div>
@@ -160,6 +172,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
   const [lastAnalyzedAt, setLastAnalyzedAt] = useState<string | null>(null)
   const [refreshing, setRefreshing] = useState(false)
   const [downloadingReport, setDownloadingReport] = useState(false)
+  const [pdfLoading, setPdfLoading] = useState(false)
   const [downloadingCsv, setDownloadingCsv] = useState(false)
   const [showDownloadMenu, setShowDownloadMenu] = useState(false)
   const [downloadError, setDownloadError] = useState<string | null>(null)
@@ -430,6 +443,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
 
   const handleDownloadReport = async () => {
     setDownloadingReport(true)
+    setPdfLoading(true)
     setShowDownloadMenu(false)
     try {
       const jsPDF = (await import('jspdf')).default
@@ -946,6 +960,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       setTimeout(() => setDownloadError(null), 5000)
     } finally {
       setDownloadingReport(false)
+      setPdfLoading(false)
     }
   }
 
@@ -991,13 +1006,20 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
           <div className="relative">
             <button
               onClick={(e) => { e.stopPropagation(); setShowDownloadMenu((v) => !v) }}
-              disabled={downloadingReport || downloadingCsv}
+              disabled={downloadingReport || pdfLoading || downloadingCsv}
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#F3F0EC] border border-[#E4DED8] hover:bg-[#E9E5E0] text-[#111111] text-[12px] font-medium disabled:opacity-40 transition-all"
             >
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-              </svg>
-              {downloadingReport ? 'Generating PDF…' : downloadingCsv ? 'Exporting CSV…' : 'Export Report'}
+              {pdfLoading ? (
+                <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                </svg>
+              ) : (
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+              )}
+              {pdfLoading ? 'Generating PDF…' : downloadingCsv ? 'Exporting CSV…' : 'Export Report'}
               <svg className="w-3 h-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>

@@ -73,6 +73,47 @@ function CreatePostModal({
   const [downloading, setDownloading] = useState(false)
   const iframeRef = useRef<HTMLIFrameElement>(null)
 
+  // Focus trap
+  const modalRef = useRef<HTMLDivElement>(null)
+  const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+
+  useEffect(() => {
+    const modal = modalRef.current
+    if (!modal) return
+
+    // Move focus into modal on open
+    const firstFocusable = modal.querySelectorAll<HTMLElement>(FOCUSABLE)[0]
+    firstFocusable?.focus()
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose()
+        return
+      }
+      if (e.key !== 'Tab') return
+      const focusables = Array.from(modal.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
+        (el) => !el.hasAttribute('disabled')
+      )
+      if (!focusables.length) return
+      const first = focusables[0]
+      const last = focusables[focusables.length - 1]
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault()
+          last.focus()
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault()
+          first.focus()
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [onClose])
+
   const platforms: Platform[] = ['Instagram', 'Facebook', 'Twitter/X', 'TikTok']
   const platformCharLimit: Record<Platform, number> = {
     'Instagram': 2200,
@@ -82,12 +123,6 @@ function CreatePostModal({
   }
   const captionStyles: CaptionStyle[] = ['Grateful & warm', 'Bold & confident', 'Fun & casual']
   const graphicStyles: GraphicStyle[] = ['Dark & moody', 'Warm & bright', 'Clean & minimal', 'Bold & colorful']
-
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
-    window.addEventListener('keydown', handler)
-    return () => window.removeEventListener('keydown', handler)
-  }, [onClose])
 
   const generateCaption = async () => {
     setCaptionLoading(true)
@@ -194,13 +229,19 @@ function CreatePostModal({
       style={{ background: 'rgba(0,0,0,0.6)' }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
     >
-      <div className="w-full sm:max-w-[560px] bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col max-h-[92vh] sm:max-h-[88vh] overflow-hidden">
+      <div
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="create-post-modal-title"
+        className="w-full sm:max-w-[560px] bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col max-h-[92vh] sm:max-h-[88vh] overflow-hidden"
+      >
 
         {/* Header */}
         <div className="px-5 pt-5 pb-4 flex-shrink-0">
           {/* Review pill */}
           <div className="flex items-center gap-2 mb-4">
-            <div className="flex-1 min-w-0 flex items-center gap-2 px-3 py-2 bg-[#F3F0EC] rounded-xl border border-[#E4DED8]">
+            <div id="create-post-modal-title" className="flex-1 min-w-0 flex items-center gap-2 px-3 py-2 bg-[#F3F0EC] rounded-xl border border-[#E4DED8]">
               <Stars rating={review.star_rating} />
               <span className="text-[12px] font-semibold text-[#111111] truncate">{review.reviewer_name}</span>
               <span className="text-[12px] text-[#57534E] truncate flex-1">

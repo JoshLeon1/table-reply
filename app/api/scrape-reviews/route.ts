@@ -119,9 +119,8 @@ export async function POST(request: NextRequest) {
     .eq('user_id', userId)
 
   // ── Test mode: skip Outscraper, use fake reviews ─────────────────────
-  // Only allow test mode from cron/admin requests — dashboard users cannot
-  // trigger this to generate fake reviews or burn AI credits for free.
-  const isTestMode = isCron && body.testMode === true
+  // Allow test mode from cron requests OR authenticated dashboard users.
+  const isTestMode = body.testMode === true && (isCron || !!userId)
 
   if (isTestMode) {
     if (process.env.NODE_ENV === 'development') console.log('[scrape-reviews] TEST MODE — using fake reviews, skipping Outscraper')

@@ -553,7 +553,7 @@ export default function LandingPage() {
           <div className={`text-center mb-8 sm:mb-12 transition-all duration-700 ${featuresAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
             <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E05A28] mb-2.5">Why It Works</p>
             <h2 className="font-bold text-[#111111]" style={{ fontSize: 'clamp(22px, 3.5vw, 36px)', lineHeight: 1.12, letterSpacing: '-0.02em' }}>
-              Three Things Done Right
+              Everything You Need to Handle Reviews—Without the Work
             </h2>
           </div>
 
@@ -561,8 +561,9 @@ export default function LandingPage() {
             {[
               {
                 num: '01',
-                title: 'Replies That Sound Like You',
-                desc: "Set your business name and tone once. Every reply matches your voice — warm, professional, or straight-talking. Reviewers can't tell it wasn't written by you.",
+                title: 'Replies That Feel Personal—Every Time',
+                desc: "Set your tone once. Every reply sounds like it came from you—whether you're warm, professional, or straight to the point. Guests won't know it's AI.",
+                tagline: 'Build stronger relationships with every guest',
                 icon: (
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
                 ),
@@ -572,8 +573,9 @@ export default function LandingPage() {
               },
               {
                 num: '02',
-                title: 'Every Platform, Hands-Free',
-                desc: 'Google, Yelp, and TripAdvisor reviews sync to your dashboard every day — automatically. No browser tabs, no logging in. Just open ReplyFi and everything is waiting for you.',
+                title: 'All Your Reviews. One Place. Zero Effort.',
+                desc: 'Google, Yelp, and TripAdvisor reviews show up automatically. No tabs. No logging in. No chasing reviews.',
+                tagline: 'Never miss a review again',
                 icon: (
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                 ),
@@ -583,8 +585,9 @@ export default function LandingPage() {
               },
               {
                 num: '03',
-                title: 'From Review to Posted in Seconds',
-                desc: "Get a draft, edit inline if needed, approve it — then click 'Respond on Google/Yelp/TripAdvisor' and land right on that review. Copy, paste, done.",
+                title: 'Go From Review to Response in Seconds',
+                desc: 'Generate, edit, and post instantly. One click and you\'re live on Google, Yelp, or TripAdvisor.',
+                tagline: 'Save hours every week',
                 icon: (
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                 ),
@@ -592,10 +595,10 @@ export default function LandingPage() {
                 bg: '#ECFDF5',
                 border: '#A7F3D0',
               },
-            ].map(({ num, title, desc, icon, color, bg, border }, i) => (
+            ].map(({ num, title, desc, tagline, icon, color, bg, border }, i) => (
               <div
                 key={num}
-                className="bg-white border border-[#E4DED8] rounded-2xl p-6 sm:p-7 transition-all duration-500 hover:shadow-[0_4px_20px_rgba(0,0,0,0.07)] hover:-translate-y-0.5"
+                className="bg-white border border-[#E4DED8] rounded-2xl p-6 sm:p-7 flex flex-col transition-all duration-500 hover:shadow-[0_4px_20px_rgba(0,0,0,0.07)] hover:-translate-y-0.5"
                 style={{
                   transitionDelay: featuresAnim.inView ? `${i * 80}ms` : '0ms',
                   opacity: featuresAnim.inView ? 1 : 0,
@@ -609,7 +612,8 @@ export default function LandingPage() {
                   <span className="font-bold tabular-nums" style={{ fontSize: '13px', color: '#E4DED8', letterSpacing: '-0.02em' }}>{num}</span>
                 </div>
                 <h3 className="font-bold text-[#111111] text-[16px] sm:text-[17px] mb-2.5 leading-snug tracking-tight">{title}</h3>
-                <p className="text-[13px] sm:text-[14px] leading-relaxed text-[#666]">{desc}</p>
+                <p className="text-[13px] sm:text-[14px] leading-relaxed text-[#666] flex-1">{desc}</p>
+                <p className="mt-4 pt-4 border-t border-[#F0EBE5] text-[12px] font-semibold text-[#111]" style={{ color }}>{tagline}</p>
               </div>
             ))}
           </div>
@@ -618,31 +622,36 @@ export default function LandingPage() {
           <div className={`mt-8 sm:mt-10 rounded-2xl border border-[#E4DED8] bg-white overflow-hidden transition-all duration-700 delay-300 ${featuresAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
             <div className="px-5 sm:px-7 py-4 sm:py-5 border-b border-[#EDE9E4]">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-[10px] font-bold uppercase tracking-[0.13em] text-[#A8A29E]">Included free</span>
-                <span className="px-2 py-0.5 rounded-full bg-[#F3F0EC] text-[10px] font-semibold text-[#A8A29E] border border-[#E4DED8]">Bonus</span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.13em] text-[#A8A29E]">Included in every plan</span>
               </div>
-              <h3 className="font-bold text-[#111] text-[16px] sm:text-[18px] tracking-tight">Extra Insight Without Extra Cost</h3>
-              <p className="text-[13px] text-[#777] mt-1 leading-relaxed">See trends in ratings, complaints, and response performance over time.</p>
+              <h3 className="font-bold text-[#111] text-[16px] sm:text-[18px] tracking-tight">Built-In Insights That Actually Help You Improve</h3>
+              <p className="text-[13px] text-[#777] mt-1 leading-relaxed">Track trends in ratings, complaints, and response performance automatically.</p>
             </div>
             <div className="px-5 sm:px-7 py-4 sm:py-5">
               <div className="flex flex-wrap gap-x-5 gap-y-2.5">
                 {[
                   'Rating trends over time',
-                  'Keyword & complaint tracking',
-                  'Response rate performance',
+                  'Complaint and keyword tracking',
+                  'Response performance metrics',
                   'Keyword alerts',
                   'Staff mention tracking',
                   'Multi-language replies',
-                  'Social post generator',
+                  'Social content generator',
                   'Direct platform deep links',
                 ].map((f) => (
                   <div key={f} className="flex items-center gap-1.5">
-                    <svg className="w-3 h-3 text-[#A8A29E] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>
+                    <svg className="w-3 h-3 text-[#E05A28] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>
                     <span className="text-[12px] sm:text-[13px] text-[#777]">{f}</span>
                   </div>
                 ))}
               </div>
             </div>
+          </div>
+
+          {/* Social proof bar */}
+          <div className={`mt-6 flex flex-col sm:flex-row items-center justify-between gap-3 px-5 sm:px-7 py-4 rounded-2xl bg-[#F3F0EC] border border-[#E4DED8] transition-all duration-700 delay-400 ${featuresAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+            <p className="text-[13px] font-semibold text-[#57534E]">Trusted by 200+ local businesses</p>
+            <p className="text-[12px] text-[#78716C] italic text-center sm:text-right">&ldquo;We went from ignoring reviews to replying to every single one.&rdquo; &mdash; Restaurant Owner</p>
           </div>
         </div>
       </section>

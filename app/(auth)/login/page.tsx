@@ -10,7 +10,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Input from '@/components/ui/Input'
 
@@ -40,6 +40,8 @@ function GoogleIcon() {
 
 export default function LoginPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const accountDeleted = searchParams.get('deleted') === '1'
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -120,6 +122,14 @@ export default function LoginPage() {
 
         {/* Card */}
         <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-modal p-6 sm:p-8">
+          {accountDeleted && (
+            <div className="rounded-xl bg-emerald-50 border border-emerald-200 px-4 py-3 flex items-start gap-2.5 mb-5">
+              <svg className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <p className="text-[13px] text-emerald-700">Your account and all data have been permanently deleted.</p>
+            </div>
+          )}
           <h1 className="text-[20px] font-bold text-[#111] tracking-[-0.02em] mb-1">Welcome Back</h1>
           <p className="text-[13px] text-[#A8A29E] mb-6">Sign in to manage your reviews</p>
 
@@ -152,7 +162,7 @@ export default function LoginPage() {
               label="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@restaurant.com"
+              placeholder="you@yourbusiness.com"
               required
               autoComplete="email"
             />

@@ -217,9 +217,11 @@ function PlatformCard({
       {/* Sync row — always visible */}
       <div className="flex items-center justify-between pt-3 border-t border-[#E4DED8]">
         <p className="text-[12px] text-[#A8A29E]">
-          {isConnected
-            ? (lastSynced ? `Last synced ${formatRelativeTime(lastSynced)}` : 'Never synced')
-            : 'Add a URL above to start syncing'}
+          {justSaved
+            ? <span className="text-[#E05A28] font-medium">URL saved — click Sync Now to import reviews →</span>
+            : isConnected
+              ? (lastSynced ? `Last synced ${formatRelativeTime(lastSynced)}` : 'Never synced')
+              : 'Add a URL above to start syncing'}
         </p>
         {isConnected ? (
           <button
@@ -272,15 +274,36 @@ interface Props {
 }
 
 export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
-  const [messages, setMessages] = useState<ReviewMessages | null>(null)
-  const [editedMessages, setEditedMessages] = useState<ReviewMessages | null>(null)
+  const supabase = createClient()
+  const savedMessages = restaurantProfile.review_request_messages ?? null
+  const [messages, setMessages] = useState<ReviewMessages | null>(savedMessages)
+  const [editedMessages, setEditedMessages] = useState<ReviewMessages | null>(savedMessages)
   const [generating, setGenerating] = useState(false)
   const [generateError, setGenerateError] = useState<string | null>(null)
   const [copiedChannel, setCopiedChannel] = useState<string | null>(null)
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null)
   const [generatingQr, setGeneratingQr] = useState(false)
+  const [autoSaved, setAutoSaved] = useState(false)
   // Track Google Maps URL locally so QR code button reacts immediately
   const [googleUrl, setGoogleUrl] = useState(restaurantProfile.google_maps_url)
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const savedFlashRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  function saveMessagesToDb(msgs: ReviewMessages) {
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
+    saveTimeoutRef.current = setTimeout(async () => {
+      const { error } = await supabase
+        .from('business_profiles')
+        .update({ review_request_messages: msgs })
+        .eq('id', restaurantProfile.id)
+        .eq('user_id', restaurantProfile.user_id)
+      if (!error) {
+        setAutoSaved(true)
+        if (savedFlashRef.current) clearTimeout(savedFlashRef.current)
+        savedFlashRef.current = setTimeout(() => setAutoSaved(false), 2500)
+      }
+    }, 1000)
+  }
 
   async function handleGenerateMessages() {
     setGenerating(true)
@@ -307,6 +330,15 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
       }
       setMessages(result)
       setEditedMessages(result)
+      // Persist to DB (fire and forget)
+      supabase
+        .from('business_profiles')
+        .update({ review_request_messages: result })
+        .eq('id', restaurantProfile.id)
+        .eq('user_id', restaurantProfile.user_id)
+        .then(({ error }) => {
+          if (error) console.error('[get-more-reviews] Failed to save messages:', error)
+        })
     } catch (err) {
       setGenerateError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
     } finally {
@@ -333,8 +365,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
     if (!reviewUrl) return
     setGeneratingQr(true)
     try {
-      const url = reviewUrl.endsWith('/reviews') ? reviewUrl : `${reviewUrl}/reviews`
-      const dataUrl = await QRCode.toDataURL(url, {
+      const dataUrl = await QRCode.toDataURL(reviewUrl, {
         width: 256, margin: 2,
         color: { dark: '#111111', light: '#FFFFFF' },
       })
@@ -452,7 +483,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
           placeholder="https://www.tripadvisor.com/Restaurant_Review-g..."
           validate={(url) => {
             if (!url) return 'Please enter your TripAdvisor URL.'
-            if (!url.includes('tripadvisor.com')) return 'URL must be a TripAdvisor restaurant page.'
+            if (!url.includes('tripadvisor.com')) return 'URL must be a TripAdvisor business page.'
             return null
           }}
           hint={
@@ -460,7 +491,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
               <span className="font-medium text-[#57534E]">How to find it:</span> Search your business on{' '}
               <a href="https://www.tripadvisor.com" target="_blank" rel="noopener noreferrer" className="text-[#E05A28] underline underline-offset-2">tripadvisor.com</a>
               , open your page, copy the URL.
-              Format: <span className="font-mono text-[11px] text-[#57534E] bg-[#F3F0EC] px-1.5 py-0.5 rounded">tripadvisor.com/Restaurant_Review-g...-your_restaurant.html</span>
+              Format: <span className="font-mono text-[11px] text-[#57534E] bg-[#F3F0EC] px-1.5 py-0.5 rounded">tripadvisor.com/Restaurant_Review-g...-your-business.html</span>
             </>
           }
           apiRoute="/api/scrape-tripadvisor-reviews"
@@ -474,11 +505,21 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
 
       {/* ── Section 2: Review Request Messages ──────────────────────────────── */}
       <div className="bg-white rounded-xl border border-[#E4DED8] p-4 sm:p-6 space-y-5">
-        <div>
-          <h2 className="text-[14px] font-semibold text-[#111111]">Review Request Messages</h2>
-          <p className="text-[12px] text-[#57534E] mt-0.5">
-            Personalized messages to send via SMS, email, receipt, or table card
-          </p>
+        <div className="flex items-start justify-between gap-2">
+          <div>
+            <h2 className="text-[14px] font-semibold text-[#111111]">Review Request Messages</h2>
+            <p className="text-[12px] text-[#57534E] mt-0.5">
+              Personalized messages to send via SMS, email, receipt, or table card
+            </p>
+          </div>
+          {autoSaved && (
+            <span className="flex items-center gap-1 text-[11px] font-medium text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded-lg flex-shrink-0 mt-0.5 transition-all">
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/>
+              </svg>
+              Saved
+            </span>
+          )}
         </div>
         <button
           onClick={handleGenerateMessages}
@@ -577,9 +618,11 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
                       className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] bg-[#F8F6F3] text-[13px] text-[#111111] placeholder:text-[#C4BEB8] focus:bg-white focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] focus:outline-none resize-none transition-all"
                       rows={ch.key === 'email' ? 5 : 3}
                       value={editedMessages[ch.key]}
-                      onChange={(e) =>
-                        setEditedMessages((prev) => prev ? { ...prev, [ch.key]: e.target.value } : prev)
-                      }
+                      onChange={(e) => {
+                        const updated = editedMessages ? { ...editedMessages, [ch.key]: e.target.value } : null
+                        setEditedMessages(updated)
+                        if (updated) saveMessagesToDb(updated)
+                      }}
                     />
                   </div>
                   <div className="flex justify-end">

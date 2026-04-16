@@ -74,6 +74,12 @@ function CreatePostModal({
   const iframeRef = useRef<HTMLIFrameElement>(null)
 
   const platforms: Platform[] = ['Instagram', 'Facebook', 'Twitter/X', 'TikTok']
+  const platformCharLimit: Record<Platform, number> = {
+    'Instagram': 2200,
+    'Facebook': 63206,
+    'Twitter/X': 280,
+    'TikTok': 2200,
+  }
   const captionStyles: CaptionStyle[] = ['Grateful & warm', 'Bold & confident', 'Fun & casual']
   const graphicStyles: GraphicStyle[] = ['Dark & moody', 'Warm & bright', 'Clean & minimal', 'Bold & colorful']
 
@@ -296,8 +302,8 @@ function CreatePostModal({
                         <p className="text-[13px] text-[#C94E21] mt-2 leading-relaxed">{hashtags.join(' ')}</p>
                       )}
                     </div>
-                    <span className={`absolute bottom-2 right-3 text-[10px] font-medium ${caption.length > 280 ? 'text-red-500' : caption.length > 200 ? 'text-amber-600' : 'text-[#A8A29E]'}`}>
-                      {caption.length}/300
+                    <span className={`absolute bottom-2 right-3 text-[10px] font-medium ${caption.length > platformCharLimit[platform] ? 'text-red-500' : caption.length > platformCharLimit[platform] * 0.85 ? 'text-amber-600' : 'text-[#A8A29E]'}`}>
+                      {caption.length}/{platformCharLimit[platform]}
                     </span>
                   </div>
 
@@ -454,8 +460,12 @@ export default function SocialClient({ reviews, restaurantProfile }: Props) {
             </svg>
           </div>
           <p className="text-[15px] font-semibold text-[#111111] mb-1">Create your first social post</p>
-          <p className="text-[13px] text-[#57534E] mt-1 max-w-[260px] mx-auto leading-relaxed">Turn your best reviews into ready-to-post captions and shareable graphics.</p>
-          <p className="text-[12px] text-[#A8A29E] mt-3">Sync some reviews first to unlock social post creation.</p>
+          <p className="text-[13px] text-[#57534E] mt-1 max-w-[280px] mx-auto leading-relaxed">Turn your best reviews into ready-to-post captions and shareable graphics.</p>
+          <p className="text-[12px] text-[#A8A29E] mt-3">
+            {reviews.length > 0
+              ? 'No 4-star+ reviews with text found yet — once customers leave great reviews, they\'ll appear here.'
+              : 'Sync some reviews first to unlock social post creation.'}
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">

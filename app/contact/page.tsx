@@ -112,7 +112,7 @@ export default function ContactPage() {
                     required
                     value={email}
                     onChange={e => setEmail(e.target.value)}
-                    placeholder="you@restaurant.com"
+                    placeholder="you@yourbusiness.com"
                     className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] transition bg-[#F8F6F3] focus:bg-white"
                   />
                 </div>

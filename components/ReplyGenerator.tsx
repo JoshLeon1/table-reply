@@ -48,7 +48,7 @@ const EXAMPLES = [
   {
     stars: 1,
     review: 'Terrible service. Waited an hour for cold food. Manager was dismissive when we raised it. Will never return.',
-    reply: 'I\'m genuinely sorry for this experience — cold food and a dismissive response is the opposite of what we stand for. This fell short in every way that matters. I\'d really appreciate the chance to hear more directly from you. Please reach out to us at hello@restaurant.com so we can make it right.\n\n— Marco',
+    reply: 'I\'m genuinely sorry for this experience — cold food and a dismissive response is the opposite of what we stand for. This fell short in every way that matters. I\'d really appreciate the chance to hear more directly from you. Please reach out to us directly so we can make it right.\n\n— Marco',
   },
 ]
 

@@ -161,7 +161,7 @@ export default function GoogleConnectSection({
       {/* Hint */}
       <div className="bg-[#F3F0EC] rounded-xl px-4 py-3 text-[12px] text-[#57534E] leading-relaxed">
         <strong className="text-[#111]">How to find your Google Maps URL:</strong> Open{' '}
-        <span className="font-medium text-[#111]">maps.google.com</span>, search your restaurant name, click your listing, then copy the full URL from your browser&apos;s address bar.
+        <span className="font-medium text-[#111]">maps.google.com</span>, search your business name, click your listing, then copy the full URL from your browser&apos;s address bar.
       </div>
     </div>
   )

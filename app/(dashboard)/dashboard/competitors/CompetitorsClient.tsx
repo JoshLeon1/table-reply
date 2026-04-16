@@ -17,6 +17,7 @@ interface Props {
   restaurantProfile: BusinessProfile
   competitors: CompetitorProfile[]
   userAvgRating: number
+  userReviewCount: number
 }
 
 function formatDate(iso: string | null) {
@@ -126,7 +127,7 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
             </svg>
           </div>
           <h2 className="text-[18px] font-bold text-[#111111] tracking-tight mb-1">Track up to 3 competitors</h2>
-          <p className="text-[13px] text-[#57534E]">Monitor nearby restaurants to see how you compare</p>
+          <p className="text-[13px] text-[#57534E]">Monitor nearby businesses to see how you compare</p>
         </div>
 
         {/* Auto-find button */}
@@ -195,7 +196,7 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
                   next[i] = e.target.value
                   setUrls(next)
                 }}
-                placeholder="https://google.com/maps/place/restaurant-name..."
+                placeholder="https://google.com/maps/place/business-name..."
                 className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] text-[13px] text-[#111111] placeholder:text-[#C4BEB8] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] bg-[#F8F6F3] focus:bg-white transition-all"
               />
             </div>
@@ -281,7 +282,7 @@ function AddMoreForm({
                 next[i] = e.target.value
                 setUrls(next)
               }}
-              placeholder="https://google.com/maps/place/restaurant..."
+              placeholder="https://google.com/maps/place/business-name..."
               className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] text-[13px] text-[#111111] placeholder:text-[#C4BEB8] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] bg-[#F8F6F3] focus:bg-white transition-all"
             />
           </div>
@@ -553,10 +554,12 @@ function RatingChart({
 function InsightCallout({
   restaurantName,
   userAvgRating,
+  userReviewCount,
   competitors,
 }: {
   restaurantName: string
   userAvgRating: number
+  userReviewCount: number
   competitors: CompetitorProfile[]
 }) {
   const ratedCompetitors = competitors.filter((c) => c.avg_rating !== null)
@@ -568,10 +571,9 @@ function InsightCallout({
   const diff = Math.abs(userAvgRating - competitorAvg)
   const diffStr = diff.toFixed(1)
 
-  // Find competitor with notably more reviews than user (rough heuristic)
-  const userReviewProxy = competitors[0]?.review_count ?? null
-  const bigReviewComp = userReviewProxy
-    ? competitors.find((c) => c.review_count !== null && c.review_count > userReviewProxy * 2)
+  // Find competitor with notably more reviews than user
+  const bigReviewComp = userReviewCount > 0
+    ? competitors.find((c) => c.review_count !== null && c.review_count > userReviewCount * 2)
     : null
 
   const insights: { key: string; text: string }[] = []
@@ -589,7 +591,7 @@ function InsightCallout({
   }
 
   if (bigReviewComp) {
-    const multiple = Math.round(bigReviewComp.review_count! / userReviewProxy!)
+    const multiple = Math.round(bigReviewComp.review_count! / userReviewCount)
     insights.push({
       key: 'reviews',
       text: `${bigReviewComp.name ?? 'A competitor'} has ${multiple}x more reviews — consider adding a review request to your receipts.`,
@@ -699,6 +701,7 @@ export default function CompetitorsClient({
   restaurantProfile,
   competitors: initialCompetitors,
   userAvgRating,
+  userReviewCount,
 }: Props) {
   const [competitors, setCompetitors] = useState<CompetitorProfile[]>(initialCompetitors)
   const [showAddMore, setShowAddMore] = useState(false)
@@ -764,6 +767,7 @@ export default function CompetitorsClient({
         <InsightCallout
           restaurantName={restaurantProfile.business_name}
           userAvgRating={userAvgRating}
+          userReviewCount={userReviewCount}
           competitors={competitors}
         />
 

@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useCallback } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import GetMoreReviewsClient from '../get-more-reviews/GetMoreReviewsClient'
 import SocialClient from '../social/SocialClient'
 import CompetitorsClient from '../competitors/CompetitorsClient'
@@ -8,6 +9,8 @@ import type { BusinessProfile, CompetitorProfile } from '@/types'
 import type { ScrapedReview } from '@/types'
 
 type Tab = 'get-reviews' | 'social' | 'competitors'
+
+const VALID_TABS: Tab[] = ['get-reviews', 'social', 'competitors']
 
 const TABS: { key: Tab; label: string; icon: React.ReactNode }[] = [
   {
@@ -44,10 +47,26 @@ interface GrowClientProps {
   reviews: ScrapedReview[]
   competitors: CompetitorProfile[]
   userAvgRating: number
+  userReviewCount: number
 }
 
-export default function GrowClient({ restaurantProfile, reviews, competitors, userAvgRating }: GrowClientProps) {
-  const [activeTab, setActiveTab] = useState<Tab>('get-reviews')
+export default function GrowClient({ restaurantProfile, reviews, competitors, userAvgRating, userReviewCount }: GrowClientProps) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  const rawTab = searchParams.get('tab') as Tab | null
+  const activeTab: Tab = rawTab && VALID_TABS.includes(rawTab) ? rawTab : 'get-reviews'
+
+  const setActiveTab = useCallback((tab: Tab) => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (tab === 'get-reviews') {
+      params.delete('tab')
+    } else {
+      params.set('tab', tab)
+    }
+    const query = params.toString()
+    router.replace(`/dashboard/grow${query ? `?${query}` : ''}`, { scroll: false })
+  }, [router, searchParams])
 
   return (
     <div className="space-y-6">
@@ -91,6 +110,7 @@ export default function GrowClient({ restaurantProfile, reviews, competitors, us
             restaurantProfile={restaurantProfile}
             competitors={competitors}
             userAvgRating={userAvgRating}
+            userReviewCount={userReviewCount}
           />
         )}
       </div>

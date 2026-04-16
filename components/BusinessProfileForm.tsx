@@ -327,7 +327,7 @@ export default function BusinessProfileForm({
       />
       <Select
         id="vibe"
-        label="Restaurant Vibe"
+        label="Business Vibe"
         required
         value={form.vibe}
         onChange={(e) => setForm({ ...form, vibe: e.target.value })}
@@ -343,11 +343,11 @@ export default function BusinessProfileForm({
       />
       <Textarea
         id="description"
-        label="Tell Us About Your Restaurant"
+        label="Tell Us About Your Business"
         required
         value={form.description}
         onChange={(e) => setForm({ ...form, description: e.target.value })}
-        placeholder="A brief description — what makes your restaurant special, your story, what guests love most..."
+        placeholder="A brief description — what makes your business special, your story, what customers love most..."
         rows={4}
       />
 

@@ -42,7 +42,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-[16px] font-semibold text-[#111] mb-3">2. Description of Service</h2>
             <p className="text-[14px]">
-              Replyfi is a review management platform that helps restaurant owners monitor, respond to, and analyze customer reviews. Features include AI-generated reply suggestions, review analytics, competitor tracking, social post generation, and review request templates.
+              Replyfi is a review management platform that helps business owners monitor, respond to, and analyze customer reviews. Features include AI-generated reply suggestions, review analytics, competitor tracking, social post generation, and review request templates.
             </p>
           </section>
 
@@ -87,7 +87,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-[16px] font-semibold text-[#111] mb-3">7. Intellectual Property</h2>
             <p className="text-[14px]">
-              The Replyfi platform, including its design, code, and branding, is owned by Replyfi and protected by intellectual property laws. You retain ownership of your restaurant&rsquo;s data and content. By using the Service, you grant us a limited license to process your data to provide the Service.
+              The Replyfi platform, including its design, code, and branding, is owned by Replyfi and protected by intellectual property laws. You retain ownership of your business&rsquo;s data and content. By using the Service, you grant us a limited license to process your data to provide the Service.
             </p>
           </section>
 

@@ -38,11 +38,11 @@ export default function TripAdvisorConnectSection({
   const handleSave = async () => {
     const trimmed = url.trim()
     if (!trimmed) {
-      setError('Please enter your TripAdvisor restaurant URL.')
+      setError('Please enter your TripAdvisor business URL.')
       return
     }
     if (!trimmed.includes('tripadvisor.com')) {
-      setError('URL must be a TripAdvisor restaurant page (e.g. tripadvisor.com/Restaurant_Review-...).')
+      setError('URL must be a TripAdvisor business page (e.g. tripadvisor.com/Restaurant_Review-...).')
       return
     }
     setSaving(true)
@@ -186,12 +186,12 @@ export default function TripAdvisorConnectSection({
 
       {/* How to find URL hint */}
       <div className="bg-[#F3F0EC] rounded-xl px-4 py-3 text-[12px] text-[#57534E] leading-relaxed">
-        <strong className="text-[#111]">How to find your TripAdvisor URL:</strong> Search for your restaurant on{' '}
+        <strong className="text-[#111]">How to find your TripAdvisor URL:</strong> Search for your business on{' '}
         <a href="https://www.tripadvisor.com" target="_blank" rel="noopener noreferrer" className="text-[#E05A28] underline underline-offset-2">
           tripadvisor.com
         </a>
-        , open your restaurant&apos;s page, then copy the URL from your browser.
-        It should look like: <span className="font-mono text-[11px] bg-white px-1.5 py-0.5 rounded border border-[#E4DED8]">tripadvisor.com/Restaurant_Review-g...-your_restaurant.html</span>
+        , open your listing page, then copy the URL from your browser.
+        It should look like: <span className="font-mono text-[11px] bg-white px-1.5 py-0.5 rounded border border-[#E4DED8]">tripadvisor.com/Restaurant_Review-g...-your_business.html</span>
       </div>
     </div>
   )

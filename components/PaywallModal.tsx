@@ -10,18 +10,24 @@ interface PaywallModalProps {
 export default function PaywallModal({ onClose }: PaywallModalProps) {
   const [plan, setPlan] = useState<'annual' | 'monthly'>('annual')
   const [loading, setLoading] = useState(false)
+  const [checkoutError, setCheckoutError] = useState('')
 
   const handleUpgrade = async () => {
     setLoading(true)
+    setCheckoutError('')
     try {
       const res = await fetch('/api/stripe/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ plan }),
       })
-      const { url } = await res.json()
-      if (url) window.location.href = url
-    } catch {
+      const data = await res.json()
+      if (!res.ok || !data.url) {
+        throw new Error(data.error ?? 'Could not start checkout. Please try again.')
+      }
+      window.location.href = data.url
+    } catch (err) {
+      setCheckoutError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
       setLoading(false)
     }
   }
@@ -89,7 +95,7 @@ export default function PaywallModal({ onClose }: PaywallModalProps) {
           <ul className="text-left space-y-2 mb-6 bg-[#F8F6F3] rounded-xl p-4 border border-[#EDE9E4]">
             {[
               'Unlimited AI-powered review replies',
-              'Restaurant-specific voice and tone',
+              'Business-specific voice and tone',
               'Google, Yelp, TripAdvisor & more',
               'Social post generator',
               'Review request templates',
@@ -111,6 +117,9 @@ export default function PaywallModal({ onClose }: PaywallModalProps) {
           >
             {plan === 'annual' ? 'Get started — $239/yr' : 'Get started — $29/mo'}
           </Button>
+          {checkoutError && (
+            <p className="mt-2 text-[12px] text-red-500 text-center">{checkoutError}</p>
+          )}
           <p className="mt-3 text-[12px] text-[#A8A29E]">No surprises. Cancel anytime.</p>
         </div>
       </div>

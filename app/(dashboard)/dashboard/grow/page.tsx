@@ -55,12 +55,15 @@ export default async function GrowPage() {
     userAvgRating = Math.round((total / ratingRows.length) * 10) / 10
   }
 
+  const userReviewCount = ratingRows?.length ?? 0
+
   return (
     <GrowClient
       restaurantProfile={profile as BusinessProfile}
       reviews={reviews ?? []}
       competitors={(competitors ?? []) as CompetitorProfile[]}
       userAvgRating={userAvgRating}
+      userReviewCount={userReviewCount}
     />
   )
 }

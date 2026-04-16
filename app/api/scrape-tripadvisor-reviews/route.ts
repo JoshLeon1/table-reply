@@ -256,7 +256,7 @@ export async function POST(request: NextRequest) {
           const staffRaw = await callClaude({
             maxTokens: 100,
             system: 'You extract names. Return ONLY a JSON array of first names, or [] if none.',
-            userMessage: `Extract any staff member first names mentioned in this restaurant review. Example output: ["Karen", "Mike"]\n\nReview: "${review_text.slice(0, 500)}"`,
+            userMessage: `Extract any staff member first names mentioned in this business review. Example output: ["Karen", "Mike"]\n\nReview: "${review_text.slice(0, 500)}"`,
           })
           const parsed = JSON.parse(staffRaw.trim())
           if (Array.isArray(parsed)) staffMentions = parsed

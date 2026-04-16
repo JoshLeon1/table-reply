@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
         messages: [
           {
             role: 'user',
-            content: `Analyze these ${reviews.length} restaurant reviews. Return a JSON object with exactly this structure:
+            content: `Analyze these ${reviews.length} business reviews. Return a JSON object with exactly this structure:
 {"praised":["item1","item2","item3"],"complaints":["item1","item2"],"opportunities":["item1","item2","item3"]}
 
 Rules:

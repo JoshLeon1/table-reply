@@ -90,7 +90,7 @@ export default async function SettingsPage() {
             <div className="w-full h-1 bg-[#EDE9E4] rounded-full mt-3">
               <div
                 className="h-full bg-[#E05A28] rounded-full transition-all duration-500"
-                style={{ width: `${Math.round((daysRemaining / 7) * 100)}%` }}
+                style={{ width: `${Math.round(((7 - daysRemaining) / 7) * 100)}%` }}
               />
             </div>
           )}
@@ -192,7 +192,7 @@ export default async function SettingsPage() {
           <p className="text-[12px] text-[#57534E] mt-0.5">Get an instant email when a review contains these words.</p>
         </div>
         <div className="px-4 sm:px-6 py-4 sm:py-5">
-          <KeywordAlertsManager userId={user.id} initialAlerts={keywordAlerts ?? []} />
+          <KeywordAlertsManager initialAlerts={keywordAlerts ?? []} />
         </div>
       </div>
 

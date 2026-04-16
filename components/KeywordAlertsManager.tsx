@@ -9,11 +9,10 @@ interface KeywordAlert {
 }
 
 interface KeywordAlertsManagerProps {
-  userId: string
   initialAlerts: KeywordAlert[]
 }
 
-export default function KeywordAlertsManager({ userId, initialAlerts }: KeywordAlertsManagerProps) {
+export default function KeywordAlertsManager({ initialAlerts }: KeywordAlertsManagerProps) {
   const [alerts, setAlerts] = useState<KeywordAlert[]>(initialAlerts)
   const [newKeyword, setNewKeyword] = useState('')
   const [adding, setAdding] = useState(false)

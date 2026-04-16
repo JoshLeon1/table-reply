@@ -126,7 +126,7 @@ function SetupPanel({ profile, onSaved }: { profile: BusinessProfile; onSaved: (
       </div>
       <h1 className="text-xl font-semibold text-[#111111] mb-2">Put Your Review Replies on Autopilot</h1>
       <p className="text-[13px] text-[#57534E]/80 max-w-[280px] sm:max-w-sm mb-8 leading-relaxed">
-        Connect Google Maps, Yelp, or TripAdvisor and Replyfi will sync new reviews every morning, generate personalised replies, and queue them for your approval.
+        Connect Google Maps, Yelp, or TripAdvisor and Replyfi will sync new reviews every morning, generate personalized replies, and queue them for your approval.
       </p>
       <div className="w-full sm:max-w-lg text-left space-y-3">
         <label className="block text-[13px] font-medium text-[#111111]">Google Maps URL</label>
@@ -138,7 +138,7 @@ function SetupPanel({ profile, onSaved }: { profile: BusinessProfile; onSaved: (
           onKeyDown={(e) => e.key === 'Enter' && handleSave()}
           className="w-full px-3.5 py-3.5 rounded-xl border border-[#E4DED8] text-[15px] text-[#111111] placeholder:text-[#C4BEB8] bg-white focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:bg-white focus:border-[#E05A28] transition-all"
         />
-        <p className="text-[11px] text-[#A8A29E] mt-1.5">e.g. maps.google.com/maps/place/your-restaurant...</p>
+        <p className="text-[11px] text-[#A8A29E] mt-1.5">e.g. maps.google.com/maps/place/your-business...</p>
         {error && <p className="text-[12px] text-red-500">{error}</p>}
 
         {/* Helper bullets */}
@@ -233,7 +233,7 @@ function buildPlatformDeepLink(
 
 function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, showStatus, profileUrls }: {
   review: ScrapedReview
-  onApprove: (id: string) => void
+  onApprove: (id: string) => Promise<void>
   onDismiss: (id: string) => void
   onRestore?: (id: string) => void
   showStatus?: boolean
@@ -283,7 +283,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
   const handleApprove = async () => {
     if (!review.generated_reply) return
     setActioning(true)
-    onApprove(review.id)
+    await onApprove(review.id)
     setActioning(false)
   }
 
@@ -486,7 +486,6 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
                   </div>
                 ) : (
                   <div>
-                    <p className="text-[12px] text-[#A8A29E] italic mb-3">No reply generated yet.</p>
                     <button
                       onClick={handleGenerateReply}
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#E05A28]/10 hover:bg-[#E05A28]/15 border border-[#E05A28]/25 text-[#E05A28] text-[12px] font-semibold transition-all duration-150 active:scale-[0.98]"
@@ -591,7 +590,7 @@ type ReviewTab = 'pending' | 'approved' | 'dismissed'
 function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onScrapeNow, onTestMode, scraping, scrapeError, onDismissError, lastScrapedAt }: {
   profile: BusinessProfile
   reviews: ScrapedReview[]
-  onApprove: (id: string) => void
+  onApprove: (id: string) => Promise<void>
   onDismiss: (id: string) => void
   onRestore: (id: string) => void
   onScrapeNow: () => void

@@ -23,6 +23,7 @@ export interface BusinessProfile {
   yelp_last_scraped_at: string | null
   tripadvisor_url: string | null
   tripadvisor_last_scraped_at: string | null
+  review_request_messages?: { sms: string; email: string; receipt: string; tablecard: string } | null
 }
 
 export interface Reply {

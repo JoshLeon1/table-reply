@@ -42,7 +42,7 @@ export default function WelcomeBanner({ hasGeneratedReply, hasAutoSync }: Props)
   if (!visible) return null
 
   const stepList = [
-    { done: steps.voice, label: 'Set restaurant voice', href: '/settings' },
+    { done: steps.voice, label: 'Set business voice', href: '/settings' },
     { done: steps.reply, label: 'Generate first reply',  href: '/dashboard' },
     { done: steps.sync,  label: 'Connect Google sync',   href: '/dashboard/reviews' },
   ]

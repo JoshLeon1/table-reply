@@ -382,11 +382,11 @@ export default function OnboardingPage() {
                     type="url"
                     value={googleUrl}
                     onChange={(e) => { setGoogleUrl(e.target.value); setError('') }}
-                    placeholder="https://maps.google.com/place/Your-Restaurant/..."
+                    placeholder="https://maps.google.com/place/Your-Business/..."
                     className={inputClass}
                   />
                   <p className="text-[11px] text-[#A8A29E] leading-relaxed">
-                    Open maps.google.com, search your restaurant, then copy the URL from your browser address bar.
+                    Open maps.google.com, search your business, then copy the URL from your browser address bar.
                   </p>
                 </div>
 
@@ -401,7 +401,7 @@ export default function OnboardingPage() {
                     type="url"
                     value={yelpUrl}
                     onChange={(e) => { setYelpUrl(e.target.value); setError('') }}
-                    placeholder="https://yelp.com/biz/your-restaurant-city"
+                    placeholder="https://yelp.com/biz/your-business-city"
                     className={inputClass}
                   />
                 </div>

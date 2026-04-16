@@ -163,23 +163,33 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
   const [showDownloadMenu, setShowDownloadMenu] = useState(false)
   const [downloadError, setDownloadError] = useState<string | null>(null)
 
+  type DateRange = '30d' | '90d' | '180d' | 'all'
+  const [dateRange, setDateRange] = useState<DateRange>('all')
+
+  const filteredReviews = useMemo(() => {
+    if (dateRange === 'all') return reviews
+    const days = dateRange === '30d' ? 30 : dateRange === '90d' ? 90 : 180
+    const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
+    return reviews.filter((r) => r.review_datetime_utc && new Date(r.review_datetime_utc) >= cutoff)
+  }, [reviews, dateRange])
+
   // ── Core metrics ───────────────────────────────────────────────────────────
-  const totalReviews = reviews.length
-  const avgRating = avg(reviews.map((r) => r.star_rating))
-  const approvedCount = reviews.filter((r) => r.reply_status === 'approved').length
+  const totalReviews = filteredReviews.length
+  const avgRating = avg(filteredReviews.map((r) => r.star_rating))
+  const approvedCount = filteredReviews.filter((r) => r.reply_status === 'approved').length
   const responseRate = totalReviews > 0 ? Math.round((approvedCount / totalReviews) * 100) : 0
 
   const ratingDist = useMemo(() => {
     const counts: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
-    for (const r of reviews) if (r.star_rating >= 1 && r.star_rating <= 5) counts[r.star_rating]++
+    for (const r of filteredReviews) if (r.star_rating >= 1 && r.star_rating <= 5) counts[r.star_rating]++
     return counts
-  }, [reviews])
+  }, [filteredReviews])
 
   // ── Trend / sparkline ──────────────────────────────────────────────────────
   const now = new Date()
   const trendData = useMemo(() => {
     // Find the earliest review date so we only show months with actual data
-    const datedReviews = reviews.filter((r) => r.review_datetime_utc)
+    const datedReviews = filteredReviews.filter((r) => r.review_datetime_utc)
     if (!datedReviews.length) return []
 
     const earliest = datedReviews.reduce((min, r) =>
@@ -198,7 +208,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       if (m > 11) { m = 0; y++ }
     }
 
-    for (const r of reviews) {
+    for (const r of filteredReviews) {
       const key = getMonthKey(r.review_datetime_utc)
       if (key in months) months[key].push(r.star_rating)
     }
@@ -219,13 +229,13 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
         count: ratings.length,
       }
     })
-  }, [reviews])
+  }, [filteredReviews])
 
   const hasEnoughTrend = trendData.filter((d) => d.rating !== null).length >= 2
   const hasVolumeData = trendData.some((d) => d.count > 0)
 
   const sparkData = useMemo(() => {
-    const sorted = [...reviews].filter((r) => r.review_datetime_utc)
+    const sorted = [...filteredReviews].filter((r) => r.review_datetime_utc)
       .sort((a, b) => new Date(a.review_datetime_utc).getTime() - new Date(b.review_datetime_utc).getTime())
       .slice(-30)
     const win = Math.max(2, Math.ceil(sorted.length / 5))
@@ -234,7 +244,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       const rolling = slice.reduce((s, r) => s + r.star_rating, 0) / slice.length
       return { i, rating: parseFloat(rolling.toFixed(2)) }
     })
-  }, [reviews])
+  }, [filteredReviews])
   const hasSparkData = sparkData.length >= 3
 
   const sparkTrend = useMemo(() => {
@@ -254,7 +264,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
   const dowData = useMemo(() => {
     const counts = Array(7).fill(0)
     const ratings: number[][] = Array(7).fill(null).map(() => [])
-    for (const r of reviews) {
+    for (const r of filteredReviews) {
       if (!r.review_datetime_utc) continue
       const dow = new Date(r.review_datetime_utc).getDay()
       counts[dow]++
@@ -265,14 +275,14 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       count: counts[i],
       avgRating: ratings[i].length ? parseFloat(avg(ratings[i]).toFixed(1)) : 0,
     }))
-  }, [reviews])
+  }, [filteredReviews])
   const maxDowCount = Math.max(...dowData.map((d) => d.count), 1)
   const hasDowData = dowData.some((d) => d.count > 0)
 
   // ── Response rate by star rating ───────────────────────────────────────────
   const responseByRating = useMemo(() => {
     const data: Record<number, { total: number; replied: number }> = { 1: { total: 0, replied: 0 }, 2: { total: 0, replied: 0 }, 3: { total: 0, replied: 0 }, 4: { total: 0, replied: 0 }, 5: { total: 0, replied: 0 } }
-    for (const r of reviews) {
+    for (const r of filteredReviews) {
       const star = r.star_rating
       if (star >= 1 && star <= 5) {
         data[star].total++
@@ -280,29 +290,29 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       }
     }
     return data
-  }, [reviews])
+  }, [filteredReviews])
 
   // ── Critical unanswered ────────────────────────────────────────────────────
   const criticalUnanswered = useMemo(() =>
-    reviews.filter((r) => r.star_rating <= 2 && r.reply_status !== 'approved' && r.reply_status !== 'dismissed').length
-  , [reviews])
+    filteredReviews.filter((r) => r.star_rating <= 2 && r.reply_status !== 'approved' && r.reply_status !== 'dismissed').length
+  , [filteredReviews])
 
   // ── Language breakdown ─────────────────────────────────────────────────────
   const languageData = useMemo(() => {
     const counts: Record<string, number> = {}
-    for (const r of reviews) {
+    for (const r of filteredReviews) {
       const lang = r.language ?? 'English'
       counts[lang] = (counts[lang] ?? 0) + 1
     }
     return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 8)
       .map(([lang, count]) => ({ lang, count, pct: Math.round((count / totalReviews) * 100) }))
-  }, [reviews, totalReviews])
+  }, [filteredReviews, totalReviews])
   const hasMultipleLanguages = languageData.length > 1
 
   // ── Top keywords ──────────────────────────────────────────────────────────
   const topKeywords = useMemo(() => {
     const freq: Record<string, number> = {}
-    for (const r of reviews) {
+    for (const r of filteredReviews) {
       if (!r.review_text) continue
       const words = r.review_text.toLowerCase().match(/\b[a-z]{4,}\b/g) ?? []
       for (const w of words) {
@@ -311,33 +321,33 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
     }
     return Object.entries(freq).sort((a, b) => b[1] - a[1]).slice(0, 20)
       .map(([word, count]) => ({ word, count }))
-  }, [reviews])
+  }, [filteredReviews])
 
   // ── This month vs last month ───────────────────────────────────────────────
   const thisMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
   const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1)
   const lastMonthKey = `${lastMonthDate.getFullYear()}-${String(lastMonthDate.getMonth() + 1).padStart(2, '0')}`
 
-  const thisMonthReviews = reviews.filter((r) => getMonthKey(r.review_datetime_utc) === thisMonthKey)
-  const lastMonthReviews = reviews.filter((r) => getMonthKey(r.review_datetime_utc) === lastMonthKey)
+  const thisMonthReviews = filteredReviews.filter((r) => getMonthKey(r.review_datetime_utc) === thisMonthKey)
+  const lastMonthReviews = filteredReviews.filter((r) => getMonthKey(r.review_datetime_utc) === lastMonthKey)
   const thisMonthAvg = thisMonthReviews.length ? avg(thisMonthReviews.map((r) => r.star_rating)) : 0
   const lastMonthAvg = lastMonthReviews.length ? avg(lastMonthReviews.map((r) => r.star_rating)) : 0
   const ratingDelta = thisMonthAvg && lastMonthAvg ? thisMonthAvg - lastMonthAvg : null
 
   // ── Notable reviews ────────────────────────────────────────────────────────
   const bestReview = useMemo(() =>
-    [...reviews].filter((r) => r.review_text?.trim())
+    [...filteredReviews].filter((r) => r.review_text?.trim())
       .sort((a, b) => b.star_rating - a.star_rating || b.review_text.length - a.review_text.length)[0] ?? null
-  , [reviews])
+  , [filteredReviews])
 
   const worstReview = useMemo(() =>
-    [...reviews].filter((r) => r.review_text?.trim())
+    [...filteredReviews].filter((r) => r.review_text?.trim())
       .sort((a, b) => a.star_rating - b.star_rating)[0] ?? null
-  , [reviews])
+  , [filteredReviews])
 
   // ── Fetch themes ───────────────────────────────────────────────────────────
   const fetchThemes = async (force = false) => {
-    const reviewTexts = reviews.filter((r) => r.review_text?.trim()).map((r) => r.review_text)
+    const reviewTexts = filteredReviews.filter((r) => r.review_text?.trim()).map((r) => r.review_text)
     if (reviewTexts.length < 3) {
       setThemes({ praised: [], complaints: [], opportunities: [], insufficient: true })
       setThemesLoading(false)
@@ -367,9 +377,11 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
   }
 
   useEffect(() => {
-    if (totalReviews === 0) { setThemesLoading(false); return }
+    if (reviews.length === 0) { setThemesLoading(false); return }
+    setThemesLoading(true)
     fetchThemes(false)
-  }, [userId, totalReviews])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId, dateRange, reviews.length])
 
   const handleRefresh = () => {
     setRefreshing(true)
@@ -920,27 +932,28 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
   }
 
   // ── Empty state ────────────────────────────────────────────────────────────
-  if (totalReviews === 0) return <EmptyState restaurantName={restaurantName} />
+  if (reviews.length === 0) return <EmptyState restaurantName={restaurantName} />
 
   // ── Full dashboard ─────────────────────────────────────────────────────────
   return (
     <div className="space-y-8 pb-20" onClick={() => showDownloadMenu && setShowDownloadMenu(false)}>
 
       {/* ── PAGE HEADER ────────────────────────────────────────────────────── */}
-      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-        <div>
-          <h1 className="text-[22px] font-bold tracking-tight text-[#111111] leading-tight">{restaurantName}</h1>
-          <p className="text-[#A8A29E] text-[13px] mt-1">
-            {totalReviews} review{totalReviews !== 1 ? 's' : ''} analyzed
-            {ratingDelta !== null && (
-              <span className={`ml-2 font-semibold ${ratingDelta > 0 ? 'text-emerald-600' : ratingDelta < 0 ? 'text-red-500' : 'text-[#A8A29E]'}`}>
-                {ratingDelta > 0 ? `↑ +${ratingDelta.toFixed(1)} vs last month` : ratingDelta < 0 ? `↓ ${ratingDelta.toFixed(1)} vs last month` : '→ steady vs last month'}
-              </span>
-            )}
-          </p>
-        </div>
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+          <div>
+            <h1 className="text-[22px] font-bold tracking-tight text-[#111111] leading-tight">{restaurantName}</h1>
+            <p className="text-[#A8A29E] text-[13px] mt-1">
+              {totalReviews} review{totalReviews !== 1 ? 's' : ''} {dateRange !== 'all' ? `in last ${dateRange.replace('d', ' days')}` : 'analyzed'}
+              {ratingDelta !== null && (
+                <span className={`ml-2 font-semibold ${ratingDelta > 0 ? 'text-emerald-600' : ratingDelta < 0 ? 'text-red-500' : 'text-[#A8A29E]'}`}>
+                  {ratingDelta > 0 ? `↑ +${ratingDelta.toFixed(1)} vs last month` : ratingDelta < 0 ? `↓ ${ratingDelta.toFixed(1)} vs last month` : '→ steady vs last month'}
+                </span>
+              )}
+            </p>
+          </div>
 
-        <div className="flex items-center gap-2 flex-shrink-0 flex-wrap">
+          <div className="flex items-center gap-2 flex-shrink-0 flex-wrap">
           {lastAnalyzedAt && (
             <span className="text-[11px] text-[#A8A29E] hidden sm:block">Last analyzed {formatDate(lastAnalyzedAt)}</span>
           )}
@@ -989,8 +1002,34 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
               </div>
             )}
           </div>
+          </div>
+        </div>
+
+        {/* Date range filter */}
+        <div className="flex items-center gap-1 bg-[#F3F0EC] rounded-xl p-1 border border-[#E4DED8] self-start">
+          {(['30d', '90d', '180d', 'all'] as const).map((range) => (
+            <button
+              key={range}
+              onClick={() => setDateRange(range)}
+              className={`px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all ${
+                dateRange === range
+                  ? 'bg-white text-[#111111] shadow-sm border border-[#E4DED8]'
+                  : 'text-[#A8A29E] hover:text-[#57534E]'
+              }`}
+            >
+              {range === '30d' ? '30d' : range === '90d' ? '90d' : range === '180d' ? '180d' : 'All'}
+            </button>
+          ))}
         </div>
       </div>
+
+      {/* No data for selected range */}
+      {totalReviews === 0 && (
+        <div className="rounded-2xl bg-[#F8F6F3] border border-[#E4DED8] px-6 py-8 text-center">
+          <p className="text-[#111111] font-medium mb-1">No reviews in this period</p>
+          <p className="text-[13px] text-[#A8A29E]">Try selecting a wider date range</p>
+        </div>
+      )}
 
       {/* Download error */}
       {downloadError && (

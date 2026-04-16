@@ -150,15 +150,15 @@ export default function LandingPage() {
 
   const testimonials = [
     {
-      initials: 'SM', name: 'Dr. Sarah M.', role: 'Owner', restaurant: 'Bright Smile Dental, Austin TX',
+      initials: 'SM', name: 'Dr. Sarah M.', role: 'Owner', business: 'Bright Smile Dental, Austin TX',
       quote: 'I used to dread opening Yelp on Monday mornings. Now I actually look forward to it. We went from responding to maybe 10% of reviews to every single one — patients notice.',
     },
     {
-      initials: 'MT', name: 'Marcus T.', role: 'Owner', restaurant: 'Crown & Blade, Denver CO',
+      initials: 'MT', name: 'Marcus T.', role: 'Owner', business: 'Crown & Blade, Denver CO',
       quote: 'The 1-star reply drafts alone are worth the subscription. I used to write something defensive and regret it every time. Replyfi keeps it professional and my clients keep coming back.',
     },
     {
-      initials: 'JR', name: 'Jen R.', role: 'Owner', restaurant: 'Comfort Air Services, Portland OR',
+      initials: 'JR', name: 'Jen R.', role: 'Owner', business: 'Comfort Air Services, Portland OR',
       quote: 'Our rating went from 4.1 to 4.6 in three months. We attribute most of that to actually responding to every review now — customers trust a business that responds.',
     },
   ]
@@ -665,7 +665,7 @@ export default function LandingPage() {
           {/* Mobile: horizontal snap scroll. Desktop: grid */}
           <div className="flex sm:grid sm:grid-cols-3 overflow-x-auto sm:overflow-visible gap-3 sm:gap-0 px-4 sm:px-6 pb-5 sm:pb-0 snap-x snap-mandatory sm:snap-none sm:rounded-2xl sm:overflow-hidden scroll-smooth"
             style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
-            {testimonials.map(({ initials, name, role, restaurant, quote }, i) => (
+            {testimonials.map(({ initials, name, role, business, quote }, i) => (
               <div
                 key={name}
                 className="bg-[#161616] sm:bg-[#181818] rounded-2xl sm:rounded-none border border-white/[0.07] sm:border-0 sm:border-r px-5 sm:px-7 py-6 sm:py-8 flex flex-col flex-shrink-0 w-[82vw] sm:w-auto snap-center transition-all duration-600"
@@ -682,7 +682,7 @@ export default function LandingPage() {
                   <div className="w-9 h-9 rounded-full bg-[#E05A28]/15 border border-[#E05A28]/20 flex items-center justify-center text-[11px] font-bold text-[#E05A28] flex-shrink-0">{initials}</div>
                   <div>
                     <p className="font-semibold text-white text-[13px]">{name}</p>
-                    <p className="text-[11px] text-white/30 mt-0.5">{role} · {restaurant}</p>
+                    <p className="text-[11px] text-white/30 mt-0.5">{role} · {business}</p>
                   </div>
                 </div>
               </div>

@@ -42,7 +42,7 @@ export default function YelpConnectSection({
       return
     }
     if (!trimmed.includes('yelp.com/biz/')) {
-      setError('URL must be a Yelp business page (e.g. yelp.com/biz/your-restaurant).')
+      setError('URL must be a Yelp business page (e.g. yelp.com/biz/your-business).')
       return
     }
     setSaving(true)
@@ -126,7 +126,7 @@ export default function YelpConnectSection({
           type="url"
           value={url}
           onChange={(e) => { setUrl(e.target.value); setError('') }}
-          placeholder="https://www.yelp.com/biz/your-restaurant-city"
+          placeholder="https://www.yelp.com/biz/your-business-city"
           className="flex-1 min-w-0 text-[13px] px-3.5 py-2.5 rounded-xl border border-[#E4DED8] bg-white placeholder:text-[#C4BEB8] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] transition-all"
         />
         <button
@@ -191,7 +191,7 @@ export default function YelpConnectSection({
           biz.yelp.com
         </a>
         , click your business → &quot;Public Business Page&quot; → copy the URL from your browser.
-        It should look like: <span className="font-mono text-[11px] bg-white px-1.5 py-0.5 rounded border border-[#E4DED8]">yelp.com/biz/your-restaurant-city</span>
+        It should look like: <span className="font-mono text-[11px] bg-white px-1.5 py-0.5 rounded border border-[#E4DED8]">yelp.com/biz/your-business-city</span>
       </div>
     </div>
   )

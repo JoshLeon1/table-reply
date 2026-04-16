@@ -169,7 +169,7 @@ export default function SignupPage() {
                   label="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@restaurant.com"
+                  placeholder="you@yourbusiness.com"
                   required
                   autoComplete="email"
                 />

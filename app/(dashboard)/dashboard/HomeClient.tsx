@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -12,29 +12,6 @@ import Delta from '@/components/ui/Delta'
 import Stars from '@/components/ui/Stars'
 import { Card } from '@/components/ui/Card'
 import { ArrowRight, MessageSquare, RefreshCw, CheckCircle2 } from 'lucide-react'
-
-// ── Count-up animation ────────────────────────────────────────────────────────
-function useCountUp(target: number, duration = 950, delay = 0) {
-  const [val, setVal] = useState(0)
-  const ran = useRef(false)
-  useEffect(() => {
-    if (ran.current) return
-    ran.current = true
-    if (target === 0) return
-    const t = setTimeout(() => {
-      const start = Date.now()
-      const tick = () => {
-        const p = Math.min((Date.now() - start) / duration, 1)
-        setVal(Math.round(target * (1 - Math.pow(1 - p, 3))))
-        if (p < 1) requestAnimationFrame(tick)
-        else setVal(target)
-      }
-      requestAnimationFrame(tick)
-    }, delay)
-    return () => clearTimeout(t)
-  }, [target, duration, delay])
-  return val
-}
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function formatTimeAgo(isoStr: string): string {
@@ -48,12 +25,6 @@ function formatTimeAgo(isoStr: string): string {
     if (days < 7) return `${days}d ago`
     return new Date(isoStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
   } catch { return '' }
-}
-
-function trendCalc(current: number, prev: number) {
-  if (prev === 0) return { dir: 'flat' as const, pct: 0 }
-  const pct = Math.round(((current - prev) / prev) * 100)
-  return { dir: pct > 0 ? 'up' as const : pct < 0 ? 'down' as const : 'flat' as const, pct: Math.abs(pct) }
 }
 
 // ── Platform logos ────────────────────────────────────────────────────────────
@@ -92,13 +63,6 @@ function TripAdvisorLogo({ size = 22 }: { size?: number }) {
 }
 
 // ── Small shared UI ───────────────────────────────────────────────────────────
-function TrendBadge({ current, prev }: { current: number; prev: number }) {
-  const t = trendCalc(current, prev)
-  if (t.dir === 'up') return <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-emerald-600 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-md">↑ {t.pct}%</span>
-  if (t.dir === 'down') return <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-red-500 bg-red-50 border border-red-200 px-1.5 py-0.5 rounded-md">↓ {t.pct}%</span>
-  return <span className="text-[11px] text-[#C4BEB8]">—</span>
-}
-
 function StarRow({ rating, size = 'sm' }: { rating: number; size?: 'sm' | 'md' }) {
   const cls = size === 'md' ? 'w-3.5 h-3.5' : 'w-3 h-3'
   return (
@@ -230,25 +194,6 @@ function PendingCard({ review, userId, onAction, animDelay = 0 }: { review: Scra
           {copied ? <><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied!</> : <><svg className="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Copy &amp; Approve</>}
         </button>
         <button onClick={handleDismiss} disabled={actioning} className="px-3 py-2 rounded-xl text-[12px] font-medium text-[#A8A29E] hover:text-[#57534E] hover:bg-[#F3F0EC] disabled:opacity-40 transition-all duration-150">Dismiss</button>
-      </div>
-    </div>
-  )
-}
-
-// ── Stat card ─────────────────────────────────────────────────────────────────
-function StatCard({ label, value, sub, icon, iconBg, extra, delay }: { label: string; value: React.ReactNode; sub: React.ReactNode; icon: React.ReactNode; iconBg: string; extra?: React.ReactNode; delay: number }) {
-  return (
-    <div className="animate-fade-up bg-white rounded-xl p-3.5 sm:p-5 border border-[#E4DED8] shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.06)] hover:-translate-y-0.5 transition-all duration-200" style={{ animationDelay: `${delay}ms` }}>
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5 mb-2.5">
-            <div className={`w-6 h-6 sm:w-7 sm:h-7 rounded-lg ${iconBg} flex items-center justify-center flex-shrink-0`}>{icon}</div>
-            <p className="text-[11px] font-medium text-[#A8A29E] leading-tight line-clamp-2">{label}</p>
-          </div>
-          <p className="text-[22px] sm:text-[28px] font-bold text-[#111111] leading-none tracking-[-0.03em] mb-2">{value}</p>
-          {sub}
-        </div>
-        {extra && <div className="flex-shrink-0">{extra}</div>}
       </div>
     </div>
   )
@@ -777,12 +722,6 @@ export default function HomeClient({
   const [syncing, setSyncing] = useState(false)
   const [syncMsg, setSyncMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
-  // Animated stats
-  const animReviews  = useCountUp(reviewsThisMonth, 900, 100)
-  const animRating   = useCountUp(Math.round(avgRating * 10), 900, 200)
-  const animApproved = useCountUp(approvedThisMonth, 900, 300)
-  const animRate     = useCountUp(responseRate, 900, 400)
-
   useEffect(() => {
     try {
       if (localStorage.getItem(LS_MANUAL) === 'true') setManualMode(true)
@@ -835,8 +774,6 @@ export default function HomeClient({
     }
   }
 
-  const rateColor = responseRate >= 70 ? 'text-emerald-600' : responseRate >= 40 ? 'text-[#E05A28]' : 'text-red-500'
-
   // ── State A / B: No platform connected ─────────────────────────────────────
   // We know this from server props — don't wait for localStorage hydration.
   // manualMode only flips to true after hydration; until then default to panel.
@@ -859,7 +796,6 @@ export default function HomeClient({
   }
 
   // ── State C: Has at least one platform — full dashboard ──────────────────────
-  const step2Done = hasGeneratedReply
   const allReviews = [...pendingList, ...recentApproved]
 
   return (

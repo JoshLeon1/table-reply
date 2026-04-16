@@ -642,16 +642,16 @@ function HeroRow({ reviews }: { reviews: ScrapedReview[] }) {
 }
 
 // ── ActionStrip — 3 quick-action flat cards ───────────────────────────────────
-function ActionStrip({ pendingCount, unrepliedCount, lastSyncAt }: {
+function ActionStrip({ pendingCount, repliesSentCount, lastSyncAt }: {
   pendingCount: number
-  unrepliedCount: number
+  repliesSentCount: number
   lastSyncAt: string | null
 }) {
   const lastSyncLabel = lastSyncAt ? formatTimeAgo(lastSyncAt) : 'never'
 
   const actions = [
     { href: '/dashboard/reviews?tab=pending', icon: <MessageSquare size={16} strokeWidth={1.5} />, label: 'PENDING REPLIES', value: pendingCount },
-    { href: '/dashboard/reviews',              icon: <CheckCircle2 size={16} strokeWidth={1.5} />, label: 'UNREPLIED',       value: unrepliedCount },
+    { href: '/dashboard/reviews?tab=approved', icon: <CheckCircle2 size={16} strokeWidth={1.5} />, label: 'REPLIES SENT',    value: repliesSentCount },
     { href: '/settings?tab=integrations',      icon: <RefreshCw size={16} strokeWidth={1.5} />,    label: 'LAST SYNC',      value: lastSyncLabel },
   ]
 
@@ -902,7 +902,7 @@ export default function HomeClient({
         <HeroRow reviews={allReviews} />
         <ActionStrip
           pendingCount={pendingList.length}
-          unrepliedCount={pendingList.length}
+          repliesSentCount={recentApproved.length}
           lastSyncAt={displayLastSynced}
         />
         <RecentReviewsList reviews={allReviews} />

@@ -1368,7 +1368,20 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
         <div>
           <SectionLabel>Busiest review days</SectionLabel>
           <div className="rounded-2xl border border-[#E4DED8] bg-white p-5 sm:p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-            <p className="text-[12px] text-[#A8A29E] mb-5">Which days of the week generate the most reviews for your business.</p>
+            <div className="flex items-center justify-between mb-5">
+              <p className="text-[12px] text-[#A8A29E]">Which days of the week generate the most reviews for your business.</p>
+              <div className="flex items-center gap-4 flex-shrink-0 ml-4">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-3 h-3 rounded-sm bg-[#E05A28] opacity-85" />
+                  <span className="text-[11px] text-[#A8A29E]">Reviews</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-4 h-0.5 bg-[#10b981] rounded-full" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#10b981] -ml-2.5" />
+                  <span className="text-[11px] text-[#A8A29E]">Avg rating</span>
+                </div>
+              </div>
+            </div>
             <ResponsiveContainer width="100%" height={200}>
               <ComposedChart data={dowData} margin={{ top: 8, right: 20, bottom: 0, left: -20 }}>
                 <XAxis dataKey="label" tick={{ fontSize: 11, fill: 'rgba(0,0,0,0.35)' }} axisLine={false} tickLine={false} />

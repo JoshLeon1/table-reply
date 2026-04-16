@@ -6,6 +6,12 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { ScrapedReview } from '@/types'
 import Button from '@/components/ui/Button'
+import KPI from '@/components/ui/KPI'
+import Eyebrow from '@/components/ui/Eyebrow'
+import Delta from '@/components/ui/Delta'
+import Stars from '@/components/ui/Stars'
+import { Card } from '@/components/ui/Card'
+import { ArrowRight, MessageSquare, RefreshCw, CheckCircle2 } from 'lucide-react'
 
 // ── Count-up animation ────────────────────────────────────────────────────────
 function useCountUp(target: number, duration = 950, delay = 0) {
@@ -587,6 +593,132 @@ function GeneratorBody({ review, setReview, platform, setPlatform, starRating, s
   )
 }
 
+// ── HeroRow — 30-day rating KPI + volume KPI ─────────────────────────────────
+function HeroRow({ reviews }: { reviews: ScrapedReview[] }) {
+  const now = Date.now()
+  const THIRTY_D = 30 * 24 * 60 * 60 * 1000
+  const recent = reviews.filter(r => now - new Date(r.review_datetime_utc).getTime() < THIRTY_D)
+  const previous = reviews.filter(r => {
+    const age = now - new Date(r.review_datetime_utc).getTime()
+    return age >= THIRTY_D && age < THIRTY_D * 2
+  })
+
+  const avg = (arr: ScrapedReview[]) =>
+    arr.length ? arr.reduce((s, r) => s + (r.star_rating ?? 0), 0) / arr.length : 0
+
+  const recentAvg = avg(recent)
+  const prevAvg = avg(previous)
+  const ratingDelta = Number((recentAvg - prevAvg).toFixed(1))
+  const volumeDelta = recent.length - previous.length
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <Card variant="hero" padding="lg" className="md:col-span-2">
+        <KPI
+          variant="hero"
+          label="RATING — LAST 30 DAYS"
+          value={recentAvg ? recentAvg.toFixed(1) : '—'}
+          trailing={recent.length > 0 && previous.length > 0 ? <Delta value={ratingDelta} unit="" /> : undefined}
+          sub={recent.length > 0 ? (
+            <span className="inline-flex items-center gap-2">
+              <Stars rating={recentAvg} size="sm" />
+              <span>from {recent.length} review{recent.length === 1 ? '' : 's'}</span>
+            </span>
+          ) : 'No reviews in the last 30 days'}
+        />
+      </Card>
+
+      <Card variant="standard" padding="lg">
+        <KPI
+          variant="secondary"
+          label="REVIEW VOLUME"
+          value={recent.length}
+          trailing={previous.length > 0 ? <Delta value={volumeDelta} unit="" /> : undefined}
+          sub={`vs ${previous.length} previous 30d`}
+        />
+      </Card>
+    </div>
+  )
+}
+
+// ── ActionStrip — 3 quick-action flat cards ───────────────────────────────────
+function ActionStrip({ pendingCount, unrepliedCount, lastSyncAt }: {
+  pendingCount: number
+  unrepliedCount: number
+  lastSyncAt: string | null
+}) {
+  const lastSyncLabel = lastSyncAt ? formatTimeAgo(lastSyncAt) : 'never'
+
+  const actions = [
+    { href: '/dashboard/reviews?tab=pending', icon: <MessageSquare size={16} strokeWidth={1.5} />, label: 'PENDING REPLIES', value: pendingCount },
+    { href: '/dashboard/reviews',              icon: <CheckCircle2 size={16} strokeWidth={1.5} />, label: 'UNREPLIED',       value: unrepliedCount },
+    { href: '/settings?tab=integrations',      icon: <RefreshCw size={16} strokeWidth={1.5} />,    label: 'LAST SYNC',      value: lastSyncLabel },
+  ]
+
+  return (
+    <div className="flex gap-3 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory sm:snap-none pb-2 sm:pb-0">
+      {actions.map((a) => (
+        <Link key={a.label} href={a.href} className="group flex-1 min-w-[240px] sm:min-w-0 snap-start">
+          <Card variant="flat" padding="md" className="h-full hover:bg-white transition-colors">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg bg-[#FAF8F5] flex items-center justify-center text-[#57534E] flex-shrink-0">
+                {a.icon}
+              </div>
+              <div className="flex-1 min-w-0">
+                <Eyebrow>{a.label}</Eyebrow>
+                <div className="text-[18px] font-semibold text-[#111] tnum leading-tight mt-0.5 truncate">
+                  {a.value}
+                </div>
+              </div>
+              <ArrowRight size={16} strokeWidth={1.5} className="text-[#A8A29E] group-hover:text-[#111] transition-colors flex-shrink-0" />
+            </div>
+          </Card>
+        </Link>
+      ))}
+    </div>
+  )
+}
+
+// ── RecentReviewsList — dense list of 5 most recent reviews ──────────────────
+function RecentReviewsList({ reviews }: { reviews: ScrapedReview[] }) {
+  const recent = reviews.slice(0, 5)
+  if (recent.length === 0) return null
+
+  return (
+    <Card variant="standard" padding="none">
+      <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-[#EDE9E4]">
+        <Eyebrow>RECENT REVIEWS</Eyebrow>
+        <Link href="/dashboard/reviews" className="text-[12px] font-medium text-[#57534E] hover:text-[#111] inline-flex items-center gap-1">
+          See all <ArrowRight size={12} strokeWidth={2} />
+        </Link>
+      </div>
+      <ul className="divide-y divide-[#EDE9E4]">
+        {recent.map((r) => (
+          <li key={r.id} className="px-5 sm:px-6 py-3.5">
+            <div className="flex items-start sm:items-center gap-3 flex-col sm:flex-row">
+              <div className="flex items-center gap-3 flex-1 min-w-0 w-full">
+                <div className="w-8 h-8 rounded-full bg-[#F0EDE8] text-[#57534E] flex items-center justify-center text-[12px] font-semibold flex-shrink-0">
+                  {(r.reviewer_name ?? 'A').charAt(0).toUpperCase()}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[13px] font-medium text-[#111] truncate">{r.reviewer_name ?? 'Anonymous'}</span>
+                    <Stars rating={r.star_rating ?? 0} size="sm" />
+                  </div>
+                  <p className="text-[13px] text-[#57534E] truncate mt-0.5">{r.review_text}</p>
+                </div>
+              </div>
+              <span className="text-[11px] text-[#A8A29E] tnum self-end sm:self-auto flex-shrink-0">
+                {formatTimeAgo(r.review_datetime_utc)}
+              </span>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </Card>
+  )
+}
+
 // ── Props ─────────────────────────────────────────────────────────────────────
 interface Props {
   ownerName: string
@@ -728,6 +860,7 @@ export default function HomeClient({
 
   // ── State C: Has at least one platform — full dashboard ──────────────────────
   const step2Done = hasGeneratedReply
+  const allReviews = [...pendingList, ...recentApproved]
 
   return (
     <div className="space-y-6 sm:space-y-8 pb-16">
@@ -756,58 +889,37 @@ export default function HomeClient({
         </div>
       )}
 
-      {/* ── Hero ──────────────────────────────────────────────────────────── */}
-      <div className="animate-fade-up bg-white rounded-xl border border-[#E4DED8] px-5 py-5 sm:px-6 sm:py-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 flex-wrap mb-1">
-              <span className="text-[12px] text-[#A8A29E]">{restaurantName}</span>
-              {displayLastSynced && (
-                <><span className="w-1 h-1 rounded-full bg-[#D0C9C1] flex-shrink-0" />
-                <span className="text-[11px] text-[#C4BEB8]">last refreshed {formatTimeAgo(displayLastSynced)}</span></>
-              )}
-            </div>
-            <div className="flex items-baseline gap-2.5">
-              <h1 className="text-[32px] sm:text-[40px] font-bold text-[#111111] tracking-[-0.04em] leading-none tabular-nums">{pendingList.length}</h1>
-              <span className="text-[16px] sm:text-[18px] font-semibold text-[#57534E] leading-none">{pendingList.length === 1 ? 'review needs a reply' : 'reviews need replies'}</span>
-            </div>
-            <p className="text-[13px] text-[#A8A29E] mt-1.5 leading-snug">
-              {pendingList.length > 0 ? 'AI drafts are ready — respond in seconds.' : "You're all caught up. Sync to check for new reviews."}
-            </p>
-          </div>
-
-          <div className="flex flex-col items-start sm:items-end gap-2 flex-shrink-0">
-            {!lastScrapedAt ? (
-              <button onClick={handleSync} disabled={syncing} className="group flex items-center gap-2.5 px-5 py-2.5 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] text-white text-[13px] font-semibold shadow-[0_2px_8px_rgba(224,90,40,0.2)] active:scale-[0.97] disabled:opacity-50 transition-all duration-200 whitespace-nowrap">
-                <svg className={`w-4 h-4 flex-shrink-0 transition-transform duration-700 ${syncing ? 'animate-spin' : 'group-hover:rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.25} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                {syncing ? 'Syncing…' : 'Sync Reviews'}
-              </button>
-            ) : (
-              <>
-                <Link href="/dashboard/reviews" className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] text-white text-[13px] font-semibold active:scale-[0.97] transition-all duration-200 whitespace-nowrap">
-                  <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd"/></svg>
-                  View Reviews
-                </Link>
-                <button onClick={handleSync} disabled={syncing} className="group flex items-center gap-1.5 text-[12px] font-medium text-[#A8A29E] hover:text-[#57534E] disabled:opacity-40 transition-colors duration-150">
-                  <svg className={`w-3 h-3 transition-transform duration-700 ${syncing ? 'animate-spin' : 'group-hover:rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                  {syncing ? 'Syncing…' : 'Sync reviews'}
-                </button>
-              </>
-            )}
-            {syncMsg && <span className={`text-[11px] font-semibold animate-fade-in ${syncMsg.type === 'success' ? 'text-emerald-600' : 'text-red-500'}`}>{syncMsg.type === 'success' ? '✓ ' : '✕ '}{syncMsg.text}</span>}
-          </div>
+      {/* ── New hero layout ────────────────────────────────────────────────── */}
+      <div className="max-w-6xl mx-auto space-y-6">
+        {/* Page title */}
+        <div>
+          <h1 className="text-[22px] sm:text-[26px] font-semibold text-[#111] tracking-[-0.01em]">
+            Welcome back{ownerName ? `, ${ownerName}` : ''}
+          </h1>
+          <p className="text-[13px] text-[#57534E] mt-1">Here&apos;s how your reputation is trending.</p>
         </div>
+
+        <HeroRow reviews={allReviews} />
+        <ActionStrip
+          pendingCount={pendingList.length}
+          unrepliedCount={pendingList.length}
+          lastSyncAt={displayLastSynced}
+        />
+        <RecentReviewsList reviews={allReviews} />
       </div>
 
-      {/* ── Stats ──────────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <StatCard delay={60} label="Reviews this month" value={animReviews} sub={<TrendBadge current={reviewsThisMonth} prev={reviewsLastMonth} />} iconBg="bg-blue-50" icon={<svg className="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>} />
-        <StatCard delay={120} label="Average rating" value={<span className="text-amber-500">{(animRating / 10).toFixed(1)}<span className="text-[14px] ml-0.5 text-amber-400">★</span></span>} sub={<StarRow rating={Math.round(avgRating)} size="md" />} iconBg="bg-amber-50" icon={<svg className="w-3.5 h-3.5 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>} />
-        <StatCard delay={180} label="Approved replies" value={animApproved} sub={<TrendBadge current={approvedThisMonth} prev={approvedLastMonth} />} iconBg="bg-emerald-50" icon={<svg className="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>} />
-        <StatCard delay={240} label="Response rate" value={<span className={rateColor}>{animRate}<span className="text-[14px]">%</span></span>} sub={<span className="text-[11px] text-[#A8A29E]">{totalReviews} reviews total</span>} iconBg="bg-orange-50" icon={<svg className="w-3.5 h-3.5 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>}
-          extra={<div className="relative mt-0.5"><svg viewBox="0 0 36 36" className="w-9 h-9 sm:w-11 sm:h-11 -rotate-90"><circle cx="18" cy="18" r="15.9" fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth="3"/><circle cx="18" cy="18" r="15.9" fill="none" stroke="#E05A28" strokeWidth="3" strokeDasharray={`${Math.min(animRate, 100)} 100`} strokeLinecap="round" style={{ transition: 'stroke-dasharray 0.8s cubic-bezier(0.16,1,0.3,1)' }}/></svg></div>}
-        />
-      </div>
+      {/* ── Sync status message ────────────────────────────────────────────── */}
+      {syncMsg && (
+        <div className="flex items-center justify-between gap-3 px-4 sm:px-5 py-3 rounded-xl bg-white border border-[#E4DED8]">
+          <span className={`text-[12px] font-semibold ${syncMsg.type === 'success' ? 'text-emerald-600' : 'text-red-500'}`}>
+            {syncMsg.type === 'success' ? '✓ ' : '✕ '}{syncMsg.text}
+          </span>
+          <button onClick={handleSync} disabled={syncing} className="group flex items-center gap-1.5 text-[12px] font-medium text-[#A8A29E] hover:text-[#57534E] disabled:opacity-40 transition-colors duration-150">
+            <svg className={`w-3 h-3 transition-transform duration-700 ${syncing ? 'animate-spin' : 'group-hover:rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            {syncing ? 'Syncing…' : 'Sync reviews'}
+          </button>
+        </div>
+      )}
 
       {/* ── Reviews + Activity ─────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">

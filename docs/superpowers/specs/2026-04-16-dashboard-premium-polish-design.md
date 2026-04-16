@@ -20,20 +20,30 @@ brand whispers; the data speaks.
 
 ## 2. Design Principles (in priority order)
 
-1. **Data is the hero.** Numbers get the strongest typography on any
+1. **Mobile-first, iOS-Safari-first.** A large share of owners will
+   open this on an iPhone between customers. Every layout decision is
+   verified first at 375×812 (iPhone SE/Mini/12/13 mini baseline) and
+   390×844 (iPhone 14/15), then scaled up. Safe-area insets, 44×44pt
+   minimum touch targets, 100dvh (not 100vh) for full-height layouts,
+   `-webkit-tap-highlight-color: transparent` on interactive
+   elements, momentum scrolling preserved (no nested overflow traps).
+2. **Data is the hero.** Numbers get the strongest typography on any
    given screen. Cards, chrome, and decoration serve the numbers.
-2. **Restraint over decoration.** Orange is a signal, not a flourish.
+3. **Restraint over decoration.** Orange is a signal, not a flourish.
    Shadows, gradients, and emoji are used sparingly and deliberately.
-3. **Hierarchy through weight, not chrome.** One hero element per page.
+4. **Hierarchy through weight, not chrome.** One hero element per page.
    Two or three secondary. Tertiary gets quiet treatment. Today, every
    card shouts equally loud.
-4. **Vertical-agnostic.** Nothing visual should code as "restaurant"
+5. **Vertical-agnostic.** Nothing visual should code as "restaurant"
    (menu-card styling, serif display faces, plating imagery) or as any
    other single industry. A dentist and a wine bar should both open
    the dashboard and feel it was built for them.
-5. **Trust first, delight second.** Animations and micro-interactions
+6. **Trust first, delight second.** Animations and micro-interactions
    happen on explicit user action, not on page load. No auto-playing
    float/pulse/shimmer once the initial paint is done.
+   **Exception:** The landing-page hero generation animation stays
+   as-is. It's a conversion-critical moment that demonstrates the
+   product. It is out of scope for this pass.
 
 ---
 
@@ -57,6 +67,87 @@ brand whispers; the data speaks.
 - Routes, data model, business logic — zero changes
 - Landing/marketing pages — out of scope for this pass
 - Dark mode — not in scope (doesn't exist today)
+
+---
+
+## 3.5 Mobile iOS — binding rules
+
+The following are not suggestions. Every component and every page
+composition in this spec has to satisfy them:
+
+### 3.5.1 Touch targets
+
+- **Minimum 44×44pt** for any tappable element per Apple HIG. Buttons,
+  nav tabs, segmented controls, checkboxes, close buttons — all.
+- Where visual size is smaller than 44pt (e.g. an ✕ icon at 16px), the
+  **hit area** expands via padding or `::after` pseudo-element to
+  44×44pt. The `Stars` filter segmented control is the most likely
+  failure point; each star is a 44×44 tap target even though the icon
+  renders at 20px.
+
+### 3.5.2 Viewport & safe areas
+
+- Root layout uses `min-h-dvh`, not `min-h-screen` / `100vh`. Already
+  in place; keep.
+- Fixed nav bar already accounts for `env(safe-area-inset-top)`. Keep.
+- Bottom of the page (pagination, "Load more", floating buttons) must
+  respect `env(safe-area-inset-bottom)` on iPhones with home indicators.
+- **Horizontal scroll is forbidden on every page at 375px width.**
+  Verification during implementation: at 375×812, no horizontal
+  scrollbar appears on any page.
+
+### 3.5.3 iOS Safari quirks we must survive
+
+- **16px minimum font-size on all `<input>` / `<textarea>` / `<select>`**
+  to prevent iOS zoom-on-focus. Body copy stays at 14px, but form
+  inputs specifically are 16px. Already partially handled; audit
+  during implementation.
+- **`overflow-x: clip` on html/body**, not `hidden`. Already in place
+  from a prior fix (`overflow-x: hidden` breaks iOS momentum scrolling
+  and `position: sticky`). Keep.
+- **`overflow-anchor: none` on html/body.** Already in place to prevent
+  iOS scroll-anchoring from shifting position when counting-up
+  animations change number widths. Keep.
+- **Sticky elements**: test every `position: sticky` on iOS Safari;
+  use `position: -webkit-sticky` fallback where needed. Nav is
+  `position: fixed`, so sticky concerns are limited to the Reviews
+  tab bar and Competitors first column.
+- **`-webkit-tap-highlight-color: transparent`** on `<button>`,
+  `<a>`, and anything with `role="button"`. Add as a global rule.
+
+### 3.5.4 Responsive composition
+
+- **Hero row** (see §9.1) stacks vertically below 768px — hero metric
+  on top full-width, secondary metric below full-width.
+- **Action strip** (§9.1) horizontally scrolls below 640px using
+  snap-points (`scroll-snap-type: x mandatory`). Each action card
+  becomes a snap item.
+- **Tables** (Reviews, Recent reviews list) collapse to stacked rows
+  below 640px — stars + avatar on line 1, quote + meta on line 2,
+  right-aligned status badge moves to inline with avatar line.
+- **Analytics charts** stay full-width at all breakpoints. X-axis
+  labels thin out below 640px (every 2nd or 3rd label shown).
+- **KPI strip** in Analytics (§9.3) becomes a 2×2 grid below 640px,
+  not a 4-across horizontal strip.
+
+### 3.5.5 Typography on mobile
+
+- **Hero metric** scales down from 44px → 36px below 640px
+- **Page title (H1)** scales down from 26px → 22px below 640px
+- **Body / table data** stays at 14px / 13px — do not scale down on
+  mobile (legibility > density on touch)
+- **Eyebrow labels** stay at 11px — intentionally small, they work
+  fine on mobile
+
+### 3.5.6 Nav on mobile
+
+- Top bar stays fixed at `env(safe-area-inset-top) + 64px` tall
+- Horizontal tab row in the top bar becomes a drawer toggle on mobile
+  (existing behavior; keep). Drawer opens from top with slide-down
+  animation. Already implemented.
+- Active-state treatment in mobile drawer: **2px orange left rail**
+  on the active row, not a background fill (see §8.2)
+- Drawer items are 48px tall (above 44pt minimum)
 
 ---
 
@@ -266,13 +357,12 @@ Filled color stays amber `#F59E0B`; empty stays `--border`.
 
 ### 8.1 Today
 
-Top bar with horizontal tabs. Active tab = orange pill background.
+Top bar with horizontal tabs (desktop) / hamburger drawer (mobile).
+Active tab = orange pill background.
 
 ### 8.2 New treatment
 
-Keep the top-bar layout (mobile real estate matters) — but **retire the
-orange pill background** in favor of:
-
+**Desktop (≥768px):**
 - Default tab: `--text-2` / 500 / no chrome
 - Hover: `--text-1` / 500 / subtle `--slate-100` bg
 - **Active: `--text-1` / 600 / 2px orange underline beneath the tab,
@@ -281,8 +371,15 @@ orange pill background** in favor of:
 This is the single change that reads most "bank/finance" vs. "SaaS."
 The pill is the most-template-y piece of UI in the app.
 
-Mobile drawer: active item gets a 2px orange **left rail** instead of
-an underline (since the orientation is vertical).
+**Mobile drawer (<768px):**
+- Drawer slide-down from top (existing animation, keep)
+- Each drawer row is 48px tall (above 44pt minimum touch target)
+- Default row: `--text-1` / 500 / no chrome
+- Active row: `--text-1` / 600 / **2px orange left rail** (vertical
+  orientation equivalent of the underline) + subtle `--slate-50` bg
+- Row hover/press: `--slate-100` bg
+- Rows have `-webkit-tap-highlight-color: transparent`
+- Drawer close button (✕) is top-right, 44×44pt tap area
 
 ---
 
@@ -294,22 +391,34 @@ Today: several equal-weight cards and panels. No focal point.
 
 New composition, top to bottom:
 
-1. **Hero row** — two-column, left-heavy
+1. **Hero row** — two-column, left-heavy on desktop (≥768px)
    - Left (2/3): big `hero` card with the single hero metric — most
-     recent average rating, last-30-days. Number in 44px tnum. Eyebrow
-     above ("RATING — LAST 30 DAYS"). Delta chip to the right
-     ("▲ 0.2 from previous 30d"). Below: a tiny 30-day sparkline.
+     recent average rating, last-30-days. Number in 44px tnum (36px on
+     mobile). Eyebrow above ("RATING — LAST 30 DAYS"). Delta chip to
+     the right ("▲ 0.2 from previous 30d"). Below: a tiny 30-day
+     sparkline.
    - Right (1/3): `standard` card — "Review volume" with count + 
      sparkline. Secondary metric.
+   - **Mobile (<768px):** stacks vertically, hero on top, secondary
+     below. Both full-width. Sparklines redraw to fit new width.
 2. **Action strip** — single horizontal bar, `flat` variant with inset
    padding. Three small cards side-by-side: Unreplied count, Pending
    AI-drafted replies, Next sync time. Each is clickable to the
    relevant page.
+   - **Mobile (<640px):** becomes a horizontal scroller with
+     `scroll-snap-type: x mandatory`. Each action card is a snap item,
+     80% of viewport wide. Scroll indicator dots (3 dots) below the
+     strip. No horizontal page overflow.
 3. **Recent reviews** — table-style list, not card-in-card. Five rows
-   max. Each row: avatar, name, rating stars, one-line quote, platform
-   badge, date. Quiet, scannable.
+   max.
+   - **Desktop:** each row is a horizontal strip — avatar / name /
+     stars / one-line quote / platform badge / date, single line.
+   - **Mobile (<640px):** two-line row — avatar + name + stars + status
+     on line 1, quote + platform + date on line 2. Tap row to expand
+     to full review + reply inline.
 4. **Setup panel** (only if incomplete) — keeps today's logic but
    becomes a single `hero` card when shown, not a floating CTA stack.
+   Full-width on mobile, centered with max-width on desktop.
 
 ### 9.2 Reviews (`/dashboard/reviews`)
 
@@ -325,8 +434,21 @@ New:
 - **Status badge** at the right — small uppercase eyebrow chip. `PENDING`
   / `APPROVED` / `DISMISSED`. No emoji status indicators.
 - **Star filter** becomes a `Stars`-based segmented control: ☆1 ☆2 ☆3 ☆4 ☆5.
-- **Search bar** gets `⌘K` keyboard shortcut (already wired elsewhere;
-  surface it here).
+  Each star is a 44×44pt tap target on mobile.
+- **Search bar** gets `⌘K` keyboard shortcut on desktop. On mobile, a
+  search icon in the top of the tab bar toggles a full-width search
+  input below the tabs.
+
+**Mobile (<640px) specifics:**
+- Tab bar (pending/approved/dismissed) is horizontally scrollable with
+  snap-points if it overflows. Keeps tab labels legible at small sizes.
+- Row layout collapses to two lines: avatar + name + stars on line 1;
+  one-line quote + platform + date on line 2. Status badge moves to
+  line 1 right-aligned.
+- Tapping a row expands it full-width inline. Reply editor uses a
+  16px input font-size to prevent iOS zoom-on-focus.
+- "Approve" / "Dismiss" / "Copy reply" actions in the expanded view
+  are horizontal and each is at least 44pt tall.
 
 ### 9.3 Analytics (`/dashboard/analytics`)
 
@@ -346,6 +468,21 @@ New:
   response time (if tracked).
 - **PDF export button** — keep, but move to a `secondary` button in the
   top-right instead of the bespoke orange CTA it is today.
+
+**Mobile (<640px) specifics:**
+- KPI strip becomes a 2×2 grid, not a 4-across horizontal strip.
+- Charts stay full-width — explicitly set `ResponsiveContainer`
+  `width="100%"` and ensure parent card has no horizontal padding
+  eating into chart width.
+- X-axis labels thin out on narrow widths: Recharts `interval`
+  prop set to `preserveStartEnd` on <640px, `0` (show all) ≥640px.
+  Smaller `fontSize={10}` on mobile, `12` on desktop.
+- Touch hover on charts: Recharts mobile touch is flaky on iOS
+  Safari — use `<Tooltip trigger="click">` pattern where available
+  or ensure tap outside chart dismisses the tooltip.
+- PDF export button stays visible but full-width at the bottom of
+  the chart stack, not top-right (top-right collides with page title
+  on narrow viewports).
 
 ### 9.4 Global Nav / Mobile drawer
 
@@ -407,8 +544,12 @@ This is the 80% of dashboard time-on-site.
 
 ## 12. Out of Scope
 
-- Landing page / marketing surface — no changes
-- Mobile iOS/Android apps — don't exist
+- **Landing page / marketing surface — no changes.** This includes the
+  hero generation animation (the typing → generating → revealing
+  review cycle). It's a conversion-critical moment that demonstrates
+  the product in motion; it stays exactly as it is today.
+- **Mobile iOS/Android native apps** — don't exist. Mobile web on iOS
+  Safari is in scope (see §3.5); native apps are not.
 - Dark mode — not building
 - Illustrated empty states — we commit to type-driven empty states
   (single sentence + single action) and skip illustration work

@@ -8,7 +8,7 @@
 // Go to console.cloud.google.com → OAuth consent screen → Test users → Add your email
 // To allow all users, publish the app (Audience → Publish App)
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -34,6 +34,30 @@ export default function SignupPage() {
   const [googleLoading, setGoogleLoading] = useState(false)
   const [error, setError] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
+  const [resendCooldown, setResendCooldown] = useState(0)
+  const [resendStatus, setResendStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return
+    const t = setTimeout(() => setResendCooldown((c) => c - 1), 1000)
+    return () => clearTimeout(t)
+  }, [resendCooldown])
+
+  const handleResend = async () => {
+    if (resendCooldown > 0 || resendStatus === 'sending') return
+    setResendStatus('sending')
+    const r = await fetch('/api/auth/resend-confirmation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    })
+    if (r.ok) {
+      setResendStatus('sent')
+      setResendCooldown(60)
+    } else {
+      setResendStatus('error')
+    }
+  }
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -123,8 +147,34 @@ export default function SignupPage() {
           <p className="text-[13px] text-[#A8A29E] mb-6">7 days free — no credit card required.</p>
 
           {successMessage ? (
-            <div className="rounded-xl bg-emerald-50 border border-emerald-100 px-4 py-4">
-              <p className="text-[13px] text-emerald-700 font-medium">{successMessage}</p>
+            <div className="space-y-4">
+              <div className="rounded-xl bg-emerald-50 border border-emerald-100 px-4 py-4">
+                <p className="text-[13px] text-emerald-700 font-medium">{successMessage}</p>
+              </div>
+
+              <div className="rounded-xl border border-border bg-white px-4 py-4 space-y-3">
+                <p className="text-[12px] text-text-2">Didn&apos;t see it? Check your spam folder, or:</p>
+                <button
+                  type="button"
+                  onClick={handleResend}
+                  disabled={resendCooldown > 0 || resendStatus === 'sending'}
+                  className="w-full h-10 rounded-lg border border-border bg-white hover:bg-surface text-text-1 text-[13px] font-medium transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {resendStatus === 'sending' && 'Sending…'}
+                  {resendStatus === 'sent' && resendCooldown > 0 && `Sent — resend in ${resendCooldown}s`}
+                  {resendStatus === 'idle' && 'Resend confirmation email'}
+                  {resendStatus === 'error' && 'Resend failed — try again'}
+                  {resendStatus === 'sent' && resendCooldown === 0 && 'Resend confirmation email'}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleGoogleSignup}
+                  className="w-full h-10 rounded-lg border border-border bg-white hover:bg-surface text-text-1 text-[13px] font-medium transition-all duration-150 flex items-center justify-center gap-2"
+                >
+                  <GoogleIcon />
+                  Use Google instead
+                </button>
+              </div>
             </div>
           ) : (
             <>

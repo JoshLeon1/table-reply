@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Input from '@/components/ui/Input'
@@ -12,6 +13,37 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+  // Guard: only allow showing the form if the user came here via a PASSWORD_RECOVERY
+  // event or already has a valid session (the typical callback flow). This prevents
+  // anyone landing directly on /reset-password from silently changing an unrelated
+  // user's password.
+  const [authorized, setAuthorized] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    const supabase = createClient()
+    let cancelled = false
+
+    // Listen for Supabase's PASSWORD_RECOVERY event fired after the recovery token is consumed
+    const { data: listener } = supabase.auth.onAuthStateChange((event) => {
+      if (cancelled) return
+      if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN') setAuthorized(true)
+    })
+
+    // Also check existing session in case the listener fires before we subscribe
+    supabase.auth.getSession().then(({ data }) => {
+      if (cancelled) return
+      if (data.session) setAuthorized(true)
+      else setAuthorized((prev) => (prev === true ? prev : false))
+    })
+
+    return () => { cancelled = true; listener.subscription.unsubscribe() }
+  }, [])
+
+  useEffect(() => {
+    if (!success) return
+    const t = setTimeout(() => router.push('/dashboard'), 2000)
+    return () => clearTimeout(t)
+  }, [success, router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -38,7 +70,6 @@ export default function ResetPasswordPage() {
 
     setSuccess(true)
     setLoading(false)
-    setTimeout(() => router.push('/dashboard'), 2000)
   }
 
   return (
@@ -60,7 +91,21 @@ export default function ResetPasswordPage() {
           <h1 className="text-[20px] font-bold text-[#111] tracking-[-0.02em] mb-1">Set New Password</h1>
           <p className="text-[14px] text-[#7C7672] mb-6">Choose a strong password for your account.</p>
 
-          {success ? (
+          {authorized === null ? (
+            <div className="flex items-center justify-center py-10">
+              <svg className="animate-spin h-5 w-5 text-[#E05A28]" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+            </div>
+          ) : authorized === false ? (
+            <div className="rounded-xl bg-amber-50 border border-amber-200 px-4 py-4 text-[13px] text-amber-800">
+              <p className="font-semibold mb-1">This link has expired.</p>
+              <p className="text-amber-700">Password reset links are only valid for a short time. Request a new one from the{' '}
+                <Link href="/forgot-password" className="underline underline-offset-2 font-semibold">forgot password page</Link>.
+              </p>
+            </div>
+          ) : success ? (
             <div className="rounded-xl bg-emerald-50 border border-emerald-100 px-4 py-4">
               <p className="text-[13px] text-emerald-700 font-medium">Password updated! Redirecting to your dashboard…</p>
             </div>
@@ -108,6 +153,12 @@ export default function ResetPasswordPage() {
               </button>
             </form>
           )}
+
+          <p className="mt-6 text-[13px] text-center text-[#7C7672]">
+            <Link href="/login" className="text-[#E05A28] hover:text-[#C94E21] font-semibold transition-colors">
+              ← Back to sign in
+            </Link>
+          </p>
         </div>
       </div>
     </div>

@@ -16,7 +16,7 @@ export async function GET() {
   ] = await Promise.all([
     supabase.from('profiles').select('*').eq('id', user.id).maybeSingle(),
     supabase.from('business_profiles').select('*').eq('user_id', user.id).maybeSingle(),
-    supabase.from('scraped_reviews').select('id, reviewer_name, star_rating, review_text, review_datetime_utc, platform, reply_status, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
+    supabase.from('scraped_reviews').select('id, reviewer_name, star_rating, review_text, review_datetime_utc, source, reply_status, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
     supabase.from('replies').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
   ])
 
@@ -44,7 +44,7 @@ export async function GET() {
       star_rating: r.star_rating,
       review_text: r.review_text,
       review_datetime_utc: r.review_datetime_utc,
-      platform: r.platform,
+      platform: r.source,
       reply_status: r.reply_status,
       created_at: r.created_at,
     })),

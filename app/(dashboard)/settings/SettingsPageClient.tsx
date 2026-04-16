@@ -145,7 +145,7 @@ export default function SettingsPageClient({
 
   // ── Save helpers ─────────────────────────────────────────────────────────
 
-  async function saveReplyPrefs(newPrefs: ReplyPreferences) {
+  async function saveReplyPrefs(newPrefs: ReplyPreferences, previous: ReplyPreferences) {
     setSavingPrefs(true); setPrefsToast(null)
     try {
       const res = await fetch('/api/user/preferences', {
@@ -154,11 +154,15 @@ export default function SettingsPageClient({
       })
       if (!res.ok) throw new Error()
       setPrefsToast('saved')
-    } catch { setPrefsToast('error') }
+    } catch {
+      // Roll back optimistic UI so the toggle reflects the true saved state
+      setReplyPrefs(previous)
+      setPrefsToast('error')
+    }
     finally { setSavingPrefs(false); setTimeout(() => setPrefsToast(null), 2500) }
   }
 
-  async function saveEmailNotifs(newNotifs: EmailNotifications) {
+  async function saveEmailNotifs(newNotifs: EmailNotifications, previous: EmailNotifications) {
     setSavingEmail(true); setEmailToast(null)
     try {
       const res = await fetch('/api/user/preferences', {
@@ -167,18 +171,24 @@ export default function SettingsPageClient({
       })
       if (!res.ok) throw new Error()
       setEmailToast('saved')
-    } catch { setEmailToast('error') }
+    } catch {
+      // Roll back optimistic UI so the toggle reflects the true saved state
+      setEmailNotifs(previous)
+      setEmailToast('error')
+    }
     finally { setSavingEmail(false); setTimeout(() => setEmailToast(null), 2500) }
   }
 
   function handleReplyPrefChange(key: keyof ReplyPreferences, value: boolean) {
+    const previous = replyPrefs
     const updated = { ...replyPrefs, [key]: value }
-    setReplyPrefs(updated); saveReplyPrefs(updated)
+    setReplyPrefs(updated); saveReplyPrefs(updated, previous)
   }
 
   function handleEmailNotifChange(key: keyof EmailNotifications, value: boolean) {
+    const previous = emailNotifs
     const updated = { ...emailNotifs, [key]: value }
-    setEmailNotifs(updated); saveEmailNotifs(updated)
+    setEmailNotifs(updated); saveEmailNotifs(updated, previous)
   }
 
   async function handleExport() {

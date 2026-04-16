@@ -70,6 +70,7 @@ export default function BusinessProfileForm({
   const supabase = createClient()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [saved, setSaved] = useState(false)
 
   const [form, setForm] = useState({
     business_name: existingProfile?.business_name ?? '',
@@ -256,8 +257,14 @@ export default function BusinessProfileForm({
       }
     }
 
+    // Flash a "Saved!" confirmation before navigating so users get feedback
+    setLoading(false)
+    setSaved(true)
+
     // New profiles get the demo moment; updates go to redirectTo
     if (existingProfile) {
+      // Brief pause so the success state is visible
+      await new Promise((resolve) => setTimeout(resolve, 600))
       router.push(redirectTo)
     } else {
       router.push('/onboarding/demo')
@@ -527,8 +534,17 @@ export default function BusinessProfileForm({
         </div>
       )}
 
-      <Button type="submit" loading={loading} size="lg" className="w-full">
-        {existingProfile ? 'Save Changes' : 'Set Up My Business →'}
+      {saved && !error && (
+        <div className="rounded-xl bg-emerald-50 border border-emerald-200 px-4 py-3 flex items-center gap-2.5">
+          <svg className="w-4 h-4 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+          <p className="text-[13px] text-emerald-700 font-medium">Saved! Redirecting…</p>
+        </div>
+      )}
+
+      <Button type="submit" loading={loading} disabled={saved} size="lg" className="w-full">
+        {saved ? 'Saved ✓' : existingProfile ? 'Save Changes' : 'Set Up My Business →'}
       </Button>
     </form>
   )

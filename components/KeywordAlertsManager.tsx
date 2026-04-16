@@ -49,12 +49,20 @@ export default function KeywordAlertsManager({ initialAlerts }: KeywordAlertsMan
   }
 
   async function handleDelete(id: string) {
+    // Optimistic removal so the chip disappears instantly; restore on error
+    const previous = alerts
+    setAlerts((prev) => prev.filter((a) => a.id !== id))
+    setError(null)
     try {
       const res = await fetch(`/api/keyword-alerts/${id}`, { method: 'DELETE' })
-      if (!res.ok) return
-      setAlerts((prev) => prev.filter((a) => a.id !== id))
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        setAlerts(previous)
+        setError(data?.error ?? 'Could not remove keyword. Please try again.')
+      }
     } catch {
-      // silently ignore
+      setAlerts(previous)
+      setError('Network error. Please try again.')
     }
   }
 

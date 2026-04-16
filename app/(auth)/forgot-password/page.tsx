@@ -16,19 +16,24 @@ export default function ForgotPasswordPage() {
     setLoading(true)
     setError('')
 
-    const supabase = createClient()
-    const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
-    })
+    try {
+      const supabase = createClient()
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
+      })
 
-    if (resetError) {
-      setError(resetError.message)
+      if (resetError) {
+        setError(resetError.message)
+        setLoading(false)
+        return
+      }
+
+      setSuccess(true)
       setLoading(false)
-      return
+    } catch {
+      setError('Network error. Please try again.')
+      setLoading(false)
     }
-
-    setSuccess(true)
-    setLoading(false)
   }
 
   return (

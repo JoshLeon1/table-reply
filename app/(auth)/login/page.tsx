@@ -42,11 +42,18 @@ function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const accountDeleted = searchParams.get('deleted') === '1'
+  const authError = searchParams.get('error')
+  const redirectTo = searchParams.get('redirectTo')
+  // Only honor redirectTo if it's a same-site absolute path (prevents open-redirect)
+  const safeRedirect = redirectTo && redirectTo.startsWith('/') && !redirectTo.startsWith('//') ? redirectTo : null
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError] = useState(() => {
+    if (authError === 'auth_failed') return 'Sign-in link expired or invalid. Please try again.'
+    return ''
+  })
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -55,7 +62,7 @@ function LoginForm() {
 
     try {
       const supabase = createClient()
-      const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password })
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
 
       if (signInError) {
         console.error('[ReplyFi] Login error:', signInError.message)
@@ -75,11 +82,11 @@ function LoginForm() {
           .from('business_profiles')
           .select('id')
           .eq('user_id', data.user.id)
-          .single()
+          .maybeSingle()
         if (!profile) { router.push('/onboarding'); router.refresh(); return }
       }
 
-      router.push('/dashboard')
+      router.push(safeRedirect ?? '/dashboard')
       router.refresh()
     } catch (err) {
       console.error('[ReplyFi] Unexpected login error:', err)
@@ -93,9 +100,12 @@ function LoginForm() {
     setError('')
     try {
       const supabase = createClient()
+      const callbackUrl = safeRedirect
+        ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(safeRedirect)}`
+        : `${window.location.origin}/auth/callback`
       const { data, error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo: `${window.location.origin}/auth/callback` },
+        options: { redirectTo: callbackUrl },
       })
       if (oauthError) {
         console.error('[ReplyFi] Google OAuth error:', oauthError.message, oauthError)

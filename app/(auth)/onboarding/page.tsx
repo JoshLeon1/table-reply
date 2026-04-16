@@ -432,6 +432,7 @@ export default function OnboardingPage() {
                 Paste your listing URLs — ReplyFi syncs your reviews daily from each one.
               </p>
 
+              <form onSubmit={(e) => { e.preventDefault(); handleStep3() }}>
               <div className="space-y-3">
 
                 {/* Google — primary */}
@@ -501,13 +502,13 @@ export default function OnboardingPage() {
                   Back
                 </button>
                 <button
-                  type="button"
-                  onClick={handleStep3}
+                  type="submit"
                   className="flex-[2] min-h-[48px] rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.98] text-white font-semibold text-[14px] transition-all duration-150 shadow-[0_2px_12px_rgba(224,90,40,0.25)]"
                 >
                   Continue →
                 </button>
               </div>
+              </form>
 
               <div className="flex justify-center mt-2">
                 <button

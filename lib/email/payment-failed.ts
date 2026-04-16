@@ -1,0 +1,52 @@
+// lib/email/payment-failed.ts
+//
+// Sent from the Stripe webhook when an invoice payment fails.
+// Resend is already a dependency; uses RESEND_API_KEY from env.
+
+import { Resend } from 'resend'
+
+const resend = new Resend(process.env.RESEND_API_KEY ?? '')
+
+export interface PaymentFailedEmailInput {
+  toEmail: string
+  /** Number of days until access stops, if Stripe provides it */
+  graceDays?: number
+}
+
+export async function sendPaymentFailedEmail(input: PaymentFailedEmailInput) {
+  if (!process.env.RESEND_API_KEY) {
+    console.warn('[payment-failed-email] RESEND_API_KEY not set — skipping')
+    return { skipped: true as const }
+  }
+
+  const { toEmail, graceDays } = input
+  const grace = graceDays ?? 3
+  const appUrl = (process.env.NEXT_PUBLIC_APP_URL ?? 'https://replyfi.com').replace(/\/$/, '')
+  const portalLink = `${appUrl}/settings?tab=account`
+
+  await resend.emails.send({
+    from: 'ReplyFi <billing@replyfi.com>',
+    to: toEmail,
+    subject: 'Your card was declined — update your payment method',
+    html: `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 24px; color: #111;">
+        <h1 style="font-size: 20px; font-weight: 700; margin: 0 0 16px;">Your most recent payment didn't go through</h1>
+        <p style="font-size: 14px; line-height: 1.55; color: #444; margin: 0 0 12px;">
+          We tried to charge the card on file for your ReplyFi subscription and it was declined.
+          You have <strong>${grace} days</strong> to update your payment before access pauses.
+        </p>
+        <p style="font-size: 14px; line-height: 1.55; color: #444; margin: 0 0 24px;">
+          The most common reasons: card expired, daily limit reached, or the bank flagged it as suspicious.
+        </p>
+        <a href="${portalLink}" style="display: inline-block; background: #E05A28; color: white; text-decoration: none; font-weight: 600; font-size: 14px; padding: 12px 20px; border-radius: 10px;">
+          Update payment method
+        </a>
+        <p style="font-size: 12px; color: #888; margin: 32px 0 0;">
+          Replying to this email reaches a real human at ReplyFi support.
+        </p>
+      </div>
+    `,
+  })
+
+  return { skipped: false as const }
+}

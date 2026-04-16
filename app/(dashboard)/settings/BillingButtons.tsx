@@ -40,16 +40,16 @@ export default function BillingButtons() {
       <button
         onClick={() => startCheckout('annual')}
         disabled={loading !== null}
-        className="w-full flex items-center justify-between px-5 py-3.5 rounded-xl bg-[#111] hover:bg-[#2a2a2a] disabled:opacity-60 text-white transition-all duration-150 group ring-2 ring-[#E05A28]/20"
+        className="w-full flex items-center justify-between px-5 py-3.5 rounded-xl border-2 border-[#E05A28] bg-[#FEF0E8] hover:bg-[#FDEADF] disabled:opacity-60 transition-all duration-150 group"
       >
         <div className="text-left">
           <div className="flex items-center gap-2 mb-0.5">
-            <span className="text-[13px] font-semibold">Annual Plan</span>
-            <span className="px-1.5 py-0.5 rounded bg-[#E05A28] text-white text-[9px] font-bold uppercase tracking-wide leading-none">
+            <span className="text-[13px] font-semibold text-[#111]">Annual Plan</span>
+            <span className="px-1.5 py-0.5 rounded-md bg-[#E05A28] text-white text-[9px] font-bold uppercase tracking-wide leading-none">
               Best Value
             </span>
           </div>
-          <p className="text-white/50 text-[11px]">$239/yr · save $109 · under $20/month</p>
+          <p className="text-[#A8704A] text-[11px]">$239/yr · save $109 · under $20/month</p>
         </div>
         <span className="text-[#E05A28] text-[13px] font-semibold flex items-center gap-1 flex-shrink-0">
           {loading === 'annual' ? (

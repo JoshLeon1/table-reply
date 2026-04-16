@@ -316,28 +316,31 @@ export default function LandingPage() {
                             <span className="text-amber-400/70">★</span>
                             <span className="text-white/15">★★★★</span>
                           </div>
-                          <p className="text-white/50 text-[11px] leading-relaxed min-h-[28px]">
+                          <p className="text-white/50 text-[11px] leading-relaxed" style={{ minHeight: '2.25rem' }}>
                             &ldquo;{typedReview}
                             {animPhase === 'typing' && <span className="inline-block w-px h-[0.85em] bg-white/40 ml-px align-text-bottom" style={{ animation: 'blink 0.8s step-end infinite' }} />}
                             {animPhase !== 'typing' && typedReview && '…"'}
                           </p>
                         </div>
                       </div>
-                      {animPhase === 'generating' && (
-                        <div className="mt-2.5 ml-9 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#E05A28]/10 border border-[#E05A28]/20 w-fit">
-                          {[0,1,2].map((i) => <span key={i} className="w-1.5 h-1.5 rounded-full bg-[#E05A28]" style={{ animation: `typingBounce 1.2s ease-in-out ${i * 0.2}s infinite` }} />)}
-                          <span className="text-[10px] text-[#E05A28]/80 ml-1">Generating…</span>
-                        </div>
-                      )}
-                      {animPhase === 'revealing' && (
-                        <div className="mt-2.5 ml-9 bg-[#E05A28]/10 border border-[#E05A28]/20 rounded-xl p-2.5">
-                          <p className="text-[9px] font-bold uppercase tracking-wider text-[#E05A28] mb-1">AI Reply</p>
-                          <p className="text-white/65 text-[11px] leading-relaxed min-h-[2.5em]">
-                            {typedReply}
-                            <span className="inline-block w-px h-[0.85em] bg-[#E05A28]/60 ml-px align-text-bottom" style={{ animation: 'blink 0.8s step-end infinite' }} />
-                          </p>
-                        </div>
-                      )}
+                      {/* Fixed-height container so animating content never shifts layout */}
+                      <div style={{ minHeight: '96px' }}>
+                        {animPhase === 'generating' && (
+                          <div className="mt-2.5 ml-9 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#E05A28]/10 border border-[#E05A28]/20 w-fit">
+                            {[0,1,2].map((i) => <span key={i} className="w-1.5 h-1.5 rounded-full bg-[#E05A28]" style={{ animation: `typingBounce 1.2s ease-in-out ${i * 0.2}s infinite` }} />)}
+                            <span className="text-[10px] text-[#E05A28]/80 ml-1">Generating…</span>
+                          </div>
+                        )}
+                        {animPhase === 'revealing' && (
+                          <div className="mt-2.5 ml-9 bg-[#E05A28]/10 border border-[#E05A28]/20 rounded-xl p-2.5">
+                            <p className="text-[9px] font-bold uppercase tracking-wider text-[#E05A28] mb-1">AI Reply</p>
+                            <p className="text-white/65 text-[11px] leading-relaxed" style={{ minHeight: '3.5rem' }}>
+                              {typedReply}
+                              <span className="inline-block w-px h-[0.85em] bg-[#E05A28]/60 ml-px align-text-bottom" style={{ animation: 'blink 0.8s step-end infinite' }} />
+                            </p>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>

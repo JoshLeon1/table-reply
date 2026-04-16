@@ -120,7 +120,14 @@ export default function SettingsPageClient({
   daysRemaining,
   stripePlan,
 }: Props) {
-  const [activeTab, setActiveTab] = useState<TabId>('profile')
+  // If arriving from the trial banner / paywall "Upgrade now" link, open Account tab directly
+  const [activeTab, setActiveTab] = useState<TabId>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      if (params.get('tab') === 'account') return 'account'
+    }
+    return 'profile'
+  })
 
   // Reply prefs state
   const [replyPrefs, setReplyPrefs] = useState<ReplyPreferences>(initialReplyPrefs)

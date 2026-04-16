@@ -542,20 +542,12 @@ export default function OnboardingPage() {
                   className="w-full px-3.5 py-3 rounded-xl border border-[#E4DED8] hover:border-[#CEC8C1] text-[#111] text-[13px] placeholder:text-[#C4BEB8] bg-[#F8F6F3] hover:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] transition-all duration-150 resize-none leading-relaxed"
                 />
                 {error && <ErrorBox message={error} />}
-                <div className="flex gap-3">
-                  <button
-                    type="button"
-                    onClick={() => handleFinish(true)}
-                    disabled={loading}
-                    className="flex-1 min-h-[52px] rounded-xl border border-[#E4DED8] bg-white hover:bg-[#F8F6F3] text-[#57534E] font-medium text-[13px] transition-all duration-150 disabled:opacity-40"
-                  >
-                    Skip for Now
-                  </button>
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                   <button
                     type="button"
                     onClick={() => handleFinish(false)}
                     disabled={loading}
-                    className="flex-[2] min-h-[52px] rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.98] text-white font-semibold text-[15px] transition-all duration-150 disabled:opacity-40 flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(224,90,40,0.25)]"
+                    className="flex-1 h-11 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.98] text-white font-semibold text-[14px] transition-all duration-150 disabled:opacity-40 flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(224,90,40,0.25)]"
                   >
                     {loading && (
                       <svg className="animate-spin h-4 w-4 opacity-80" fill="none" viewBox="0 0 24 24">
@@ -563,7 +555,15 @@ export default function OnboardingPage() {
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                       </svg>
                     )}
-                    {loading ? 'Setting Up…' : 'Go to Dashboard →'}
+                    {loading ? 'Saving…' : 'Save & continue'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleFinish(true)}
+                    disabled={loading}
+                    className="h-11 px-5 rounded-xl border border-[#E4DED8] bg-white hover:bg-[#F8F6F3] text-[#57534E] hover:text-[#333] font-medium text-[13px] transition-all duration-150 disabled:opacity-40"
+                  >
+                    Skip for now
                   </button>
                 </div>
               </div>

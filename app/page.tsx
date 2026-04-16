@@ -228,7 +228,7 @@ export default function LandingPage() {
                 className="text-white mb-4 sm:mb-5 animate-fade-up"
                 style={{ fontSize: 'clamp(30px, 6vw, 68px)', fontWeight: 800, lineHeight: 1.08, letterSpacing: '-0.03em', animationDelay: '160ms' }}
               >
-                Reply to Every Review in Seconds—<span style={{ color: '#E05A28' }}>Without Losing Your Voice.</span>
+                Reply to Every Review in Seconds—<span style={{ color: '#E05A28' }}>Without Losing Your Voice</span>.
               </h1>
 
               <p className="text-[#888] mb-7 animate-fade-up" style={{ fontSize: 'clamp(14px, 2vw, 16px)', lineHeight: '1.65', animationDelay: '260ms', maxWidth: '460px' }}>
@@ -505,7 +505,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── HOW IT WORKS ─────────────────────────────────────────────────── */}
-      <section id="how-it-works" className="py-12 sm:py-20 px-4 sm:px-6 bg-white border-t border-[#e5e5e0]">
+      <section id="how-it-works" className="scroll-mt-20 py-12 sm:py-20 px-4 sm:px-6 bg-white border-t border-[#e5e5e0]">
         <div className="max-w-4xl mx-auto">
           <div
             ref={howItWorksAnim.ref}

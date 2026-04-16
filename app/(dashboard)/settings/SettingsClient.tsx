@@ -9,7 +9,6 @@ interface ReplyPreferences {
 }
 
 interface EmailNotifications {
-  newReviewsScraped: boolean
   weeklyDigest: boolean
 }
 
@@ -276,17 +275,6 @@ export default function SettingsClient({
         </div>
 
         <div className="divide-y divide-[#EDE9E4]">
-          <div className="px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
-            <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-medium text-[#111111]">New reviews synced</p>
-              <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">Get notified when your Auto Review sync pulls in new reviews</p>
-            </div>
-            <Toggle
-              checked={emailNotifs.newReviewsScraped}
-              onChange={(v) => handleEmailNotifChange('newReviewsScraped', v)}
-              disabled={savingEmail}
-            />
-          </div>
           <div className="px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
             <div className="min-w-0 flex-1">
               <p className="text-[13px] font-medium text-[#111111]">Weekly digest</p>

@@ -38,7 +38,7 @@ export default function TrialBanner({ daysRemaining, trialExpired, onUpgrade }: 
           onClick={onUpgrade}
           className="text-[13px] font-semibold text-[#E05A28] hover:text-[#F07040] transition-colors ml-4 whitespace-nowrap flex-shrink-0"
         >
-          Upgrade — from $20/mo →
+          Upgrade to Pro →
         </button>
       </div>
     )
@@ -59,7 +59,7 @@ export default function TrialBanner({ daysRemaining, trialExpired, onUpgrade }: 
             onClick={onUpgrade}
             className="text-[13px] font-semibold text-[#E05A28] hover:text-[#F07040] transition-colors whitespace-nowrap"
           >
-            Upgrade — from $20/mo →
+            Upgrade to Pro →
           </button>
           <button
             onClick={handleDismiss}

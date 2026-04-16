@@ -13,8 +13,10 @@ export async function GET(request: Request) {
     const { data, error } = await supabase.auth.exchangeCodeForSession(code)
 
     if (!error && data.user) {
-      // If a specific next page was requested (e.g. password reset), go there
-      if (next) {
+      // If a specific next page was requested (e.g. password reset), go there.
+      // Only allow same-origin paths (must start with "/" but not "//") to
+      // prevent open-redirect phishing via crafted magic-link URLs.
+      if (next && /^\/(?!\/)/.test(next)) {
         return NextResponse.redirect(`${origin}${next}`)
       }
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Button from './ui/Button'
 
 interface PaywallModalProps {
@@ -8,9 +8,52 @@ interface PaywallModalProps {
 }
 
 export default function PaywallModal({ onClose }: PaywallModalProps) {
-  const [plan, setPlan] = useState<'annual' | 'monthly'>('annual')
+  const [plan, setPlan] = useState<'annual' | 'monthly'>('monthly')
   const [loading, setLoading] = useState(false)
   const [checkoutError, setCheckoutError] = useState('')
+  const modalRef = useRef<HTMLDivElement>(null)
+
+  // Focus trap + Escape key handler
+  useEffect(() => {
+    const previouslyFocused = document.activeElement as HTMLElement | null
+
+    // Focus the modal on mount
+    modalRef.current?.focus()
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose?.()
+        return
+      }
+      if (e.key !== 'Tab') return
+
+      const focusable = modalRef.current?.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      if (!focusable || focusable.length === 0) return
+
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault()
+          last.focus()
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault()
+          first.focus()
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      previouslyFocused?.focus()
+    }
+  }, [onClose])
 
   const handleUpgrade = async () => {
     setLoading(true)
@@ -34,8 +77,15 @@ export default function PaywallModal({ onClose }: PaywallModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-      <div className="absolute inset-0 bg-black/55 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl w-full sm:max-w-md px-6 pt-7 pb-8 sm:p-8">
+      <div className="absolute inset-0 bg-black/55 backdrop-blur-sm" onClick={onClose} aria-hidden="true" />
+      <div
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="paywall-title"
+        tabIndex={-1}
+        className="relative bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl w-full sm:max-w-md px-6 pt-7 pb-8 sm:p-8 outline-none"
+      >
         {onClose && (
           <button
             onClick={onClose}
@@ -54,15 +104,16 @@ export default function PaywallModal({ onClose }: PaywallModalProps) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
           </div>
-          <h2 className="text-[22px] font-semibold text-[#111] tracking-tight mb-1.5">Your Trial Has Ended</h2>
+          <h2 id="paywall-title" className="text-[22px] font-semibold text-[#111] tracking-tight mb-1.5">Your Trial Has Ended</h2>
           <p className="text-[#7C7672] text-[14px] mb-5 leading-relaxed">
             Keep replying to every review with AI. No contracts, cancel anytime.
           </p>
 
           {/* Plan toggle */}
-          <div className="flex rounded-xl border border-[#E4DED8] bg-[#F8F6F3] p-1 mb-5 gap-1">
+          <div className="flex rounded-xl border border-[#E4DED8] bg-[#F8F6F3] p-1 mb-5 gap-1" role="group" aria-label="Billing period">
             <button
               onClick={() => setPlan('annual')}
+              aria-pressed={plan === 'annual'}
               className={`flex-1 flex flex-col items-center py-2.5 px-3 rounded-lg text-[12px] font-medium transition-all duration-150 ${
                 plan === 'annual'
                   ? 'bg-white shadow-sm text-[#111] border border-[#E4DED8]'
@@ -81,6 +132,7 @@ export default function PaywallModal({ onClose }: PaywallModalProps) {
             </button>
             <button
               onClick={() => setPlan('monthly')}
+              aria-pressed={plan === 'monthly'}
               className={`flex-1 flex flex-col items-center py-2.5 px-3 rounded-lg text-[12px] font-medium transition-all duration-150 ${
                 plan === 'monthly'
                   ? 'bg-white shadow-sm text-[#111] border border-[#E4DED8]'
@@ -96,7 +148,7 @@ export default function PaywallModal({ onClose }: PaywallModalProps) {
             {[
               'Unlimited AI-powered review replies',
               'Business-specific voice and tone',
-              'Google, Yelp, TripAdvisor & more',
+              'Google, Yelp & TripAdvisor',
               'Social post generator',
               'Review request templates',
             ].map((feature) => (

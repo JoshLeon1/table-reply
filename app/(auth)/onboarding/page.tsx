@@ -172,10 +172,18 @@ export default function OnboardingPage() {
         return
       }
 
-      await supabase
+      // Only set trial_started_at if it hasn't been set already (signup sets it first)
+      const { data: existingProfile } = await supabase
         .from('profiles')
-        .update({ trial_started_at: new Date().toISOString() })
+        .select('trial_started_at')
         .eq('id', user.id)
+        .maybeSingle()
+      if (!existingProfile?.trial_started_at) {
+        await supabase
+          .from('profiles')
+          .update({ trial_started_at: new Date().toISOString() })
+          .eq('id', user.id)
+      }
 
       // Kick off first sync if any platform was connected
       if (googleUrl.trim() || yelpUrl.trim() || taUrl.trim()) {
@@ -191,7 +199,7 @@ export default function OnboardingPage() {
     }
   }
 
-  const stepLabels = ['Basics', 'Voice', 'Platforms', 'Style']
+  const stepLabels = ['Basics', 'Voice', 'Platforms', 'Train']
   const totalSteps = stepLabels.length
 
   if (checking) {
@@ -443,13 +451,15 @@ export default function OnboardingPage() {
                 </button>
               </div>
 
-              <button
-                type="button"
-                onClick={() => { setError(''); setStep(4) }}
-                className="w-full mt-2 text-[12px] text-[#C4BEB8] hover:text-[#A8A29E] transition-colors duration-150 py-1"
-              >
-                Skip — I'll add these later
-              </button>
+              <div className="flex justify-center mt-2">
+                <button
+                  type="button"
+                  onClick={() => { setError(''); setStep(4) }}
+                  className="text-[13px] font-medium text-[#57534E] border border-[#E4DED8] rounded-xl px-4 py-2.5 hover:bg-[#F8F6F3] transition-colors duration-150"
+                >
+                  Skip — I'll add these later
+                </button>
+              </div>
             </>
           )}
 
@@ -477,7 +487,7 @@ export default function OnboardingPage() {
                     type="button"
                     onClick={() => handleFinish(true)}
                     disabled={loading}
-                    className="flex-1 min-h-[48px] rounded-xl border border-[#E4DED8] bg-white hover:bg-[#F8F6F3] text-[#57534E] font-medium text-[13px] transition-all duration-150 disabled:opacity-40"
+                    className="flex-1 min-h-[52px] rounded-xl border border-[#E4DED8] bg-white hover:bg-[#F8F6F3] text-[#57534E] font-medium text-[13px] transition-all duration-150 disabled:opacity-40"
                   >
                     Skip for Now
                   </button>

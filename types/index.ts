@@ -24,6 +24,8 @@ export interface BusinessProfile {
   tripadvisor_url: string | null
   tripadvisor_last_scraped_at: string | null
   review_request_messages?: { sms: string; email: string; receipt: string; tablecard: string } | null
+  reply_language?: string | null
+  reply_preferences?: Record<string, unknown> | null
 }
 
 export interface Reply {

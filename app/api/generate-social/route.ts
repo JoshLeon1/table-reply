@@ -2,7 +2,9 @@ export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { callClaude } from '@/lib/anthropic'
+import { hasActiveAccess } from '@/lib/subscription'
 
 export async function POST(request: NextRequest) {
   const supabase = createClient()
@@ -11,6 +13,15 @@ export async function POST(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const supabaseAdmin = createServiceClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+  const allowed = await hasActiveAccess(supabaseAdmin, user.id)
+  if (!allowed) {
+    return NextResponse.json({ error: 'Subscription required' }, { status: 402 })
+  }
 
   let body: {
     reviewText?: string
@@ -35,7 +46,7 @@ export async function POST(request: NextRequest) {
       .from('business_profiles')
       .select('business_name, business_type, vibe')
       .eq('user_id', user.id)
-      .single()
+      .maybeSingle()
     if (rp) {
       restaurantName = restaurantName || rp.business_name
       cuisineType    = cuisineType    || rp.business_type

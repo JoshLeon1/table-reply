@@ -2,7 +2,9 @@ export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { callClaude } from '@/lib/anthropic'
+import { hasActiveAccess } from '@/lib/subscription'
 
 export async function POST(request: NextRequest) {
   const supabase = createClient()
@@ -12,6 +14,15 @@ export async function POST(request: NextRequest) {
 
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const supabaseAdmin = createServiceClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+  const allowed = await hasActiveAccess(supabaseAdmin, user.id)
+  if (!allowed) {
+    return NextResponse.json({ error: 'Subscription required' }, { status: 402 })
   }
 
   const body = await request.json()

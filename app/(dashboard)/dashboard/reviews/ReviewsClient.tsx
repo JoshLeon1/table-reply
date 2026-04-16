@@ -232,13 +232,14 @@ function buildPlatformDeepLink(
   return 'https://business.google.com/reviews'
 }
 
-function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, showStatus, profileUrls }: {
+function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, showStatus, profileUrls, isCopied }: {
   review: ScrapedReview
   onApprove: (id: string) => Promise<void>
   onDismiss: (id: string) => void
   onRestore?: (id: string) => void
   showStatus?: boolean
   profileUrls?: { google?: string | null; yelp?: string | null; tripadvisor?: string | null }
+  isCopied?: boolean
 }) {
   const supabase = createClient()
   const [review, setReview] = useState(initialReview)
@@ -558,12 +559,23 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
             <button
               onClick={handleApprove}
               disabled={actioning || !review.generated_reply || editing}
-              className="flex items-center justify-center gap-1.5 px-4 min-h-[44px] rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.97] text-white text-[13px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 shadow-[0_1px_3px_rgba(224,90,40,0.3)]"
+              className={`flex items-center justify-center gap-1.5 px-4 min-h-[44px] rounded-xl text-white text-[13px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 shadow-[0_1px_3px_rgba(224,90,40,0.3)] ${isCopied ? 'bg-green-600 hover:bg-green-600 active:bg-green-600' : 'bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.97]'}`}
             >
-              <svg className="w-3.5 h-3.5 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/>
-              </svg>
-              Approve Reply
+              {isCopied ? (
+                <>
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/>
+                  </svg>
+                  Copied!
+                </>
+              ) : (
+                <>
+                  <svg className="w-3.5 h-3.5 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/>
+                  </svg>
+                  Approve Reply
+                </>
+              )}
             </button>
             <button
               onClick={handleGenerateReply}
@@ -590,7 +602,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
 
 type ReviewTab = 'pending' | 'approved' | 'dismissed'
 
-function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onScrapeNow, onTestMode, scraping, scrapeError, onDismissError, lastScrapedAt }: {
+function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onScrapeNow, onTestMode, scraping, scrapeError, onDismissError, lastScrapedAt, copiedId }: {
   profile: BusinessProfile
   reviews: ScrapedReview[]
   onApprove: (id: string) => Promise<void>
@@ -602,6 +614,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
   scrapeError: string
   onDismissError: () => void
   lastScrapedAt: string | null
+  copiedId: string | null
 }) {
   const pending   = reviews
     .filter((r) => r.reply_status === 'pending')
@@ -806,7 +819,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
           <div className="space-y-3">
             {(filterStars !== null ? pending.filter((r) => r.star_rating === filterStars) : pending).map((r, i) => (
               <div key={r.id} className={i < 5 ? `animate-fade-up stagger-${i + 1}` : ''}>
-                <ReviewCard review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }}/>
+                <ReviewCard review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }} isCopied={copiedId === r.id}/>
               </div>
             ))}
           </div>
@@ -902,6 +915,7 @@ export default function ReviewsClient({ profile, initialReviews, userId }: Props
   const [reviews, setReviews]       = useState<ScrapedReview[]>(initialReviews)
   const [scraping, setScraping]     = useState(false)
   const [scrapeError, setScrapeError] = useState('')
+  const [copiedId, setCopiedId]     = useState<string | null>(null)
   // Use the most recent sync time across all connected platforms
   const mostRecentSync = [profile.last_scraped_at, profile.yelp_last_scraped_at, profile.tripadvisor_last_scraped_at]
     .filter(Boolean).sort().pop() ?? null
@@ -967,10 +981,12 @@ export default function ReviewsClient({ profile, initialReviews, userId }: Props
   }
 
   const handleApprove = async (id: string) => {
-    // Copy reply to clipboard at the same time as approving (matches home page behaviour)
+    // Copy reply to clipboard and flash a brief "Copied!" indicator
     const review = reviews.find((r) => r.id === id)
     if (review?.generated_reply) {
       navigator.clipboard.writeText(review.generated_reply).catch(() => {})
+      setCopiedId(id)
+      setTimeout(() => setCopiedId((prev) => (prev === id ? null : prev)), 2000)
     }
     setReviews((prev) => prev.map((r) => r.id === id ? { ...r, reply_status: 'approved' as const } : r))
     const { error } = await supabase.from('scraped_reviews').update({ reply_status: 'approved' }).eq('id', id).eq('user_id', userId)
@@ -1010,6 +1026,7 @@ export default function ReviewsClient({ profile, initialReviews, userId }: Props
       scrapeError={scrapeError}
       onDismissError={() => setScrapeError('')}
       lastScrapedAt={lastScrapedAt}
+      copiedId={copiedId}
     />
   )
 }

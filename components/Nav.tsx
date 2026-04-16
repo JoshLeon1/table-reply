@@ -185,6 +185,7 @@ export default function Nav() {
     { href: '/dashboard',               label: 'Home',      icon: (a) => <IconHome active={a} /> },
     { href: '/dashboard/reviews',       label: 'Reviews',   icon: (a) => <IconReviews active={a} />, badge: pendingCount > 0 ? pendingCount : null },
     { href: '/dashboard/analytics',     label: 'Analytics', icon: (a) => <IconChart active={a} />, dot: analyticsStale },
+    { href: '/dashboard/social',        label: 'Social',    icon: (a) => <IconSocial active={a} /> },
     { href: '/dashboard/grow',          label: 'Grow',      icon: (a) => <IconGrow active={a} /> },
   ]
 
@@ -220,10 +221,6 @@ export default function Nav() {
                   >
                     <span className={active ? 'text-[#E05A28]' : 'opacity-60'}>{link.icon(active)}</span>
                     {link.label}
-                    {/* active underline dot */}
-                    {active && (
-                      <span className="absolute -bottom-[1px] left-1/2 -translate-x-1/2 w-4 h-[2px] rounded-full bg-[#E05A28] shadow-[0_0_6px_rgba(224,90,40,0.7)]" />
-                    )}
                     {link.badge != null && (
                       <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#E05A28] text-white text-[10px] font-bold flex items-center justify-center leading-none shadow-[0_0_8px_rgba(224,90,40,0.5)]">
                         {link.badge > 99 ? '99+' : link.badge}
@@ -239,9 +236,9 @@ export default function Nav() {
               <div className="w-px h-4 bg-[#E4DED8] mx-2" />
 
               {displayName && (
-                <span className="bg-[#F3F0EC] border border-[#E4DED8] rounded-full px-3 py-1 text-[12px] text-[#57534E] font-medium max-w-[140px] truncate mr-1">
+                <Link href="/settings" className="bg-[#F3F0EC] border border-[#E4DED8] rounded-full px-3 py-1 text-[12px] text-[#57534E] font-medium max-w-[140px] truncate mr-1 hover:bg-[#EDE9E4] transition-colors">
                   {displayName}
-                </span>
+                </Link>
               )}
 
               <Link

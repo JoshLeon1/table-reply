@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
+import { TRIAL_DAYS } from '@/lib/subscription'
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -184,7 +185,7 @@ export async function POST(request: NextRequest) {
   //    - email_notifications->>'newReviewsScrapped' = 'true'
   //    - is_paid OR trial not expired (trial_started_at within 14 days)
   // -------------------------------------------------------------------------
-  const trialCutoff = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString()
+  const trialCutoff = new Date(Date.now() - TRIAL_DAYS * 24 * 60 * 60 * 1000).toISOString()
 
   const { data: profiles, error: profilesError } = await supabaseAdmin
     .from('profiles')

@@ -5,6 +5,7 @@ import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { createClient as createServerClient } from '@/lib/supabase/server'
 import { callClaude } from '@/lib/anthropic'
 import { Resend } from 'resend'
+import { hasActiveAccess } from '@/lib/subscription'
 
 interface OutscraperReview {
   review_id: string
@@ -61,6 +62,11 @@ export async function POST(request: NextRequest) {
 
     userId = user.id
 
+    const allowed = await hasActiveAccess(supabaseAdmin, userId)
+    if (!allowed) {
+      return NextResponse.json({ error: 'Subscription required' }, { status: 402 })
+    }
+
     const { data: rp } = await supabaseAdmin
       .from('business_profiles')
       .select('id')
@@ -103,11 +109,18 @@ export async function POST(request: NextRequest) {
     .select('keyword, alert_type')
     .eq('user_id', userId)
 
-  // ── Test mode: skip Outscraper, use fake reviews ───────────────────────
-  const isTestMode = body.testMode === true
+  // ── Test mode: skip Outscraper, use fake reviews ─────────────────────
+  // Only allow test mode from cron/admin requests — dashboard users cannot
+  // trigger this to generate fake reviews or burn AI credits for free.
+  const isTestMode = isCron && body.testMode === true
 
   if (isTestMode) {
     console.log('[scrape-reviews] TEST MODE — using fake reviews, skipping Outscraper')
+  }
+
+  // ── Outscraper API key guard ──────────────────────────────────────────
+  if (!isTestMode && !process.env.OUTSCRAPER_API_KEY) {
+    return NextResponse.json({ error: 'OUTSCRAPER_API_KEY is not configured' }, { status: 500 })
   }
 
   // ── Call Outscraper (async — poll until Success) ───────────────────────

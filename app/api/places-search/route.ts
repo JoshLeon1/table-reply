@@ -49,12 +49,6 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Filter to food/hospitality types only
-    const foodTypes = new Set([
-      'restaurant', 'food', 'bar', 'cafe', 'bakery', 'meal_delivery',
-      'meal_takeaway', 'night_club', 'lodging', 'establishment',
-    ])
-
     const places = (data.places ?? []) as {
       id: string
       displayName?: { text: string }
@@ -64,7 +58,6 @@ export async function GET(request: NextRequest) {
     }[]
 
     const results = places
-      .filter(p => !p.types || p.types.some(t => foodTypes.has(t))) // filter to food/hospitality types
       .slice(0, 6)
       .map(p => ({
         placeId: p.id,

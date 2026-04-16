@@ -466,6 +466,11 @@ export default function SocialClient({ reviews, restaurantProfile }: Props) {
               ? 'No 4-star+ reviews with text found yet — once customers leave great reviews, they\'ll appear here.'
               : 'Sync some reviews first to unlock social post creation.'}
           </p>
+          {reviews.length > 0 && (
+            <a href="/dashboard/reviews" className="inline-flex items-center gap-1.5 mt-3 text-[13px] font-semibold text-[#E05A28] hover:text-[#C94E21] transition-colors">
+              Sync more reviews →
+            </a>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">

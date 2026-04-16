@@ -1,4 +1,5 @@
 export const dynamic = 'force-dynamic'
+export const metadata = { title: 'Settings — Replyfi' }
 
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
@@ -47,7 +48,6 @@ export default async function SettingsPage() {
   }
 
   const defaultEmailNotifs = {
-    newReviewsScraped: true,
     weeklyDigest: true,
   }
 

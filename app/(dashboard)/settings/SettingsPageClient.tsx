@@ -9,6 +9,8 @@ import TripAdvisorConnectSection from '@/components/TripAdvisorConnectSection'
 import KeywordAlertsManager from '@/components/KeywordAlertsManager'
 import ManageBillingButton from './ManageBillingButton'
 import BillingButtons from './BillingButtons'
+import Toggle from '@/components/ui/Toggle'
+import { Card } from '@/components/ui/Card'
 import type { BusinessProfile, KeywordAlert } from '@/types'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -33,25 +35,6 @@ interface Props {
   isPaid: boolean
   daysRemaining: number
   stripePlan?: string | null
-}
-
-// ─── Toggle ───────────────────────────────────────────────────────────────────
-
-function Toggle({ checked, onChange, disabled }: { checked: boolean; onChange: (v: boolean) => void; disabled?: boolean }) {
-  return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      disabled={disabled}
-      onClick={() => onChange(!checked)}
-      className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E05A28] focus-visible:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed ${
-        checked ? 'bg-[#E05A28]' : 'bg-[#D0C9C1]'
-      }`}
-    >
-      <span className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white ring-0 transition duration-200 ${checked ? 'translate-x-4 shadow-[0_1px_3px_rgba(0,0,0,0.15)]' : 'translate-x-0 shadow-sm'}`} />
-    </button>
-  )
 }
 
 // ─── Section header ───────────────────────────────────────────────────────────
@@ -220,7 +203,7 @@ export default function SettingsPageClient({
   // ── Tab content renderers ────────────────────────────────────────────────
 
   const renderProfile = () => (
-    <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+    <Card padding="none" className="overflow-hidden">
       <SectionHead title="Business Profile" sub="Used to personalise every generated reply." />
       <div className="px-5 sm:px-6 py-5 sm:py-6">
         <BusinessProfileForm
@@ -229,13 +212,13 @@ export default function SettingsPageClient({
           redirectTo="/settings"
         />
       </div>
-    </div>
+    </Card>
   )
 
   const renderIntegrations = () => (
     <div className="space-y-4">
       {/* Google */}
-      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <Card padding="none" className="overflow-hidden">
         <SectionHead
           title="Google Maps"
           sub="Sync Google reviews automatically every day."
@@ -248,10 +231,10 @@ export default function SettingsPageClient({
             googleLastScrapedAt={restaurantProfile.last_scraped_at ?? null}
           />
         </div>
-      </div>
+      </Card>
 
       {/* Yelp */}
-      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <Card padding="none" className="overflow-hidden">
         <SectionHead
           title="Yelp"
           sub="Sync Yelp reviews automatically every day."
@@ -264,10 +247,10 @@ export default function SettingsPageClient({
             yelpLastScrapedAt={restaurantProfile.yelp_last_scraped_at ?? null}
           />
         </div>
-      </div>
+      </Card>
 
       {/* TripAdvisor */}
-      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <Card padding="none" className="overflow-hidden">
         <SectionHead
           title="TripAdvisor"
           sub="Sync TripAdvisor reviews automatically every day."
@@ -280,14 +263,14 @@ export default function SettingsPageClient({
             tripAdvisorLastScrapedAt={restaurantProfile.tripadvisor_last_scraped_at ?? null}
           />
         </div>
-      </div>
+      </Card>
     </div>
   )
 
   const renderReplies = () => (
     <div className="space-y-4">
       {/* Reply preferences */}
-      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <Card padding="none" className="overflow-hidden">
         <div className="px-5 sm:px-6 py-4 sm:py-5 border-b border-[#EDE9E4] flex items-center justify-between gap-3">
           <div>
             <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E]">Reply Preferences</h2>
@@ -312,26 +295,31 @@ export default function SettingsPageClient({
                 <p className="text-[13px] font-medium text-[#111111]">{label}</p>
                 <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">{desc}</p>
               </div>
-              <Toggle checked={replyPrefs[key]} onChange={(v) => handleReplyPrefChange(key, v)} disabled={savingPrefs} />
+              <Toggle
+                checked={replyPrefs[key]}
+                onChange={(v) => handleReplyPrefChange(key, v)}
+                disabled={savingPrefs}
+                ariaLabel={label}
+              />
             </div>
           ))}
         </div>
-      </div>
+      </Card>
 
       {/* Keyword Alerts */}
-      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <Card padding="none" className="overflow-hidden">
         <SectionHead title="Keyword Alerts" sub="Get an instant email when a review contains these words." />
         <div className="px-5 sm:px-6 py-4 sm:py-5">
           <KeywordAlertsManager initialAlerts={keywordAlerts} />
         </div>
-      </div>
+      </Card>
     </div>
   )
 
   const renderAccount = () => (
     <div className="space-y-4">
       {/* Subscription */}
-      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <Card padding="none" className="overflow-hidden">
         {/* Header row */}
         <div className="px-5 sm:px-6 py-4 border-b border-[#EDE9E4] flex items-center justify-between gap-3">
           <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E]">Subscription</h2>
@@ -379,10 +367,10 @@ export default function SettingsPageClient({
         <div className="px-5 sm:px-6 py-4 bg-[#F8F6F3] border-t border-[#EDE9E4]">
           {isPaid ? <ManageBillingButton /> : <BillingButtons />}
         </div>
-      </div>
+      </Card>
 
       {/* Email Notifications */}
-      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <Card padding="none" className="overflow-hidden">
         <div className="px-5 sm:px-6 py-4 sm:py-5 border-b border-[#EDE9E4] flex items-center justify-between gap-3">
           <div>
             <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E]">Email Notifications</h2>
@@ -401,12 +389,17 @@ export default function SettingsPageClient({
             <p className="text-[13px] font-medium text-[#111111]">Weekly digest</p>
             <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">A weekly summary of new reviews, ratings, and approved replies</p>
           </div>
-          <Toggle checked={emailNotifs.weeklyDigest ?? true} onChange={(v) => handleEmailNotifChange('weeklyDigest', v)} disabled={savingEmail} />
+          <Toggle
+            checked={emailNotifs.weeklyDigest ?? true}
+            onChange={(v) => handleEmailNotifChange('weeklyDigest', v)}
+            disabled={savingEmail}
+            ariaLabel="Weekly digest emails"
+          />
         </div>
-      </div>
+      </Card>
 
       {/* Data & Privacy */}
-      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <Card padding="none" className="overflow-hidden">
         <SectionHead title="Data & Privacy" sub="Download a copy of your data at any time." />
         <div className="px-5 sm:px-6 py-4 sm:py-5 space-y-3">
           <div className="flex items-center justify-between gap-4">
@@ -424,7 +417,7 @@ export default function SettingsPageClient({
           </div>
           {exportError && <p role="alert" className="text-[12px] text-red-500 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{exportError}</p>}
         </div>
-      </div>
+      </Card>
 
       {/* Danger zone */}
       <div className="bg-white rounded-2xl border border-red-200 overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">

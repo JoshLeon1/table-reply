@@ -26,12 +26,18 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
+// Tables covered loosely here keep compile-time behaviour identical to
+// the pre-Database-generic era: any row shape, any insert/update payload.
+// The `any` is intentional — it matches the behaviour of an untyped client
+// exactly. Replace with precise shapes as tables are audited.
+/* eslint-disable @typescript-eslint/no-explicit-any */
 interface LooseTable {
-  Row: Record<string, unknown>
-  Insert: Record<string, unknown>
-  Update: Record<string, unknown>
+  Row: any
+  Insert: any
+  Update: any
   Relationships: []
 }
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
 export interface Database {
   public: {

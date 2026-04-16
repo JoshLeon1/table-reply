@@ -13,12 +13,14 @@ export default async function DashboardPage() {
 
   if (!user) redirect('/login')
 
-  // Quick check for restaurant profile first
+  // Quick check for restaurant profile first. Use maybeSingle so a
+  // brand-new user with no business_profiles row hits the explicit null
+  // branch below instead of an unhandled "0 rows" throw from .single().
   const { data: restaurantProfileCheck } = await supabase
     .from('business_profiles')
     .select('id')
     .eq('user_id', user.id)
-    .single()
+    .maybeSingle()
 
   if (!restaurantProfileCheck) redirect('/onboarding')
 
@@ -41,8 +43,8 @@ export default async function DashboardPage() {
     { data: analyticsCache },
     { count: approvedAllTime },
   ] = await Promise.all([
-    supabase.from('profiles').select('*').eq('id', user.id).single(),
-    supabase.from('business_profiles').select('*').eq('user_id', user.id).single(),
+    supabase.from('profiles').select('*').eq('id', user.id).maybeSingle(),
+    supabase.from('business_profiles').select('*').eq('user_id', user.id).maybeSingle(),
     supabase.from('scraped_reviews').select('id', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', monthStart),
     supabase.from('scraped_reviews').select('id', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', lastMonthStart).lt('created_at', lastMonthEnd),
     supabase.from('scraped_reviews').select('star_rating').eq('user_id', user.id),

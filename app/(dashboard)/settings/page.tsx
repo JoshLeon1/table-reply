@@ -12,8 +12,8 @@ export default async function SettingsPage() {
   if (!user) redirect('/login')
 
   const [{ data: profile }, { data: restaurantProfile }, { data: keywordAlerts }] = await Promise.all([
-    supabase.from('profiles').select('*').eq('id', user.id).single(),
-    supabase.from('business_profiles').select('*').eq('user_id', user.id).single(),
+    supabase.from('profiles').select('*').eq('id', user.id).maybeSingle(),
+    supabase.from('business_profiles').select('*').eq('user_id', user.id).maybeSingle(),
     supabase.from('keyword_alerts').select('id, keyword, alert_type, user_id, created_at').eq('user_id', user.id).order('created_at', { ascending: true }),
   ])
 

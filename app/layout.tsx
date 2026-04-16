@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     title: 'ReplyFi — AI Review Replies for Local Businesses',
     description:
       'ReplyFi drafts personalized review replies for any local business. Approve and post in seconds.',
-    url: 'https://replyfi.com',
+    url: 'https://replyfi.app',
     siteName: 'ReplyFi',
     images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'ReplyFi' }],
     type: 'website',

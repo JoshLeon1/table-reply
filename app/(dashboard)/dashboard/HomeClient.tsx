@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { ScrapedReview } from '@/types'
+import Button from '@/components/ui/Button'
 
 // ── Count-up animation ────────────────────────────────────────────────────────
 function useCountUp(target: number, duration = 950, delay = 0) {
@@ -387,17 +388,22 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
 
       {/* CTAs */}
       <div className="flex flex-col items-center gap-3">
-        <button
+        <Button
+          variant="accent"
           onClick={handleConnect}
           disabled={saving}
-          className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-2xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.97] text-white text-[15px] font-bold shadow-[0_4px_20px_rgba(224,90,40,0.35)] hover:shadow-[0_6px_28px_rgba(224,90,40,0.50)] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          loading={saving}
+          className="h-auto px-8 py-3.5 rounded-2xl text-[15px] font-bold gap-2.5 shadow-[0_4px_20px_rgba(224,90,40,0.35)] hover:shadow-[0_6px_28px_rgba(224,90,40,0.50)] active:scale-[0.97]"
         >
           {saving ? (
-            <><svg className="animate-spin w-4 h-4 opacity-80" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>Connecting…</>
+            'Connecting…'
           ) : (
-            <><svg className="w-4 h-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>Connect &amp; Start Syncing</>
+            <>
+              <svg className="w-4 h-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+              Connect &amp; Start Syncing
+            </>
           )}
-        </button>
+        </Button>
         <button
           onClick={onEnterManual}
           className="text-[13px] text-[#A8A29E] hover:text-[#57534E] transition-colors duration-150 underline underline-offset-4 decoration-[#D0C9C1] hover:decoration-[#A8A29E]"

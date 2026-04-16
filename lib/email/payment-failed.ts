@@ -21,11 +21,11 @@ export async function sendPaymentFailedEmail(input: PaymentFailedEmailInput) {
 
   const { toEmail, graceDays } = input
   const grace = graceDays ?? 3
-  const appUrl = (process.env.NEXT_PUBLIC_APP_URL ?? 'https://replyfi.com').replace(/\/$/, '')
+  const appUrl = (process.env.NEXT_PUBLIC_APP_URL ?? 'https://replyfi.app').replace(/\/$/, '')
   const portalLink = `${appUrl}/settings?tab=account`
 
   await resend.emails.send({
-    from: 'ReplyFi <billing@replyfi.com>',
+    from: 'ReplyFi <billing@replyfi.app>',
     to: toEmail,
     subject: 'Your card was declined — update your payment method',
     html: `

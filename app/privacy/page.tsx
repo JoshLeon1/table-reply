@@ -35,7 +35,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-[16px] font-semibold text-[#111] mb-3">1. Introduction</h2>
             <p className="text-[14px]">
-              ReplyFi (&ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;us&rdquo;) is a review management platform built for local businesses. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our service at replyfi.com.
+              ReplyFi (&ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;us&rdquo;) is a review management platform built for local businesses. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our service at replyfi.app.
             </p>
           </section>
 
@@ -73,7 +73,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-[16px] font-semibold text-[#111] mb-3">5. Data Retention</h2>
             <p className="text-[14px]">
-              We retain your data for as long as your account is active. You may request deletion of your account and associated data at any time by contacting us at <a href="mailto:support@replyfi.com" className="text-[#E05A28] hover:underline">support@replyfi.com</a> or through the Settings page in your dashboard.
+              We retain your data for as long as your account is active. You may request deletion of your account and associated data at any time by contacting us at <a href="mailto:support@replyfi.app" className="text-[#E05A28] hover:underline">support@replyfi.app</a> or through the Settings page in your dashboard.
             </p>
           </section>
 
@@ -87,7 +87,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-[16px] font-semibold text-[#111] mb-3">7. Your Rights</h2>
             <p className="text-[14px]">
-              You have the right to access, correct, or delete your personal data. You may also export your data at any time from the Analytics page in your dashboard. To exercise any of these rights, contact us at <a href="mailto:support@replyfi.com" className="text-[#E05A28] hover:underline">support@replyfi.com</a>.
+              You have the right to access, correct, or delete your personal data. You may also export your data at any time from the Analytics page in your dashboard. To exercise any of these rights, contact us at <a href="mailto:support@replyfi.app" className="text-[#E05A28] hover:underline">support@replyfi.app</a>.
             </p>
           </section>
 
@@ -108,7 +108,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-[16px] font-semibold text-[#111] mb-3">10. Contact Us</h2>
             <p className="text-[14px]">
-              Questions about this policy? Email us at <a href="mailto:support@replyfi.com" className="text-[#E05A28] hover:underline">support@replyfi.com</a> or visit our <Link href="/contact" className="text-[#E05A28] hover:underline">Contact page</Link>.
+              Questions about this policy? Email us at <a href="mailto:support@replyfi.app" className="text-[#E05A28] hover:underline">support@replyfi.app</a> or visit our <Link href="/contact" className="text-[#E05A28] hover:underline">Contact page</Link>.
             </p>
           </section>
 

@@ -14,7 +14,7 @@ export default function ContactClient() {
     // Opens default mail client as a simple fallback
     const subject = encodeURIComponent('ReplyFi Support Request')
     const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`)
-    window.location.href = `mailto:support@replyfi.com?subject=${subject}&body=${body}`
+    window.location.href = `mailto:support@replyfi.app?subject=${subject}&body=${body}`
     setSent(true)
   }
 
@@ -47,8 +47,8 @@ export default function ContactClient() {
             {
               icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>,
               label: 'Email Support',
-              value: 'support@replyfi.com',
-              href: 'mailto:support@replyfi.com',
+              value: 'support@replyfi.app',
+              href: 'mailto:support@replyfi.app',
             },
             {
               icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>,

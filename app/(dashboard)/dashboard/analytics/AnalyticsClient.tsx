@@ -498,6 +498,14 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
         doc.text(`${pageNum} / ${total}`, R, 291, { align: 'right' })
       }
 
+      // ── Helper: draw star rating as filled/empty dots ───────────────────────
+      const drawStarDots = (x: number, yPos: number, rating: number) => {
+        for (let i = 0; i < 5; i++) {
+          doc.setFillColor(...(i < rating ? ORANGE : RULE))
+          doc.circle(x + i * 4.5, yPos, 1.4, 'F')
+        }
+      }
+
       // ── Helper: stat box ────────────────────────────────────────────────────
       const statBox = (x: number, yPos: number, w: number, value: string, label: string, accent = false) => {
         doc.setFillColor(...WHITE)
@@ -554,10 +562,10 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       // 4 stat boxes (2×2 grid)
       const boxTop = 50 + nameH + 26
       const bw = (W - 6) / 2
-      statBox(L,        boxTop,      bw, String(totalReviews),           'Total Reviews',    true)
-      statBox(L + bw + 6, boxTop,    bw, `${avgRating.toFixed(1)} ★`,    'Avg Rating',       true)
-      statBox(L,        boxTop + 26, bw, `${responseRate}%`,             'Response Rate',    false)
-      statBox(L + bw + 6, boxTop + 26, bw, String(approvedCount),        'Replies Approved', false)
+      statBox(L,        boxTop,      bw, String(totalReviews),                   'Total Reviews',    true)
+      statBox(L + bw + 6, boxTop,    bw, `${avgRating.toFixed(1)} / 5`,          'Avg Rating',       true)
+      statBox(L,        boxTop + 26, bw, `${responseRate}%`,                     'Response Rate',    false)
+      statBox(L + bw + 6, boxTop + 26, bw, String(approvedCount),                'Replies Approved', false)
 
       // Critical alert badge
       if (criticalUnanswered > 0) {
@@ -569,6 +577,32 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
         doc.setTextColor(255, 160, 100)
         doc.text(`! ${criticalUnanswered} critical review${criticalUnanswered !== 1 ? 's' : ''} still need a reply`, L + 4, alertY + 7)
       }
+
+      // "What's inside" section in the lower half of the cover
+      const insideY = boxTop + (criticalUnanswered > 0 ? 80 : 68)
+      doc.setDrawColor(50, 50, 50)
+      doc.setLineWidth(0.5)
+      doc.line(L, insideY, R, insideY)
+      doc.setFontSize(8)
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(120, 120, 120)
+      doc.text('WHAT\'S IN THIS REPORT', L, insideY + 8)
+
+      const insideItems = [
+        'Performance Overview — rating distribution, monthly volume & reply coverage',
+        ...(themes.praised.length || themes.complaints.length ? ['AI-Powered Insights — what customers love, complaints & growth opportunities'] : []),
+        'Activity Patterns — busiest days and top keywords from your reviews',
+        'Notable Reviews — your highest and lowest rated reviews with your replies',
+      ]
+      insideItems.forEach((item, i) => {
+        const iy = insideY + 17 + i * 9
+        doc.setFillColor(...ORANGE)
+        doc.rect(L, iy - 3.5, 2, 5, 'F')
+        doc.setFontSize(8.5)
+        doc.setFont('helvetica', 'normal')
+        doc.setTextColor(160, 160, 160)
+        doc.text(item, L + 5, iy)
+      })
 
       // Cover footer
       doc.setFontSize(8)
@@ -597,18 +631,16 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       doc.setFontSize(8)
       doc.setFont('helvetica', 'bold')
       doc.setTextColor(...LIGHT)
-      doc.text('STARS', L, y)
-      doc.text('COUNT', L + 22, y)
-      doc.text('SHARE', L + 42, y)
-      doc.text('DISTRIBUTION', L + 62, y)
+      doc.text('RATING', L, y)
+      doc.text('COUNT', L + 35, y)
+      doc.text('SHARE', L + 55, y)
+      doc.text('DISTRIBUTION', L + 75, y)
       y += 4
       rule(y); y += 5
 
       ;[5, 4, 3, 2, 1].forEach((star, idx) => {
         const count = ratingDist[star] ?? 0
         const pct = totalReviews > 0 ? Math.round((count / totalReviews) * 100) : 0
-        const barW = 80
-        const filled = Math.round((pct / 100) * barW)
 
         // Alternating row tint
         if (idx % 2 === 0) {
@@ -619,21 +651,24 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
         doc.setFontSize(9.5)
         doc.setFont('helvetica', 'bold')
         doc.setTextColor(...DARK)
-        doc.text(`${star} ★`, L, y)
+        doc.text(String(star), L, y)
+        drawStarDots(L + 7, y - 1.5, star)
 
         doc.setFont('helvetica', 'normal')
         doc.setTextColor(...MID)
-        doc.text(String(count), L + 22, y)
-        doc.text(`${pct}%`, L + 42, y)
+        doc.text(String(count), L + 35, y)
+        doc.text(`${pct}%`, L + 55, y)
 
-        // Bar track
+        // Bar track (shift right to match new column offsets, reduce barW to fit)
+        const barW2 = 65
+        const filled2 = Math.round((pct / 100) * barW2)
         doc.setFillColor(...RULE)
-        doc.roundedRect(L + 62, y - 3.5, barW, 4.5, 1, 1, 'F')
+        doc.roundedRect(L + 75, y - 3.5, barW2, 4.5, 1, 1, 'F')
         // Bar fill
-        if (filled > 0) {
+        if (filled2 > 0) {
           const barColor: [number,number,number] = star >= 4 ? [34, 197, 94] : star === 3 ? [234, 179, 8] : [239, 68, 68]
           doc.setFillColor(...barColor)
-          doc.roundedRect(L + 62, y - 3.5, filled, 4.5, 1, 1, 'F')
+          doc.roundedRect(L + 75, y - 3.5, filled2, 4.5, 1, 1, 'F')
         }
         y += 8
       })
@@ -667,7 +702,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
           doc.setTextColor(...DARK)
           doc.text(d.month, L, y)
           doc.text(String(d.count), L + 30, y)
-          doc.text(d.rating != null ? `${d.rating.toFixed(1)} ★` : '–', L + 60, y)
+          doc.text(d.rating != null ? `${d.rating.toFixed(1)}` : '–', L + 60, y)
 
           // Mini bar
           const barFill = Math.round((d.count / maxMonthCount) * 70)
@@ -691,11 +726,11 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
         doc.setFontSize(8)
         doc.setFont('helvetica', 'bold')
         doc.setTextColor(...LIGHT)
-        doc.text('STARS', L, y)
-        doc.text('REPLIED', L + 22, y)
-        doc.text('TOTAL', L + 50, y)
-        doc.text('RATE', L + 78, y)
-        doc.text('COVERAGE', L + 100, y)
+        doc.text('RATING', L, y)
+        doc.text('REPLIED', L + 35, y)
+        doc.text('TOTAL', L + 58, y)
+        doc.text('RATE', L + 82, y)
+        doc.text('COVERAGE', L + 105, y)
         y += 4
         rule(y); y += 5
 
@@ -709,17 +744,18 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
           doc.setFontSize(9)
           doc.setFont('helvetica', 'bold')
           doc.setTextColor(...DARK)
-          doc.text(`${star} ★`, L, y)
+          doc.text(String(star), L, y)
+          drawStarDots(L + 7, y - 1.5, star)
           doc.setFont('helvetica', 'normal')
           doc.setTextColor(...MID)
-          doc.text(String(d.replied), L + 22, y)
-          doc.text(String(d.total), L + 50, y)
-          doc.text(`${pct}%`, L + 78, y)
+          doc.text(String(d.replied), L + 35, y)
+          doc.text(String(d.total), L + 58, y)
+          doc.text(`${pct}%`, L + 82, y)
           doc.setFillColor(...RULE)
-          doc.roundedRect(L + 100, y - 3.5, 70, 4, 1, 1, 'F')
+          doc.roundedRect(L + 105, y - 3.5, 65, 4, 1, 1, 'F')
           if (pct > 0) {
             doc.setFillColor(...ORANGE)
-            doc.roundedRect(L + 100, y - 3.5, Math.round((pct / 100) * 70), 4, 1, 1, 'F')
+            doc.roundedRect(L + 105, y - 3.5, Math.round((pct / 100) * 65), 4, 1, 1, 'F')
           }
           y += 7.5
         })
@@ -822,7 +858,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
             doc.setFont('helvetica', 'normal')
             doc.setTextColor(...MID)
             doc.text(String(d.count), L + 20, y)
-            doc.text(`${d.avgRating} ★`, L + 50, y)
+            doc.text(`${d.avgRating}`, L + 50, y)
             // Bar
             const fill = Math.round((d.count / maxC) * 70)
             doc.setFillColor(...RULE)
@@ -896,12 +932,14 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
           doc.text(label.toUpperCase(), L + 4, y + 0.5)
           y += 12
 
-          // Reviewer name + stars
+          // Reviewer name
           doc.setFontSize(10)
           doc.setFont('helvetica', 'bold')
           doc.setTextColor(...DARK)
-          const stars = '★'.repeat(review.star_rating) + '☆'.repeat(5 - review.star_rating)
-          doc.text(`${review.reviewer_name}  ${stars}`, L, y)
+          doc.text(review.reviewer_name, L, y)
+          // Star dots to the right of the name
+          const nameW = doc.getTextWidth(review.reviewer_name)
+          drawStarDots(L + nameW + 4, y - 1.5, review.star_rating)
           y += 7
 
           // Review text in a shaded box

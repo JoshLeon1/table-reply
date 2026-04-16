@@ -22,6 +22,22 @@
   --accent-hover:  #C94E21;
   --accent-light:  #FEF0E8;
   --accent-border: #F5C9AD;
+
+  /* Radii — used by Tailwind via theme.borderRadius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+
+  /* Shadows — used by Tailwind via theme.boxShadow */
+  --shadow-card:       0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.05);
+  --shadow-card-hover: 0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+  --shadow-modal:      0 20px 60px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-accent:     0 2px 12px rgba(224,90,40,0.30);
+
+  /* Focus ring */
+  --ring-accent: 0 0 0 2px rgba(224,90,40,0.25);
 }
 
 html {
@@ -76,8 +92,6 @@ body {
   .stagger-6 { animation-delay: 320ms; }
 
   /* premium card shadow system */
-  .shadow-card       { box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.05); }
-  .shadow-card-hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04); }
   .shadow-lifted     { box-shadow: 0 8px 30px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06); }
   .shadow-accent     { box-shadow: 0 4px 14px rgba(224,90,40,0.28); }
   .shadow-accent-lg  { box-shadow: 0 6px 22px rgba(224,90,40,0.35); }

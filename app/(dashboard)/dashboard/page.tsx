@@ -63,6 +63,12 @@ export default async function DashboardPage() {
       .eq('id', user.id)
   }
 
+  // First-run activation: if the user has never seen the demo, send them there
+  const hasSeenDemo = (profile as { has_seen_demo?: boolean | null } | null)?.has_seen_demo
+  if (hasSeenDemo === false) {
+    redirect('/onboarding/demo')
+  }
+
   // Compute derived stats
   const ratings = (allReviews ?? []).map((r: { star_rating: number }) => r.star_rating).filter((r: number) => typeof r === 'number')
   const avgRating = ratings.length > 0 ? ratings.reduce((a: number, b: number) => a + b, 0) / ratings.length : 0

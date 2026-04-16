@@ -1,5 +1,5 @@
 export const dynamic = 'force-dynamic'
-export const metadata = { title: 'Analytics — Replyfi' }
+export const metadata = { title: 'Analytics — ReplyFi' }
 
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'

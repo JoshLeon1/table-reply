@@ -1,8 +1,8 @@
 import Link from 'next/link'
 
 export const metadata = {
-  title: 'Privacy Policy — Replyfi',
-  description: 'How Replyfi collects, uses, and protects your data.',
+  title: 'Privacy Policy — ReplyFi',
+  description: 'How ReplyFi collects, uses, and protects your data.',
 }
 
 export default function PrivacyPage() {
@@ -18,7 +18,7 @@ export default function PrivacyPage() {
                 <path d="M8 8h9.5A1.5 1.5 0 0119 9.5v5A1.5 1.5 0 0117.5 16H16v2.5l-3-2.5H8A1.5 1.5 0 016.5 14.5v-5A1.5 1.5 0 018 8z" fill="white"/>
               </svg>
             </div>
-            <span className="font-bold text-[15px] text-[#111] tracking-tight">Replyfi</span>
+            <span className="font-bold text-[15px] text-[#111] tracking-tight">ReplyFi</span>
           </Link>
           <Link href="/" className="text-[13px] text-[#A8A29E] hover:text-[#111] transition-colors font-medium">← Back</Link>
         </div>
@@ -35,7 +35,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-[16px] font-semibold text-[#111] mb-3">1. Introduction</h2>
             <p className="text-[14px]">
-              Replyfi (&ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;us&rdquo;) is a review management platform built for local businesses. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our service at replyfi.com.
+              ReplyFi (&ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;us&rdquo;) is a review management platform built for local businesses. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our service at replyfi.com.
             </p>
           </section>
 
@@ -54,7 +54,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-[16px] font-semibold text-[#111] mb-3">3. How We Use Your Information</h2>
             <ul className="list-disc pl-5 space-y-2 text-[14px]">
-              <li>To provide and operate the Replyfi service</li>
+              <li>To provide and operate the ReplyFi service</li>
               <li>To generate AI-powered reply suggestions using your review data</li>
               <li>To deliver analytics, insights, and reports about your review performance</li>
               <li>To send you product updates, alerts, and transactional emails</li>
@@ -66,7 +66,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-[16px] font-semibold text-[#111] mb-3">4. AI & Third-Party Services</h2>
             <p className="text-[14px]">
-              Replyfi uses Anthropic&rsquo;s Claude API to generate reply suggestions and insights. Review text is sent to Anthropic for processing. Anthropic&rsquo;s privacy policy governs how they handle this data. We do not use your review data to train AI models, and we do not sell your data to third parties.
+              ReplyFi uses Anthropic&rsquo;s Claude API to generate reply suggestions and insights. Review text is sent to Anthropic for processing. Anthropic&rsquo;s privacy policy governs how they handle this data. We do not use your review data to train AI models, and we do not sell your data to third parties.
             </p>
           </section>
 
@@ -123,7 +123,7 @@ export default function PrivacyPage() {
           <span className="text-[#E4DED8]">·</span>
           <Link href="/contact" className="hover:text-[#111] transition-colors">Contact</Link>
         </div>
-        <p className="mt-2.5 text-[#C4BEB8]">© {new Date().getFullYear()} Replyfi. All rights reserved.</p>
+        <p className="mt-2.5 text-[#C4BEB8]">© {new Date().getFullYear()} ReplyFi. All rights reserved.</p>
       </footer>
     </div>
   )

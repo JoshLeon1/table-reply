@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
 
     if (!res.ok) {
       const msg = data?.error?.message ?? `HTTP ${res.status}`
-      console.error('[Replyfi] Places API error:', msg, JSON.stringify(data).slice(0, 400))
+      console.error('[ReplyFi] Places API error:', msg, JSON.stringify(data).slice(0, 400))
       return NextResponse.json(
         { results: [], apiError: msg },
         { status: 200 } // return 200 so client can display the error message
@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ results })
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'Network error'
-    console.error('[Replyfi] Places search error:', msg)
+    console.error('[ReplyFi] Places search error:', msg)
     return NextResponse.json({ results: [], apiError: msg }, { status: 200 })
   }
 }

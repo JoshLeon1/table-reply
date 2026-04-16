@@ -142,7 +142,7 @@ export default function LandingPage() {
 
   const steps = [
     { num: '1', title: 'Connect your business', desc: 'Link your Google, Yelp, and TripAdvisor listings once. Takes under 2 minutes.' },
-    { num: '2', title: 'Your reviews appear automatically', desc: 'Replyfi pulls in your latest reviews every day — no manual work, no copy-pasting.' },
+    { num: '2', title: 'Your reviews appear automatically', desc: 'ReplyFi pulls in your latest reviews every day — no manual work, no copy-pasting.' },
     { num: '3', title: 'Approve, Edit, Then Post With One Click', desc: "Review the AI draft, edit inline if needed, then approve it. Your Approved tab collects everything ready to post — copy the reply and click 'Respond on Google/Yelp/TripAdvisor' to land directly on that specific review." },
   ]
 
@@ -153,7 +153,7 @@ export default function LandingPage() {
     },
     {
       initials: 'MT', name: 'Marcus T.', role: 'Owner', business: 'Crown & Blade, Denver CO',
-      quote: 'The 1-star reply drafts alone are worth the subscription. I used to write something defensive and regret it every time. Replyfi keeps it professional and my clients keep coming back.',
+      quote: 'The 1-star reply drafts alone are worth the subscription. I used to write something defensive and regret it every time. ReplyFi keeps it professional and my clients keep coming back.',
     },
     {
       initials: 'JR', name: 'Jen R.', role: 'Owner', business: 'Comfort Air Services, Portland OR',
@@ -174,7 +174,7 @@ export default function LandingPage() {
   ]
 
   const faqs = [
-    { q: 'Do I approve replies before they get posted?', a: 'Yes, always. Replyfi generates a draft — you review it, edit inline if needed, then approve it. Approved replies go to your Approved tab, where you copy and paste on the platform yourself. Nothing ever posts automatically.' },
+    { q: 'Do I approve replies before they get posted?', a: 'Yes, always. ReplyFi generates a draft — you review it, edit inline if needed, then approve it. Approved replies go to your Approved tab, where you copy and paste on the platform yourself. Nothing ever posts automatically.' },
     { q: 'Does this connect to Google, Yelp, and TripAdvisor automatically?', a: 'Yes — all three sync every day. Connect each platform once in Settings and reviews start appearing in your dashboard.' },
     { q: 'Will replies sound robotic or generic?', a: "No. You set your business name, owner name, and tone. Every reply is written specifically for that review — it won't sound like a template." },
     { q: 'How long does setup take?', a: "Under 5 minutes. Enter your business name, tone, and connect a platform. You can start generating replies right away." },
@@ -194,7 +194,7 @@ export default function LandingPage() {
                 <path d="M8 8h9.5A1.5 1.5 0 0119 9.5v5A1.5 1.5 0 0117.5 16H16v2.5l-3-2.5H8A1.5 1.5 0 016.5 14.5v-5A1.5 1.5 0 018 8z" fill="white"/>
               </svg>
             </div>
-            <span className="font-bold text-[15px] sm:text-[17px] tracking-[-0.025em] text-[#111111]">Replyfi</span>
+            <span className="font-bold text-[15px] sm:text-[17px] tracking-[-0.025em] text-[#111111]">ReplyFi</span>
           </Link>
 
           <div className="flex items-center gap-2 sm:gap-4">
@@ -230,7 +230,7 @@ export default function LandingPage() {
               </h1>
 
               <p className="text-[#888] mb-7 animate-fade-up" style={{ fontSize: 'clamp(14px, 2vw, 16px)', lineHeight: '1.65', animationDelay: '260ms', maxWidth: '460px' }}>
-                Replyfi drafts personalized responses for any local business. Approve, copy, and post in under 30 seconds.
+                ReplyFi drafts personalized responses for any local business. Approve, copy, and post in under 30 seconds.
               </p>
 
               {/* CTAs */}
@@ -273,7 +273,7 @@ export default function LandingPage() {
                     <div className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
                     <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50" />
                     <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/50" />
-                    <span className="ml-2 text-white/20 text-[11px]">Replyfi — Pending Reviews</span>
+                    <span className="ml-2 text-white/20 text-[11px]">ReplyFi — Pending Reviews</span>
                   </div>
 
                   <div className="p-4">
@@ -375,7 +375,7 @@ export default function LandingPage() {
             <h2 className="font-bold text-[#111111]" style={{ fontSize: 'clamp(22px, 3vw, 34px)', lineHeight: 1.15, letterSpacing: '-0.02em' }}>
               See Exactly What You&apos;ll Get
             </h2>
-            <p className="text-[14px] text-[#777] mt-2 max-w-sm mx-auto">A real 1-star review. The reply Replyfi drafts in seconds.</p>
+            <p className="text-[14px] text-[#777] mt-2 max-w-sm mx-auto">A real 1-star review. The reply ReplyFi drafts in seconds.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-5">
@@ -393,7 +393,7 @@ export default function LandingPage() {
               </p>
             </div>
 
-            {/* Replyfi's draft */}
+            {/* ReplyFi's draft */}
             <div className="rounded-2xl border bg-[#FEF0E8] border-l-4 border-l-[#E05A28] border-[#F5C9AD] p-5 sm:p-6">
               <div className="flex items-center gap-1.5 mb-3">
                 <svg className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
@@ -455,7 +455,7 @@ export default function LandingPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </div>
-                <span className="text-[12px] font-bold uppercase tracking-[0.12em] text-red-400">Without Replyfi</span>
+                <span className="text-[12px] font-bold uppercase tracking-[0.12em] text-red-400">Without ReplyFi</span>
               </div>
               <ul className="space-y-3.5">
                 {[
@@ -481,7 +481,7 @@ export default function LandingPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <span className="text-[12px] font-bold uppercase tracking-[0.12em] text-emerald-400">With Replyfi</span>
+                <span className="text-[12px] font-bold uppercase tracking-[0.12em] text-emerald-400">With ReplyFi</span>
               </div>
               <ul className="space-y-3.5">
                 {[
@@ -514,7 +514,7 @@ export default function LandingPage() {
               Set Up Once. Replies Ready Every Morning.
             </h2>
             <p className="text-[14px] text-[#777] mt-3 max-w-md mx-auto leading-relaxed">
-              Replyfi syncs your reviews automatically — you just approve, edit, and post.
+              ReplyFi syncs your reviews automatically — you just approve, edit, and post.
             </p>
           </div>
 
@@ -573,7 +573,7 @@ export default function LandingPage() {
               {
                 num: '02',
                 title: 'Every Platform, Hands-Free',
-                desc: 'Google, Yelp, and TripAdvisor reviews sync to your dashboard every day — automatically. No browser tabs, no logging in. Just open Replyfi and everything is waiting for you.',
+                desc: 'Google, Yelp, and TripAdvisor reviews sync to your dashboard every day — automatically. No browser tabs, no logging in. Just open ReplyFi and everything is waiting for you.',
                 icon: (
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                 ),
@@ -751,7 +751,7 @@ export default function LandingPage() {
               <span className="px-3 py-1 rounded-full bg-[#E05A28]/20 text-[#E05A28] text-[10px] font-bold uppercase tracking-[0.12em]">7-day free trial</span>
             </div>
             <div className="px-6 sm:px-8 pt-4 pb-7">
-              <p className="text-center text-white font-bold text-[17px] mb-4 tracking-tight">Replyfi Pro</p>
+              <p className="text-center text-white font-bold text-[17px] mb-4 tracking-tight">ReplyFi Pro</p>
               <div className="flex items-end justify-center gap-1 mb-1.5">
                 <span className="font-bold text-white leading-none transition-all duration-300" style={{ fontSize: 'clamp(56px, 12vw, 76px)', letterSpacing: '-0.04em' }}>
                   ${annual ? '239' : '29'}
@@ -840,7 +840,7 @@ export default function LandingPage() {
                     <path d="M8 8h9.5A1.5 1.5 0 0119 9.5v5A1.5 1.5 0 0117.5 16H16v2.5l-3-2.5H8A1.5 1.5 0 016.5 14.5v-5A1.5 1.5 0 018 8z" fill="white"/>
                   </svg>
                 </div>
-                <span className="font-bold text-white text-[15px] tracking-[-0.02em]">Replyfi</span>
+                <span className="font-bold text-white text-[15px] tracking-[-0.02em]">ReplyFi</span>
               </div>
               <p className="text-[12px] sm:text-[13px] text-[#555] leading-relaxed">AI-powered review replies for local businesses.</p>
             </div>
@@ -867,7 +867,7 @@ export default function LandingPage() {
           </div>
 
           <div className="border-t border-[#1E1E1E] pt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1">
-            <p className="text-[12px] text-[#444]">© 2026 Replyfi · Austin, TX</p>
+            <p className="text-[12px] text-[#444]">© 2026 ReplyFi · Austin, TX</p>
           </div>
         </div>
       </footer>

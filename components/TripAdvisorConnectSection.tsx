@@ -117,7 +117,7 @@ export default function TripAdvisorConnectSection({
       </div>
 
       <p className="text-[12px] text-[#888] leading-relaxed">
-        Paste your TripAdvisor listing URL. Replyfi will auto-sync your newest TripAdvisor reviews every day — no manual copy-paste needed.
+        Paste your TripAdvisor listing URL. ReplyFi will auto-sync your newest TripAdvisor reviews every day — no manual copy-paste needed.
       </p>
 
       {/* URL input */}

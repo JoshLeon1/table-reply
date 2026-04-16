@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 import StarRating from './StarRating'
 import CopyButton from './CopyButton'
 
@@ -122,7 +122,7 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
     [reviewText, generatedReply]
   )
 
-  const handleGenerate = async (tone?: Tone | null) => {
+  const handleGenerate = useCallback(async (tone?: Tone | null) => {
     if (!reviewText.trim()) return
     setLoading(true)
     setError('')
@@ -155,11 +155,11 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
     } finally {
       setLoading(false)
     }
-  }
+  }, [reviewText, starRating, platform])
 
   useEffect(() => {
     onGenerateTriggerRef?.(() => handleGenerate(activeTone))
-  }, [reviewText, activeTone])
+  }, [handleGenerate, activeTone, onGenerateTriggerRef])
 
   const handleFeedback = async (rating: 'good' | 'bad') => {
     setFeedback(rating)
@@ -191,6 +191,13 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
       })
       const data = await res.json()
       if (res.ok) setSocialPost(data.caption)
+      else throw new Error(data.error || 'Failed to generate social post')
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Something went wrong generating the social post. Please try again.'
+      )
     } finally {
       setSocialLoading(false)
     }

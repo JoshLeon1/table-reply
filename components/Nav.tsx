@@ -201,7 +201,7 @@ export default function Nav() {
                 <LogoMark size={30} />
                 <div className="absolute inset-0 rounded-[8px] bg-[#E05A28]/20 blur-md group-hover:bg-[#E05A28]/30 transition-all duration-300 -z-10" />
               </div>
-              <span className="text-[14px] font-bold text-[#111111] tracking-[-0.02em]">Replyfi</span>
+              <span className="text-[14px] font-bold text-[#111111] tracking-[-0.02em]">ReplyFi</span>
             </Link>
 
             {/* Desktop links */}

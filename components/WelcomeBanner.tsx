@@ -53,7 +53,7 @@ export default function WelcomeBanner({ hasGeneratedReply, hasAutoSync }: Props)
     <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-card p-4 mb-2 animate-fade-up">
       <div className="flex items-start justify-between gap-4 mb-3">
         <div>
-          <p className="text-[13px] font-semibold text-[#111]">Get started with Replyfi</p>
+          <p className="text-[13px] font-semibold text-[#111]">Get started with ReplyFi</p>
           <p className="text-[12px] text-[#A8A29E] mt-0.5">{doneCount} of 3 steps complete</p>
         </div>
         <button onClick={dismiss} className="text-[#C4BEB8] hover:text-[#7C7672] transition-colors flex-shrink-0 mt-0.5 p-0.5">

@@ -47,6 +47,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
   }
 
+  if (!reviewText || typeof reviewText !== 'string' || reviewText.length > 5000) {
+    return NextResponse.json({ error: 'Invalid review text' }, { status: 400 })
+  }
+  if (typeof starRating !== 'number' || starRating < 1 || starRating > 5) {
+    return NextResponse.json({ error: 'Invalid star rating' }, { status: 400 })
+  }
+  const VALID_PLATFORMS = ['google', 'yelp', 'tripadvisor']
+  if (platform && !VALID_PLATFORMS.includes(platform.toLowerCase())) {
+    return NextResponse.json({ error: 'Invalid platform' }, { status: 400 })
+  }
+
   const { data: restaurantProfile } = await supabase
     .from('business_profiles')
     .select('*')

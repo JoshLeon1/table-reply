@@ -494,7 +494,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
         doc.setFontSize(8)
         doc.setFont('helvetica', 'normal')
         doc.setTextColor(...LIGHT)
-        doc.text(`Replyfi · replyfi.com · Generated ${generatedOn}`, L, 291)
+        doc.text(`ReplyFi · replyfi.com · Generated ${generatedOn}`, L, 291)
         doc.text(`${pageNum} / ${total}`, R, 291, { align: 'right' })
       }
 
@@ -1427,7 +1427,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
         <div>
           <SectionLabel>Review languages</SectionLabel>
           <div className="bg-white rounded-2xl border border-[#E4DED8] p-5 sm:p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-            <p className="text-[12px] text-[#A8A29E] mb-5">Your business attracts international customers. Replyfi auto-generates replies in each reviewer's language.</p>
+            <p className="text-[12px] text-[#A8A29E] mb-5">Your business attracts international customers. ReplyFi auto-generates replies in each reviewer's language.</p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {languageData.map(({ lang, count, pct }) => (
                 <div key={lang} className="flex flex-col gap-1 p-4 bg-[#F8F6F3] rounded-xl border border-[#E4DED8]">

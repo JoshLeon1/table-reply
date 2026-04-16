@@ -12,7 +12,7 @@ export default function ContactPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Opens default mail client as a simple fallback
-    const subject = encodeURIComponent('Replyfi Support Request')
+    const subject = encodeURIComponent('ReplyFi Support Request')
     const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`)
     window.location.href = `mailto:support@replyfi.com?subject=${subject}&body=${body}`
     setSent(true)
@@ -30,7 +30,7 @@ export default function ContactPage() {
                 <path d="M8 8h9.5A1.5 1.5 0 0119 9.5v5A1.5 1.5 0 0117.5 16H16v2.5l-3-2.5H8A1.5 1.5 0 016.5 14.5v-5A1.5 1.5 0 018 8z" fill="white"/>
               </svg>
             </div>
-            <span className="font-bold text-[15px] text-[#111] tracking-tight">Replyfi</span>
+            <span className="font-bold text-[15px] text-[#111] tracking-tight">ReplyFi</span>
           </Link>
           <Link href="/" className="text-[13px] text-[#A8A29E] hover:text-[#111] transition-colors font-medium">← Back</Link>
         </div>
@@ -147,7 +147,7 @@ export default function ContactPage() {
           <span className="text-[#E4DED8]">·</span>
           <Link href="/contact" className="hover:text-[#111] transition-colors">Contact</Link>
         </div>
-        <p className="mt-2.5 text-[#C4BEB8]">© {new Date().getFullYear()} Replyfi. All rights reserved.</p>
+        <p className="mt-2.5 text-[#C4BEB8]">© {new Date().getFullYear()} ReplyFi. All rights reserved.</p>
       </footer>
     </div>
   )

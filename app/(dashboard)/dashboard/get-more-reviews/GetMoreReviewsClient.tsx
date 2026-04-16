@@ -408,7 +408,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
       <div className="space-y-4">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E] mb-1">Review Platforms</p>
-          <p className="text-[13px] text-[#57534E]">Connect your listings so Replyfi can pull in new reviews automatically every day.</p>
+          <p className="text-[13px] text-[#57534E]">Connect your listings so ReplyFi can pull in new reviews automatically every day.</p>
         </div>
 
         {/* Google Maps */}
@@ -424,7 +424,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
             </div>
           }
           name="Google Maps"
-          description="Your primary review source. Replyfi syncs new Google reviews daily and auto-generates replies."
+          description="Your primary review source. ReplyFi syncs new Google reviews daily and auto-generates replies."
           placeholder="https://www.google.com/maps/place/Your+Business/..."
           validate={(url) => {
             if (!url) return 'Please enter your Google Maps URL.'

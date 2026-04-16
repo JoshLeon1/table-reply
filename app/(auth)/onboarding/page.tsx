@@ -216,7 +216,7 @@ export default function OnboardingPage() {
       )
 
       if (upsertError) {
-        console.error('[Replyfi] Onboarding upsert error:', upsertError)
+        console.error('[ReplyFi] Onboarding upsert error:', upsertError)
         setError(upsertError.message || 'Failed to save your profile. Please try again.')
         setLoading(false)
         return
@@ -246,7 +246,7 @@ export default function OnboardingPage() {
       router.push('/dashboard')
       router.refresh()
     } catch (err) {
-      console.error('[Replyfi] Unexpected onboarding error:', err)
+      console.error('[ReplyFi] Unexpected onboarding error:', err)
       setError('Something went wrong. Please try again.')
       setLoading(false)
     }
@@ -277,7 +277,7 @@ export default function OnboardingPage() {
             <path d="M8 8h9.5A1.5 1.5 0 0119 9.5v5A1.5 1.5 0 0117.5 16H16v2.5l-3-2.5H8A1.5 1.5 0 016.5 14.5v-5A1.5 1.5 0 018 8z" fill="white" />
           </svg>
         </div>
-        <span className="text-[16px] font-bold text-[#111] tracking-tight">Replyfi</span>
+        <span className="text-[16px] font-bold text-[#111] tracking-tight">ReplyFi</span>
       </div>
 
       <div className="w-full max-w-sm animate-fade-up">
@@ -429,7 +429,7 @@ export default function OnboardingPage() {
             <>
               <h2 className="text-[18px] font-bold text-[#111] tracking-[-0.02em] mb-1">Connect Your Platforms</h2>
               <p className="text-[13px] text-[#A8A29E] mb-5">
-                Paste your listing URLs — Replyfi syncs your reviews daily from each one.
+                Paste your listing URLs — ReplyFi syncs your reviews daily from each one.
               </p>
 
               <div className="space-y-3">

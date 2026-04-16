@@ -80,10 +80,10 @@ export async function POST(request: NextRequest) {
       .from('business_profiles')
       .select('id')
       .eq('user_id', userId)
-      .single()
+      .maybeSingle()
 
     if (!rp) {
-      return NextResponse.json({ error: 'Business profile not found' }, { status: 400 })
+      return NextResponse.json({ error: 'Business profile not found' }, { status: 404 })
     }
 
     restaurantProfileId = rp.id
@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
     .select('*')
     .eq('id', restaurantProfileId)
     .eq('user_id', userId)
-    .single()
+    .maybeSingle()
 
   if (profileError || !profile) {
     return NextResponse.json({ error: 'Business profile not found' }, { status: 404 })
@@ -402,7 +402,7 @@ export async function POST(request: NextRequest) {
       // ── Feature 2: Send alert email if triggered ─────────────────────────
       if (alertTriggered && userEmail && resend) {
         await resend.emails.send({
-          from: 'Replyfi Alerts <alerts@replyfi.com>',
+          from: 'ReplyFi Alerts <alerts@replyfi.com>',
           to: userEmail,
           subject: `⚠️ Alert: A review mentioned "${matchedKeyword}"`,
           html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:20px">
@@ -413,7 +413,7 @@ export async function POST(request: NextRequest) {
               <p style="margin:8px 0 0;color:#555">"${review_text.slice(0, 300)}..."</p>
             </div>
             <a href="${process.env.NEXT_PUBLIC_APP_URL ?? 'https://replyfi.com'}/dashboard/reviews" style="display:inline-block;background:#111;color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600">View Review →</a>
-            <p style="color:#AAA;font-size:12px;margin-top:24px">Replyfi · Manage alerts in <a href="https://replyfi.com/settings">Settings</a></p>
+            <p style="color:#AAA;font-size:12px;margin-top:24px">ReplyFi · Manage alerts in <a href="https://replyfi.com/settings">Settings</a></p>
           </div>`
         }).catch(err => console.error('[scrape-reviews] Alert email error:', err))
       }

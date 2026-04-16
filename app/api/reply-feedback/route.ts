@@ -13,6 +13,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid rating' }, { status: 400 })
   }
 
+  if (generatedReply && generatedReply.length > 10000) {
+    return NextResponse.json({ error: 'Reply too long' }, { status: 400 })
+  }
+
   const { error } = await supabase.from('reply_feedback').insert({
     user_id: user.id,
     generated_reply: generatedReply ?? null,

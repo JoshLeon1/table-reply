@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
       .from('business_profiles')
       .select('id, google_maps_url, yelp_url, tripadvisor_url')
       .eq('user_id', user.id)
-      .single()
+      .maybeSingle()
 
     if (!profile) {
       return NextResponse.json({ error: 'Business profile not found' }, { status: 404 })

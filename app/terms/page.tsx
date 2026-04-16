@@ -1,8 +1,8 @@
 import Link from 'next/link'
 
 export const metadata = {
-  title: 'Terms of Service — Replyfi',
-  description: 'Terms and conditions for using Replyfi.',
+  title: 'Terms of Service — ReplyFi',
+  description: 'Terms and conditions for using ReplyFi.',
 }
 
 export default function TermsPage() {
@@ -18,7 +18,7 @@ export default function TermsPage() {
                 <path d="M8 8h9.5A1.5 1.5 0 0119 9.5v5A1.5 1.5 0 0117.5 16H16v2.5l-3-2.5H8A1.5 1.5 0 016.5 14.5v-5A1.5 1.5 0 018 8z" fill="white"/>
               </svg>
             </div>
-            <span className="font-bold text-[15px] text-[#111] tracking-tight">Replyfi</span>
+            <span className="font-bold text-[15px] text-[#111] tracking-tight">ReplyFi</span>
           </Link>
           <Link href="/" className="text-[13px] text-[#A8A29E] hover:text-[#111] transition-colors font-medium">← Back</Link>
         </div>
@@ -35,14 +35,14 @@ export default function TermsPage() {
           <section>
             <h2 className="text-[16px] font-semibold text-[#111] mb-3">1. Acceptance of Terms</h2>
             <p className="text-[14px]">
-              By creating an account and using Replyfi (&ldquo;Service&rdquo;), you agree to be bound by these Terms of Service. If you do not agree, do not use the Service.
+              By creating an account and using ReplyFi (&ldquo;Service&rdquo;), you agree to be bound by these Terms of Service. If you do not agree, do not use the Service.
             </p>
           </section>
 
           <section>
             <h2 className="text-[16px] font-semibold text-[#111] mb-3">2. Description of Service</h2>
             <p className="text-[14px]">
-              Replyfi is a review management platform that helps business owners monitor, respond to, and analyze customer reviews. Features include AI-generated reply suggestions, review analytics, competitor tracking, social post generation, and review request templates.
+              ReplyFi is a review management platform that helps business owners monitor, respond to, and analyze customer reviews. Features include AI-generated reply suggestions, review analytics, competitor tracking, social post generation, and review request templates.
             </p>
           </section>
 
@@ -70,14 +70,14 @@ export default function TermsPage() {
           <section>
             <h2 className="text-[16px] font-semibold text-[#111] mb-3">5. AI-Generated Content</h2>
             <p className="text-[14px]">
-              Replyfi generates reply suggestions using artificial intelligence. These are suggestions only — you are responsible for reviewing content before posting it publicly. We are not liable for any consequences arising from replies you post based on AI suggestions.
+              ReplyFi generates reply suggestions using artificial intelligence. These are suggestions only — you are responsible for reviewing content before posting it publicly. We are not liable for any consequences arising from replies you post based on AI suggestions.
             </p>
           </section>
 
           <section>
             <h2 className="text-[16px] font-semibold text-[#111] mb-3">6. Subscription & Billing</h2>
             <ul className="list-disc pl-5 space-y-2 text-[14px]">
-              <li>Replyfi offers a 7-day free trial with no credit card required.</li>
+              <li>ReplyFi offers a 7-day free trial with no credit card required.</li>
               <li>After the trial, continued use requires a paid subscription billed monthly or annually.</li>
               <li>You may cancel at any time from the Settings page. Cancellations take effect at the end of the current billing period.</li>
               <li>We reserve the right to change pricing with 30 days&rsquo; notice to existing subscribers.</li>
@@ -87,7 +87,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-[16px] font-semibold text-[#111] mb-3">7. Intellectual Property</h2>
             <p className="text-[14px]">
-              The Replyfi platform, including its design, code, and branding, is owned by Replyfi and protected by intellectual property laws. You retain ownership of your business&rsquo;s data and content. By using the Service, you grant us a limited license to process your data to provide the Service.
+              The ReplyFi platform, including its design, code, and branding, is owned by ReplyFi and protected by intellectual property laws. You retain ownership of your business&rsquo;s data and content. By using the Service, you grant us a limited license to process your data to provide the Service.
             </p>
           </section>
 
@@ -101,7 +101,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-[16px] font-semibold text-[#111] mb-3">9. Limitation of Liability</h2>
             <p className="text-[14px]">
-              To the fullest extent permitted by law, Replyfi shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the Service, including but not limited to loss of revenue, reputation, or data.
+              To the fullest extent permitted by law, ReplyFi shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the Service, including but not limited to loss of revenue, reputation, or data.
             </p>
           </section>
 
@@ -137,7 +137,7 @@ export default function TermsPage() {
           <span className="text-[#E4DED8]">·</span>
           <Link href="/contact" className="hover:text-[#111] transition-colors">Contact</Link>
         </div>
-        <p className="mt-2.5 text-[#C4BEB8]">© {new Date().getFullYear()} Replyfi. All rights reserved.</p>
+        <p className="mt-2.5 text-[#C4BEB8]">© {new Date().getFullYear()} ReplyFi. All rights reserved.</p>
       </footer>
     </div>
   )

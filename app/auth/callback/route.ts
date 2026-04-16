@@ -34,7 +34,7 @@ export async function GET(request: Request) {
     }
 
     if (error) {
-      console.error('[Replyfi] Auth callback error:', error.message)
+      console.error('[ReplyFi] Auth callback error:', error.message)
     }
   }
 

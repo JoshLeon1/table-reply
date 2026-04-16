@@ -77,7 +77,7 @@ function buildHtml(params: {
           <!-- Header -->
           <tr>
             <td style="background-color:#111827;padding:28px 32px;">
-              <p style="margin:0 0 6px;font-size:18px;font-weight:700;color:#E05A28;letter-spacing:.5px;">Replyfi</p>
+              <p style="margin:0 0 6px;font-size:18px;font-weight:700;color:#E05A28;letter-spacing:.5px;">ReplyFi</p>
               <p style="margin:0;font-size:22px;font-weight:600;color:#ffffff;">${businessName}</p>
               <p style="margin:6px 0 0;font-size:13px;color:#9ca3af;">Weekly review digest</p>
             </td>
@@ -129,7 +129,7 @@ function buildHtml(params: {
           <tr>
             <td style="background-color:#f9fafb;padding:16px 32px;border-top:1px solid #e5e7eb;text-align:center;">
               <p style="margin:0;font-size:12px;color:#9ca3af;">
-                © Replyfi &nbsp;·&nbsp;
+                © ReplyFi &nbsp;·&nbsp;
                 <a href="${process.env.NEXT_PUBLIC_APP_URL ?? 'https://replyfi.com'}/settings" style="color:#9ca3af;text-decoration:underline;">Unsubscribe</a>
               </p>
             </td>
@@ -178,7 +178,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  console.log('[digest] Starting weekly email digest run')
+  if (process.env.NODE_ENV === 'development') console.log('[digest] Starting weekly email digest run')
 
   // -------------------------------------------------------------------------
   // 1. Fetch eligible profiles
@@ -198,7 +198,7 @@ export async function POST(request: NextRequest) {
   }
 
   if (!profiles || profiles.length === 0) {
-    console.log('[digest] No eligible profiles found')
+    if (process.env.NODE_ENV === 'development') console.log('[digest] No eligible profiles found')
     return NextResponse.json({ sent: 0, skipped: 0 })
   }
 
@@ -209,7 +209,7 @@ export async function POST(request: NextRequest) {
     return false
   })
 
-  console.log(`[digest] ${eligibleProfiles.length} eligible profiles (of ${profiles.length} with notifications on)`)
+  if (process.env.NODE_ENV === 'development') console.log(`[digest] ${eligibleProfiles.length} eligible profiles (of ${profiles.length} with notifications on)`)
 
   // -------------------------------------------------------------------------
   // 2. Fetch all auth users (paginated) to cross-reference emails
@@ -256,7 +256,7 @@ export async function POST(request: NextRequest) {
         .from('business_profiles')
         .select('id, business_name')
         .eq('user_id', profile.id)
-        .single()
+        .maybeSingle()
 
       if (restError || !restaurant) {
         console.warn(`[digest] No business profile for user ${profile.id}, skipping`)
@@ -279,7 +279,7 @@ export async function POST(request: NextRequest) {
       }
 
       if (!reviews || reviews.length === 0) {
-        console.log(`[digest] No new reviews for user ${profile.id} (${restaurant.business_name}), skipping`)
+        if (process.env.NODE_ENV === 'development') console.log(`[digest] No new reviews for user ${profile.id} (${restaurant.business_name}), skipping`)
         skipped++
         continue
       }
@@ -294,7 +294,7 @@ export async function POST(request: NextRequest) {
 
       // Send email
       const { error: sendError } = await resend.emails.send({
-        from: 'Replyfi <digest@replyfi.com>',
+        from: 'ReplyFi <digest@replyfi.com>',
         to: userEmail,
         subject: `Your weekly review summary — ${restaurant.business_name}`,
         html: buildHtml({
@@ -317,7 +317,7 @@ export async function POST(request: NextRequest) {
         continue
       }
 
-      console.log(
+      if (process.env.NODE_ENV === 'development') console.log(
         `[digest] Sent digest to ${userEmail} (${restaurant.business_name}) — ${reviews.length} reviews, ${approvedCount} approved`,
       )
       sent++
@@ -328,6 +328,6 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  console.log(`[digest] Done — sent: ${sent}, skipped: ${skipped}`)
+  if (process.env.NODE_ENV === 'development') console.log(`[digest] Done — sent: ${sent}, skipped: ${skipped}`)
   return NextResponse.json({ sent, skipped })
 }

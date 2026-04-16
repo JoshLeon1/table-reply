@@ -22,7 +22,7 @@ function Logo() {
           <path strokeLinecap="round" strokeLinejoin="round" d="M5 2v4a2 2 0 002 2v6M8 2v10M11 2s2 1 2 3-2 3-2 3v4"/>
         </svg>
       </div>
-      <span className="text-[16px] font-bold text-[#111] tracking-tight">Replyfi</span>
+      <span className="text-[16px] font-bold text-[#111] tracking-tight">ReplyFi</span>
     </div>
   )
 }
@@ -58,7 +58,7 @@ function LoginForm() {
       const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password })
 
       if (signInError) {
-        console.error('[Replyfi] Login error:', signInError.message)
+        console.error('[ReplyFi] Login error:', signInError.message)
         if (signInError.message === 'Email not confirmed') {
           setError('Please confirm your email before signing in.')
         } else if (signInError.message === 'Invalid login credentials') {
@@ -82,7 +82,7 @@ function LoginForm() {
       router.push('/dashboard')
       router.refresh()
     } catch (err) {
-      console.error('[Replyfi] Unexpected login error:', err)
+      console.error('[ReplyFi] Unexpected login error:', err)
       setError('Something went wrong. Please try again.')
       setLoading(false)
     }
@@ -98,14 +98,14 @@ function LoginForm() {
         options: { redirectTo: `${window.location.origin}/auth/callback` },
       })
       if (oauthError) {
-        console.error('[Replyfi] Google OAuth error:', oauthError.message, oauthError)
+        console.error('[ReplyFi] Google OAuth error:', oauthError.message, oauthError)
         setError(`Google sign in failed: ${oauthError.message}`)
         setGoogleLoading(false)
       }
       if (data?.url) window.location.href = data.url
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err)
-      console.error('[Replyfi] Unexpected Google OAuth error:', msg, err)
+      console.error('[ReplyFi] Unexpected Google OAuth error:', msg, err)
       setError(`Google sign in error: ${msg}`)
       setGoogleLoading(false)
     }

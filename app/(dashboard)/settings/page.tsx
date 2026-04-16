@@ -1,5 +1,5 @@
 export const dynamic = 'force-dynamic'
-export const metadata = { title: 'Settings — Replyfi' }
+export const metadata = { title: 'Settings — ReplyFi' }
 
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
@@ -106,8 +106,8 @@ export default async function SettingsPage() {
               <span className="text-[13px] text-[#57534E]">Plan</span>
               <span className="text-[13px] font-medium text-[#111]">
                 {profile?.stripe_plan === 'annual'
-                  ? 'Replyfi Pro — $239/yr'
-                  : 'Replyfi Pro — $29/mo'}
+                  ? 'ReplyFi Pro — $239/yr'
+                  : 'ReplyFi Pro — $29/mo'}
               </span>
             </div>
           )}

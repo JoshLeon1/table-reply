@@ -127,7 +127,7 @@ function SetupPanel({ profile, onSaved }: { profile: BusinessProfile; onSaved: (
       </div>
       <h1 className="text-xl font-semibold text-[#111111] mb-2">Put Your Review Replies on Autopilot</h1>
       <p className="text-[13px] text-[#57534E]/80 max-w-[280px] sm:max-w-sm mb-8 leading-relaxed">
-        Connect Google Maps, Yelp, or TripAdvisor and Replyfi will sync new reviews every morning, generate personalized replies, and queue them for your approval.
+        Connect Google Maps, Yelp, or TripAdvisor and ReplyFi will sync new reviews every morning, generate personalized replies, and queue them for your approval.
       </p>
       <div className="w-full sm:max-w-lg text-left space-y-3">
         <label className="block text-[13px] font-medium text-[#111111]">Google Maps URL</label>
@@ -270,11 +270,15 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? 'Generation failed')
       const reply: string = data.reply
-      await supabase
+      const { error: updateError } = await supabase
         .from('scraped_reviews')
         .update({ generated_reply: reply })
         .eq('id', review.id)
         .eq('user_id', review.user_id)
+      if (updateError) {
+        setGenError('Failed to save reply. Please try again.')
+        return
+      }
       setReview(prev => ({ ...prev, generated_reply: reply }))
     } catch (err) {
       setGenError(err instanceof Error ? err.message : 'Failed to generate')

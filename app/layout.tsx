@@ -22,26 +22,26 @@ export const viewport = {
 }
 
 export const metadata: Metadata = {
-  title: 'Replyfi — AI Review Replies for Local Businesses',
+  title: 'ReplyFi — AI Review Replies for Local Businesses',
   description:
-    'Replyfi drafts personalized review replies for any local business. Approve and post in seconds.',
+    'ReplyFi drafts personalized review replies for any local business. Approve and post in seconds.',
   icons: {
     icon: '/favicon.svg',
     shortcut: '/favicon.ico',
   },
   openGraph: {
-    title: 'Replyfi — AI Review Replies for Local Businesses',
+    title: 'ReplyFi — AI Review Replies for Local Businesses',
     description:
-      'Replyfi drafts personalized review replies for any local business. Approve and post in seconds.',
+      'ReplyFi drafts personalized review replies for any local business. Approve and post in seconds.',
     url: 'https://replyfi.com',
-    siteName: 'Replyfi',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Replyfi' }],
+    siteName: 'ReplyFi',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'ReplyFi' }],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Replyfi — AI Review Replies for Local Businesses',
-    description: 'Replyfi drafts personalized review replies for any local business. Approve and post in seconds.',
+    title: 'ReplyFi — AI Review Replies for Local Businesses',
+    description: 'ReplyFi drafts personalized review replies for any local business. Approve and post in seconds.',
     images: ['/og-image.png'],
   },
 }

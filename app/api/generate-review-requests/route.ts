@@ -32,6 +32,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Missing restaurantName' }, { status: 400 })
   }
 
+  if (restaurantName?.length > 200 || ownerName?.length > 200 || cuisineType?.length > 200 || vibe?.length > 200 || voiceStyle?.length > 500) {
+    return NextResponse.json({ error: 'Input too long' }, { status: 400 })
+  }
+
   const systemPrompt = `You are a marketing copywriter for ${restaurantName}, a ${cuisineType ?? 'local business'}${vibe ? ` with a ${vibe} vibe` : ''}. The owner's name is ${ownerName ?? 'the owner'}. Voice: ${voiceStyle ?? 'warm and genuine'}. Write in a warm, genuine tone that matches the business's personality.`
 
   const userPrompt = `Generate 4 short review request messages for ${restaurantName}.
@@ -54,7 +58,7 @@ Rules:
       userMessage: userPrompt,
     })).trim()
 
-    console.log('[generate-review-requests] raw response:', rawText.slice(0, 300))
+    if (process.env.NODE_ENV === 'development') console.log('[generate-review-requests] raw response:', rawText.slice(0, 300))
 
     // Strip markdown code fences if present
     const stripped = rawText

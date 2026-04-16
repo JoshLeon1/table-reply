@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
-export const metadata = { title: 'Grow — Replyfi' }
+export const metadata = { title: 'Grow — ReplyFi' }
 
+import { Suspense } from 'react'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
@@ -59,12 +60,14 @@ export default async function GrowPage() {
   const userReviewCount = ratingRows?.length ?? 0
 
   return (
-    <GrowClient
-      restaurantProfile={profile as BusinessProfile}
-      reviews={reviews ?? []}
-      competitors={(competitors ?? []) as CompetitorProfile[]}
-      userAvgRating={userAvgRating}
-      userReviewCount={userReviewCount}
-    />
+    <Suspense fallback={<div className="p-8 text-center text-sm text-[#A09A94]">Loading…</div>}>
+      <GrowClient
+        restaurantProfile={profile as BusinessProfile}
+        reviews={reviews ?? []}
+        competitors={(competitors ?? []) as CompetitorProfile[]}
+        userAvgRating={userAvgRating}
+        userReviewCount={userReviewCount}
+      />
+    </Suspense>
   )
 }

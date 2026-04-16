@@ -314,7 +314,7 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
           Hey {ownerName}, where are your reviews?
         </h1>
         <p className="text-[14px] text-[#57534E]/80 max-w-md mx-auto leading-relaxed">
-          Paste your listing URL from any platform below. Replyfi will pull in your reviews automatically.
+          Paste your listing URL from any platform below. ReplyFi will pull in your reviews automatically.
         </p>
       </div>
 
@@ -458,7 +458,9 @@ function ManualGenerator({ prominent = false }: { prominent?: boolean }) {
 
   const handleCopy = async () => {
     if (!reply) return
-    await navigator.clipboard.writeText(reply)
+    await navigator.clipboard.writeText(reply).catch(() => {
+      setError('Could not copy to clipboard. Please copy the reply manually.')
+    })
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }

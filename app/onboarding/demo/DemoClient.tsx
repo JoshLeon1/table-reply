@@ -147,7 +147,7 @@ export default function DemoClient({ restaurantProfile }: Props) {
                 <path d="M7 1C3.686 1 1 3.686 1 7s2.686 6 6 6 6-2.686 6-6-2.686-6-6-6zm0 2a4 4 0 110 8A4 4 0 017 3z"/>
               </svg>
             </div>
-            <span className="text-sm font-semibold text-[#111] tracking-tight">Replyfi</span>
+            <span className="text-sm font-semibold text-[#111] tracking-tight">ReplyFi</span>
           </div>
           <h1
             className="text-[clamp(24px,3vw,36px)] text-[#111] leading-tight mb-2"

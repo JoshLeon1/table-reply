@@ -117,7 +117,7 @@ export default function YelpConnectSection({
       </div>
 
       <p className="text-[12px] text-[#888] leading-relaxed">
-        Paste your Yelp listing URL. Replyfi will auto-sync your newest Yelp reviews every day alongside Google — no manual copy-paste needed.
+        Paste your Yelp listing URL. ReplyFi will auto-sync your newest Yelp reviews every day alongside Google — no manual copy-paste needed.
       </p>
 
       {/* URL input */}

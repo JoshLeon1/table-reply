@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
   const reviews: string[] = Array.isArray(body.reviews) ? body.reviews : []
   const forceRefresh: boolean = body.forceRefresh === true
 
-  console.log(`[analyze-themes] user=${user.id} reviews=${reviews.length} forceRefresh=${forceRefresh}`)
+  if (process.env.NODE_ENV === 'development') console.log(`[analyze-themes] user=${user.id} reviews=${reviews.length} forceRefresh=${forceRefresh}`)
 
   // ── Check Supabase cache ──────────────────────────────────────────────────────
   if (!forceRefresh) {
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
       const sameCount = cached.reviews_count_at_analysis === reviews.length
 
       if (fresh && sameCount) {
-        console.log('[analyze-themes] Returning cached result')
+        if (process.env.NODE_ENV === 'development') console.log('[analyze-themes] Returning cached result')
         const t = cached.themes as ThemesShape
         return NextResponse.json({
           praised:       Array.isArray(t.praised)       ? t.praised       : [],
@@ -122,7 +122,7 @@ ${reviews.slice(0, 60).join('\n---\n')}`,
 
     const data = await res.json()
     const raw = data.content?.[0]?.type === 'text' ? data.content[0].text : ''
-    console.log('[analyze-themes] Raw (first 400):', raw.slice(0, 400))
+    if (process.env.NODE_ENV === 'development') console.log('[analyze-themes] Raw (first 400):', raw.slice(0, 400))
 
     const parsed = JSON.parse(extractJSON(raw))
 
@@ -132,7 +132,7 @@ ${reviews.slice(0, 60).join('\n---\n')}`,
       opportunities: Array.isArray(parsed.opportunities) ? parsed.opportunities.filter(Boolean) : [],
     }
 
-    console.log('[analyze-themes] OK — praised:', result.praised.length, 'complaints:', result.complaints.length, 'opportunities:', result.opportunities.length)
+    if (process.env.NODE_ENV === 'development') console.log('[analyze-themes] OK — praised:', result.praised.length, 'complaints:', result.complaints.length, 'opportunities:', result.opportunities.length)
 
     // ── Save to Supabase ──────────────────────────────────────────────────────
     const now = new Date().toISOString()

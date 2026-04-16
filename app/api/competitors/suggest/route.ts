@@ -22,7 +22,7 @@ export async function GET() {
     .from('business_profiles')
     .select('business_name, business_type, google_maps_url')
     .eq('user_id', user.id)
-    .single()
+    .maybeSingle()
 
   if (!profile) return NextResponse.json({ results: [] })
 

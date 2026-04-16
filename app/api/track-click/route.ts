@@ -20,6 +20,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Missing channel' }, { status: 400 })
   }
 
+  const VALID_CHANNELS = ['sms', 'email', 'receipt', 'tablecard']
+  if (!VALID_CHANNELS.includes(channel)) {
+    return NextResponse.json({ error: 'Invalid channel' }, { status: 400 })
+  }
+
   const { error } = await supabase.from('review_request_clicks').insert({
     user_id: user.id,
     channel,

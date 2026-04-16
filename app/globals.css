@@ -93,7 +93,6 @@ body {
 
   /* premium card shadow system */
   .shadow-lifted     { box-shadow: 0 8px 30px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06); }
-  .shadow-accent     { box-shadow: 0 4px 14px rgba(224,90,40,0.28); }
   .shadow-accent-lg  { box-shadow: 0 6px 22px rgba(224,90,40,0.35); }
 
   /* card hover — lift + glow */

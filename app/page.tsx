@@ -526,7 +526,7 @@ export default function LandingPage() {
             {steps.map(({ num, title, desc }, i) => (
               <div
                 key={num}
-                className="relative flex sm:flex-col items-start gap-4 sm:gap-4 p-5 sm:p-6 rounded-2xl bg-[#fafaf8] border border-[#E4DED8] transition-all duration-500 hover:shadow-[0_4px_20px_rgba(0,0,0,0.07)] hover:-translate-y-0.5"
+                className="relative flex sm:flex-col items-start gap-4 sm:gap-4 p-5 sm:p-6 rounded-2xl bg-white border border-border shadow-card transition-all duration-500 hover:shadow-card-hover hover:-translate-y-0.5"
                 style={{
                   transitionDelay: howItWorksAnim.inView ? `${i * 100}ms` : '0ms',
                   opacity: howItWorksAnim.inView ? 1 : 0,
@@ -602,7 +602,7 @@ export default function LandingPage() {
             ].map(({ num, title, desc, tagline, icon, color, bg, border }, i) => (
               <div
                 key={num}
-                className="bg-white border border-[#E4DED8] rounded-2xl p-6 sm:p-7 flex flex-col transition-all duration-500 hover:shadow-[0_4px_20px_rgba(0,0,0,0.07)] hover:-translate-y-0.5"
+                className="bg-white border border-border rounded-2xl shadow-card p-6 sm:p-7 flex flex-col transition-all duration-500 hover:shadow-card-hover hover:-translate-y-0.5"
                 style={{
                   transitionDelay: featuresAnim.inView ? `${i * 80}ms` : '0ms',
                   opacity: featuresAnim.inView ? 1 : 0,

@@ -112,7 +112,7 @@ export default function OGImage() {
             letterSpacing: '0.02em',
           }}
         >
-          replyfi.com
+          replyfi.app
         </div>
       </div>
     ),

@@ -150,7 +150,7 @@ export default function ReplyGenerator({ isPaid, onUpgrade, initialReview = '', 
       setError(
         err instanceof Error
           ? err.message
-          : 'Something went wrong generating your reply. Please try again — if this keeps happening, email us at hello@replyfi.com'
+          : 'Something went wrong generating your reply. Please try again — if this keeps happening, email us at hello@replyfi.app'
       )
     } finally {
       setLoading(false)

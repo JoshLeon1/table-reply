@@ -290,7 +290,7 @@ export async function POST(request: NextRequest) {
         // Keyword alert email
         if (alertTriggered && userEmail && resend) {
           await resend.emails.send({
-            from: 'ReplyFi Alerts <alerts@replyfi.com>',
+            from: 'ReplyFi Alerts <alerts@replyfi.app>',
             to: userEmail,
             subject: `⚠️ Alert: A TripAdvisor review mentioned "${matchedKeyword}"`,
             html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:20px">
@@ -300,8 +300,8 @@ export async function POST(request: NextRequest) {
                 <p style="margin:0;font-weight:600">${author_title ?? 'Anonymous'} · ${review_rating}★ (TripAdvisor)</p>
                 <p style="margin:8px 0 0;color:#555">"${review_text.slice(0, 300)}..."</p>
               </div>
-              <a href="https://replyfi.com/dashboard/reviews" style="display:inline-block;background:#111;color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600">View Review →</a>
-              <p style="color:#AAA;font-size:12px;margin-top:24px">ReplyFi · Manage alerts in <a href="https://replyfi.com/settings">Settings</a></p>
+              <a href="https://replyfi.app/dashboard/reviews" style="display:inline-block;background:#111;color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600">View Review →</a>
+              <p style="color:#AAA;font-size:12px;margin-top:24px">ReplyFi · Manage alerts in <a href="https://replyfi.app/settings">Settings</a></p>
             </div>`,
           }).catch(err => console.error('[scrape-tripadvisor] Alert email error:', err))
         }

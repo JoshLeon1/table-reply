@@ -212,7 +212,7 @@ export default function SettingsPageClient({
       if (!res.ok) throw new Error()
       window.location.href = '/login?deleted=1'
     } catch {
-      setDeleteError('Something went wrong. Please try again or contact hello@replyfi.com.')
+      setDeleteError('Something went wrong. Please try again or contact hello@replyfi.app.')
       setDeleteLoading(false)
     }
   }

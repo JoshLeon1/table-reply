@@ -122,7 +122,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-[16px] font-semibold text-[#111] mb-3">12. Contact</h2>
             <p className="text-[14px]">
-              Questions? Email us at <a href="mailto:support@replyfi.com" className="text-[#E05A28] hover:underline">support@replyfi.com</a> or visit our <Link href="/contact" className="text-[#E05A28] hover:underline">Contact page</Link>.
+              Questions? Email us at <a href="mailto:support@replyfi.app" className="text-[#E05A28] hover:underline">support@replyfi.app</a> or visit our <Link href="/contact" className="text-[#E05A28] hover:underline">Contact page</Link>.
             </p>
           </section>
 

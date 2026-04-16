@@ -494,7 +494,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
         doc.setFontSize(8)
         doc.setFont('helvetica', 'normal')
         doc.setTextColor(...LIGHT)
-        doc.text(`ReplyFi · replyfi.com · Generated ${generatedOn}`, L, 291)
+        doc.text(`ReplyFi · replyfi.app · Generated ${generatedOn}`, L, 291)
         doc.text(`${pageNum} / ${total}`, R, 291, { align: 'right' })
       }
 

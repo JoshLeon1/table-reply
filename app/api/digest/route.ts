@@ -118,7 +118,7 @@ function buildHtml(params: {
           <!-- CTA -->
           <tr>
             <td style="padding:8px 32px 32px;text-align:center;">
-              <a href="${process.env.NEXT_PUBLIC_APP_URL ?? 'https://replyfi.com'}/dashboard/reviews"
+              <a href="${process.env.NEXT_PUBLIC_APP_URL ?? 'https://replyfi.app'}/dashboard/reviews"
                  style="display:inline-block;background-color:#111827;color:#ffffff;text-decoration:none;font-size:14px;font-weight:600;padding:12px 28px;border-radius:6px;letter-spacing:.3px;">
                 View All Reviews →
               </a>
@@ -130,7 +130,7 @@ function buildHtml(params: {
             <td style="background-color:#f9fafb;padding:16px 32px;border-top:1px solid #e5e7eb;text-align:center;">
               <p style="margin:0;font-size:12px;color:#9ca3af;">
                 © ReplyFi &nbsp;·&nbsp;
-                <a href="${process.env.NEXT_PUBLIC_APP_URL ?? 'https://replyfi.com'}/settings" style="color:#9ca3af;text-decoration:underline;">Unsubscribe</a>
+                <a href="${process.env.NEXT_PUBLIC_APP_URL ?? 'https://replyfi.app'}/settings" style="color:#9ca3af;text-decoration:underline;">Unsubscribe</a>
               </p>
             </td>
           </tr>
@@ -294,7 +294,7 @@ export async function POST(request: NextRequest) {
 
       // Send email
       const { error: sendError } = await resend.emails.send({
-        from: 'ReplyFi <digest@replyfi.com>',
+        from: 'ReplyFi <digest@replyfi.app>',
         to: userEmail,
         subject: `Your weekly review summary — ${restaurant.business_name}`,
         html: buildHtml({

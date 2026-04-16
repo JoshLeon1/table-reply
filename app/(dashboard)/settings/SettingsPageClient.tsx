@@ -422,7 +422,7 @@ export default function SettingsPageClient({
               {exportLoading ? 'Exporting…' : 'Export JSON'}
             </button>
           </div>
-          {exportError && <p className="text-[12px] text-red-500 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{exportError}</p>}
+          {exportError && <p role="alert" className="text-[12px] text-red-500 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{exportError}</p>}
         </div>
       </div>
 
@@ -440,7 +440,7 @@ export default function SettingsPageClient({
               <code className="font-mono text-red-500 bg-red-50 px-1 rounded">DELETE</code> to confirm.
             </p>
           </div>
-          {deleteError && <p className="text-[12px] text-red-500 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{deleteError}</p>}
+          {deleteError && <p role="alert" className="text-[12px] text-red-500 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{deleteError}</p>}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
             <input
               type="text"

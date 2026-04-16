@@ -208,6 +208,7 @@ export default function LandingPage() {
         </div>
       </nav>
 
+      <main id="main">
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
       <section className="bg-[#111111] pt-10 sm:pt-16 lg:pt-24 pb-10 sm:pb-16 lg:pb-20 px-4 sm:px-6 overflow-hidden relative">
         <div aria-hidden="true" className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 70% 60% at 15% 50%, rgba(224,90,40,0.13) 0%, transparent 65%)' }} />
@@ -838,6 +839,8 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      </main>
 
       {/* ── FOOTER ───────────────────────────────────────────────────────── */}
       <footer className="bg-[#111111] border-t border-[#1E1E1E] py-6 sm:py-8 px-4 sm:px-6">

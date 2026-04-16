@@ -651,7 +651,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
     <div>
       {/* Scrape error banner */}
       {scrapeError && (
-        <div className="mb-5 flex items-start justify-between gap-3 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-[13px] text-red-500">
+        <div role="alert" className="mb-5 flex items-start justify-between gap-3 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-[13px] text-red-500">
           <p>{scrapeError}</p>
           <div className="flex items-center gap-2 flex-shrink-0">
             <button onClick={onScrapeNow} className="font-semibold underline hover:no-underline">Try again</button>

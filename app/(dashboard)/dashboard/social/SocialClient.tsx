@@ -308,7 +308,7 @@ function CreatePostModal({
               </button>
 
               {captionError && (
-                <p className="text-[12px] text-red-500 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{captionError}</p>
+                <p role="alert" className="text-[12px] text-red-500 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{captionError}</p>
               )}
 
               {caption && (
@@ -399,7 +399,7 @@ function CreatePostModal({
               </button>
 
               {graphicError && (
-                <p className="text-[12px] text-red-500 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{graphicError}</p>
+                <p role="alert" className="text-[12px] text-red-500 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{graphicError}</p>
               )}
 
               {graphicHtml && (

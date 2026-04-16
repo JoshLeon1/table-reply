@@ -36,9 +36,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <Nav />
       {/* Spacer so content clears the fixed nav (64px nav + safe-area-inset-top for iOS notch) */}
       <div className="flex-shrink-0" style={{ height: 'calc(64px + env(safe-area-inset-top))' }} />
-      <SubscriptionGateWrapper isPaid={isPaid} daysRemaining={daysRemaining}>
-        {children}
-      </SubscriptionGateWrapper>
+      <main id="main" className="flex-1 flex flex-col">
+        <SubscriptionGateWrapper isPaid={isPaid} daysRemaining={daysRemaining}>
+          {children}
+        </SubscriptionGateWrapper>
+      </main>
     </div>
   )
 }

@@ -128,7 +128,7 @@ export default function ResetPasswordPage() {
                 autoComplete="new-password"
               />
               {error && (
-                <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3">
+                <div role="alert" className="rounded-xl bg-red-50 border border-red-100 px-4 py-3">
                   <p className="text-[13px] text-red-600">{error}</p>
                 </div>
               )}

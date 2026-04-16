@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import BusinessProfileForm from '@/components/BusinessProfileForm'
 import GoogleConnectSection from '@/components/GoogleConnectSection'
 import YelpConnectSection from '@/components/YelpConnectSection'
@@ -121,13 +122,11 @@ export default function SettingsPageClient({
   stripePlan,
 }: Props) {
   // If arriving from the trial banner / paywall "Upgrade now" link, open Account tab directly
-  const [activeTab, setActiveTab] = useState<TabId>(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search)
-      if (params.get('tab') === 'account') return 'account'
-    }
-    return 'profile'
-  })
+  const searchParams = useSearchParams()
+  const tabParam = searchParams.get('tab')
+  const [activeTab, setActiveTab] = useState<TabId>(
+    tabParam === 'account' ? 'account' : 'profile'
+  )
 
   // Reply prefs state
   const [replyPrefs, setReplyPrefs] = useState<ReplyPreferences>(initialReplyPrefs)

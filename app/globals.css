@@ -154,6 +154,8 @@ body {
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
+
+  .tnum { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
 }
 
 @keyframes fadeIn    { from { opacity: 0; } to { opacity: 1; } }

@@ -220,7 +220,7 @@ export default function SignupPage() {
           </p>
         </div>
 
-        <p className="mt-5 text-center text-[11px] text-[#A8A29E] px-4">
+        <p className="mt-5 text-center text-xs text-[#A8A29E] px-4">
           By creating an account you agree to our Terms of Service and Privacy Policy.
         </p>
       </div>

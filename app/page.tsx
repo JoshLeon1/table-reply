@@ -143,7 +143,7 @@ export default function LandingPage() {
   const steps = [
     { num: '1', title: 'Connect your business', desc: 'Link your Google, Yelp, and TripAdvisor listings once. Takes under 2 minutes.' },
     { num: '2', title: 'Your reviews appear automatically', desc: 'ReplyFi pulls in your latest reviews every day — no manual work, no copy-pasting.' },
-    { num: '3', title: 'Approve, Edit, Then Post With One Click', desc: "Review the AI draft, edit inline if needed, then approve it. Your Approved tab collects everything ready to post — copy the reply and click 'Respond on Google/Yelp/TripAdvisor' to land directly on that specific review." },
+    { num: '3', title: 'Approve, Edit, Then Post With One Click', desc: "Review and edit the AI draft inline, then approve it. Tap 'Respond' to open that exact review on Google, Yelp, or TripAdvisor — copy, paste, done." },
   ]
 
   const testimonials = [
@@ -628,7 +628,7 @@ export default function LandingPage() {
               <p className="text-[13px] text-[#777] mt-1 leading-relaxed">Track trends in ratings, complaints, and response performance automatically.</p>
             </div>
             <div className="px-5 sm:px-7 py-4 sm:py-5">
-              <div className="flex flex-wrap gap-x-5 gap-y-2.5">
+              <div className="flex flex-col gap-y-2.5 sm:flex-row sm:flex-wrap sm:gap-x-5">
                 {[
                   'Rating trends over time',
                   'Complaint and keyword tracking',

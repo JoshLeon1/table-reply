@@ -273,7 +273,7 @@ export default function BusinessProfileForm({
             onKeyDown={handleKeyDown}
             placeholder="e.g. Bright Smile Dental"
             autoComplete="off"
-            className="w-full h-10 px-3.5 rounded-xl border border-[#E4DED8] bg-[#F8F6F3] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10 transition-all pr-9"
+            className="w-full h-11 px-3.5 rounded-xl border border-[#E4DED8] bg-[#F8F6F3] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10 transition-all pr-9"
           />
           {placesLoading && (
             <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -380,7 +380,7 @@ export default function BusinessProfileForm({
               </label>
               <span className="text-[11px] text-[#A8A29E]">(optional)</span>
               {mapsUrlAutoFilled && (
-                <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                <span className="text-[11px] font-semibold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
                   Auto-filled ✓
                 </span>
               )}
@@ -394,7 +394,7 @@ export default function BusinessProfileForm({
                 setForm({ ...form, google_maps_url: e.target.value })
               }}
               placeholder="https://maps.google.com/..."
-              className="w-full h-10 px-3.5 rounded-xl border border-[#E4DED8] bg-[#F8F6F3] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10 transition-all"
+              className="w-full h-11 px-3.5 rounded-xl border border-[#E4DED8] bg-[#F8F6F3] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10 transition-all"
             />
           </div>
 
@@ -418,7 +418,7 @@ export default function BusinessProfileForm({
                 </span>
               )}
               {yelpAutoFilled && (
-                <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                <span className="text-[11px] font-semibold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
                   Auto-filled ✓
                 </span>
               )}
@@ -427,7 +427,7 @@ export default function BusinessProfileForm({
                   href={yelpSearchUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[11px] text-[#E05A28] hover:text-[#C94E21] transition-colors"
+                  className="text-xs py-1 inline-flex items-center text-[#E05A28] hover:text-[#C94E21] transition-colors"
                 >
                   Find on Yelp →
                 </a>
@@ -442,7 +442,7 @@ export default function BusinessProfileForm({
                 setForm({ ...form, yelp_url: e.target.value })
               }}
               placeholder="https://www.yelp.com/biz/your-business"
-              className="w-full h-10 px-3.5 rounded-xl border border-[#E4DED8] bg-[#F8F6F3] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10 transition-all"
+              className="w-full h-11 px-3.5 rounded-xl border border-[#E4DED8] bg-[#F8F6F3] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10 transition-all"
             />
           </div>
 
@@ -466,7 +466,7 @@ export default function BusinessProfileForm({
                 </span>
               )}
               {taAutoFilled && (
-                <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                <span className="text-[11px] font-semibold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
                   Auto-filled ✓
                 </span>
               )}
@@ -475,7 +475,7 @@ export default function BusinessProfileForm({
                   href={taSearchUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[11px] text-[#E05A28] hover:text-[#C94E21] transition-colors"
+                  className="text-xs py-1 inline-flex items-center text-[#E05A28] hover:text-[#C94E21] transition-colors"
                 >
                   Find on TripAdvisor →
                 </a>
@@ -490,7 +490,7 @@ export default function BusinessProfileForm({
                 setForm({ ...form, tripadvisor_url: e.target.value })
               }}
               placeholder="https://www.tripadvisor.com/Restaurant_Review-..."
-              className="w-full h-10 px-3.5 rounded-xl border border-[#E4DED8] bg-[#F8F6F3] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10 transition-all"
+              className="w-full h-11 px-3.5 rounded-xl border border-[#E4DED8] bg-[#F8F6F3] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10 transition-all"
             />
           </div>
         </div>

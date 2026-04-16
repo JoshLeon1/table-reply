@@ -36,7 +36,7 @@ export default function TrialBanner({ daysRemaining, trialExpired, onUpgrade }: 
         </div>
         <button
           onClick={onUpgrade}
-          className="text-[13px] font-semibold text-[#E05A28] hover:text-[#F07040] transition-colors ml-4 whitespace-nowrap flex-shrink-0"
+          className="text-[13px] font-semibold text-[#E05A28] hover:text-[#F07040] transition-colors ml-4 whitespace-nowrap flex-shrink-0 min-h-[44px] inline-flex items-center"
         >
           Upgrade to Pro →
         </button>
@@ -57,13 +57,13 @@ export default function TrialBanner({ daysRemaining, trialExpired, onUpgrade }: 
         <div className="flex items-center gap-3 flex-shrink-0">
           <button
             onClick={onUpgrade}
-            className="text-[13px] font-semibold text-[#E05A28] hover:text-[#F07040] transition-colors whitespace-nowrap"
+            className="text-[13px] font-semibold text-[#E05A28] hover:text-[#F07040] transition-colors whitespace-nowrap min-h-[44px] inline-flex items-center"
           >
             Upgrade to Pro →
           </button>
           <button
             onClick={handleDismiss}
-            className="text-white/25 hover:text-white/55 transition-colors p-1 rounded"
+            className="text-white/25 hover:text-white/55 transition-colors p-2.5 rounded min-w-[44px] min-h-[44px] flex items-center justify-center"
             aria-label="Dismiss"
           >
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

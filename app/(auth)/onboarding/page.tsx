@@ -25,7 +25,7 @@ function OptionButton({ selected, onClick, children }: { selected: boolean; onCl
     <button
       type="button"
       onClick={onClick}
-      className={`px-3.5 py-3 rounded-xl text-[13px] font-medium border transition-all duration-150 text-left ${
+      className={`px-3.5 py-3.5 min-h-[44px] rounded-xl text-[13px] font-medium border transition-all duration-150 text-center ${
         selected
           ? 'bg-[#FEF0E8] border-[#E05A28] text-[#E05A28]'
           : 'bg-white border-[#E4DED8] text-[#333] hover:border-[#CEC8C1]'
@@ -449,7 +449,7 @@ export default function OnboardingPage() {
                     maxLength={500}
                     className={inputClass}
                   />
-                  <p className="text-[11px] text-[#A8A29E] leading-relaxed">
+                  <p className="text-xs text-[#A8A29E] leading-relaxed">
                     Open maps.google.com, search your business, then copy the URL from your browser address bar.
                   </p>
                 </div>

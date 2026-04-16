@@ -227,14 +227,14 @@ function PlatformCard({
           <button
             onClick={handleSyncNow}
             disabled={syncing}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-[#E4DED8] hover:border-[#E05A28] hover:text-[#E05A28] text-[12px] font-medium text-[#57534E] transition-all duration-150 disabled:opacity-40"
+            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-[#E4DED8] hover:border-[#E05A28] hover:text-[#E05A28] text-[12px] font-medium text-[#57534E] transition-all duration-150 disabled:opacity-40 min-h-[44px]"
           >
             {syncing ? <><SpinIcon />Syncing…</> : <><SyncIcon />Sync Now</>}
           </button>
         ) : (
           <button
             onClick={focusInput}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-[#E4DED8] hover:border-[#E05A28] hover:text-[#E05A28] text-[12px] font-medium text-[#A8A29E] transition-all duration-150"
+            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-[#E4DED8] hover:border-[#E05A28] hover:text-[#E05A28] text-[12px] font-medium text-[#A8A29E] transition-all duration-150 min-h-[44px]"
           >
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
@@ -596,7 +596,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
                         </svg>
                       </div>
                       <div className="bg-[#E9EFFD] rounded-2xl rounded-tl-sm px-4 py-3 flex-1">
-                        <p className="text-[12px] text-[#1A1A2E] leading-relaxed whitespace-pre-wrap">{editedMessages[ch.key]}</p>
+                        <p className="text-[12px] text-[#1A1A2E] leading-relaxed whitespace-pre-wrap break-words">{editedMessages[ch.key]}</p>
                       </div>
                     </div>
                   )}
@@ -608,14 +608,14 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
                         <p className="text-[11px] text-[#A8A29E]"><span className="font-medium text-[#57534E]">Subject:</span> We&apos;d love your feedback!</p>
                       </div>
                       <div className="px-3 py-2.5">
-                        <p className="text-[12px] text-[#57534E] leading-relaxed whitespace-pre-wrap">{editedMessages[ch.key]}</p>
+                        <p className="text-[12px] text-[#57534E] leading-relaxed whitespace-pre-wrap break-words">{editedMessages[ch.key]}</p>
                       </div>
                     </div>
                   )}
 
                   {(isReceipt || ch.key === 'tablecard') && (
                     <div className="rounded-xl border-2 border-dashed border-[#D0C9C1] bg-[#F8F6F3] px-4 py-3">
-                      <p className="text-[12px] text-[#57534E] leading-relaxed whitespace-pre-wrap font-mono">{editedMessages[ch.key]}</p>
+                      <p className="text-[12px] text-[#57534E] leading-relaxed whitespace-pre-wrap break-words font-mono">{editedMessages[ch.key]}</p>
                     </div>
                   )}
 

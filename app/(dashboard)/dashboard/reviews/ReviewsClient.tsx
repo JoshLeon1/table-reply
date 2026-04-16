@@ -366,10 +366,12 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
         <div className={`w-7 h-7 rounded-full ${getAvatarColor(review.reviewer_name)} flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0`}>
           {getInitials(review.reviewer_name)}
         </div>
-        <span className="text-[12px] font-medium text-[#57534E] truncate flex-shrink-0 max-w-[120px]">{review.reviewer_name}</span>
-        <PlatformBadge source={review.source} />
-        <StarRow rating={review.star_rating} />
-        <span className="text-[11px] text-[#C4BEB8] flex-shrink-0">{formatDate(review.review_datetime_utc)}</span>
+        <div className="flex items-center gap-1.5 min-w-0">
+          <span className="text-[12px] font-medium text-[#57534E] truncate max-w-[120px]">{review.reviewer_name}</span>
+          <PlatformBadge source={review.source} />
+          <StarRow rating={review.star_rating} />
+        </div>
+        <span className="text-[11px] text-[#C4BEB8] flex-shrink-0 hidden sm:block">{formatDate(review.review_datetime_utc)}</span>
         <span className="text-[10px] text-[#C4BEB8] italic flex-1 hidden sm:block">No written review</span>
         {statusChip && <div className="flex-shrink-0">{statusChip}</div>}
         {(status === 'pending' || status === 'dismissed') && (
@@ -719,7 +721,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
             Test data
           </button>
           <button onClick={onScrapeNow} disabled={scraping}
-            className="group flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#F3F0EC] border border-[#E4DED8] hover:border-[#D0C9C1] hover:shadow-sm text-[13px] font-medium text-[#57534E] hover:text-[#111111] disabled:opacity-40 transition-all min-h-[38px]">
+            className="group flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#F3F0EC] border border-[#E4DED8] hover:border-[#D0C9C1] hover:shadow-sm text-[13px] font-medium text-[#57534E] hover:text-[#111111] disabled:opacity-40 transition-all min-h-[44px]">
             <svg className={`w-3.5 h-3.5 transition-transform duration-500 ${scraping ? 'animate-spin' : 'group-hover:rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
             </svg>

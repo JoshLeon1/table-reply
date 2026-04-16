@@ -264,7 +264,7 @@ export default function Nav() {
 
             {/* Mobile hamburger */}
             <button
-              className="lg:hidden flex items-center justify-center w-9 h-9 rounded-lg text-[#111111]/50 hover:text-[#111111] hover:bg-[#F3F0EC] transition-all active:scale-95"
+              className="lg:hidden flex items-center justify-center w-11 h-11 rounded-lg text-[#111111]/50 hover:text-[#111111] hover:bg-[#F3F0EC] transition-all active:scale-95"
               onClick={() => setMobileOpen((o) => !o)}
               aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
             >

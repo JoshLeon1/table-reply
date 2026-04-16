@@ -164,10 +164,12 @@ function PendingCard({ review, userId, onAction, animDelay = 0 }: { review: Scra
     return (
       <div className="animate-fade-up flex items-center gap-3 px-4 py-2.5 bg-white rounded-xl border border-[#E4DED8] hover:border-[#D0C9C1] transition-all duration-150 opacity-60 hover:opacity-80" style={{ animationDelay: `${animDelay}ms` }}>
         <div className={`w-7 h-7 rounded-full bg-gradient-to-br ${avatarBg} border border-[#E4DED8] flex items-center justify-center text-[10px] font-bold ${avatarText} flex-shrink-0`}>{initials}</div>
-        <span className="text-[12px] font-medium text-[#57534E] truncate flex-shrink-0 max-w-[100px]">{review.reviewer_name}</span>
-        <PlatformBadge source={review.source} />
-        <StarRow rating={review.star_rating} />
-        <span className="text-[11px] text-[#C4BEB8] flex-shrink-0">{review.review_datetime_utc ? formatTimeAgo(review.review_datetime_utc) : ''}</span>
+        <div className="flex items-center gap-1.5 min-w-0">
+          <span className="text-[12px] font-medium text-[#57534E] truncate max-w-[100px]">{review.reviewer_name}</span>
+          <PlatformBadge source={review.source} />
+          <StarRow rating={review.star_rating} />
+        </div>
+        <span className="text-[11px] text-[#C4BEB8] flex-shrink-0 hidden sm:block">{review.review_datetime_utc ? formatTimeAgo(review.review_datetime_utc) : ''}</span>
         <span className="text-[10px] text-[#C4BEB8] italic flex-1 hidden sm:block">No written review</span>
         <button onClick={handleDismiss} disabled={actioning} className="flex-shrink-0 text-[11px] text-[#C4BEB8] hover:text-[#A8A29E] transition-colors disabled:opacity-40">
           Dismiss
@@ -517,7 +519,7 @@ function GeneratorBody({ review, setReview, platform, setPlatform, starRating, s
                 key={p.value}
                 type="button"
                 onClick={() => setPlatform(p.value)}
-                className={`px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all duration-150 ${
+                className={`px-3 py-2.5 rounded-lg text-xs font-semibold min-h-[44px] transition-all duration-150 ${
                   platform === p.value
                     ? 'bg-[#E05A28]/20 text-[#E05A28] border border-[#E05A28]/30'
                     : 'text-[#A8A29E] border border-[#E4DED8] hover:text-[#57534E] hover:border-[#D0C9C1]'
@@ -527,13 +529,13 @@ function GeneratorBody({ review, setReview, platform, setPlatform, starRating, s
               </button>
             ))}
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0">
             {[1,2,3,4,5].map(s => (
               <button
                 key={s}
                 type="button"
                 onClick={() => setStarRating(s)}
-                className={`text-[16px] leading-none transition-all duration-100 ${s <= starRating ? 'text-amber-400' : 'text-[#E4DED8]'}`}
+                className={`min-w-[44px] min-h-[44px] flex items-center justify-center text-[16px] leading-none transition-all duration-100 ${s <= starRating ? 'text-amber-400' : 'text-[#E4DED8]'}`}
               >★</button>
             ))}
           </div>

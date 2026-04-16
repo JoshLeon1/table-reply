@@ -125,7 +125,7 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
 
   return (
     <div className="flex items-center justify-center py-12 sm:py-16">
-      <div className="w-full max-w-lg bg-white rounded-2xl border border-[#E4DED8] shadow-card p-7 sm:p-8">
+      <div className="w-full max-w-lg bg-white rounded-2xl border border-[#E4DED8] shadow-card p-5 sm:p-7">
         <div className="mb-7 text-center">
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#E05A28]/10 border border-[#E05A28]/25 mb-4">
             <svg className="w-6 h-6 text-[#E05A28]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
@@ -683,7 +683,7 @@ function CompetitorCard({
       </div>
       {removeError && <p className="text-[12px] text-red-500 mt-2">{removeError}</p>}
 
-      <div className="flex items-center gap-5 mt-4 pt-4 border-t border-[#E4DED8]">
+      <div className="flex flex-wrap items-center gap-3 sm:gap-5 mt-4 pt-4 border-t border-[#E4DED8]">
         <div>
           <p className="text-[11px] font-medium text-[#A8A29E] mb-1">Avg Rating</p>
           <div className="flex items-center gap-2">
@@ -738,7 +738,7 @@ export default function CompetitorsClient({
       <div className="max-w-3xl mx-auto">
 
         {/* Header */}
-        <div className="flex items-start justify-between mb-6 gap-4">
+        <div className="flex flex-wrap items-start justify-between gap-3 mb-6">
           <div>
             <h1 className="text-[22px] font-semibold text-[#111111] leading-tight tracking-tight">Competitor Tracker</h1>
             <p className="text-[13px] text-[#57534E] mt-1">

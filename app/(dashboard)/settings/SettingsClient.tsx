@@ -304,7 +304,7 @@ export default function SettingsClient({
             <button
               onClick={handleExport}
               disabled={exportLoading}
-              className="flex-shrink-0 px-3.5 py-2 rounded-xl border border-[#E4DED8] hover:border-[#D0C9C1] bg-[#F3F0EC] text-[13px] font-medium text-[#57534E] hover:text-[#111111] transition-all duration-150 disabled:opacity-50 min-h-[40px]"
+              className="flex-shrink-0 px-3.5 py-2 rounded-xl border border-[#E4DED8] hover:border-[#D0C9C1] bg-[#F3F0EC] text-[13px] font-medium text-[#57534E] hover:text-[#111111] transition-all duration-150 disabled:opacity-50 min-h-[44px]"
             >
               {exportLoading ? 'Exporting…' : 'Export JSON'}
             </button>
@@ -345,12 +345,12 @@ export default function SettingsClient({
                 value={deleteInput}
                 onChange={(e) => setDeleteInput(e.target.value)}
                 placeholder="Type DELETE to confirm"
-                className="flex-1 min-w-0 px-3 py-2.5 rounded-xl border border-red-200 focus:border-red-400 focus:ring-2 focus:ring-red-400/20 bg-red-50/50 text-[13px] font-mono text-[#111111] placeholder:text-[#C4BEB8] outline-none transition-all min-h-[42px]"
+                className="flex-1 min-w-0 px-3 py-2.5 rounded-xl border border-red-200 focus:border-red-400 focus:ring-2 focus:ring-red-400/20 bg-red-50/50 text-[13px] font-mono text-[#111111] placeholder:text-[#C4BEB8] outline-none transition-all min-h-[44px]"
               />
               <button
                 onClick={handleDeleteData}
                 disabled={deleteInput !== 'DELETE' || deleteLoading}
-                className="sm:flex-shrink-0 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 disabled:bg-red-200 disabled:cursor-not-allowed text-white text-[13px] font-medium transition-all duration-150 min-h-[42px]"
+                className="sm:flex-shrink-0 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 disabled:bg-red-200 disabled:cursor-not-allowed text-white text-[13px] font-medium transition-all duration-150 min-h-[44px]"
               >
                 {deleteLoading ? 'Deleting…' : 'Delete Everything'}
               </button>

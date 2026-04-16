@@ -178,7 +178,7 @@ function LoginForm() {
                 autoComplete="current-password"
               />
               <div className="mt-1.5 text-right">
-                <Link href="/forgot-password" className="text-[12px] text-[#E05A28] hover:text-[#C94E21] transition-colors">
+                <Link href="/forgot-password" className="text-[12px] text-[#E05A28] hover:text-[#C94E21] transition-colors py-2 inline-flex items-center">
                   Forgot Password?
                 </Link>
               </div>

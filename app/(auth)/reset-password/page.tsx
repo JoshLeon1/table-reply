@@ -86,11 +86,15 @@ export default function ResetPasswordPage() {
           <p className="text-[14px] text-[#7C7672] mb-6">Choose a strong password for your account.</p>
 
           {authorized === null ? (
-            <div className="flex items-center justify-center py-10">
-              <svg className="animate-spin h-5 w-5 text-[#E05A28]" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
+            <div className="py-6 text-center">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-accent-light mb-4">
+                <svg className="animate-spin h-5 w-5 text-accent" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+              </div>
+              <h2 className="text-[18px] font-semibold text-text-1 mb-1">Verifying your link…</h2>
+              <p className="text-[13px] text-text-2">This usually takes a second or two.</p>
             </div>
           ) : authorized === false ? (
             <div className="rounded-xl bg-amber-50 border border-amber-200 px-4 py-4 text-[13px] text-amber-800">

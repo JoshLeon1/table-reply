@@ -18,6 +18,9 @@ export interface BusinessProfile {
   owner_name: string
   created_at: string
   google_maps_url: string | null
+  google_place_id: string | null
+  latitude: number | null
+  longitude: number | null
   last_scraped_at: string | null
   yelp_url: string | null
   yelp_last_scraped_at: string | null

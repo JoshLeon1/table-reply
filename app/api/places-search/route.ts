@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
       headers: {
         'Content-Type': 'application/json',
         'X-Goog-Api-Key': apiKey,
-        'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.rating,places.types',
+        'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.rating,places.types,places.location',
       },
       body: JSON.stringify({
         textQuery: query,
@@ -55,6 +55,7 @@ export async function GET(request: NextRequest) {
       formattedAddress?: string
       rating?: number
       types?: string[]
+      location?: { latitude: number; longitude: number }
     }[]
 
     const results = places
@@ -70,6 +71,8 @@ export async function GET(request: NextRequest) {
           address,
           rating: p.rating,
           mapsUrl,
+          latitude: p.location?.latitude ?? null,
+          longitude: p.location?.longitude ?? null,
         }
       })
       .filter(p => p.name) // remove blank names

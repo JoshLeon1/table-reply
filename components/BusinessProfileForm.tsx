@@ -21,6 +21,8 @@ interface PlaceResult {
   address: string
   rating?: number
   mapsUrl: string
+  latitude: number | null
+  longitude: number | null
 }
 
 const businessTypeOptions = [
@@ -83,6 +85,10 @@ export default function BusinessProfileForm({
 
   // Tracks address from Places selection for Yelp/TA search links
   const [placesAddress, setPlacesAddress] = useState('')
+  // Tracks location data from selected place
+  const [selectedPlaceId, setSelectedPlaceId] = useState<string>(existingProfile?.google_place_id ?? '')
+  const [selectedLat, setSelectedLat] = useState<number | null>(existingProfile?.latitude ?? null)
+  const [selectedLng, setSelectedLng] = useState<number | null>(existingProfile?.longitude ?? null)
   // Tracks whether google_maps_url was auto-filled from Places
   const [mapsUrlAutoFilled, setMapsUrlAutoFilled] = useState(false)
   // Tracks auto-fill state for Yelp / TripAdvisor
@@ -153,6 +159,9 @@ export default function BusinessProfileForm({
       google_maps_url: place.mapsUrl,
     }))
     setPlacesAddress(place.address)
+    setSelectedPlaceId(place.placeId)
+    setSelectedLat(place.latitude)
+    setSelectedLng(place.longitude)
     setMapsUrlAutoFilled(true)
     setDropdownOpen(false)
     setPlaceResults([])
@@ -212,6 +221,9 @@ export default function BusinessProfileForm({
       google_maps_url: form.google_maps_url,
       yelp_url: form.yelp_url,
       tripadvisor_url: form.tripadvisor_url,
+      ...(selectedPlaceId ? { google_place_id: selectedPlaceId } : {}),
+      ...(selectedLat != null ? { latitude: selectedLat } : {}),
+      ...(selectedLng != null ? { longitude: selectedLng } : {}),
     }
 
     if (existingProfile) {

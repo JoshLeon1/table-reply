@@ -118,48 +118,15 @@ export async function POST(request: NextRequest) {
     .select('keyword, alert_type')
     .eq('user_id', userId)
 
-  // ── Test mode: skip Outscraper, use fake reviews ─────────────────────
-  // Allow test mode from cron requests OR authenticated dashboard users.
-  const isTestMode = body.testMode === true && (isCron || !!userId)
-
-  if (isTestMode) {
-    if (process.env.NODE_ENV === 'development') console.log('[scrape-reviews] TEST MODE — using fake reviews, skipping Outscraper')
-  }
-
   // ── Outscraper API key guard ──────────────────────────────────────────
-  if (!isTestMode && !process.env.OUTSCRAPER_API_KEY) {
+  if (!process.env.OUTSCRAPER_API_KEY) {
     return NextResponse.json({ error: 'OUTSCRAPER_API_KEY is not configured' }, { status: 500 })
   }
 
   // ── Call Outscraper (async — poll until Success) ───────────────────────
   let reviews: OutscraperReview[] = []
 
-  if (isTestMode) {
-    reviews = [
-      {
-        review_id: 'test-1',
-        author_title: 'Sarah M',
-        review_rating: 4,
-        review_text: 'The pasta was incredible — best cacio e pepe in Austin. Service a little slow Friday but host was super warm.',
-        review_datetime_utc: new Date().toISOString(),
-      },
-      {
-        review_id: 'test-2',
-        author_title: 'James T',
-        review_rating: 2,
-        review_text: 'Waited 45 minutes past our reservation. Food was good once it arrived but the wait was unacceptable for a special occasion.',
-        review_datetime_utc: new Date().toISOString(),
-      },
-      {
-        review_id: 'test-3',
-        author_title: 'Maria L',
-        review_rating: 5,
-        review_text: 'Absolutely perfect from start to finish. Tasting menu worth every penny. Will be back for our anniversary.',
-        review_datetime_utc: new Date().toISOString(),
-      },
-    ]
-    if (process.env.NODE_ENV === 'development') console.log('[scrape-reviews] Injected', reviews.length, 'fake reviews')
-  } else {
+  {
   if (process.env.NODE_ENV === 'development') console.log('[scrape-reviews] Using Google Maps URL:', profile.google_maps_url)
 
   try {
@@ -267,7 +234,7 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     )
   }
-  } // end else (non-test mode)
+  }
 
   // ── Process reviews ────────────────────────────────────────────────────
   let newReviewsCount = 0

@@ -615,14 +615,13 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
 
 type ReviewTab = 'pending' | 'approved' | 'dismissed'
 
-function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onScrapeNow, onTestMode, scraping, scrapeError, onDismissError, lastScrapedAt, copiedId }: {
+function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onScrapeNow, scraping, scrapeError, onDismissError, lastScrapedAt, copiedId }: {
   profile: BusinessProfile
   reviews: ScrapedReview[]
   onApprove: (id: string) => Promise<void>
   onDismiss: (id: string) => void
   onRestore: (id: string) => void
   onScrapeNow: () => void
-  onTestMode: () => void
   scraping: boolean
   scrapeError: string
   onDismissError: () => void
@@ -715,11 +714,6 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
           </div>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
-          <button onClick={onTestMode} disabled={scraping}
-            className="hidden sm:flex px-3 py-2 rounded-xl text-[12px] font-medium text-[#A8A29E] hover:text-[#57534E] border border-dashed border-[#D0C9C1] hover:border-[#A8A29E] disabled:opacity-40 transition-all min-h-[38px]"
-            title="Inject fake reviews to test the UI">
-            Test data
-          </button>
           <button onClick={onScrapeNow} disabled={scraping}
             className="group flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#F3F0EC] border border-[#E4DED8] hover:border-[#D0C9C1] hover:shadow-sm text-[13px] font-medium text-[#57534E] hover:text-[#111111] disabled:opacity-40 transition-all min-h-[44px]">
             <svg className={`w-3.5 h-3.5 transition-transform duration-500 ${scraping ? 'animate-spin' : 'group-hover:rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -939,17 +933,14 @@ export default function ReviewsClient({ profile, initialReviews, userId }: Props
 
   const handleSaved = (url: string) => { setMapsUrl(url); handleScrapeNow() }
 
-  const handleScrapeNow = async (testMode = false) => {
+  const handleScrapeNow = async () => {
     setScraping(true)
     setScrapeError('')
     try {
-      // testMode injects fake Google reviews for debugging — keep using Google endpoint.
-      // Normal syncs use sync-all to pull from every connected platform.
-      const endpoint = testMode ? '/api/scrape-reviews' : '/api/sync-all'
-      const res = await fetch(endpoint, {
+      const res = await fetch('/api/sync-all', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(testMode ? { testMode: true } : {}),
+        body: JSON.stringify({}),
       })
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
@@ -1046,7 +1037,6 @@ export default function ReviewsClient({ profile, initialReviews, userId }: Props
       onDismiss={handleDismiss}
       onRestore={handleRestore}
       onScrapeNow={() => handleScrapeNow()}
-      onTestMode={() => handleScrapeNow(true)}
       scraping={scraping}
       scrapeError={scrapeError}
       onDismissError={() => setScrapeError('')}

@@ -1,0 +1,475 @@
+'use client'
+
+import { useState } from 'react'
+import BusinessProfileForm from '@/components/BusinessProfileForm'
+import GoogleConnectSection from '@/components/GoogleConnectSection'
+import YelpConnectSection from '@/components/YelpConnectSection'
+import TripAdvisorConnectSection from '@/components/TripAdvisorConnectSection'
+import KeywordAlertsManager from '@/components/KeywordAlertsManager'
+import ManageBillingButton from './ManageBillingButton'
+import BillingButtons from './BillingButtons'
+import type { BusinessProfile, KeywordAlert } from '@/types'
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+interface ReplyPreferences {
+  endWithOwnerName: boolean
+  includeBusinessName: boolean
+  inviteBack: boolean
+}
+
+interface EmailNotifications {
+  weeklyDigest: boolean
+}
+
+interface Props {
+  userId: string
+  userEmail: string
+  restaurantProfile: BusinessProfile
+  keywordAlerts: KeywordAlert[]
+  replyPreferences: ReplyPreferences
+  emailNotifications: EmailNotifications
+  isPaid: boolean
+  daysRemaining: number
+  stripePlan?: string | null
+}
+
+// ─── Toggle ───────────────────────────────────────────────────────────────────
+
+function Toggle({ checked, onChange, disabled }: { checked: boolean; onChange: (v: boolean) => void; disabled?: boolean }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      disabled={disabled}
+      onClick={() => onChange(!checked)}
+      className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E05A28] focus-visible:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed ${
+        checked ? 'bg-[#E05A28]' : 'bg-[#D0C9C1]'
+      }`}
+    >
+      <span className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white ring-0 transition duration-200 ${checked ? 'translate-x-4 shadow-[0_1px_3px_rgba(0,0,0,0.15)]' : 'translate-x-0 shadow-sm'}`} />
+    </button>
+  )
+}
+
+// ─── Section header ───────────────────────────────────────────────────────────
+
+function SectionHead({ title, sub }: { title: string; sub?: string }) {
+  return (
+    <div className="px-5 sm:px-6 py-4 sm:py-5 border-b border-[#EDE9E4]">
+      <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E]">{title}</h2>
+      {sub && <p className="text-[12px] text-[#57534E] mt-0.5">{sub}</p>}
+    </div>
+  )
+}
+
+// ─── Tabs definition ──────────────────────────────────────────────────────────
+
+const TABS = [
+  {
+    id: 'profile',
+    label: 'Profile',
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+      </svg>
+    ),
+  },
+  {
+    id: 'integrations',
+    label: 'Integrations',
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+      </svg>
+    ),
+  },
+  {
+    id: 'replies',
+    label: 'Replies',
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-4 4v-4z" />
+      </svg>
+    ),
+  },
+  {
+    id: 'account',
+    label: 'Account',
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+      </svg>
+    ),
+  },
+] as const
+
+type TabId = typeof TABS[number]['id']
+
+// ─── Main component ───────────────────────────────────────────────────────────
+
+export default function SettingsPageClient({
+  userId,
+  userEmail,
+  restaurantProfile,
+  keywordAlerts,
+  replyPreferences: initialReplyPrefs,
+  emailNotifications: initialEmailNotifs,
+  isPaid,
+  daysRemaining,
+  stripePlan,
+}: Props) {
+  const [activeTab, setActiveTab] = useState<TabId>('profile')
+
+  // Reply prefs state
+  const [replyPrefs, setReplyPrefs] = useState<ReplyPreferences>(initialReplyPrefs)
+  const [emailNotifs, setEmailNotifs] = useState<EmailNotifications>(initialEmailNotifs)
+  const [savingPrefs, setSavingPrefs] = useState(false)
+  const [savingEmail, setSavingEmail] = useState(false)
+  const [prefsToast, setPrefsToast] = useState<'saved' | 'error' | null>(null)
+  const [emailToast, setEmailToast] = useState<'saved' | 'error' | null>(null)
+
+  // Account / danger zone state
+  const [deleteInput, setDeleteInput] = useState('')
+  const [deleteLoading, setDeleteLoading] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
+  const [exportLoading, setExportLoading] = useState(false)
+  const [exportError, setExportError] = useState<string | null>(null)
+
+  // ── Save helpers ─────────────────────────────────────────────────────────
+
+  async function saveReplyPrefs(newPrefs: ReplyPreferences) {
+    setSavingPrefs(true); setPrefsToast(null)
+    try {
+      const res = await fetch('/api/user/preferences', {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ replyPreferences: newPrefs }),
+      })
+      if (!res.ok) throw new Error()
+      setPrefsToast('saved')
+    } catch { setPrefsToast('error') }
+    finally { setSavingPrefs(false); setTimeout(() => setPrefsToast(null), 2500) }
+  }
+
+  async function saveEmailNotifs(newNotifs: EmailNotifications) {
+    setSavingEmail(true); setEmailToast(null)
+    try {
+      const res = await fetch('/api/user/preferences', {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ emailNotifications: newNotifs }),
+      })
+      if (!res.ok) throw new Error()
+      setEmailToast('saved')
+    } catch { setEmailToast('error') }
+    finally { setSavingEmail(false); setTimeout(() => setEmailToast(null), 2500) }
+  }
+
+  function handleReplyPrefChange(key: keyof ReplyPreferences, value: boolean) {
+    const updated = { ...replyPrefs, [key]: value }
+    setReplyPrefs(updated); saveReplyPrefs(updated)
+  }
+
+  function handleEmailNotifChange(key: keyof EmailNotifications, value: boolean) {
+    const updated = { ...emailNotifs, [key]: value }
+    setEmailNotifs(updated); saveEmailNotifs(updated)
+  }
+
+  async function handleExport() {
+    setExportLoading(true)
+    try {
+      const res = await fetch('/api/user/export-data')
+      if (!res.ok) throw new Error()
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a'); a.href = url; a.download = 'replyfi-data.json'; a.click()
+      URL.revokeObjectURL(url)
+    } catch { setExportError('Export failed. Please try again.'); setTimeout(() => setExportError(null), 5000) }
+    finally { setExportLoading(false) }
+  }
+
+  async function handleDeleteData() {
+    if (deleteInput !== 'DELETE') return
+    setDeleteLoading(true); setDeleteError(null)
+    try {
+      const res = await fetch('/api/user/delete-data', { method: 'DELETE' })
+      if (!res.ok) throw new Error()
+      window.location.href = '/login?deleted=1'
+    } catch {
+      setDeleteError('Something went wrong. Please try again or contact hello@replyfi.com.')
+      setDeleteLoading(false)
+    }
+  }
+
+  // ── Tab content renderers ────────────────────────────────────────────────
+
+  const renderProfile = () => (
+    <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <SectionHead title="Business Profile" sub="Used to personalise every generated reply." />
+      <div className="px-5 sm:px-6 py-5 sm:py-6">
+        <BusinessProfileForm
+          userId={userId}
+          existingProfile={restaurantProfile}
+          redirectTo="/settings"
+        />
+      </div>
+    </div>
+  )
+
+  const renderIntegrations = () => (
+    <div className="space-y-4">
+      {/* Google */}
+      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <SectionHead
+          title="Google Maps"
+          sub="Sync Google reviews automatically every day."
+        />
+        <div className="px-5 sm:px-6 py-4 sm:py-5">
+          <GoogleConnectSection
+            userId={userId}
+            restaurantProfileId={restaurantProfile.id}
+            currentGoogleUrl={restaurantProfile.google_maps_url ?? null}
+            googleLastScrapedAt={restaurantProfile.last_scraped_at ?? null}
+          />
+        </div>
+      </div>
+
+      {/* Yelp */}
+      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <SectionHead
+          title="Yelp"
+          sub="Sync Yelp reviews automatically every day."
+        />
+        <div className="px-5 sm:px-6 py-4 sm:py-5">
+          <YelpConnectSection
+            userId={userId}
+            restaurantProfileId={restaurantProfile.id}
+            currentYelpUrl={restaurantProfile.yelp_url ?? null}
+            yelpLastScrapedAt={restaurantProfile.yelp_last_scraped_at ?? null}
+          />
+        </div>
+      </div>
+
+      {/* TripAdvisor */}
+      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <SectionHead
+          title="TripAdvisor"
+          sub="Sync TripAdvisor reviews automatically every day."
+        />
+        <div className="px-5 sm:px-6 py-4 sm:py-5">
+          <TripAdvisorConnectSection
+            userId={userId}
+            restaurantProfileId={restaurantProfile.id}
+            currentTripAdvisorUrl={restaurantProfile.tripadvisor_url ?? null}
+            tripAdvisorLastScrapedAt={restaurantProfile.tripadvisor_last_scraped_at ?? null}
+          />
+        </div>
+      </div>
+    </div>
+  )
+
+  const renderReplies = () => (
+    <div className="space-y-4">
+      {/* Reply preferences */}
+      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <div className="px-5 sm:px-6 py-4 sm:py-5 border-b border-[#EDE9E4] flex items-center justify-between gap-3">
+          <div>
+            <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E]">Reply Preferences</h2>
+            <p className="text-[12px] text-[#57534E] mt-0.5">Applied to every generated reply.</p>
+          </div>
+          {prefsToast && (
+            <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full flex-shrink-0 animate-scale-in ${
+              prefsToast === 'saved' ? 'bg-emerald-50 text-emerald-600 border border-emerald-200' : 'bg-red-50 text-red-500 border border-red-200'
+            }`}>
+              {prefsToast === 'saved' ? '✓ Saved' : 'Error saving'}
+            </span>
+          )}
+        </div>
+        <div className="divide-y divide-[#EDE9E4]">
+          {([
+            { key: 'endWithOwnerName', label: 'End reply with owner name', desc: `Sign off each reply with your name (e.g. — ${restaurantProfile.owner_name || 'Maria'})` },
+            { key: 'includeBusinessName', label: 'Include business name in reply', desc: 'Mention your business name naturally in the reply' },
+            { key: 'inviteBack', label: 'Invite customer to return', desc: 'End positive replies with an invitation to return' },
+          ] as const).map(({ key, label, desc }) => (
+            <div key={key} className="px-5 sm:px-6 py-4 flex items-center justify-between gap-4">
+              <div className="min-w-0 flex-1">
+                <p className="text-[13px] font-medium text-[#111111]">{label}</p>
+                <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">{desc}</p>
+              </div>
+              <Toggle checked={replyPrefs[key]} onChange={(v) => handleReplyPrefChange(key, v)} disabled={savingPrefs} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Keyword Alerts */}
+      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <SectionHead title="Keyword Alerts" sub="Get an instant email when a review contains these words." />
+        <div className="px-5 sm:px-6 py-4 sm:py-5">
+          <KeywordAlertsManager initialAlerts={keywordAlerts} />
+        </div>
+      </div>
+    </div>
+  )
+
+  const renderAccount = () => (
+    <div className="space-y-4">
+      {/* Subscription */}
+      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <div className="px-5 sm:px-6 py-4 sm:py-5 border-b border-[#EDE9E4]">
+          <div className="flex items-center justify-between">
+            <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E]">Subscription</h2>
+            <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full uppercase tracking-wide ${
+              isPaid
+                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                : daysRemaining > 0
+                ? 'bg-[#FEF0E8] text-[#B34419] border border-[#F5C9AD]'
+                : 'bg-red-50 text-red-600 border border-red-200'
+            }`}>
+              {isPaid ? 'Pro' : daysRemaining > 0 ? `Trial · ${daysRemaining}d left` : 'Trial expired'}
+            </span>
+          </div>
+          {!isPaid && daysRemaining > 0 && (
+            <div className="w-full h-1 bg-[#EDE9E4] rounded-full mt-3">
+              <div className="h-full bg-[#E05A28] rounded-full" style={{ width: `${Math.round(((7 - daysRemaining) / 7) * 100)}%` }} />
+            </div>
+          )}
+        </div>
+        <div className="px-5 sm:px-6 py-4 sm:py-5 space-y-2.5">
+          <div className="flex items-center justify-between">
+            <span className="text-[13px] text-[#57534E]">Account</span>
+            <span className="text-[13px] font-medium text-[#111] truncate max-w-[55%] text-right">{userEmail}</span>
+          </div>
+          {isPaid && (
+            <div className="flex items-center justify-between">
+              <span className="text-[13px] text-[#57534E]">Plan</span>
+              <span className="text-[13px] font-medium text-[#111]">
+                {stripePlan === 'annual' ? 'ReplyFi Pro — $239/yr' : 'ReplyFi Pro — $29/mo'}
+              </span>
+            </div>
+          )}
+        </div>
+        <div className="px-5 sm:px-6 py-4 sm:py-5 bg-[#F3F0EC] border-t border-[#EDE9E4]">
+          {isPaid ? <ManageBillingButton /> : <BillingButtons />}
+        </div>
+      </div>
+
+      {/* Email Notifications */}
+      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <div className="px-5 sm:px-6 py-4 sm:py-5 border-b border-[#EDE9E4] flex items-center justify-between gap-3">
+          <div>
+            <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E]">Email Notifications</h2>
+            <p className="text-[12px] text-[#57534E] mt-0.5 truncate max-w-[200px] sm:max-w-none">Sent to {userEmail}</p>
+          </div>
+          {emailToast && (
+            <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full flex-shrink-0 animate-scale-in ${
+              emailToast === 'saved' ? 'bg-emerald-50 text-emerald-600 border border-emerald-200' : 'bg-red-50 text-red-500 border border-red-200'
+            }`}>
+              {emailToast === 'saved' ? '✓ Saved' : 'Error saving'}
+            </span>
+          )}
+        </div>
+        <div className="px-5 sm:px-6 py-4 flex items-center justify-between gap-4">
+          <div className="min-w-0 flex-1">
+            <p className="text-[13px] font-medium text-[#111111]">Weekly digest</p>
+            <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">A weekly summary of new reviews, ratings, and approved replies</p>
+          </div>
+          <Toggle checked={emailNotifs.weeklyDigest ?? true} onChange={(v) => handleEmailNotifChange('weeklyDigest', v)} disabled={savingEmail} />
+        </div>
+      </div>
+
+      {/* Data & Privacy */}
+      <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <SectionHead title="Data & Privacy" sub="Download a copy of your data at any time." />
+        <div className="px-5 sm:px-6 py-4 sm:py-5 space-y-3">
+          <div className="flex items-center justify-between gap-4">
+            <div className="min-w-0 flex-1">
+              <p className="text-[13px] font-medium text-[#111111]">Export my data</p>
+              <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">Download all your reviews and replies as a JSON file</p>
+            </div>
+            <button
+              onClick={handleExport}
+              disabled={exportLoading}
+              className="flex-shrink-0 px-3.5 py-2 rounded-xl border border-[#E4DED8] hover:border-[#D0C9C1] bg-[#F3F0EC] text-[13px] font-medium text-[#57534E] hover:text-[#111111] transition-all disabled:opacity-50 min-h-[44px]"
+            >
+              {exportLoading ? 'Exporting…' : 'Export JSON'}
+            </button>
+          </div>
+          {exportError && <p className="text-[12px] text-red-500 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{exportError}</p>}
+        </div>
+      </div>
+
+      {/* Danger zone */}
+      <div className="bg-white rounded-2xl border border-red-200 overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <div className="px-5 sm:px-6 py-4 sm:py-5 border-b border-red-100">
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-red-500">Danger Zone</h2>
+          <p className="text-[12px] text-[#57534E] mt-0.5">These actions are permanent and cannot be undone.</p>
+        </div>
+        <div className="px-5 sm:px-6 py-4 sm:py-5 space-y-3">
+          <div>
+            <p className="text-[13px] font-medium text-[#111111]">Delete All My Data</p>
+            <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">
+              Permanently deletes your account, business profile, all reviews, and generated replies. Type{' '}
+              <code className="font-mono text-red-500 bg-red-50 px-1 rounded">DELETE</code> to confirm.
+            </p>
+          </div>
+          {deleteError && <p className="text-[12px] text-red-500 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{deleteError}</p>}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+            <input
+              type="text"
+              value={deleteInput}
+              onChange={(e) => setDeleteInput(e.target.value)}
+              placeholder="Type DELETE to confirm"
+              className="flex-1 min-w-0 px-3 py-2.5 rounded-xl border border-red-200 focus:border-red-400 focus:ring-2 focus:ring-red-400/20 bg-red-50/50 text-[13px] font-mono text-[#111111] placeholder:text-[#C4BEB8] outline-none transition-all min-h-[44px]"
+            />
+            <button
+              onClick={handleDeleteData}
+              disabled={deleteInput !== 'DELETE' || deleteLoading}
+              className="sm:flex-shrink-0 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 disabled:bg-red-200 disabled:cursor-not-allowed text-white text-[13px] font-medium transition-all min-h-[44px]"
+            >
+              {deleteLoading ? 'Deleting…' : 'Delete Everything'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+
+  const content = {
+    profile: renderProfile(),
+    integrations: renderIntegrations(),
+    replies: renderReplies(),
+    account: renderAccount(),
+  }
+
+  return (
+    <div className="space-y-6 pb-12">
+      {/* Header */}
+      <div>
+        <h1 className="text-[22px] font-semibold text-[#111]">Settings</h1>
+        <p className="text-[13px] text-[#57534E] mt-1">Manage your profile, integrations, and account.</p>
+      </div>
+
+      {/* Tab bar */}
+      <div className="flex items-center gap-1 bg-[#F3F0EC] rounded-2xl p-1 border border-[#E4DED8] overflow-x-auto scrollbar-hide">
+        {TABS.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-[13px] font-medium whitespace-nowrap transition-all flex-shrink-0 ${
+              activeTab === tab.id
+                ? 'bg-white text-[#111111] shadow-sm border border-[#E4DED8]'
+                : 'text-[#A8A29E] hover:text-[#57534E]'
+            }`}
+          >
+            <span className={activeTab === tab.id ? 'text-[#E05A28]' : 'text-current'}>{tab.icon}</span>
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Tab content */}
+      <div>{content[activeTab]}</div>
+    </div>
+  )
+}

@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import ErrorBoundary from '@/components/ErrorBoundary'
@@ -53,6 +54,29 @@ function TrialBanner({ daysRemaining }: { daysRemaining: number }) {
 
 // ── Expired paywall ───────────────────────────────────────────────────────────
 function ExpiredPaywall() {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const handleResubscribe = async () => {
+    setLoading(true)
+    setError('')
+    try {
+      const res = await fetch('/api/stripe/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan: 'annual' }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.url) {
+        throw new Error(data?.error ?? 'Could not start checkout. Please try again.')
+      }
+      window.location.href = data.url
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+      setLoading(false)
+    }
+  }
+
   return (
     <div className="relative flex-1 flex items-center justify-center px-4 py-16 min-h-[60vh]">
       {/* Blurred background hint */}
@@ -104,19 +128,42 @@ function ExpiredPaywall() {
             </div>
 
             {/* CTA */}
-            <Link
-              href="/settings?tab=account"
-              className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-[14px] font-bold shadow-[0_4px_16px_rgba(224,90,40,0.35)] hover:shadow-[0_6px_24px_rgba(224,90,40,0.45)] transition-all duration-200 active:scale-[0.97]"
+            <button
+              type="button"
+              onClick={handleResubscribe}
+              disabled={loading}
+              className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-[14px] font-bold shadow-[0_4px_16px_rgba(224,90,40,0.35)] hover:shadow-[0_6px_24px_rgba(224,90,40,0.45)] transition-all duration-200 active:scale-[0.97] disabled:opacity-70 disabled:cursor-wait"
             >
-              <svg className="w-4 h-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/>
-              </svg>
-              View subscription plans
-            </Link>
+              {loading ? (
+                <>
+                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                  </svg>
+                  Redirecting to checkout…
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                  </svg>
+                  Resubscribe — $239/yr
+                </>
+              )}
+            </button>
 
-            <p className="mt-3.5 text-[11px] text-[#A8A29E]">
-              Annual plan · $239/yr · under $20/month
-            </p>
+            {error ? (
+              <p role="alert" className="mt-2 text-[12px] text-red-500">
+                {error}{' '}
+                <Link href="/settings?tab=account" className="underline">
+                  Go to settings
+                </Link>
+              </p>
+            ) : (
+              <p className="mt-3.5 text-[11px] text-[#A8A29E]">
+                Annual plan · under $20/month · cancel anytime
+              </p>
+            )}
           </div>
         </div>
       </div>

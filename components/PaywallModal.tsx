@@ -9,7 +9,7 @@ interface PaywallModalProps {
 }
 
 export default function PaywallModal({ onClose }: PaywallModalProps) {
-  const [plan, setPlan] = useState<'annual' | 'monthly'>('monthly')
+  const [plan, setPlan] = useState<'annual' | 'monthly'>('annual')
   const [loading, setLoading] = useState(false)
   const [checkoutError, setCheckoutError] = useState('')
   const { containerRef } = useModal({ open: true, onClose: () => onClose?.() })
@@ -64,8 +64,11 @@ export default function PaywallModal({ onClose }: PaywallModalProps) {
             </svg>
           </div>
           <h2 id="paywall-title" className="text-[22px] font-semibold text-[#111] tracking-tight mb-1.5">Your Trial Has Ended</h2>
-          <p className="text-[#7C7672] text-[14px] mb-5 leading-relaxed">
-            Keep replying to every review with AI. No contracts, cancel anytime.
+          <p className="text-[15px] text-[#111] font-medium mb-1 leading-snug">
+            Reply to every review in under 60 seconds.
+          </p>
+          <p className="text-[#7C7672] text-[13px] mb-5 leading-relaxed">
+            Keep AI replies, Google sync, and analytics running. Cancel anytime.
           </p>
 
           {/* Plan toggle */}

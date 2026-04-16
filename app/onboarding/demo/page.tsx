@@ -3,19 +3,23 @@ export const metadata = { title: 'Demo — ReplyFi' }
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import DemoClient from './DemoClient'
+import { getSamples } from '@/lib/demo/industry-samples'
 
 export default async function OnboardingDemoPage() {
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: profile } = await supabase
+  const { data: business } = await supabase
     .from('business_profiles')
-    .select('*')
+    .select('business_type, business_name')
     .eq('user_id', user.id)
-    .single()
+    .maybeSingle()
 
-  if (!profile) redirect('/onboarding')
+  if (!business) redirect('/onboarding')
 
-  return <DemoClient restaurantProfile={profile} />
+  const samples = getSamples(business.business_type)
+  const businessName = business.business_name ?? 'your business'
+
+  return <DemoClient samples={samples} businessName={businessName} userId={user.id} />
 }

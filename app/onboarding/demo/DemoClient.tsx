@@ -1,99 +1,35 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import type { BusinessProfile } from '@/types'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
+import type { SampleReview } from '@/lib/demo/industry-samples'
 
-interface Props {
-  restaurantProfile: BusinessProfile
-}
-
-// ── Sample reviews by cuisine type ───────────────────────────────────────────
-
-const DEMO_REVIEWS: Record<string, { text: string; rating: number; reviewer: string }> = {
-  Italian: {
-    rating: 5, reviewer: 'Sarah M.',
-    text: 'The tagliatelle was perfectly al dente and the sauce had incredible depth — tasted like it had been simmering for hours. Our server was warm and attentive all evening. Honestly felt like a home kitchen in Italy. We\'ll be back next week.',
-  },
-  Mexican: {
-    rating: 4, reviewer: 'James T.',
-    text: 'The carnitas tacos were incredible — that slow-braised pork with the house salsa verde is something else. Margaritas were strong and fresh. Only reason for 4 stars was a short wait for a table on Friday night, but absolutely worth it.',
-  },
-  American: {
-    rating: 5, reviewer: 'Olivia R.',
-    text: 'Best smash burger I\'ve had in years — perfectly charred, great American cheese pull, and the brioche bun held up to the end. Fries were crispy and hot. Solid spot for a no-fuss dinner that delivers every time.',
-  },
-  Japanese: {
-    rating: 5, reviewer: 'Kevin L.',
-    text: 'The omakase was stunning. Each piece of nigiri was precise and impossibly fresh — the bluefin toro practically melted. The chef took time to explain each course which made it feel personal and memorable. Best meal I\'ve had this year.',
-  },
-  Chinese: {
-    rating: 5, reviewer: 'Michelle W.',
-    text: 'The har gow and siu mai were perfect — fresh and delicate with that satisfying snap. Loved the atmosphere on Sunday morning. Best dim sum in the city by a mile. We\'ll be making this our regular weekend tradition.',
-  },
-  Indian: {
-    rating: 5, reviewer: 'Priya S.',
-    text: 'The butter chicken had incredible depth of flavor — clearly made from scratch, not from a jar. Garlic naan was perfectly charred with just the right chew. The best Indian we\'ve had in the city. Brought the whole family and everyone was blown away.',
-  },
-  Mediterranean: {
-    rating: 5, reviewer: 'Alex D.',
-    text: 'The mezze spread was extraordinary — the hummus was silky and the baba ganoush had beautiful smokiness. Lamb was beautifully seasoned with herbs. Excellent wine list to match. A real gem of a restaurant, we keep coming back.',
-  },
-  French: {
-    rating: 5, reviewer: 'Claire B.',
-    text: 'Duck confit was flawlessly executed — paper-crisp skin and fall-off-the-bone meat. Our server\'s wine pairing suggestion was spot on. The crème brûlée had a perfect caramel shell. Très magnifique from start to finish.',
-  },
-  Thai: {
-    rating: 4, reviewer: 'Tom N.',
-    text: 'The pad see ew had perfect wok char — not too sweet, beautifully balanced. Green curry had real depth and a lovely slow-building heat. Authentic flavors throughout, feels like Bangkok not a suburban approximation. Will definitely be back.',
-  },
-  Greek: {
-    rating: 5, reviewer: 'Nikolas P.',
-    text: 'The lamb souvlaki was beautifully marinated and charred perfectly on the grill. Tzatziki was fresh and generous, not that watery stuff. Felt like we were dining on a Greek island. Incredible value too — we\'ll be bringing everyone we know.',
-  },
-  BBQ: {
-    rating: 5, reviewer: 'Darren F.',
-    text: 'The brisket was a masterpiece — 14-hour smoke, beautiful bark, melt-in-your-mouth tender. The house dry rub and that vinegar sauce are a perfect marriage. Best BBQ I\'ve had outside of Texas. The burnt ends should be illegal they\'re so good.',
-  },
-  Seafood: {
-    rating: 5, reviewer: 'Janet C.',
-    text: 'The lobster bisque was velvety, rich, and perfectly balanced — the best I\'ve ever had. Grilled halibut was cooked to perfection and the lemon caper butter was outstanding. Ocean-fresh quality throughout. A must for seafood lovers in this city.',
-  },
-  Steakhouse: {
-    rating: 5, reviewer: 'Robert H.',
-    text: 'The dry-aged ribeye was cooked exactly to my request — perfect medium-rare with beautiful marbling throughout. The bone marrow appetizer is a must-order. Our server knew the menu cold and the wine list is exceptional. A proper steakhouse experience.',
-  },
-  Pizza: {
-    rating: 5, reviewer: 'Gina M.',
-    text: 'Neapolitan crust charred and chewy in all the right ways — clearly coming out of a proper wood-fired oven. The San Marzano tomato sauce was sweet and fresh. That margherita is the best pizza in the city by a clear margin. We order it every week.',
-  },
-  Burger: {
-    rating: 5, reviewer: 'Tyler B.',
-    text: 'The smash burger was absolutely perfect — double patty, American cheese, special sauce that has a touch of something I can\'t place but need more of. Simple done absolutely right. The onion rings were incredible too. This is my new regular.',
-  },
-  'Farm-to-Table': {
-    rating: 5, reviewer: 'Naomi K.',
-    text: 'Every ingredient tasted like it was picked that morning — the heirloom tomato salad with burrata was a revelation of flavor. The seasonal tasting menu felt like the chef is at the absolute top of their game. This is why farm-to-table exists.',
-  },
-  Other: {
-    rating: 5, reviewer: 'Alex R.',
-    text: 'Absolutely outstanding from start to finish. The food was exceptional — clearly made with real care and quality ingredients. Every dish had a distinct identity and the service matched the food perfectly. A standout experience we\'ll be talking about for months.',
-  },
-}
-
-function getDemo(cuisineType: string) {
-  return DEMO_REVIEWS[cuisineType] ?? DEMO_REVIEWS['Other']
+interface DemoClientProps {
+  samples: SampleReview[]
+  businessName: string
+  userId: string
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export default function DemoClient({ restaurantProfile }: Props) {
+export default function DemoClient({ samples, businessName, userId }: DemoClientProps) {
+  const router = useRouter()
   const [state, setState] = useState<'loading' | 'done' | 'error'>('loading')
   const [reply, setReply] = useState('')
   const [elapsed, setElapsed] = useState(0)
   const [copied, setCopied] = useState(false)
 
-  const demo = getDemo(restaurantProfile.business_type)
+  // Showcase the glowing sample for the AI-reply demo; fall back to the
+  // first item or a generic positive if the list is unexpectedly empty.
+  const demo: SampleReview =
+    samples.find((s) => s.scenario === 'glowing') ??
+    samples[0] ?? {
+      rating: 5,
+      author: 'Alex P.',
+      text: 'Fantastic experience start to finish. Will absolutely be back.',
+      scenario: 'glowing',
+    }
 
   useEffect(() => {
     const start = Date.now()
@@ -127,6 +63,7 @@ export default function DemoClient({ restaurantProfile }: Props) {
       })
 
     return () => clearInterval(timer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleCopy = () => {
@@ -135,9 +72,35 @@ export default function DemoClient({ restaurantProfile }: Props) {
     setTimeout(() => setCopied(false), 2000)
   }
 
+  const markSeenAndGo = async () => {
+    const supabase = createClient()
+    await supabase
+      .from('profiles')
+      .update({ has_seen_demo: true } as never)
+      .eq('id', userId)
+    router.push('/dashboard')
+  }
+
+  const handleSkip = async () => {
+    const supabase = createClient()
+    await supabase
+      .from('profiles')
+      .update({ has_seen_demo: true } as never)
+      .eq('id', userId)
+    window.location.href = '/dashboard'
+  }
+
   return (
     <div className="min-h-screen bg-[#F8F6F3] flex items-center justify-center p-6">
-      <div className="w-full max-w-2xl">
+      <div className="w-full max-w-2xl relative">
+
+        {/* Skip link — never trap the user */}
+        <button
+          onClick={handleSkip}
+          className="absolute top-4 right-4 text-[13px] text-text-2 hover:text-text-1 transition-colors px-3 py-2"
+        >
+          Skip demo →
+        </button>
 
         {/* Header */}
         <div className="mb-8 text-center">
@@ -156,8 +119,7 @@ export default function DemoClient({ restaurantProfile }: Props) {
             Your first reply
           </h1>
           <p className="text-[#888] text-[14px]">
-            We generated a reply for {restaurantProfile.business_name} using a sample{' '}
-            {restaurantProfile.business_type} business review.
+            We generated a reply for {businessName} using a sample review.
           </p>
         </div>
 
@@ -171,7 +133,7 @@ export default function DemoClient({ restaurantProfile }: Props) {
                 </svg>
               ))}
             </div>
-            <span className="text-[13px] font-semibold text-[#111]">{demo.reviewer}</span>
+            <span className="text-[13px] font-semibold text-[#111]">{demo.author}</span>
             <span className="text-[11px] text-[#CCC] ml-auto">Google · Sample</span>
           </div>
           <p className="text-[14px] text-[#555] leading-relaxed">{demo.text}</p>
@@ -241,20 +203,12 @@ export default function DemoClient({ restaurantProfile }: Props) {
 
         {/* CTA */}
         <div className="flex flex-col sm:flex-row gap-3">
-          <Link
-            href="/dashboard"
+          <button
+            onClick={markSeenAndGo}
             className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#111] hover:bg-[#2a2a2a] text-white text-[14px] font-semibold transition-all text-center"
           >
             Try it with a real review →
-          </Link>
-          {state === 'loading' && (
-            <Link
-              href="/dashboard"
-              className="flex items-center justify-center px-6 py-3.5 rounded-xl border border-[#E4DED8] text-[#888] hover:text-[#111] text-[13px] font-medium transition-all"
-            >
-              Skip to dashboard
-            </Link>
-          )}
+          </button>
         </div>
 
       </div>

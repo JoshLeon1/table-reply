@@ -13,19 +13,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Input from '@/components/ui/Input'
-
-function Logo() {
-  return (
-    <div className="flex items-center gap-2.5">
-      <div className="w-8 h-8 rounded-lg bg-[#E05A28] flex items-center justify-center flex-shrink-0">
-        <svg className="text-white" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M5 2v4a2 2 0 002 2v6M8 2v10M11 2s2 1 2 3-2 3-2 3v4"/>
-        </svg>
-      </div>
-      <span className="text-[16px] font-bold text-[#111] tracking-tight">ReplyFi</span>
-    </div>
-  )
-}
+import Logo from '@/components/Logo'
 
 function GoogleIcon() {
   return (
@@ -130,7 +118,7 @@ export default function SignupPage() {
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-modal p-6 sm:p-8">
+        <div className="bg-white rounded-2xl border border-border shadow-modal p-6 sm:p-8">
           <h1 className="text-[20px] font-bold text-[#111] tracking-[-0.02em] mb-1">Start Your Free Trial</h1>
           <p className="text-[13px] text-[#A8A29E] mb-6">7 days free — no credit card required.</p>
 

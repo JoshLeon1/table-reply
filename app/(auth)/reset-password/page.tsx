@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Input from '@/components/ui/Input'
+import Logo from '@/components/Logo'
 
 export default function ResetPasswordPage() {
   const router = useRouter()
@@ -77,17 +78,10 @@ export default function ResetPasswordPage() {
       <div className="w-full max-w-[400px] animate-fade-up">
         {/* Logo */}
         <div className="flex justify-center mb-8">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#E05A28] flex items-center justify-center">
-              <svg className="text-white" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 2v4a2 2 0 002 2v6M8 2v10M11 2s2 1 2 3-2 3-2 3v4"/>
-              </svg>
-            </div>
-            <span className="text-[16px] font-bold text-[#111] tracking-tight">ReplyFi</span>
-          </div>
+          <Logo />
         </div>
 
-        <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-modal p-7 sm:p-8">
+        <div className="bg-white rounded-2xl border border-border shadow-modal p-7 sm:p-8">
           <h1 className="text-[20px] font-bold text-[#111] tracking-[-0.02em] mb-1">Set New Password</h1>
           <p className="text-[14px] text-[#7C7672] mb-6">Choose a strong password for your account.</p>
 

@@ -634,23 +634,12 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
   const approved  = reviews.filter((r) => r.reply_status === 'approved')
   const dismissed = reviews.filter((r) => r.reply_status === 'dismissed')
   const [activeTab, setActiveTab] = useState<ReviewTab>('pending')
-  const [copiedAll, setCopiedAll] = useState(false)
   const [readyBannerDismissed, setReadyBannerDismissed] = useState(false)
   const [filterStars, setFilterStars] = useState<number | null>(null)
 
   const totalWithText  = reviews.filter((r) => r.review_text?.trim()).length
   const approvedCount  = approved.length
   const responseRate   = totalWithText > 0 ? Math.round((approvedCount / totalWithText) * 100) : 0
-
-  const handleCopyAll = () => {
-    const text = approved
-      .filter((r) => r.generated_reply)
-      .map((r) => `— ${r.reviewer_name} (${r.star_rating}★)\nReview: "${r.review_text}"\n\nReply:\n${r.generated_reply}`)
-      .join('\n\n─────────────────────\n\n')
-    navigator.clipboard.writeText(text).catch(() => {})
-    setCopiedAll(true)
-    setTimeout(() => setCopiedAll(false), 2500)
-  }
 
   const tabs: { key: ReviewTab; label: string; count: number }[] = [
     { key: 'pending',  label: 'Pending',  count: pending.length  },
@@ -817,20 +806,43 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
       )}
 
       {/* Pending tab */}
-      {!scraping && activeTab === 'pending' && (
-        filterStars !== null
-          ? pending.filter((r) => r.star_rating === filterStars)
-          : pending
-      ).length > 0
-        ? (
-          <div className="space-y-3">
-            {(filterStars !== null ? pending.filter((r) => r.star_rating === filterStars) : pending).map((r, i) => (
-              <div key={r.id} className={i < 5 ? `animate-fade-up stagger-${i + 1}` : ''}>
-                <ReviewCard review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }} isCopied={copiedId === r.id}/>
+      {!scraping && activeTab === 'pending' && (() => {
+        const filtered = filterStars !== null ? pending.filter((r) => r.star_rating === filterStars) : pending
+        if (filtered.length > 0) {
+          return (
+            <div className="space-y-3">
+              {filtered.map((r, i) => (
+                <div key={r.id} className={i < 5 ? `animate-fade-up stagger-${i + 1}` : ''}>
+                  <ReviewCard review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }} isCopied={copiedId === r.id}/>
+                </div>
+              ))}
+            </div>
+          )
+        }
+        // Filter is active and matched 0 → show filter empty state with clear button
+        if (filterStars !== null && pending.length > 0) {
+          return (
+            <div className="text-center py-14 bg-white rounded-2xl border border-[#E4DED8]">
+              <div className="w-11 h-11 rounded-2xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mx-auto mb-4">
+                <svg className="w-5 h-5 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                </svg>
               </div>
-            ))}
-          </div>
-        ) : !scraping && activeTab === 'pending' && (
+              <p className="text-[14px] font-semibold text-[#111111]">No {filterStars}-star reviews pending</p>
+              <button
+                onClick={() => setFilterStars(null)}
+                className="mt-3 inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#E05A28] hover:text-[#C94E21] transition-colors"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+                Clear filter
+              </button>
+            </div>
+          )
+        }
+        // No filter and nothing pending → caught-up state
+        return (
           <div className="text-center py-14 bg-white rounded-2xl border border-[#E4DED8]">
             <div className="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center mx-auto mb-4">
               <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -841,7 +853,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
             <p className="text-[12px] text-[#A8A29E] mt-1 max-w-[220px] mx-auto leading-relaxed">New reviews will appear here after your next sync.</p>
           </div>
         )
-      }
+      })()}
 
       {/* Approved tab */}
       {!scraping && activeTab === 'approved' && (
@@ -869,11 +881,37 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
                   </button>
                 </div>
               )}
-              <div className="space-y-3">
-                {(filterStars !== null ? approved.filter((r) => r.star_rating === filterStars) : approved).map((r) => (
-                  <ReviewCard key={r.id} review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }}/>
-                ))}
-              </div>
+              {(() => {
+                const filtered = filterStars !== null ? approved.filter((r) => r.star_rating === filterStars) : approved
+                if (filtered.length === 0) {
+                  return (
+                    <div className="text-center py-14 bg-white rounded-2xl border border-[#E4DED8]">
+                      <div className="w-11 h-11 rounded-2xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mx-auto mb-4">
+                        <svg className="w-5 h-5 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                        </svg>
+                      </div>
+                      <p className="text-[14px] font-semibold text-[#111111]">No {filterStars}-star approved replies</p>
+                      <button
+                        onClick={() => setFilterStars(null)}
+                        className="mt-3 inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#E05A28] hover:text-[#C94E21] transition-colors"
+                      >
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                        Clear filter
+                      </button>
+                    </div>
+                  )
+                }
+                return (
+                  <div className="space-y-3">
+                    {filtered.map((r) => (
+                      <ReviewCard key={r.id} review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }}/>
+                    ))}
+                  </div>
+                )
+              })()}
             </>
           ) : (
             <div className="text-center py-14 bg-white rounded-2xl border border-[#E4DED8]">
@@ -890,27 +928,52 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
       )}
 
       {/* Dismissed tab */}
-      {!scraping && activeTab === 'dismissed' && (
-        <div>
-          {dismissed.length > 0 ? (
-            <div className="space-y-3">
-              {(filterStars !== null ? dismissed.filter((r) => r.star_rating === filterStars) : dismissed).map((r) => (
-                <ReviewCard key={r.id} review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} showStatus profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }}/>
-              ))}
+      {!scraping && activeTab === 'dismissed' && (() => {
+        const filtered = filterStars !== null ? dismissed.filter((r) => r.star_rating === filterStars) : dismissed
+        if (filtered.length > 0) {
+          return (
+            <div>
+              <div className="space-y-3">
+                {filtered.map((r) => (
+                  <ReviewCard key={r.id} review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} showStatus profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }}/>
+                ))}
+              </div>
             </div>
-          ) : (
+          )
+        }
+        if (filterStars !== null && dismissed.length > 0) {
+          return (
             <div className="text-center py-14 bg-white rounded-2xl border border-[#E4DED8]">
               <div className="w-11 h-11 rounded-2xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mx-auto mb-4">
-                <svg className="w-5 h-5 text-[#C4BEB8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                <svg className="w-5 h-5 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
                 </svg>
               </div>
-              <p className="text-[14px] font-semibold text-[#111111]">Nothing dismissed</p>
-              <p className="text-[12px] text-[#A8A29E] mt-1 max-w-[220px] mx-auto leading-relaxed">Dismissed reviews will appear here.</p>
+              <p className="text-[14px] font-semibold text-[#111111]">No {filterStars}-star dismissed reviews</p>
+              <button
+                onClick={() => setFilterStars(null)}
+                className="mt-3 inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#E05A28] hover:text-[#C94E21] transition-colors"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+                Clear filter
+              </button>
             </div>
-          )}
-        </div>
-      )}
+          )
+        }
+        return (
+          <div className="text-center py-14 bg-white rounded-2xl border border-[#E4DED8]">
+            <div className="w-11 h-11 rounded-2xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mx-auto mb-4">
+              <svg className="w-5 h-5 text-[#C4BEB8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+              </svg>
+            </div>
+            <p className="text-[14px] font-semibold text-[#111111]">Nothing dismissed</p>
+            <p className="text-[12px] text-[#A8A29E] mt-1 max-w-[220px] mx-auto leading-relaxed">Dismissed reviews will appear here.</p>
+          </div>
+        )
+      })()}
     </div>
   )
 }

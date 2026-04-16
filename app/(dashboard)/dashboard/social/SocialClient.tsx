@@ -140,12 +140,12 @@ function CreatePostModal({
           style: captionStyle,
         }),
       })
-      if (!res.ok) throw new Error()
-      const data = await res.json()
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(data?.error ?? 'Failed to generate caption')
       setCaption(data.caption ?? '')
       setHashtags(data.hashtags ?? [])
-    } catch {
-      setCaptionError('Failed to generate. Please try again.')
+    } catch (err) {
+      setCaptionError(err instanceof Error ? err.message : 'Failed to generate. Please try again.')
     } finally {
       setCaptionLoading(false)
     }
@@ -187,14 +187,29 @@ function CreatePostModal({
   const downloadPng = useCallback(async () => {
     if (!iframeRef.current) return
     setDownloading(true)
+    setGraphicError('')
+
+    const openHtmlFallback = () => {
+      // Fallback: open the rendered HTML in a new tab so user can screenshot / save
+      const blob = new Blob([graphicHtml], { type: 'text/html' })
+      const url = URL.createObjectURL(blob)
+      const win = window.open(url, '_blank')
+      if (!win) {
+        setGraphicError('Your browser blocked the download. Allow popups or try a screenshot.')
+      } else {
+        setGraphicError('PNG export is unavailable on this browser — opened HTML preview instead.')
+      }
+      setDownloading(false)
+    }
+
     try {
       const canvas = document.createElement('canvas')
-      canvas.width = 800
-      canvas.height = 800
+      canvas.width = 1600
+      canvas.height = 1600
       const ctx = canvas.getContext('2d')
       if (!ctx) throw new Error('Canvas not supported')
 
-      const svgData = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800">
+      const svgData = `<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1600">
         <foreignObject width="100%" height="100%">
           <div xmlns="http://www.w3.org/1999/xhtml" style="width:800px;height:800px;transform:scale(2);transform-origin:0 0">
             ${graphicHtml}
@@ -204,22 +219,22 @@ function CreatePostModal({
 
       const img = new Image()
       img.onload = () => {
-        ctx.drawImage(img, 0, 0)
-        const link = document.createElement('a')
-        link.download = `${restaurantProfile.business_name.replace(/[^a-z0-9]/gi, '-')}-review.png`
-        link.href = canvas.toDataURL('image/png')
-        link.click()
-        setDownloading(false)
+        try {
+          ctx.drawImage(img, 0, 0)
+          const dataUrl = canvas.toDataURL('image/png') // throws SecurityError if canvas is tainted
+          const link = document.createElement('a')
+          link.download = `${restaurantProfile.business_name.replace(/[^a-z0-9]/gi, '-') || 'review'}.png`
+          link.href = dataUrl
+          link.click()
+          setDownloading(false)
+        } catch {
+          openHtmlFallback()
+        }
       }
-      img.onerror = () => {
-        // Fallback: open in new tab
-        const blob = new Blob([graphicHtml], { type: 'text/html' })
-        window.open(URL.createObjectURL(blob))
-        setDownloading(false)
-      }
+      img.onerror = () => openHtmlFallback()
       img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgData)
     } catch {
-      setDownloading(false)
+      openHtmlFallback()
     }
   }, [graphicHtml, restaurantProfile.business_name])
 

@@ -267,6 +267,8 @@ export default function Nav() {
               className="lg:hidden flex items-center justify-center w-11 h-11 rounded-lg text-[#111111]/50 hover:text-[#111111] hover:bg-[#F3F0EC] transition-all active:scale-95"
               onClick={() => setMobileOpen((o) => !o)}
               aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={mobileOpen}
+              aria-controls="mobile-nav-drawer"
             >
               <div className="relative w-5 h-5 flex items-center justify-center">
                 <span className={`absolute block w-5 h-px bg-current transition-all duration-200 ${mobileOpen ? 'rotate-45' : '-translate-y-1.5'}`} />
@@ -287,6 +289,10 @@ export default function Nav() {
           />
 
           <div
+            id="mobile-nav-drawer"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Navigation menu"
             className="lg:hidden fixed left-0 right-0 z-50 bg-white border-b border-[#E4DED8] shadow-[0_20px_50px_rgba(0,0,0,0.10)] overflow-y-auto animate-slide-down"
             style={{
               top: 'calc(64px + env(safe-area-inset-top))',

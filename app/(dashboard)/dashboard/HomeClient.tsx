@@ -275,6 +275,10 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
       setError("That Yelp URL doesn't look right. It should contain \"yelp.com/biz/\".")
       return
     }
+    if (tTrimmed && !tTrimmed.includes('tripadvisor.com')) {
+      setError("That TripAdvisor URL doesn't look right. It should be a tripadvisor.com page.")
+      return
+    }
 
     setSaving(true)
     try {

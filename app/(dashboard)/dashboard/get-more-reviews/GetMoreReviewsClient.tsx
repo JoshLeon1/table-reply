@@ -77,12 +77,13 @@ interface PlatformCardProps {
   userId: string
   currentUrl: string | null
   lastScrapedAt: string | null
+  onUrlSaved?: (url: string) => void
 }
 
 function PlatformCard({
   logo, name, description, hint, placeholder,
   validate, apiRoute, dbColumn, profileId, userId,
-  currentUrl, lastScrapedAt,
+  currentUrl, lastScrapedAt, onUrlSaved,
 }: PlatformCardProps) {
   const supabase = createClient()
   const [url, setUrl] = useState(currentUrl ?? '')
@@ -123,6 +124,7 @@ function PlatformCard({
       setSavedUrl(trimmed)
       setJustSaved(true)
       setSyncResult(null)
+      onUrlSaved?.(trimmed)
       setTimeout(() => setJustSaved(false), 2500)
     }
   }
@@ -445,6 +447,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
           userId={restaurantProfile.user_id}
           currentUrl={restaurantProfile.google_maps_url}
           lastScrapedAt={restaurantProfile.last_scraped_at}
+          onUrlSaved={setGoogleUrl}
         />
 
         {/* Yelp */}

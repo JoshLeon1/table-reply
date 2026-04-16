@@ -278,14 +278,21 @@ export default function Nav() {
         </div>
       </nav>
 
-      {/* Mobile overlay + drawer */}
-      <>
+      {/* Mobile overlay + drawer — only mounted when open so it never sits off-screen */}
+      {mobileOpen && (
+        <>
           <div
-            className={`lg:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+            className="lg:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm animate-fade-in"
             onClick={() => setMobileOpen(false)}
           />
 
-          <div className="lg:hidden fixed left-0 right-0 z-50 bg-white border-b border-[#E4DED8] shadow-[0_20px_50px_rgba(0,0,0,0.10)] transition-transform duration-300 ease-out overflow-y-auto" style={{ top: 'calc(64px + env(safe-area-inset-top))', maxHeight: 'calc(100dvh - 64px - env(safe-area-inset-top))', transform: mobileOpen ? 'translateY(0)' : 'translateY(calc(-100% - 64px - env(safe-area-inset-top)))' }}>
+          <div
+            className="lg:hidden fixed left-0 right-0 z-50 bg-white border-b border-[#E4DED8] shadow-[0_20px_50px_rgba(0,0,0,0.10)] overflow-y-auto animate-slide-down"
+            style={{
+              top: 'calc(64px + env(safe-area-inset-top))',
+              maxHeight: 'calc(100dvh - 64px - env(safe-area-inset-top))',
+            }}
+          >
             <div className="px-3 py-2 space-y-0.5">
               {displayName && (
                 <div className="px-4 pt-2 pb-1">
@@ -306,7 +313,6 @@ export default function Nav() {
                         : 'text-[#111111]/60 hover:text-[#111111]/90 hover:bg-[#F3F0EC]'
                     }`}
                   >
-                    {/* Active left-border accent */}
                     <span className={`w-0.5 h-5 rounded-full flex-shrink-0 transition-all ${active ? 'bg-[#E05A28]' : 'bg-transparent'}`} />
                     <span className={active ? 'text-[#E05A28]' : 'opacity-60'}>{link.icon(active)}</span>
                     <span className="flex-1">{link.label}</span>
@@ -345,7 +351,8 @@ export default function Nav() {
               </button>
             </div>
           </div>
-      </>
+        </>
+      )}
     </>
   )
 }

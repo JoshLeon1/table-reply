@@ -27,7 +27,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#F8F6F3', overflowX: 'clip' }}>
+    <div className="min-h-dvh flex flex-col" style={{ backgroundColor: '#F8F6F3' }}>
       {/* Subtle ambient gradient at top */}
       <div
         className="pointer-events-none fixed top-0 left-0 right-0 h-96 opacity-40"

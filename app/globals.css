@@ -40,6 +40,8 @@ body {
   max-width: 100vw;
   background-color: var(--bg);
   color: var(--text-1);
+  /* Prevent iOS rubber-band bounce from visually displacing fixed elements */
+  overscroll-behavior-y: none;
 }
 
 @layer base {

@@ -56,7 +56,7 @@ export default function WelcomeBanner({ hasGeneratedReply, hasAutoSync }: Props)
           <p className="text-[13px] font-semibold text-[#111]">Get started with ReplyFi</p>
           <p className="text-[12px] text-[#A8A29E] mt-0.5">{doneCount} of 3 steps complete</p>
         </div>
-        <button onClick={dismiss} className="text-[#C4BEB8] hover:text-[#7C7672] transition-colors flex-shrink-0 mt-0.5 p-0.5">
+        <button onClick={dismiss} aria-label="Dismiss" className="text-[#C4BEB8] hover:text-[#7C7672] transition-colors flex-shrink-0 mt-0.5 p-0.5">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
           </svg>

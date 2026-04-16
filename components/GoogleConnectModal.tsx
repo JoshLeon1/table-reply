@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { useModal } from '@/lib/hooks/useModal'
 
 interface GoogleConnectModalProps {
   userId: string
@@ -30,6 +31,7 @@ export default function GoogleConnectModal({
   const [email, setEmail] = useState(userEmail)
   const [status, setStatus] = useState<Status>('idle')
   const supabase = createClient()
+  const { containerRef } = useModal({ open: true, onClose })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -64,7 +66,13 @@ export default function GoogleConnectModal({
       />
 
       {/* Modal */}
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-[480px] p-8">
+      <div
+        ref={containerRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="google-connect-title"
+        className="relative bg-white rounded-2xl shadow-2xl w-full max-w-[480px] p-8"
+      >
         {/* Close button */}
         <button
           onClick={onClose}
@@ -90,7 +98,7 @@ export default function GoogleConnectModal({
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h3 className="text-xl font-bold text-[#111] mb-2">
+            <h3 id="google-connect-title" className="text-xl font-bold text-[#111] mb-2">
               You&apos;re on the list!
             </h3>
             <p className="text-[#7C7672] text-sm mb-8">We&apos;ll be in touch soon.</p>
@@ -112,7 +120,7 @@ export default function GoogleConnectModal({
             </div>
 
             {/* Headline */}
-            <h2 className="text-xl font-bold text-[#111] text-center mb-2">
+            <h2 id="google-connect-title" className="text-xl font-bold text-[#111] text-center mb-2">
               Auto-sync your Google reviews
             </h2>
             <p className="text-[#7C7672] text-sm text-center leading-relaxed mb-7">

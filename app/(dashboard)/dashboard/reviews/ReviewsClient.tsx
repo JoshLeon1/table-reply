@@ -655,7 +655,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
           <p>{scrapeError}</p>
           <div className="flex items-center gap-2 flex-shrink-0">
             <button onClick={onScrapeNow} className="font-semibold underline hover:no-underline">Try again</button>
-            <button onClick={onDismissError} className="text-red-400 hover:text-red-300">
+            <button onClick={onDismissError} aria-label="Dismiss" className="text-red-400 hover:text-red-300">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
               </svg>

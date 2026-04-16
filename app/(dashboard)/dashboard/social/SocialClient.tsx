@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
+import { useModal } from '@/lib/hooks/useModal'
 
 type ScrapedReview = {
   id: string
@@ -73,46 +74,8 @@ function CreatePostModal({
   const [downloading, setDownloading] = useState(false)
   const iframeRef = useRef<HTMLIFrameElement>(null)
 
-  // Focus trap
-  const modalRef = useRef<HTMLDivElement>(null)
-  const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-
-  useEffect(() => {
-    const modal = modalRef.current
-    if (!modal) return
-
-    // Move focus into modal on open
-    const firstFocusable = modal.querySelectorAll<HTMLElement>(FOCUSABLE)[0]
-    firstFocusable?.focus()
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose()
-        return
-      }
-      if (e.key !== 'Tab') return
-      const focusables = Array.from(modal.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
-        (el) => !el.hasAttribute('disabled')
-      )
-      if (!focusables.length) return
-      const first = focusables[0]
-      const last = focusables[focusables.length - 1]
-      if (e.shiftKey) {
-        if (document.activeElement === first) {
-          e.preventDefault()
-          last.focus()
-        }
-      } else {
-        if (document.activeElement === last) {
-          e.preventDefault()
-          first.focus()
-        }
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [onClose])
+  // Focus trap + Escape + scroll lock handled by useModal
+  const { containerRef: modalRef } = useModal({ open: true, onClose })
 
   const platforms: Platform[] = ['Instagram', 'Facebook', 'Twitter/X', 'TikTok']
   const platformCharLimit: Record<Platform, number> = {
@@ -263,7 +226,7 @@ function CreatePostModal({
                 — {review.review_text.length > 60 ? review.review_text.slice(0, 60) + '…' : review.review_text}
               </span>
             </div>
-            <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center text-[#A8A29E] hover:text-[#111111] hover:bg-[#F3F0EC] transition-all flex-shrink-0">
+            <button onClick={onClose} aria-label="Close" className="w-8 h-8 rounded-full flex items-center justify-center text-[#A8A29E] hover:text-[#111111] hover:bg-[#F3F0EC] transition-all flex-shrink-0">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>

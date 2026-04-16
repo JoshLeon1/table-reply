@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { LogoMark } from '@/components/Logo'
+import { useModal } from '@/lib/hooks/useModal'
 
 // Re-export from shared module for backward compatibility.
 export { LogoMark }
@@ -142,11 +143,11 @@ export default function Nav() {
 
   useEffect(() => { setMobileOpen(false) }, [pathname])
 
-  useEffect(() => {
-    if (mobileOpen) document.body.style.overflow = 'hidden'
-    else document.body.style.overflow = ''
-    return () => { document.body.style.overflow = '' }
-  }, [mobileOpen])
+  // Focus trap + Escape + scroll lock via shared hook
+  const { containerRef: mobileDrawerRef } = useModal({
+    open: mobileOpen,
+    onClose: () => setMobileOpen(false),
+  })
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -262,6 +263,7 @@ export default function Nav() {
           />
 
           <div
+            ref={mobileDrawerRef}
             id="mobile-nav-drawer"
             role="dialog"
             aria-modal="true"

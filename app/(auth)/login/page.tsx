@@ -8,7 +8,7 @@
 // Go to console.cloud.google.com → OAuth consent screen → Test users → Add your email
 // To allow all users, publish the app (Audience → Publish App)
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -38,7 +38,7 @@ function GoogleIcon() {
   )
 }
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const accountDeleted = searchParams.get('deleted') === '1'
@@ -217,5 +217,13 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   )
 }

@@ -1,3 +1,5 @@
+export const metadata = { title: 'Demo — ReplyFi' }
+
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import DemoClient from './DemoClient'

@@ -149,7 +149,7 @@ ${reviews.slice(0, 60).join('\n---\n')}`,
   } catch (err) {
     console.error('[analyze-themes] Error:', err)
     return NextResponse.json(
-      { error: String(err), praised: [], complaints: [], opportunities: [], insufficient: false },
+      { error: 'An unexpected error occurred. Please try again.', praised: [], complaints: [], opportunities: [], insufficient: false },
       { status: 500 }
     )
   }

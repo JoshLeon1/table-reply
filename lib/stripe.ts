@@ -37,7 +37,10 @@ export async function createCheckoutSession(
   plan: StripePlan = 'monthly'
 ) {
   const priceId = PRICE_IDS[plan]
-  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || 'https://replyfi.vercel.app').replace(/\/$/, '')
+  if (!process.env.NEXT_PUBLIC_APP_URL) {
+    throw new Error('NEXT_PUBLIC_APP_URL is not set in environment variables')
+  }
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, '')
 
   const session = await stripe.checkout.sessions.create({
     customer_email: email,

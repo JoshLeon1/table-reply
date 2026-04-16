@@ -46,7 +46,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No review platforms connected. Go to Settings to connect Google Maps, Yelp, or TripAdvisor.' }, { status: 400 })
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
+    if (!process.env.NEXT_PUBLIC_APP_URL) {
+      console.error('[sync-all] NEXT_PUBLIC_APP_URL is not set')
+      return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 })
+    }
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, '')
 
     // ── Fire all connected platforms in parallel ───────────────────────────
     const tasks: Array<{ platform: string; endpoint: string }> = []

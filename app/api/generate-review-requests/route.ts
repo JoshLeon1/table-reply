@@ -85,6 +85,6 @@ Rules:
     return NextResponse.json(result)
   } catch (error) {
     console.error('[generate-review-requests] error:', error)
-    return NextResponse.json({ error: String(error instanceof Error ? error.message : error) }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to generate review request templates. Please try again.' }, { status: 500 })
   }
 }

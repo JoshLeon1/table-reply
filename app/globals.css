@@ -23,7 +23,7 @@
   --accent-light:  #FEF0E8;
   --accent-border: #F5C9AD;
 
-  /* Radii — used by Tailwind via theme.borderRadius */
+  /* Radii — available as raw CSS variables for arbitrary-value usage (e.g. rounded-[var(--radius-lg)]); not mapped into Tailwind's rounded-* defaults to avoid a site-wide visual shift. */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 12px;

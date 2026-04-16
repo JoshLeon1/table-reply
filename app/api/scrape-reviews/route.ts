@@ -25,6 +25,10 @@ export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => ({}))
 
   // ── Auth: accept either cron secret OR a valid user session ────────────
+  if (!process.env.CRON_SECRET) {
+    return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 })
+  }
+
   const cronHeader  = request.headers.get('x-cron-secret')
   const authHeader  = request.headers.get('authorization')
   const isCron =
@@ -187,7 +191,8 @@ export async function POST(request: NextRequest) {
       // Extract the request ID and always poll via api.app.outscraper.com —
       // the results_location may point to api.outscraper.cloud which rejects
       // the X-API-KEY header, causing silent auth failures.
-      const requestId = result.results_location.split('/').pop()
+      const requestId = result.results_location?.split('/').pop()
+      if (!requestId) throw new Error('Outscraper job missing results_location')
       const canonicalPollUrl = `https://api.app.outscraper.com/requests/${requestId}`
       console.log('[scrape-reviews] Job is async — request ID:', requestId)
       console.log('[scrape-reviews] Polling:', canonicalPollUrl)

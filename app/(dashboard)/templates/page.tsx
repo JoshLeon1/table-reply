@@ -19,7 +19,7 @@ export default async function TemplatesPage() {
   if (!restaurantProfile) redirect('/onboarding')
 
   const name = restaurantProfile.business_name
-  const reviewLink = restaurantProfile.google_maps_url ?? '${reviewLink}'
+  const reviewLink = restaurantProfile.google_maps_url ?? '[YOUR GOOGLE REVIEW LINK]'
 
   const templates = [
     {

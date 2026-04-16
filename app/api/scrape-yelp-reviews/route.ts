@@ -23,6 +23,10 @@ export async function POST(request: NextRequest) {
     const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
     const body = await request.json().catch(() => ({}))
 
+    if (!process.env.CRON_SECRET) {
+      return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 })
+    }
+
     // ── Auth: accept cron secret OR valid user session ────────────────────
     const cronHeader = request.headers.get('x-cron-secret')
     const authHeader = request.headers.get('authorization')
@@ -119,7 +123,8 @@ export async function POST(request: NextRequest) {
 
       // ── Poll if async ─────────────────────────────────────────────────
       if (result.status === 'Pending') {
-        const requestId = result.results_location.split('/').pop()
+        const requestId = result.results_location?.split('/').pop()
+        if (!requestId) throw new Error('Outscraper job missing results_location')
         const pollUrl = `https://api.app.outscraper.com/requests/${requestId}`
         console.log('[scrape-yelp] Async job — polling:', pollUrl)
 

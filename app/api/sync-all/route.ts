@@ -50,10 +50,14 @@ export async function POST(request: NextRequest) {
     if (yelp_url)         tasks.push({ platform: 'Yelp',         endpoint: `${baseUrl}/api/scrape-yelp-reviews` })
     if (tripadvisor_url)  tasks.push({ platform: 'TripAdvisor',  endpoint: `${baseUrl}/api/scrape-tripadvisor-reviews` })
 
+    if (!process.env.CRON_SECRET) {
+      return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 })
+    }
+
     const body = JSON.stringify({ userId: user.id, restaurantProfileId: profile.id })
     const headers = {
       'Content-Type': 'application/json',
-      'x-cron-secret': process.env.CRON_SECRET!,
+      'x-cron-secret': process.env.CRON_SECRET,
     }
 
     const results = await Promise.allSettled(

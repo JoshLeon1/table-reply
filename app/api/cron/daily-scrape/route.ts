@@ -10,6 +10,11 @@ export async function GET(request: NextRequest) {
   )
   // Vercel cron sends Authorization: Bearer {CRON_SECRET}
   // Support both that header and x-cron-secret for manual testing
+  if (!process.env.CRON_SECRET) {
+    console.error('[daily-scrape] CRON_SECRET env var is not set')
+    return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 })
+  }
+
   const authHeader = request.headers.get('authorization')
   const cronHeader = request.headers.get('x-cron-secret')
   const isAuthorized =

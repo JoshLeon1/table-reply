@@ -26,8 +26,12 @@ export async function POST(request: NextRequest) {
     // body may be empty — default to monthly
   }
 
+  if (!user.email) {
+    return NextResponse.json({ error: 'An email address is required to subscribe.' }, { status: 400 })
+  }
+
   try {
-    const session = await createCheckoutSession(user.id, user.email!, plan)
+    const session = await createCheckoutSession(user.id, user.email, plan)
     return NextResponse.json({ url: session.url })
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : String(error)
@@ -47,10 +51,14 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
+  if (!user.email) {
+    return NextResponse.redirect(new URL('/settings?error=no-email', request.url))
+  }
+
   const plan = parsePlan(request.nextUrl.searchParams.get('plan'))
 
   try {
-    const session = await createCheckoutSession(user.id, user.email!, plan)
+    const session = await createCheckoutSession(user.id, user.email, plan)
     return NextResponse.redirect(session.url!)
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : String(error)

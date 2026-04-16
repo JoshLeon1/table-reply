@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import QRCode from 'qrcode'
 import { createClient } from '@/lib/supabase/client'
 import type { BusinessProfile } from '@/types'
@@ -288,6 +288,13 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
   const [googleUrl, setGoogleUrl] = useState(restaurantProfile.google_maps_url)
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const savedFlashRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
+      if (savedFlashRef.current) clearTimeout(savedFlashRef.current)
+    }
+  }, [])
 
   function saveMessagesToDb(msgs: ReviewMessages) {
     if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)

@@ -360,7 +360,12 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
         body: JSON.stringify({ reviews: reviewTexts, forceRefresh: force }),
       })
       const data: ThemeResult = await res.json()
-      if (data.error) { console.error('[analytics] theme error:', data.error); return }
+      if (data.error) {
+        setThemesLoading(false)
+        setRefreshing(false)
+        console.error('[analytics] theme error:', data.error)
+        return
+      }
       setThemes({
         praised:       Array.isArray(data.praised)       ? data.praised       : [],
         complaints:    Array.isArray(data.complaints)    ? data.complaints    : [],

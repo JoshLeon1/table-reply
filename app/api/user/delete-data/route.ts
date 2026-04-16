@@ -16,11 +16,14 @@ export async function DELETE() {
     { auth: { autoRefreshToken: false, persistSession: false } }
   )
 
-  // Delete all user data — RLS cascade handles children
-  // Order: replies, reviews, reply_feedback, business_profiles, profiles, then auth user
+  // Delete all user data in dependency order
+  // Leaf tables first, then parent tables, then auth user
   await Promise.all([
     serviceClient.from('replies').delete().eq('user_id', user.id),
     serviceClient.from('reply_feedback').delete().eq('user_id', user.id),
+    serviceClient.from('scraped_reviews').delete().eq('user_id', user.id),
+    serviceClient.from('competitor_profiles').delete().eq('user_id', user.id),
+    serviceClient.from('keyword_alerts').delete().eq('user_id', user.id),
   ])
 
   await Promise.all([

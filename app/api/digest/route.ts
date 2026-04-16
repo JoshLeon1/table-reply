@@ -162,6 +162,11 @@ export async function POST(request: NextRequest) {
   }
   const resend = new Resend(process.env.RESEND_API_KEY)
   // Auth: accept Vercel cron Bearer token or manual x-cron-secret header
+  if (!process.env.CRON_SECRET) {
+    console.error('[digest] CRON_SECRET env var is not set')
+    return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 })
+  }
+
   const authHeader = request.headers.get('authorization')
   const cronHeader = request.headers.get('x-cron-secret')
   const isAuthorized =
@@ -206,19 +211,26 @@ export async function POST(request: NextRequest) {
   console.log(`[digest] ${eligibleProfiles.length} eligible profiles (of ${profiles.length} with notifications on)`)
 
   // -------------------------------------------------------------------------
-  // 2. Fetch all auth users in one call to cross-reference emails
+  // 2. Fetch all auth users (paginated) to cross-reference emails
   // -------------------------------------------------------------------------
-  const { data: authUsers, error: authError } = await supabaseAdmin.auth.admin.listUsers({
-    perPage: 1000,
-  })
-
-  if (authError) {
-    console.error('[digest] Failed to fetch auth users:', authError)
-    return NextResponse.json({ error: 'Failed to fetch auth users' }, { status: 500 })
+  const allAuthUsers: Array<{ id: string; email?: string }> = []
+  let page = 1
+  while (true) {
+    const { data: authPage, error: authError } = await supabaseAdmin.auth.admin.listUsers({
+      page,
+      perPage: 1000,
+    })
+    if (authError) {
+      console.error('[digest] Failed to fetch auth users (page', page, '):', authError)
+      return NextResponse.json({ error: 'Failed to fetch auth users' }, { status: 500 })
+    }
+    allAuthUsers.push(...authPage.users)
+    if (authPage.users.length < 1000) break
+    page++
   }
 
   const emailMap = new Map<string, string>(
-    authUsers.users.map((u) => [u.id, u.email ?? '']),
+    allAuthUsers.map((u) => [u.id, u.email ?? '']),
   )
 
   // -------------------------------------------------------------------------

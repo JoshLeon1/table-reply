@@ -110,6 +110,7 @@ function SetupPanel({ profile, onSaved }: { profile: BusinessProfile; onSaved: (
       .from('business_profiles')
       .update({ google_maps_url: trimmed })
       .eq('id', profile.id)
+      .eq('user_id', profile.user_id)
 
     if (dbErr) setError('Failed to save. Please try again.')
     else onSaved(trimmed)
@@ -272,6 +273,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
         .from('scraped_reviews')
         .update({ generated_reply: reply })
         .eq('id', review.id)
+        .eq('user_id', review.user_id)
       setReview(prev => ({ ...prev, generated_reply: reply }))
     } catch (err) {
       setGenError(err instanceof Error ? err.message : 'Failed to generate')
@@ -299,6 +301,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
       .from('scraped_reviews')
       .update({ generated_reply: editedReply })
       .eq('id', review.id)
+      .eq('user_id', review.user_id)
     setReview(prev => ({ ...prev, generated_reply: editedReply }))
     setEditing(false)
     setSavingEdit(false)

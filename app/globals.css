@@ -141,11 +141,6 @@ body {
     border-radius: 6px;
   }
 
-  /* nav active pill glow */
-  .nav-active-glow {
-    box-shadow: 0 0 0 1px rgba(224,90,40,0.15), 0 2px 8px rgba(224,90,40,0.12);
-  }
-
   .tnum { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
 }
 

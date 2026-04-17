@@ -50,7 +50,7 @@ function StarRating({ rating }: { rating: number | null }) {
           </svg>
         ))}
       </div>
-      <span className="text-[13px] font-semibold text-[#111111]">{rating.toFixed(1)}</span>
+      <span className="text-[13px] font-semibold text-[#111111] tnum">{rating.toFixed(1)}</span>
     </div>
   )
 }
@@ -160,7 +160,7 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
                 <div key={s.placeId} className="flex items-center gap-2 text-[13px]">
                   <span className="text-emerald-600 font-bold w-4 flex-shrink-0">{i + 1}.</span>
                   <span className="font-medium text-[#111111] flex-1 truncate">{s.name}</span>
-                  {s.rating && <span className="text-amber-500 text-[12px] flex-shrink-0">{s.rating.toFixed(1)}★</span>}
+                  {s.rating && <span className="text-amber-500 text-[12px] flex-shrink-0 tnum">{s.rating.toFixed(1)}★</span>}
                   <button
                     onClick={() => {
                       const next = [...urls]
@@ -377,7 +377,7 @@ function ComparisonTable({
     return (
       <td
         key={String(value)}
-        className={`px-4 py-3 text-[13px] text-center ${
+        className={`px-4 py-3 text-[13px] text-center tnum ${
           isYou ? 'bg-[#E05A28]/[0.06]' : ''
         } ${highlight ? 'text-emerald-600 font-semibold' : 'text-[#111111]'}`}
       >
@@ -469,7 +469,7 @@ function ComparisonTable({
                   return (
                     <td
                       key={i}
-                      className={`px-4 py-3 text-[13px] text-center text-[#A8A29E] ${i === 0 ? 'bg-[#E05A28]/[0.06]' : ''}`}
+                      className={`px-4 py-3 text-[13px] text-center text-[#A8A29E] tnum ${i === 0 ? 'bg-[#E05A28]/[0.06]' : ''}`}
                     >
                       {date}
                     </td>
@@ -685,7 +685,7 @@ function CompetitorCard({
           <div className="flex items-center gap-2">
             <StarRating rating={competitor.avg_rating} />
             {ratingDiff !== null && (
-              <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-md ${
+              <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-md tnum ${
                 ratingDiff > 0 ? 'bg-red-50 text-red-500' : ratingDiff < 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-[#F3F0EC] text-[#A8A29E]'
               }`}>
                 {ratingDiff > 0 ? `+${ratingDiff.toFixed(1)} vs you` : ratingDiff < 0 ? `${ratingDiff.toFixed(1)} vs you` : '= you'}
@@ -695,13 +695,13 @@ function CompetitorCard({
         </div>
         <div>
           <p className="text-[11px] font-medium text-[#A8A29E] mb-0.5">Reviews</p>
-          <p className="text-[14px] font-semibold text-[#111111]">
+          <p className="text-[14px] font-semibold text-[#111111] tnum">
             {competitor.review_count !== null ? competitor.review_count.toLocaleString() : '—'}
           </p>
         </div>
         <div>
           <p className="text-[11px] font-medium text-[#A8A29E] mb-0.5">Last Synced</p>
-          <p className="text-[13px] text-[#57534E]">{formatDate(competitor.last_scraped_at)}</p>
+          <p className="text-[13px] text-[#57534E] tnum">{formatDate(competitor.last_scraped_at)}</p>
         </div>
       </div>
     </div>

@@ -686,7 +686,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
             ].map(({ label, value, color }) => (
               <div key={label} className="bg-white rounded-xl border border-[#E4DED8] p-4">
                 <p className="text-[12px] text-[#A8A29E] font-medium">{label}</p>
-                <p className={`text-[22px] font-bold mt-1 ${color}`}>{value}</p>
+                <p className={`text-[22px] font-bold mt-1 tnum ${color}`}>{value}</p>
               </div>
             ))}
           </div>

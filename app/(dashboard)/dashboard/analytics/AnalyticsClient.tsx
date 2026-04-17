@@ -1507,8 +1507,8 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
               {languageData.map(({ lang, count, pct }) => (
                 <div key={lang} className="flex flex-col gap-1 p-4 bg-[#F8F6F3] rounded-xl border border-[#E4DED8]">
                   <p className="text-[13px] font-semibold text-[#111111]">{lang}</p>
-                  <p className="text-[24px] font-bold text-[#E05A28] leading-none">{pct}%</p>
-                  <p className="text-[11px] text-[#A8A29E]">{count} review{count !== 1 ? 's' : ''}</p>
+                  <p className="text-[24px] font-bold text-[#E05A28] leading-none tnum">{pct}%</p>
+                  <p className="text-[11px] text-[#A8A29E] tnum">{count} review{count !== 1 ? 's' : ''}</p>
                 </div>
               ))}
             </div>

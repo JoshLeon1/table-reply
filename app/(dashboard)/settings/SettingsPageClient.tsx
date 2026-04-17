@@ -339,7 +339,7 @@ export default function SettingsPageClient({
           <div className="px-5 sm:px-6 pt-3 pb-0">
             <div className="flex items-center justify-between mb-1.5">
               <span className="text-[11px] text-[#A8A29E]">Trial progress</span>
-              <span className="text-[11px] font-medium text-[#57534E]">{daysRemaining}d remaining</span>
+              <span className="text-[11px] font-medium text-[#57534E] tnum">{daysRemaining}d remaining</span>
             </div>
             <div className="w-full h-1.5 bg-[#EDE9E4] rounded-full">
               <div className="h-full bg-[#E05A28] rounded-full transition-all" style={{ width: `${Math.round(((7 - daysRemaining) / 7) * 100)}%` }} />

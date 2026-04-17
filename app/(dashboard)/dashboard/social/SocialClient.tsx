@@ -321,7 +321,7 @@ function CreatePostModal({
                         <p className="text-[13px] text-[#C94E21] mt-2 leading-relaxed">{hashtags.join(' ')}</p>
                       )}
                     </div>
-                    <span className={`absolute bottom-2 right-3 text-[10px] font-medium ${caption.length > platformCharLimit[platform] ? 'text-red-500' : caption.length > platformCharLimit[platform] * 0.85 ? 'text-amber-600' : 'text-[#A8A29E]'}`}>
+                    <span className={`absolute bottom-2 right-3 text-[10px] font-medium tnum ${caption.length > platformCharLimit[platform] ? 'text-red-500' : caption.length > platformCharLimit[platform] * 0.85 ? 'text-amber-600' : 'text-[#A8A29E]'}`}>
                       {caption.length}/{platformCharLimit[platform]}
                     </span>
                   </div>
@@ -501,7 +501,7 @@ export default function SocialClient({ reviews, restaurantProfile }: Props) {
               {/* Header row: platform badge + timestamp */}
               <div className="flex items-center justify-between gap-2">
                 {sourceBadge(review.source)}
-                <span className="text-[11px] text-[#A8A29E]">
+                <span className="text-[11px] text-[#A8A29E] tnum">
                   {review.review_datetime_utc
                     ? new Date(review.review_datetime_utc).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
                     : ''}

@@ -10,6 +10,7 @@ import KPI from '@/components/ui/KPI'
 import Eyebrow from '@/components/ui/Eyebrow'
 import Delta from '@/components/ui/Delta'
 import Stars from '@/components/ui/Stars'
+import PlatformBadge from '@/components/ui/PlatformBadge'
 import { Card } from '@/components/ui/Card'
 import { ArrowRight, MessageSquare, RefreshCw, CheckCircle2 } from 'lucide-react'
 
@@ -70,12 +71,6 @@ function StarRow({ rating, size = 'sm' }: { rating: number; size?: 'sm' | 'md' }
       {[1,2,3,4,5].map(i => <svg key={i} className={`${cls} ${i <= rating ? 'text-amber-400' : 'text-[#E4DED8]'}`} fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>)}
     </div>
   )
-}
-
-function PlatformBadge({ source }: { source?: string | null }) {
-  if (source === 'yelp') return <span className="inline-flex items-center text-[10px] font-bold tracking-wide text-red-500 bg-red-50 border border-red-200 rounded-md px-1.5 py-0.5 leading-none">YELP</span>
-  if (source === 'tripadvisor') return <span className="inline-flex items-center text-[10px] font-bold tracking-wide text-emerald-600 bg-emerald-50 border border-emerald-200 rounded-md px-1.5 py-0.5 leading-none">TA</span>
-  return <span className="inline-flex items-center text-[10px] font-bold tracking-wide text-blue-500 bg-blue-50 border border-blue-200 rounded-md px-1.5 py-0.5 leading-none">G</span>
 }
 
 function SectionLabel({ children, badge }: { children: React.ReactNode; badge?: React.ReactNode }) {

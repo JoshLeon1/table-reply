@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import type { BusinessProfile, ScrapedReview } from '@/types'
 import Stars from '@/components/ui/Stars'
+import PlatformBadge from '@/components/ui/PlatformBadge'
 import { Card } from '@/components/ui/Card'
 
 interface Props {
@@ -25,18 +26,6 @@ function getAvatarColor(name: string): string {
 }
 
 // ── Shared helpers ────────────────────────────────────────────────────────────
-
-function PlatformBadge({ source }: { source?: string | null }) {
-  if (source === 'yelp') return (
-    <span className="inline-flex items-center text-[10px] font-bold text-red-500 bg-red-50 border border-red-200 rounded-md px-1.5 py-0.5 leading-none">YELP</span>
-  )
-  if (source === 'tripadvisor') return (
-    <span className="inline-flex items-center text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 rounded-md px-1.5 py-0.5 leading-none">TA</span>
-  )
-  return (
-    <span className="inline-flex items-center text-[10px] font-bold text-blue-500 bg-blue-50 border border-blue-200 rounded-md px-1.5 py-0.5 leading-none">G</span>
-  )
-}
 
 function formatDate(utcStr: string) {
   if (!utcStr) return ''

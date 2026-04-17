@@ -13,7 +13,10 @@ import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Input from '@/components/ui/Input'
-import Logo from '@/components/Logo'
+import Button from '@/components/ui/Button'
+import Notice from '@/components/ui/Notice'
+import Spinner from '@/components/ui/Spinner'
+import AuthShell from '@/components/AuthShell'
 
 function GoogleIcon() {
   return (
@@ -110,111 +113,83 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8F6F3] flex items-center justify-center px-4 py-10 sm:py-12 relative" style={{ backgroundImage: 'radial-gradient(circle, #E4DED8 1px, transparent 1px)', backgroundSize: '24px 24px' }}>
-      <div className="w-full max-w-[400px] animate-fade-up">
+    <AuthShell
+      title="Welcome Back"
+      subtitle="Sign in to manage your reviews"
+      footer={
+        <>
+          Don&apos;t have an account?{' '}
+          <Link href="/signup" className="text-[#E05A28] hover:text-[#C94E21] font-semibold transition-colors">
+            Start free →
+          </Link>
+        </>
+      }
+    >
+      {accountDeleted && (
+        <Notice variant="success" className="mb-5">
+          Your account and all data have been permanently deleted.
+        </Notice>
+      )}
 
-        {/* Logo */}
-        <div className="flex justify-center mb-7 sm:mb-8">
-          <Logo />
-        </div>
+      {/* Google */}
+      <button
+        type="button"
+        onClick={handleGoogleLogin}
+        disabled={googleLoading || loading}
+        className="w-full flex items-center justify-center gap-3 h-11 rounded-xl border border-[#E4DED8] bg-white hover:bg-[#F8F6F3] hover:border-[#CEC8C1] text-[#111] text-[14px] font-medium transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed mb-4"
+      >
+        {googleLoading ? <Spinner size="md" className="opacity-60" /> : <GoogleIcon />}
+        Continue with Google
+      </button>
 
-        {/* Card */}
-        <div className="bg-white rounded-2xl border border-border shadow-modal p-6 sm:p-8">
-          {accountDeleted && (
-            <div className="rounded-xl bg-emerald-50 border border-emerald-200 px-4 py-3 flex items-start gap-2.5 mb-5">
-              <svg className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              <p className="text-[13px] text-emerald-700">Your account and all data have been permanently deleted.</p>
-            </div>
-          )}
-          <h1 className="text-[20px] font-bold text-[#111] tracking-[-0.02em] mb-1">Welcome Back</h1>
-          <p className="text-[13px] text-[#A8A29E] mb-6">Sign in to manage your reviews</p>
-
-          {/* Google */}
-          <button
-            type="button"
-            onClick={handleGoogleLogin}
-            disabled={googleLoading || loading}
-            className="w-full flex items-center justify-center gap-3 h-11 rounded-xl border border-[#E4DED8] bg-white hover:bg-[#F8F6F3] hover:border-[#CEC8C1] text-[#111] text-[14px] font-medium transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed mb-4"
-          >
-            {googleLoading ? (
-              <svg className="animate-spin h-4 w-4 opacity-60" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
-            ) : <GoogleIcon />}
-            Continue with Google
-          </button>
-
-          <div className="flex items-center gap-3 mb-5">
-            <div className="flex-1 h-px bg-[#EDE9E4]" />
-            <span className="text-[12px] text-[#A8A29E] font-medium">or</span>
-            <div className="flex-1 h-px bg-[#EDE9E4]" />
-          </div>
-
-          <form onSubmit={handleLogin} className="space-y-4">
-            <Input
-              id="email"
-              type="email"
-              label="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@yourbusiness.com"
-              required
-              autoComplete="email"
-            />
-            <div>
-              <Input
-                id="password"
-                type="password"
-                label="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-                autoComplete="current-password"
-              />
-              <div className="mt-1.5 text-right">
-                <Link href="/forgot-password" className="text-[12px] text-[#E05A28] hover:text-[#C94E21] transition-colors py-2 inline-flex items-center">
-                  Forgot Password?
-                </Link>
-              </div>
-            </div>
-
-            {error && (
-              <div role="alert" className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 flex items-start gap-2.5">
-                <svg className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <p className="text-[13px] text-red-600">{error}</p>
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={loading || googleLoading}
-              className="w-full h-11 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white font-semibold text-[14px] transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(224,90,40,0.3)]"
-            >
-              {loading && (
-                <svg className="animate-spin h-4 w-4 opacity-70" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-              )}
-              Sign In
-            </button>
-          </form>
-
-          <p className="mt-6 text-[13px] text-center text-[#A8A29E]">
-            Don&apos;t have an account?{' '}
-            <Link href="/signup" className="text-[#E05A28] hover:text-[#C94E21] font-semibold transition-colors">
-              Start free →
-            </Link>
-          </p>
-        </div>
+      <div className="flex items-center gap-3 mb-5">
+        <div className="flex-1 h-px bg-[#EDE9E4]" />
+        <span className="text-[12px] text-[#A8A29E] font-medium">or</span>
+        <div className="flex-1 h-px bg-[#EDE9E4]" />
       </div>
-    </div>
+
+      <form onSubmit={handleLogin} className="space-y-4">
+        <Input
+          id="email"
+          type="email"
+          label="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="you@yourbusiness.com"
+          required
+          autoComplete="email"
+        />
+        <div>
+          <Input
+            id="password"
+            type="password"
+            label="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+            required
+            autoComplete="current-password"
+          />
+          <div className="mt-1.5 text-right">
+            <Link href="/forgot-password" className="text-[12px] text-[#E05A28] hover:text-[#C94E21] transition-colors py-2 inline-flex items-center">
+              Forgot Password?
+            </Link>
+          </div>
+        </div>
+
+        {error && <Notice variant="error">{error}</Notice>}
+
+        <Button
+          type="submit"
+          variant="accent"
+          disabled={loading || googleLoading}
+          loading={loading}
+          className="w-full h-11 text-[14px] shadow-[0_2px_12px_rgba(224,90,40,0.3)]"
+        >
+          Sign In
+        </Button>
+      </form>
+    </AuthShell>
   )
 }
 

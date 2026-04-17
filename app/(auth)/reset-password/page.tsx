@@ -5,7 +5,10 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Input from '@/components/ui/Input'
-import Logo from '@/components/Logo'
+import Button from '@/components/ui/Button'
+import Notice from '@/components/ui/Notice'
+import Spinner from '@/components/ui/Spinner'
+import AuthShell from '@/components/AuthShell'
 
 export default function ResetPasswordPage() {
   const router = useRouter()
@@ -74,91 +77,69 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8F6F3] flex flex-col items-center justify-center px-4 py-12">
-      <div className="w-full max-w-[400px] animate-fade-up">
-        {/* Logo */}
-        <div className="flex justify-center mb-8">
-          <Logo />
+    <AuthShell
+      title="Set New Password"
+      subtitle="Choose a strong password for your account."
+      footer={
+        <Link href="/login" className="text-[#E05A28] hover:text-[#C94E21] font-semibold transition-colors">
+          ← Back to sign in
+        </Link>
+      }
+    >
+      {authorized === null ? (
+        <div className="py-6 text-center">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-accent-light mb-4 text-accent">
+            <Spinner size="lg" />
+          </div>
+          <h2 className="text-[18px] font-semibold text-text-1 mb-1">Verifying your link…</h2>
+          <p className="text-[13px] text-text-2">This usually takes a second or two.</p>
         </div>
-
-        <div className="bg-white rounded-2xl border border-border shadow-modal p-7 sm:p-8">
-          <h1 className="text-[20px] font-bold text-[#111] tracking-[-0.02em] mb-1">Set New Password</h1>
-          <p className="text-[14px] text-[#7C7672] mb-6">Choose a strong password for your account.</p>
-
-          {authorized === null ? (
-            <div className="py-6 text-center">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-accent-light mb-4">
-                <svg className="animate-spin h-5 w-5 text-accent" fill="none" viewBox="0 0 24 24" aria-hidden="true">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-              </div>
-              <h2 className="text-[18px] font-semibold text-text-1 mb-1">Verifying your link…</h2>
-              <p className="text-[13px] text-text-2">This usually takes a second or two.</p>
-            </div>
-          ) : authorized === false ? (
-            <div className="rounded-xl bg-amber-50 border border-amber-200 px-4 py-4 text-[13px] text-amber-800">
-              <p className="font-semibold mb-1">This link has expired.</p>
-              <p className="text-amber-700">Password reset links are only valid for a short time. Request a new one from the{' '}
-                <Link href="/forgot-password" className="underline underline-offset-2 font-semibold">forgot password page</Link>.
-              </p>
-            </div>
-          ) : success ? (
-            <div className="rounded-xl bg-emerald-50 border border-emerald-100 px-4 py-4">
-              <p className="text-[13px] text-emerald-700 font-medium">Password updated! Redirecting to your dashboard…</p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <Input
-                id="password"
-                type="password"
-                label="New Password"
-                hint="At least 8 characters"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-                autoComplete="new-password"
-                minLength={8}
-              />
-              <Input
-                id="confirm-password"
-                type="password"
-                label="Confirm New Password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-                autoComplete="new-password"
-              />
-              {error && (
-                <div role="alert" className="rounded-xl bg-red-50 border border-red-100 px-4 py-3">
-                  <p className="text-[13px] text-red-600">{error}</p>
-                </div>
-              )}
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full h-11 rounded-xl bg-[#111] hover:bg-[#1E1E1E] text-white font-semibold text-[14px] transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                {loading && (
-                  <svg className="animate-spin h-4 w-4 opacity-70" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
-                )}
-                Update Password
-              </button>
-            </form>
-          )}
-
-          <p className="mt-6 text-[13px] text-center text-[#7C7672]">
-            <Link href="/login" className="text-[#E05A28] hover:text-[#C94E21] font-semibold transition-colors">
-              ← Back to sign in
-            </Link>
+      ) : authorized === false ? (
+        <Notice variant="warning">
+          <p className="font-semibold mb-1">This link has expired.</p>
+          <p>
+            Password reset links are only valid for a short time. Request a new one from the{' '}
+            <Link href="/forgot-password" className="underline underline-offset-2 font-semibold">forgot password page</Link>.
           </p>
-        </div>
-      </div>
-    </div>
+        </Notice>
+      ) : success ? (
+        <Notice variant="success">Password updated! Redirecting to your dashboard…</Notice>
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <Input
+            id="password"
+            type="password"
+            label="New Password"
+            hint="At least 8 characters"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+            required
+            autoComplete="new-password"
+            minLength={8}
+          />
+          <Input
+            id="confirm-password"
+            type="password"
+            label="Confirm New Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="••••••••"
+            required
+            autoComplete="new-password"
+          />
+          {error && <Notice variant="error">{error}</Notice>}
+          <Button
+            type="submit"
+            variant="primary"
+            loading={loading}
+            disabled={loading}
+            className="w-full h-11 text-[14px]"
+          >
+            Update Password
+          </Button>
+        </form>
+      )}
+    </AuthShell>
   )
 }

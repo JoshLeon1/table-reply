@@ -67,7 +67,7 @@ function TripAdvisorLogo({ size = 22 }: { size?: number }) {
 function SectionLabel({ children, badge }: { children: React.ReactNode; badge?: React.ReactNode }) {
   return (
     <div className="flex items-center gap-2.5 mb-4">
-      <span className="text-[13px] font-semibold text-[#57534E] whitespace-nowrap flex-shrink-0">{children}</span>
+      <span className="text-[13px] font-medium text-[#57534E] whitespace-nowrap flex-shrink-0">{children}</span>
       {badge}
       <div className="flex-1 h-px bg-gradient-to-r from-[#E4DED8] to-transparent" />
     </div>
@@ -112,15 +112,15 @@ function PendingCard({ review, userId, onAction, animDelay = 0 }: { review: Scra
   const initials = review.reviewer_name.split(' ').map((w: string) => w[0]).join('').toUpperCase().slice(0, 2)
   const isNeg = review.star_rating <= 2
   const isNeu = review.star_rating === 3
-  const avatarBg = isNeg ? 'from-red-50 to-rose-50' : isNeu ? 'from-amber-50 to-yellow-50' : 'from-emerald-50 to-teal-50'
-  const avatarText = isNeg ? 'text-red-400' : isNeu ? 'text-amber-400' : 'text-emerald-500'
+  const avatarBg = 'bg-[#F3F0EC]'
+  const avatarText = 'text-[#57534E]'
 
   const noText = !review.review_text?.trim()
 
   if (noText) {
     return (
       <div className="animate-fade-up flex items-center gap-3 px-4 py-2.5 bg-white rounded-xl border border-[#E4DED8] hover:border-[#D0C9C1] transition-all duration-150 opacity-60 hover:opacity-80" style={{ animationDelay: `${animDelay}ms` }}>
-        <div className={`w-7 h-7 rounded-full bg-gradient-to-br ${avatarBg} border border-[#E4DED8] flex items-center justify-center text-[10px] font-bold ${avatarText} flex-shrink-0`}>{initials}</div>
+        <div className={`w-7 h-7 rounded-full ${avatarBg} border border-[#E4DED8] flex items-center justify-center text-[10px] font-medium ${avatarText} flex-shrink-0`}>{initials}</div>
         <div className="flex items-center gap-1.5 min-w-0">
           <span className="text-[12px] font-medium text-[#57534E] truncate max-w-[100px]">{review.reviewer_name}</span>
           <PlatformBadge source={review.source} />
@@ -136,16 +136,16 @@ function PendingCard({ review, userId, onAction, animDelay = 0 }: { review: Scra
   }
 
   return (
-    <div className="animate-fade-up bg-white rounded-xl border border-[#E4DED8] overflow-hidden transition-all duration-200 hover:border-[#D0C9C1] hover:shadow-[0_4px_16px_rgba(0,0,0,0.07)]" style={{ animationDelay: `${animDelay}ms` }}>
+    <div className="animate-fade-up bg-white rounded-xl border border-[#E4DED8] overflow-hidden transition-all duration-200 hover:border-[#D0C9C1]" style={{ animationDelay: `${animDelay}ms` }}>
       <div className="px-4 pt-4 pb-3">
         <div className="flex items-start gap-3">
-          <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${avatarBg} border border-[#E4DED8] flex items-center justify-center text-[11px] font-bold ${avatarText} flex-shrink-0 mt-0.5`}>{initials}</div>
+          <div className={`w-9 h-9 rounded-full ${avatarBg} border border-[#E4DED8] flex items-center justify-center text-[11px] font-medium ${avatarText} flex-shrink-0 mt-0.5`}>{initials}</div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between gap-2 mb-1.5">
               <div className="flex items-center gap-1.5 flex-wrap min-w-0">
-                <span className="text-[13px] font-semibold text-[#111111] truncate leading-none">{review.reviewer_name}</span>
+                <span className="text-[13px] font-medium text-[#111111] truncate leading-none">{review.reviewer_name}</span>
                 <PlatformBadge source={review.source} />
-                {review.alert_triggered && <span className="text-[10px] font-bold text-red-500 bg-red-50 border border-red-200 rounded-md px-1.5 py-0.5 leading-none">⚠ Alert</span>}
+                {review.alert_triggered && <span className="inline-flex items-center gap-1 text-[10px] font-medium text-[#B84A1A] bg-[#FEF0E8] border border-[#FCDCCA] rounded-md px-1.5 py-0.5 leading-none"><svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd"/></svg>Alert</span>}
               </div>
               <span className="text-[11px] text-[#C4BEB8] flex-shrink-0 tabular-nums leading-none">{review.review_datetime_utc ? formatTimeAgo(review.review_datetime_utc) : ''}</span>
             </div>
@@ -162,12 +162,12 @@ function PendingCard({ review, userId, onAction, animDelay = 0 }: { review: Scra
             {expanded ? 'Hide AI draft' : 'Preview AI draft'}
           </button>
           {expanded && (
-            <div className="mt-2.5 bg-[#E05A28]/[0.08] rounded-xl px-4 py-3.5 border border-[#E05A28]/20 animate-fade-up">
+            <div className="mt-2.5 bg-white rounded-xl px-4 py-3.5 border border-[#E4DED8] animate-fade-up">
               <div className="flex items-center gap-1.5 mb-2">
-                <div className="w-4 h-4 rounded-md bg-[#E05A28]/10 flex items-center justify-center">
-                  <svg className="w-2.5 h-2.5 text-[#E05A28]" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd"/></svg>
+                <div className="w-4 h-4 rounded-md bg-[#F3F0EC] flex items-center justify-center">
+                  <svg className="w-2.5 h-2.5 text-[#57534E]" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd"/></svg>
                 </div>
-                <span className="text-[11px] font-semibold text-[#E05A28]">AI reply</span>
+                <span className="text-[11px] font-medium text-[#57534E]">AI reply</span>
               </div>
               <p className="text-[12px] text-[#57534E] leading-relaxed">{review.generated_reply}</p>
             </div>
@@ -176,8 +176,8 @@ function PendingCard({ review, userId, onAction, animDelay = 0 }: { review: Scra
       )}
 
       <div className="flex items-center gap-2 px-4 pb-4 pt-1">
-        <button onClick={handleApprove} disabled={actioning || !review.generated_reply} className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-white text-[12px] font-semibold disabled:opacity-40 transition-all duration-200 active:scale-[0.97] ${copied ? 'bg-emerald-500 hover:bg-emerald-600 shadow-[0_2px_8px_rgba(52,211,153,0.3)]' : 'bg-[#E05A28] hover:bg-[#C94E21] shadow-[0_2px_8px_rgba(224,90,40,0.2)] hover:shadow-[0_4px_14px_rgba(224,90,40,0.35)]'}`}>
-          {copied ? <><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied!</> : <><svg className="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Copy &amp; Approve</>}
+        <button onClick={handleApprove} disabled={actioning || !review.generated_reply} className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-white text-[12px] font-medium disabled:opacity-40 transition-all duration-200 active:scale-[0.97] ${copied ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-[#E05A28] hover:bg-[#C94E21]'}`}>
+          {copied ? <><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied</> : <><svg className="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Copy &amp; Approve</>}
         </button>
         <button onClick={handleDismiss} disabled={actioning} className="px-3 py-2 rounded-xl text-[12px] font-medium text-[#A8A29E] hover:text-[#57534E] hover:bg-[#F3F0EC] disabled:opacity-40 transition-all duration-150">Dismiss</button>
       </div>
@@ -250,11 +250,11 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
     <div className="animate-fade-up pb-16">
       {/* Header */}
       <div className="mb-8 text-center">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#E05A28]/10 border border-[#E05A28]/20 mb-5">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#E05A28] animate-pulse" />
-          <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#E05A28]/80">One-time setup</span>
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#F3F0EC] border border-[#E4DED8] mb-5">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#A8A29E]" />
+          <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#A8A29E]">One-time setup</span>
         </div>
-        <h1 className="text-[26px] sm:text-[30px] font-black text-[#111111] tracking-[-0.03em] mb-3">
+        <h1 className="text-[26px] sm:text-[30px] text-[#111111] tracking-[-0.025em] mb-3" style={{ fontWeight: 500 }}>
           Hey {ownerName}, where are your reviews?
         </h1>
         <p className="text-[14px] text-[#57534E]/80 max-w-md mx-auto leading-relaxed">
@@ -266,11 +266,11 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
       <div className="max-w-lg mx-auto space-y-3 mb-6">
 
         {/* Google */}
-        <div className="bg-white rounded-2xl border border-[#E4DED8] p-4">
+        <div className="bg-white rounded-xl border border-[#E4DED8] p-4">
           <div className="flex items-center gap-2.5 mb-3">
             <GoogleLogo size={20} />
-            <span className="text-[13px] font-bold text-[#111]">Google Maps</span>
-            <span className="text-[10px] font-bold text-blue-500 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full uppercase tracking-wide ml-auto">Recommended</span>
+            <span className="text-[13px] font-medium text-[#111]">Google Maps</span>
+            <span className="text-[10px] font-medium text-[#57534E] bg-[#F3F0EC] border border-[#E4DED8] px-2 py-0.5 rounded-full uppercase tracking-wide ml-auto">Recommended</span>
           </div>
           <input
             type="url"
@@ -283,10 +283,10 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
         </div>
 
         {/* Yelp */}
-        <div className="bg-white rounded-2xl border border-[#E4DED8] p-4">
+        <div className="bg-white rounded-xl border border-[#E4DED8] p-4">
           <div className="flex items-center gap-2.5 mb-3">
             <YelpLogo size={20} />
-            <span className="text-[13px] font-bold text-[#111]">Yelp</span>
+            <span className="text-[13px] font-medium text-[#111]">Yelp</span>
             <span className="text-[10px] font-bold text-[#A8A29E] bg-[#F8F6F3] border border-[#E4DED8] px-2 py-0.5 rounded-full uppercase tracking-wide ml-auto">Optional</span>
           </div>
           <input
@@ -299,10 +299,10 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
         </div>
 
         {/* TripAdvisor */}
-        <div className="bg-white rounded-2xl border border-[#E4DED8] p-4">
+        <div className="bg-white rounded-xl border border-[#E4DED8] p-4">
           <div className="flex items-center gap-2.5 mb-3">
             <TripAdvisorLogo size={20} />
-            <span className="text-[13px] font-bold text-[#111]">TripAdvisor</span>
+            <span className="text-[13px] font-medium text-[#111]">TripAdvisor</span>
             <span className="text-[10px] font-bold text-[#A8A29E] bg-[#F8F6F3] border border-[#E4DED8] px-2 py-0.5 rounded-full uppercase tracking-wide ml-auto">Optional</span>
           </div>
           <input
@@ -330,7 +330,7 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
           onClick={handleConnect}
           disabled={saving}
           loading={saving}
-          className="h-auto px-8 py-3.5 rounded-2xl text-[15px] font-bold gap-2.5 shadow-[0_4px_20px_rgba(224,90,40,0.35)] hover:shadow-[0_6px_28px_rgba(224,90,40,0.50)] active:scale-[0.97]"
+          className="h-auto px-8 py-3.5 rounded-xl text-[15px] gap-2.5 active:scale-[0.97]"
         >
           {saving ? (
             'Connecting…'
@@ -357,15 +357,15 @@ function ConnectNudge({ onExitManual }: { onExitManual: () => void }) {
   const [dismissed, setDismissed] = useState(false)
   if (dismissed) return null
   return (
-    <div className="animate-fade-up flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-5 py-3.5 rounded-xl bg-[#E05A28]/[0.08] border border-[#E05A28]/20">
+    <div className="animate-fade-up flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-5 py-3.5 rounded-xl bg-white border border-[#E4DED8]">
       <div className="flex items-center gap-3">
-        <svg className="w-4 h-4 text-[#E05A28] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        <svg className="w-4 h-4 text-[#57534E] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
         <p className="text-[13px] text-[#57534E]">
-          <span className="font-semibold text-[#111111]/80">Auto-sync is off.</span> Connect Google, Yelp, or TripAdvisor to unlock automatic reviews and analytics.
+          <span className="font-medium text-[#111111]">Auto-sync is off.</span> Connect Google, Yelp, or TripAdvisor to unlock automatic reviews and analytics.
         </p>
       </div>
       <div className="flex items-center gap-3 flex-shrink-0 pl-7 sm:pl-0">
-        <Link href="/dashboard/grow" className="text-[12px] font-bold text-[#E05A28] hover:text-[#C94E21] transition-colors whitespace-nowrap">
+        <Link href="/dashboard/grow" className="text-[12px] font-medium text-[#111] hover:text-[#57534E] transition-colors whitespace-nowrap">
           Add platform URLs →
         </Link>
         <button onClick={() => { onExitManual(); setDismissed(true) }} className="text-[11px] text-[#C4BEB8] hover:text-[#A8A29E] transition-colors whitespace-nowrap">
@@ -439,11 +439,11 @@ function ManualGenerator({ prominent = false }: { prominent?: boolean }) {
   return (
     <div className="animate-fade-up">
       <div className="flex items-center gap-2.5 mb-4">
-        <div className="w-7 h-7 rounded-lg bg-[#E05A28]/15 border border-[#E05A28]/25 flex items-center justify-center flex-shrink-0">
-          <svg className="w-3.5 h-3.5 text-[#E05A28]" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd"/></svg>
+        <div className="w-7 h-7 rounded-lg bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center flex-shrink-0">
+          <svg className="w-3.5 h-3.5 text-[#57534E]" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd"/></svg>
         </div>
         <div>
-          <h2 className="text-[15px] font-bold text-[#111111]">Manual Reply Generator</h2>
+          <h2 className="text-[15px] font-medium text-[#111111]">Manual Reply Generator</h2>
           <p className="text-[11px] text-[#A8A29E]">Paste any review to get an AI-crafted reply instantly</p>
         </div>
       </div>
@@ -456,7 +456,7 @@ function GeneratorBody({ review, setReview, platform, setPlatform, starRating, s
   review: string; setReview: (v: string) => void; platform: string; setPlatform: (v: string) => void; starRating: number; setStarRating: (v: number) => void; reply: string; loading: boolean; error: string; copied: boolean; onGenerate: () => void; onCopy: () => void; prominent: boolean
 }) {
   return (
-    <div className={`bg-white rounded-2xl border border-[#E4DED8] overflow-hidden ${prominent ? 'shadow-[0_2px_20px_rgba(0,0,0,0.06)]' : ''}`}>
+    <div className={`bg-white rounded-xl border border-[#E4DED8] overflow-hidden ${prominent ? 'shadow-card' : ''}`}>
       <div className="p-4 space-y-3">
         {/* Platform + star rating selectors */}
         <div className="flex items-center justify-between gap-3">
@@ -466,9 +466,9 @@ function GeneratorBody({ review, setReview, platform, setPlatform, starRating, s
                 key={p.value}
                 type="button"
                 onClick={() => setPlatform(p.value)}
-                className={`px-3 py-2.5 rounded-lg text-xs font-semibold min-h-[44px] transition-all duration-150 ${
+                className={`px-3 py-2.5 rounded-lg text-xs font-medium min-h-[44px] transition-all duration-150 ${
                   platform === p.value
-                    ? 'bg-[#E05A28]/20 text-[#E05A28] border border-[#E05A28]/30'
+                    ? 'bg-[#F3F0EC] text-[#111] border border-[#D0C9C1]'
                     : 'text-[#A8A29E] border border-[#E4DED8] hover:text-[#57534E] hover:border-[#D0C9C1]'
                 }`}
               >
@@ -498,7 +498,7 @@ function GeneratorBody({ review, setReview, platform, setPlatform, starRating, s
         <button
           onClick={onGenerate}
           disabled={loading || !review.trim()}
-          className="w-full py-2.5 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-[13px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2 shadow-[0_2px_8px_rgba(224,90,40,0.2)] hover:shadow-[0_4px_14px_rgba(224,90,40,0.3)]"
+          className="w-full py-2.5 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-[13px] font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2"
         >
           {loading ? <><svg className="animate-spin w-3.5 h-3.5 opacity-70" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>Generating…</> : <><svg className="w-3.5 h-3.5 opacity-70" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd"/></svg>Generate Reply</>}
         </button>
@@ -508,15 +508,15 @@ function GeneratorBody({ review, setReview, platform, setPlatform, starRating, s
 
       {reply && (
         <div className="border-t border-[#EDE9E4] p-4 space-y-3 animate-fade-up">
-          <div className="bg-[#E05A28]/[0.08] border border-[#E05A28]/20 rounded-xl px-4 py-3.5">
+          <div className="bg-white border border-[#E4DED8] rounded-xl px-4 py-3.5">
             <div className="flex items-center gap-1.5 mb-2">
-              <div className="w-4 h-4 rounded-md bg-[#E05A28]/10 flex items-center justify-center"><svg className="w-2.5 h-2.5 text-[#E05A28]" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd"/></svg></div>
-              <p className="text-[10px] font-bold uppercase tracking-wider text-[#E05A28]/70">Generated Reply</p>
+              <div className="w-4 h-4 rounded-md bg-[#F3F0EC] flex items-center justify-center"><svg className="w-2.5 h-2.5 text-[#57534E]" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd"/></svg></div>
+              <p className="text-[10px] font-medium uppercase tracking-wider text-[#A8A29E]">Generated Reply</p>
             </div>
             <p className="text-[12px] text-[#57534E] leading-relaxed">{reply}</p>
           </div>
           <button onClick={onCopy} className={`w-full py-2 rounded-xl text-[12px] font-semibold border transition-all duration-200 active:scale-[0.98] ${copied ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'bg-[#F3F0EC] text-[#57534E] border-[#E4DED8] hover:border-[#D0C9C1] hover:text-[#111111]'}`}>
-            {copied ? '✓ Copied to clipboard' : 'Copy Reply'}
+            {copied ? 'Copied to clipboard' : 'Copy Reply'}
           </button>
         </div>
       )}
@@ -597,7 +597,7 @@ function ActionStrip({ pendingCount, repliesSentCount, lastSyncAt }: {
               </div>
               <div className="flex-1 min-w-0">
                 <Eyebrow>{a.label}</Eyebrow>
-                <div className="text-[18px] font-semibold text-[#111] tnum leading-tight mt-0.5 truncate">
+                <div className="text-[18px] font-medium text-[#111] tnum leading-tight mt-0.5 truncate tabular-nums">
                   {a.value}
                 </div>
               </div>
@@ -789,9 +789,9 @@ export default function HomeClient({
 
       {/* First-sync nudge — shown only when platforms connected but never synced */}
       {hasAnyPlatform && !lastScrapedAt && (
-        <div className="animate-fade-up flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-5 py-3.5 rounded-xl bg-[#E05A28]/[0.08] border border-[#E05A28]/20">
+        <div className="animate-fade-up flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-5 py-3.5 rounded-xl bg-white border border-[#E4DED8]">
           <div className="flex items-center gap-3">
-            <svg className="w-4 h-4 text-[#E05A28] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            <svg className="w-4 h-4 text-[#57534E] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
             <div>
               <p className="text-[13px] text-[#57534E]">
                 <span className="font-semibold text-[#111111]/80">
@@ -804,7 +804,7 @@ export default function HomeClient({
           <button
             onClick={handleSync}
             disabled={syncing}
-            className="text-[12px] font-bold text-[#E05A28] hover:text-[#C94E21] transition-colors whitespace-nowrap pl-7 sm:pl-0 disabled:opacity-50"
+            className="text-[12px] font-medium text-[#111] hover:text-[#57534E] transition-colors whitespace-nowrap pl-7 sm:pl-0 disabled:opacity-50"
           >
             {syncing ? 'Syncing…' : 'Sync now →'}
           </button>
@@ -812,14 +812,13 @@ export default function HomeClient({
       )}
 
       {/* ── New hero layout ────────────────────────────────────────────────── */}
-      <div className="max-w-6xl mx-auto space-y-6">
+      <div className="space-y-6">
         {/* Page title */}
-        <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A8A29E] mb-2">Dashboard</p>
-          <h1 className="text-[28px] sm:text-[36px] text-[#111] tracking-[-0.025em] leading-[1.05]" style={{ fontWeight: 500 }}>
-            Welcome back{ownerName ? ',' : ''}{ownerName && <span className="font-display italic font-normal">&nbsp;{ownerName}</span>}.
+        <div className="pt-8 pb-2">
+          <h1 className="text-[22px] sm:text-[24px] text-[#111] tracking-[-0.02em] leading-[1.2]" style={{ fontWeight: 500 }}>
+            Welcome back{ownerName ? `, ${ownerName}` : ''}.
           </h1>
-          <p className="text-[14px] text-[#57534E] mt-2">Here&apos;s how your reputation is trending.</p>
+          <p className="text-[13px] text-[#57534E] mt-1.5">Here&apos;s how your reputation is trending.</p>
         </div>
 
         <HeroRow reviews={allReviews} />
@@ -834,8 +833,8 @@ export default function HomeClient({
       {/* ── Sync status message ────────────────────────────────────────────── */}
       {syncMsg && (
         <div className="flex items-center justify-between gap-3 px-4 sm:px-5 py-3 rounded-xl bg-white border border-[#E4DED8]">
-          <span className={`text-[12px] font-semibold ${syncMsg.type === 'success' ? 'text-emerald-600' : 'text-red-500'}`}>
-            {syncMsg.type === 'success' ? '✓ ' : '✕ '}{syncMsg.text}
+          <span className={`text-[12px] font-medium ${syncMsg.type === 'success' ? 'text-emerald-600' : 'text-[#B84A1A]'}`}>
+            {syncMsg.text}
           </span>
           <button onClick={handleSync} disabled={syncing} className="group flex items-center gap-1.5 text-[12px] font-medium text-[#A8A29E] hover:text-[#57534E] disabled:opacity-40 transition-colors duration-150">
             <svg className={`w-3 h-3 transition-transform duration-700 ${syncing ? 'animate-spin' : 'group-hover:rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
@@ -848,24 +847,24 @@ export default function HomeClient({
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* Pending reviews */}
         <div className="lg:col-span-3">
-          <SectionLabel badge={pendingList.length > 0 ? <span className="relative inline-flex items-center justify-center min-w-[22px] h-5 px-1.5 rounded-full bg-[#E05A28] text-white text-[10px] font-bold shadow-[0_0_10px_rgba(224,90,40,0.35)]"><span className="absolute inset-0 rounded-full bg-[#E05A28] animate-ping opacity-40"/><span className="relative">{pendingList.length}</span></span> : undefined}>
+          <SectionLabel badge={pendingList.length > 0 ? <span className="inline-flex items-center justify-center min-w-[20px] h-[18px] px-1.5 rounded-full bg-[#F3F0EC] border border-[#E4DED8] text-[10px] text-[#57534E] tabular-nums">{pendingList.length}</span> : undefined}>
             Pending replies
           </SectionLabel>
           {pendingList.length === 0 ? (
-            <div className="flex items-center gap-4 px-5 py-5 bg-emerald-50 border border-emerald-200 rounded-2xl animate-fade-up">
-              <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                <svg className="text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} style={{ width: 18, height: 18 }}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+            <div className="flex items-center gap-4 px-5 py-5 bg-white border border-[#E4DED8] rounded-xl animate-fade-up">
+              <div className="flex-shrink-0">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
               </div>
               <div>
-                <p className="text-[13px] font-semibold text-emerald-700">All caught up</p>
-                <p className="text-[12px] text-emerald-600/60 mt-0.5">New reviews appear here after each sync.</p>
+                <p className="text-[13px] font-medium text-[#111]">All caught up</p>
+                <p className="text-[12px] text-[#57534E] mt-0.5">New reviews appear here after each sync.</p>
               </div>
             </div>
           ) : (
             <div className="space-y-3">
               {pendingList.map((review, i) => <PendingCard key={review.id} review={review} userId={userId} onAction={handlePendingAction} animDelay={i * 60} />)}
               {pendingList.length > 3 && (
-                <Link href="/dashboard/reviews" className="inline-flex items-center gap-1.5 text-[13px] text-[#E05A28] font-semibold hover:text-[#C94E21] transition-colors pt-1 group">
+                <Link href="/dashboard/reviews" className="inline-flex items-center gap-1.5 text-[13px] font-medium text-[#57534E] hover:text-[#111] transition-colors pt-1 group">
                   View all {pendingList.length} pending
                   <svg className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform duration-150" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
                 </Link>
@@ -922,7 +921,7 @@ export default function HomeClient({
               <p className="text-[14px] font-semibold text-[#111111]">Get insights from your reviews</p>
               <p className="text-[13px] text-[#57534E] mt-1 leading-snug">Discover what customers love, what needs work, and your top growth opportunity.</p>
             </div>
-            <Link href="/dashboard/analytics" className="flex-shrink-0 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-[13px] font-semibold transition-all duration-150 active:scale-[0.97] shadow-[0_2px_8px_rgba(224,90,40,0.2)] w-full sm:w-auto">
+            <Link href="/dashboard/analytics" className="flex-shrink-0 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-[13px] font-medium transition-all duration-150 active:scale-[0.97] w-full sm:w-auto">
               Run analysis <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
             </Link>
           </div>
@@ -933,12 +932,12 @@ export default function HomeClient({
               { label: 'Needs attention', value: themes?.complaints?.[0], fallback: 'No recurring complaints — great sign.', dotColor: 'bg-[#E05A28]', tint: 'bg-white', border: 'border-[#E4DED8]' },
               { label: 'Top opportunity', value: themes?.opportunities?.[0], fallback: 'Run analytics to find your growth lever.', dotColor: 'bg-blue-400', tint: 'bg-white', border: 'border-[#E4DED8]' },
             ] as const).map(({ label, value, fallback, dotColor, tint, border }) => (
-              <div key={label} className={`${tint} rounded-xl px-5 py-5 border ${border} hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all duration-200`}>
+              <div key={label} className={`${tint} rounded-xl px-5 py-5 border ${border} transition-all duration-200`}>
                 <div className="flex items-center gap-2 mb-3">
                   <span className={`w-2 h-2 rounded-full ${dotColor} flex-shrink-0`} />
                   <p className="text-[10px] font-bold uppercase tracking-[0.13em] text-[#A8A29E]">{label}</p>
                 </div>
-                <p className={`text-[13px] leading-snug ${value ? 'font-semibold text-[#111]' : 'text-[#C4BEB8] italic'}`}>{value ?? fallback}</p>
+                <p className={`text-[13px] leading-snug ${value ? 'font-medium text-[#111]' : 'text-[#C4BEB8] italic'}`}>{value ?? fallback}</p>
               </div>
             ))}
           </div>

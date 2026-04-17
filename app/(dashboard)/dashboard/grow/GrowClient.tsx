@@ -7,6 +7,8 @@ import SocialClient from '../social/SocialClient'
 import CompetitorsClient from '../competitors/CompetitorsClient'
 import type { BusinessProfile, CompetitorProfile } from '@/types'
 import type { ScrapedReview } from '@/types'
+import PageHeader from '@/components/ui/PageHeader'
+import Tabs from '@/components/ui/Tabs'
 
 type Tab = 'get-reviews' | 'social' | 'competitors'
 
@@ -68,34 +70,20 @@ export default function GrowClient({ restaurantProfile, reviews, competitors, us
     router.replace(`/dashboard/grow${query ? `?${query}` : ''}`, { scroll: false })
   }, [router, searchParams])
 
+  const tabItems = TABS.map(t => ({ key: t.key, label: t.label }))
+
   return (
     <div className="space-y-6">
-      {/* Page header */}
-      <div>
-        <h1 className="text-[22px] font-semibold text-[#111]">Grow</h1>
-        <p className="text-[13px] text-[#57534E] mt-1">Get more reviews, create social content, and track competitors.</p>
-      </div>
+      <PageHeader
+        title="Grow"
+        description="Get more reviews, create social content, and track competitors."
+      />
 
-      {/* Tab bar */}
-      <div className="flex items-center gap-1 p-1 bg-white rounded-2xl border border-border shadow-card w-fit">
-        {TABS.map((tab) => {
-          const active = activeTab === tab.key
-          return (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-medium transition-all duration-150 ${
-                active
-                  ? 'bg-[#E05A28] text-white shadow-[0_1px_3px_rgba(224,90,40,0.3)]'
-                  : 'text-[#A8A29E] hover:text-[#57534E] hover:bg-[#F3F0EC]'
-              }`}
-            >
-              <span className={active ? 'opacity-90' : 'opacity-70'}>{tab.icon}</span>
-              {tab.label}
-            </button>
-          )
-        })}
-      </div>
+      <Tabs
+        tabs={tabItems}
+        active={activeTab}
+        onChange={(key) => { setActiveTab(key as Tab); }}
+      />
 
       {/* Tab content */}
       <div>

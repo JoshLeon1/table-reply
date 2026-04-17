@@ -33,7 +33,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <div className="flex-shrink-0" style={{ height: 'calc(64px + env(safe-area-inset-top))' }} />
       <main id="main" className="flex-1 flex flex-col">
         <SubscriptionGateWrapper access={access}>
-          {children}
+          <div className="max-w-6xl mx-auto w-full px-5 sm:px-6 pb-16">
+            {children}
+          </div>
         </SubscriptionGateWrapper>
       </main>
     </div>

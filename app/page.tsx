@@ -1,42 +1,8 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import MarketingNav from '@/components/MarketingNav'
-
-// ── Scroll-triggered animation hook ──────────────────────────────────────────
-function useInView(threshold = 0.12) {
-  const [inView, setInView] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setInView(true) },
-      { threshold }
-    )
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [threshold])
-  return { ref, inView }
-}
-
-// ── Animated counter hook ─────────────────────────────────────────────────────
-function useCounter(target: number, duration = 1200, active = false) {
-  const [val, setVal] = useState(0)
-  useEffect(() => {
-    if (!active) return
-    const start = performance.now()
-    const tick = (now: number) => {
-      const p = Math.min((now - start) / duration, 1)
-      const eased = 1 - Math.pow(1 - p, 3)
-      setVal(Math.round(eased * target))
-      if (p < 1) requestAnimationFrame(tick)
-    }
-    requestAnimationFrame(tick)
-  }, [active, target, duration])
-  return val
-}
 
 export default function LandingPage() {
   const [annual, setAnnual] = useState(false)
@@ -82,21 +48,6 @@ export default function LandingPage() {
     t = setTimeout(typeChar, 1100)
     return () => clearTimeout(t)
   }, [])
-
-  // Section animation refs
-  const proofAnim        = useInView(0.08)
-  const problemAnim      = useInView(0.08)
-  const featuresAnim     = useInView(0.05)
-  const howItWorksAnim   = useInView(0.08)
-  const testimonialsAnim = useInView(0.05)
-  const faqAnim          = useInView(0.08)
-  const pricingAnim      = useInView(0.1)
-  const ctaAnim          = useInView(0.15)
-
-  // Stat counters
-  const stat1 = useCounter(63, 1000, problemAnim.inView)
-  const stat2 = useCounter(45, 1200, problemAnim.inView)
-  const stat3 = useCounter(80, 1100, problemAnim.inView)
 
   const features = [
     {
@@ -205,10 +156,10 @@ export default function LandingPage() {
 
               <h1
                 className="text-white mb-5 sm:mb-6 animate-fade-up"
-                style={{ fontSize: 'clamp(34px, 6.2vw, 72px)', fontWeight: 600, lineHeight: 1.02, letterSpacing: '-0.035em', animationDelay: '160ms' }}
+                style={{ fontSize: 'clamp(34px, 6.2vw, 72px)', fontWeight: 500, lineHeight: 1.02, letterSpacing: '-0.02em', animationDelay: '160ms' }}
               >
                 Reply to every review<br className="hidden sm:block" /> in seconds,{' '}
-                <span className="font-display italic font-normal text-white/90" style={{ letterSpacing: '-0.01em' }}>without losing your voice.</span>
+                <span className="text-white/55">without losing your voice.</span>
               </h1>
 
               <p className="text-white/55 mb-8 animate-fade-up" style={{ fontSize: 'clamp(15px, 1.6vw, 17px)', lineHeight: '1.55', animationDelay: '260ms', maxWidth: '480px' }}>
@@ -237,7 +188,7 @@ export default function LandingPage() {
               <div className="flex items-center gap-4 sm:gap-5 flex-wrap animate-fade-up" style={{ animationDelay: '420ms' }}>
                 {['7-day free trial', 'No credit card required', 'Cancel anytime'].map((item) => (
                   <div key={item} className="flex items-center gap-1.5">
-                    <svg className="w-3 h-3 text-[#E05A28] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>
+                    <svg className="w-3 h-3 text-white/40 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>
                     <span className="text-white/60 text-[12px]">{item}</span>
                   </div>
                 ))}
@@ -263,7 +214,7 @@ export default function LandingPage() {
                     {/* Review 1 — static */}
                     <div className="mb-4 pb-4 border-b border-white/[0.06]">
                       <div className="flex items-start gap-2.5">
-                        <div className="w-7 h-7 rounded-full bg-[#E05A28]/20 flex items-center justify-center text-[10px] font-bold text-[#E05A28] flex-shrink-0">SJ</div>
+                        <div className="w-7 h-7 rounded-full bg-[#E05A28]/20 flex items-center justify-center text-[10px] font-medium text-[#E05A28] flex-shrink-0">SJ</div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between mb-1">
                             <span className="text-white text-[12px] font-semibold">Sarah Johnson</span>
@@ -274,7 +225,7 @@ export default function LandingPage() {
                         </div>
                       </div>
                       <div className="mt-3 ml-9 bg-[#E05A28]/10 border border-[#E05A28]/20 rounded-xl p-2.5">
-                        <p className="text-[9px] font-bold uppercase tracking-wider text-[#E05A28] mb-1">Your reply</p>
+                        <p className="text-[9px] font-medium uppercase tracking-wider text-[#E05A28] mb-1">Your reply</p>
                         <p className="text-white/65 text-[11px] leading-relaxed">Thank you so much, Sarah! Our team loves hearing this. We look forward to seeing you again! 🙏</p>
                       </div>
                       <div className="mt-2.5 ml-9 flex gap-1.5">
@@ -289,7 +240,7 @@ export default function LandingPage() {
                     {/* Review 2 — animated */}
                     <div>
                       <div className="flex items-start gap-2.5">
-                        <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-[10px] font-bold text-white/40 flex-shrink-0">DK</div>
+                        <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-[10px] font-medium text-white/40 flex-shrink-0">DK</div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between mb-1">
                             <span className="text-white text-[12px] font-semibold">David K.</span>
@@ -316,7 +267,7 @@ export default function LandingPage() {
                         )}
                         {animPhase === 'revealing' && (
                           <div className="mt-2.5 ml-9 bg-[#E05A28]/10 border border-[#E05A28]/20 rounded-xl p-2.5">
-                            <p className="text-[9px] font-bold uppercase tracking-wider text-[#E05A28] mb-1">AI Reply</p>
+                            <p className="text-[9px] font-medium uppercase tracking-wider text-[#E05A28] mb-1">AI Reply</p>
                             <p className="text-white/65 text-[11px] leading-relaxed" style={{ minHeight: '3.5rem' }}>
                               {typedReply}
                               <span className="inline-block w-px h-[0.85em] bg-[#E05A28]/60 ml-px align-text-bottom" style={{ animation: 'blink 0.8s step-end infinite' }} />
@@ -351,14 +302,11 @@ export default function LandingPage() {
 
       {/* ── PROOF SECTION ────────────────────────────────────────────────── */}
       <section id="example" className="bg-white py-12 sm:py-16 px-4 sm:px-6 border-b border-[#e5e5e0]">
-        <div
-          ref={proofAnim.ref}
-          className={`max-w-4xl mx-auto transition-all duration-700 ${proofAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
-        >
+        <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10 sm:mb-12">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A8A29E] mb-3">Real Example</p>
-            <h2 className="text-[#111111]" style={{ fontSize: 'clamp(28px, 4vw, 44px)', lineHeight: 1.05, letterSpacing: '-0.025em', fontWeight: 500 }}>
-              See exactly <span className="font-display italic font-normal">what you&apos;ll get</span>.
+            <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#A8A29E] mb-3">Real Example</p>
+            <h2 className="text-[#111111]" style={{ fontSize: 'clamp(28px, 4vw, 44px)', lineHeight: 1.05, letterSpacing: '-0.02em', fontWeight: 500 }}>
+              See exactly what you&apos;ll get.
             </h2>
             <p className="text-[15px] text-[#57534E] mt-4 max-w-sm mx-auto leading-relaxed">A real 1-star review. The reply ReplyFi drafts in seconds.</p>
           </div>
@@ -369,27 +317,27 @@ export default function LandingPage() {
               <div className="flex items-center gap-2 mb-4">
                 <span className="text-amber-400 text-[13px]">★</span>
                 <span className="text-[#ddd] text-[13px]">★★★★</span>
-                <span className="text-[11px] text-[#999] ml-1">1-star · Google</span>
+                <span className="text-[11px] text-[#A8A29E] ml-1">1-star · Google</span>
               </div>
               <p className="text-[13px] font-semibold text-[#111] mb-0.5">James T.</p>
-              <p className="text-[12px] text-[#aaa] mb-3">3 days ago</p>
-              <p className="text-[13px] sm:text-[14px] leading-relaxed text-[#444]">
+              <p className="text-[12px] text-[#A8A29E] mb-3">3 days ago</p>
+              <p className="text-[13px] sm:text-[14px] leading-relaxed text-[#57534E]">
                 &ldquo;Honestly disappointed. Waited 40 minutes past my appointment and the staff barely acknowledged it. Won&apos;t be back.&rdquo;
               </p>
             </div>
 
             {/* ReplyFi's draft */}
-            <div className="rounded-2xl border bg-[#FEF0E8] border-l-4 border-l-[#E05A28] border-[#F5C9AD] p-5 sm:p-6">
+            <div className="rounded-2xl border bg-[#FAFAFA] border-[#E4DED8] p-5 sm:p-6">
               <div className="flex items-center gap-1.5 mb-3">
                 <svg className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#E05A28]">AI Reply · 4 seconds</p>
+                <p className="text-[11px] font-medium uppercase tracking-[0.1em] text-[#A8A29E]">AI Reply · 4 seconds</p>
               </div>
-              <p className="text-[13px] sm:text-[14px] leading-relaxed text-[#333]">
+              <p className="text-[13px] sm:text-[14px] leading-relaxed text-[#57534E]">
                 &ldquo;Hi James, thank you for sharing this — I&apos;m genuinely sorry your experience fell short. A 40-minute wait past your appointment is not our standard. I&apos;d love to make this right. Please reach out directly and I&apos;ll personally ensure your next visit is much better. — [Owner Name]&rdquo;
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
                 {['✓ Sounds human', '✓ Takes accountability', '✓ Invites them back'].map((badge) => (
-                  <span key={badge} className="px-2.5 py-1 rounded-full bg-[#E05A28]/10 border border-[#E05A28]/20 text-[11px] font-medium text-[#B34419]">{badge}</span>
+                  <span key={badge} className="px-2.5 py-1 rounded-full bg-[#F3F0EC] border border-[#E4DED8] text-[11px] font-medium text-[#57534E]">{badge}</span>
                 ))}
               </div>
             </div>
@@ -399,16 +347,16 @@ export default function LandingPage() {
 
       {/* ── STATS BAR ────────────────────────────────────────────────────── */}
       <section className="bg-[#111] py-8 sm:py-10 px-4 sm:px-6">
-        <div ref={problemAnim.ref} className="max-w-3xl mx-auto">
-          <div className={`grid grid-cols-3 gap-4 transition-all duration-700 ${problemAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
+        <div className="max-w-3xl mx-auto">
+          <div className="grid grid-cols-3 gap-4">
             {[
-              { val: stat1, suffix: '%', label: 'of reviews go unanswered' },
-              { val: stat2, suffix: '%', label: 'of reviewers read replies' },
-              { val: stat3, suffix: '%', label: 'less time per reply' },
-            ].map(({ val, suffix, label }, i) => (
-              <div key={label} className="flex flex-col items-center text-center" style={{ transitionDelay: `${i * 80}ms` }}>
-                <p className="font-bold text-[#E05A28] tabular-nums mb-1" style={{ fontSize: 'clamp(28px, 6vw, 44px)', lineHeight: 1, letterSpacing: '-0.03em' }}>
-                  {val}{suffix}
+              { val: '63%', label: 'of reviews go unanswered' },
+              { val: '45%', label: 'of reviewers read replies' },
+              { val: '80%', label: 'less time per reply' },
+            ].map(({ val, label }) => (
+              <div key={label} className="flex flex-col items-center text-center">
+                <p className="font-medium text-white/75 tabular-nums mb-1" style={{ fontSize: 'clamp(28px, 6vw, 44px)', lineHeight: 1, letterSpacing: '-0.02em' }}>
+                  {val}
                 </p>
                 <p className="text-white/35 text-[10px] sm:text-[11px] leading-snug max-w-[80px]">{label}</p>
               </div>
@@ -419,28 +367,28 @@ export default function LandingPage() {
 
       {/* ── PROBLEM / SOLUTION ───────────────────────────────────────────── */}
       <section className="py-12 sm:py-20 px-4 sm:px-6 border-t border-[#e5e5e0]" style={{ background: '#0A0A0A' }}>
-        <div ref={problemAnim.ref} className="max-w-5xl mx-auto">
+        <div className="max-w-5xl mx-auto">
 
           {/* Section label */}
-          <div className={`text-center mb-12 transition-all duration-700 ${problemAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/40 mb-3">The Reality</p>
-            <h2 className="text-white" style={{ fontSize: 'clamp(26px, 3.6vw, 42px)', lineHeight: 1.08, letterSpacing: '-0.025em', fontWeight: 500 }}>
-              Most owners want to reply.<br /><span className="font-display italic font-normal text-white/80">Few actually do.</span>
+          <div className="text-center mb-12">
+            <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-white/40 mb-3">The Reality</p>
+            <h2 className="text-white" style={{ fontSize: 'clamp(26px, 3.6vw, 42px)', lineHeight: 1.08, letterSpacing: '-0.02em', fontWeight: 500 }}>
+              Most owners want to reply. <span className="text-white/50">Few actually do.</span>
             </h2>
           </div>
 
           {/* Before / After comparison */}
-          <div className={`grid grid-cols-1 sm:grid-cols-2 gap-4 transition-all duration-700 ${problemAnim.inView ? 'opacity-100' : 'opacity-0'}`}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
             {/* Before — problem */}
-            <div className={`rounded-2xl border border-red-900/30 bg-red-950/20 p-6 transition-all duration-700 ${problemAnim.inView ? 'translate-x-0' : '-translate-x-6'}`}>
+            <div className="rounded-2xl border border-red-900/30 bg-red-950/20 p-6">
               <div className="flex items-center gap-2 mb-5">
                 <div className="w-6 h-6 rounded-full bg-red-900/50 border border-red-800/40 flex items-center justify-center flex-shrink-0">
                   <svg className="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </div>
-                <span className="text-[12px] font-bold uppercase tracking-[0.12em] text-red-400">Without ReplyFi</span>
+                <span className="text-[12px] font-medium uppercase tracking-[0.12em] text-red-400">Without ReplyFi</span>
               </div>
               <ul className="space-y-3.5">
                 {[
@@ -459,14 +407,14 @@ export default function LandingPage() {
             </div>
 
             {/* After — solution */}
-            <div className={`rounded-2xl border border-emerald-900/30 bg-emerald-950/20 p-6 transition-all duration-700 delay-150 ${problemAnim.inView ? 'translate-x-0' : 'translate-x-6'}`}>
+            <div className="rounded-2xl border border-emerald-900/30 bg-emerald-950/20 p-6">
               <div className="flex items-center gap-2 mb-5">
                 <div className="w-6 h-6 rounded-full bg-emerald-900/50 border border-emerald-800/40 flex items-center justify-center flex-shrink-0">
                   <svg className="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <span className="text-[12px] font-bold uppercase tracking-[0.12em] text-emerald-400">With ReplyFi</span>
+                <span className="text-[12px] font-medium uppercase tracking-[0.12em] text-emerald-400">With ReplyFi</span>
               </div>
               <ul className="space-y-3.5">
                 {[
@@ -490,13 +438,10 @@ export default function LandingPage() {
       {/* ── HOW IT WORKS ─────────────────────────────────────────────────── */}
       <section id="how-it-works" className="scroll-mt-20 py-12 sm:py-20 px-4 sm:px-6 bg-white border-t border-[#e5e5e0]">
         <div className="max-w-4xl mx-auto">
-          <div
-            ref={howItWorksAnim.ref}
-            className={`mb-10 text-center transition-all duration-600 ${howItWorksAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
-          >
-            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A8A29E] mb-3">How It Works</p>
-            <h2 className="text-[#111111]" style={{ fontSize: 'clamp(28px, 4vw, 44px)', lineHeight: 1.05, letterSpacing: '-0.025em', fontWeight: 500 }}>
-              Set up once. <span className="font-display italic font-normal">Replies ready every morning.</span>
+          <div className="mb-10 text-center">
+            <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#A8A29E] mb-3">How It Works</p>
+            <h2 className="text-[#111111]" style={{ fontSize: 'clamp(28px, 4vw, 44px)', lineHeight: 1.05, letterSpacing: '-0.02em', fontWeight: 500 }}>
+              Set up once. <span className="text-[#A8A29E]">Replies ready every morning.</span>
             </h2>
             <p className="text-[15px] text-[#57534E] mt-4 max-w-md mx-auto leading-relaxed">
               ReplyFi syncs your reviews automatically — you just approve, edit, and post.
@@ -507,24 +452,14 @@ export default function LandingPage() {
             {steps.map(({ num, title, desc }, i) => (
               <div
                 key={num}
-                className="relative flex sm:flex-col items-start gap-4 sm:gap-4 p-5 sm:p-6 rounded-2xl bg-white border border-border shadow-card transition-all duration-500 hover:shadow-card-hover hover:-translate-y-0.5"
-                style={{
-                  transitionDelay: howItWorksAnim.inView ? `${i * 100}ms` : '0ms',
-                  opacity: howItWorksAnim.inView ? 1 : 0,
-                  transform: howItWorksAnim.inView ? 'translateY(0)' : 'translateY(16px)',
-                }}
+                className="relative flex sm:flex-col items-start gap-4 sm:gap-4 p-5 sm:p-6 rounded-2xl bg-white border border-border transition-colors duration-150 hover:-translate-y-0.5"
               >
-                {/* Connector line between cards on desktop */}
-                {i < steps.length - 1 && (
-                  <div className="hidden sm:block absolute top-[38px] left-full w-full h-px z-10" style={{ width: 'calc(100% - 100%)' }}>
-                  </div>
-                )}
-                <div className="w-10 h-10 rounded-xl bg-[#E05A28] text-white flex items-center justify-center flex-shrink-0 font-bold text-[15px] shadow-[0_4px_14px_rgba(224,90,40,0.30)]">
+                <div className="w-10 h-10 rounded-xl bg-[#E05A28] text-white flex items-center justify-center flex-shrink-0 font-medium text-[15px]">
                   {num}
                 </div>
                 <div>
                   <h3 className="font-semibold text-[#111111] text-[14px] sm:text-[15px] mb-1.5 tracking-tight">{title}</h3>
-                  <p className="text-[13px] leading-relaxed text-[#666]">{desc}</p>
+                  <p className="text-[13px] leading-relaxed text-[#57534E]">{desc}</p>
                 </div>
               </div>
             ))}
@@ -534,11 +469,11 @@ export default function LandingPage() {
 
       {/* ── CORE BENEFITS ────────────────────────────────────────────────── */}
       <section className="py-12 sm:py-20 px-4 sm:px-6 bg-[#fafaf8] border-t border-[#e5e5e0]">
-        <div ref={featuresAnim.ref} className="max-w-5xl mx-auto">
-          <div className={`text-center mb-8 sm:mb-12 transition-all duration-700 ${featuresAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A8A29E] mb-3">Why It Works</p>
-            <h2 className="text-[#111111]" style={{ fontSize: 'clamp(28px, 4vw, 46px)', lineHeight: 1.05, letterSpacing: '-0.025em', fontWeight: 500 }}>
-              Everything you need to handle reviews — <span className="font-display italic font-normal">without the work.</span>
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-8 sm:mb-12">
+            <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#A8A29E] mb-3">Why It Works</p>
+            <h2 className="text-[#111111]" style={{ fontSize: 'clamp(28px, 4vw, 46px)', lineHeight: 1.05, letterSpacing: '-0.02em', fontWeight: 500 }}>
+              Everything you need to handle reviews — <span className="text-[#A8A29E]">without the work.</span>
             </h2>
           </div>
 
@@ -583,34 +518,29 @@ export default function LandingPage() {
             ].map(({ num, title, desc, tagline, icon, color, bg, border }, i) => (
               <div
                 key={num}
-                className="bg-white border border-border rounded-2xl shadow-card p-6 sm:p-7 flex flex-col transition-all duration-500 hover:shadow-card-hover hover:-translate-y-0.5"
-                style={{
-                  transitionDelay: featuresAnim.inView ? `${i * 80}ms` : '0ms',
-                  opacity: featuresAnim.inView ? 1 : 0,
-                  transform: featuresAnim.inView ? 'translateY(0)' : 'translateY(20px)',
-                }}
+                className="bg-white border border-border rounded-2xl p-6 sm:p-7 flex flex-col transition-colors duration-150 hover:-translate-y-0.5"
               >
                 <div className="flex items-start justify-between mb-5">
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: bg, border: `1px solid ${border}`, color }}>
                     {icon}
                   </div>
-                  <span className="font-bold tabular-nums" style={{ fontSize: '13px', color: '#E4DED8', letterSpacing: '-0.02em' }}>{num}</span>
+                  <span className="font-medium tabular-nums" style={{ fontSize: '13px', color: '#E4DED8', letterSpacing: '-0.02em' }}>{num}</span>
                 </div>
-                <h3 className="font-bold text-[#111111] text-[16px] sm:text-[17px] mb-2.5 leading-snug tracking-tight">{title}</h3>
-                <p className="text-[13px] sm:text-[14px] leading-relaxed text-[#666] flex-1">{desc}</p>
+                <h3 className="font-medium text-[#111111] text-[16px] sm:text-[17px] mb-2.5 leading-snug tracking-tight">{title}</h3>
+                <p className="text-[13px] sm:text-[14px] leading-relaxed text-[#57534E] flex-1">{desc}</p>
                 <p className="mt-4 pt-4 border-t border-[#F0EBE5] text-[12px] font-semibold text-[#111]" style={{ color }}>{tagline}</p>
               </div>
             ))}
           </div>
 
           {/* Analytics bonus strip */}
-          <div className={`mt-8 sm:mt-10 rounded-2xl border border-[#E4DED8] bg-white overflow-hidden transition-all duration-700 delay-300 ${featuresAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+          <div className="mt-8 sm:mt-10 rounded-2xl border border-[#E4DED8] bg-white overflow-hidden">
             <div className="px-5 sm:px-7 py-4 sm:py-5 border-b border-[#EDE9E4]">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-[10px] font-bold uppercase tracking-[0.13em] text-[#A8A29E]">Included in every plan</span>
+                <span className="text-[10px] font-medium uppercase tracking-[0.12em] text-[#A8A29E]">Included in every plan</span>
               </div>
-              <h3 className="font-bold text-[#111] text-[16px] sm:text-[18px] tracking-tight">Built-In Insights That Actually Help You Improve</h3>
-              <p className="text-[13px] text-[#777] mt-1 leading-relaxed">Track trends in ratings, complaints, and response performance automatically.</p>
+              <h3 className="font-medium text-[#111] text-[16px] sm:text-[18px] tracking-tight">Built-In Insights That Actually Help You Improve</h3>
+              <p className="text-[13px] text-[#A8A29E] mt-1 leading-relaxed">Track trends in ratings, complaints, and response performance automatically.</p>
             </div>
             <div className="px-5 sm:px-7 py-4 sm:py-5">
               <div className="flex flex-col gap-y-2.5 sm:flex-row sm:flex-wrap sm:gap-x-5">
@@ -625,8 +555,8 @@ export default function LandingPage() {
                   'Direct platform deep links',
                 ].map((f) => (
                   <div key={f} className="flex items-center gap-1.5">
-                    <svg className="w-3 h-3 text-[#E05A28] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>
-                    <span className="text-[12px] sm:text-[13px] text-[#777]">{f}</span>
+                    <svg className="w-3 h-3 text-[#A8A29E] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>
+                    <span className="text-[12px] sm:text-[13px] text-[#57534E]">{f}</span>
                   </div>
                 ))}
               </div>
@@ -634,7 +564,7 @@ export default function LandingPage() {
           </div>
 
           {/* Social proof bar */}
-          <div className={`mt-6 flex flex-col sm:flex-row items-center justify-between gap-3 px-5 sm:px-7 py-4 rounded-2xl bg-[#F3F0EC] border border-[#E4DED8] transition-all duration-700 delay-400 ${featuresAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+          <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-3 px-5 sm:px-7 py-4 rounded-2xl bg-[#F3F0EC] border border-[#E4DED8]">
             <p className="text-[13px] font-semibold text-[#57534E]">Trusted by 200+ local businesses</p>
             <p className="text-[12px] text-[#78716C] italic text-center sm:text-right">&ldquo;We went from ignoring reviews to replying to every single one.&rdquo; &mdash; Restaurant Owner</p>
           </div>
@@ -644,13 +574,10 @@ export default function LandingPage() {
       {/* ── TESTIMONIALS ─────────────────────────────────────────────────── */}
       <section className="py-12 sm:py-20 overflow-hidden" style={{ background: '#111111' }}>
         <div className="max-w-6xl mx-auto">
-          <div
-            ref={testimonialsAnim.ref}
-            className={`mb-8 sm:mb-12 text-center px-4 sm:px-6 transition-all duration-700 ${testimonialsAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
-          >
-            <p className="text-white/40 text-[11px] font-semibold uppercase tracking-[0.14em] mb-3">What Owners Say</p>
-            <h2 className="text-white" style={{ fontSize: 'clamp(26px, 3.8vw, 44px)', lineHeight: 1.05, letterSpacing: '-0.025em', fontWeight: 500 }}>
-              Local business owners <span className="font-display italic font-normal text-white/80">love it.</span>
+          <div className="mb-8 sm:mb-12 text-center px-4 sm:px-6">
+            <p className="text-white/40 text-[11px] font-medium uppercase tracking-[0.12em] mb-3">What Owners Say</p>
+            <h2 className="text-white" style={{ fontSize: 'clamp(26px, 3.8vw, 44px)', lineHeight: 1.05, letterSpacing: '-0.02em', fontWeight: 500 }}>
+              Local business owners love it.
             </h2>
           </div>
 
@@ -660,18 +587,13 @@ export default function LandingPage() {
             {testimonials.map(({ initials, name, role, business, quote }, i) => (
               <div
                 key={name}
-                className="bg-[#161616] sm:bg-[#181818] rounded-2xl sm:rounded-none border border-white/[0.07] sm:border-0 sm:border-r px-5 sm:px-7 py-6 sm:py-8 flex flex-col flex-shrink-0 w-[82vw] sm:w-auto snap-center transition-all duration-600"
-                style={{
-                  borderColor: 'rgba(255,255,255,0.06)',
-                  transitionDelay: testimonialsAnim.inView ? `${i * 100}ms` : '0ms',
-                  opacity: testimonialsAnim.inView ? 1 : 0,
-                  transform: testimonialsAnim.inView ? 'translateY(0)' : 'translateY(20px)',
-                }}
+                className="bg-[#161616] sm:bg-[#181818] rounded-2xl sm:rounded-none border border-white/[0.07] sm:border-0 sm:border-r px-5 sm:px-7 py-6 sm:py-8 flex flex-col flex-shrink-0 w-[82vw] sm:w-auto snap-center"
+                style={{ borderColor: 'rgba(255,255,255,0.06)' }}
               >
                 <div className="text-amber-400 text-[12px] mb-4">★★★★★</div>
                 <p className="text-white/75 text-[14px] sm:text-[15px] leading-[1.7] flex-1 mb-5">{quote}</p>
                 <div className="flex items-center gap-3 pt-4 border-t border-white/[0.07]">
-                  <div className="w-9 h-9 rounded-full bg-[#E05A28]/15 border border-[#E05A28]/20 flex items-center justify-center text-[11px] font-bold text-[#E05A28] flex-shrink-0">{initials}</div>
+                  <div className="w-9 h-9 rounded-full bg-white/10 border border-white/[0.08] flex items-center justify-center text-[11px] font-medium text-white/50 flex-shrink-0">{initials}</div>
                   <div>
                     <p className="font-semibold text-white text-[13px]">{name}</p>
                     <p className="text-[11px] text-white/30 mt-0.5">{role} · {business}</p>
@@ -685,14 +607,11 @@ export default function LandingPage() {
 
       {/* ── FAQ ──────────────────────────────────────────────────────────── */}
       <section className="py-12 sm:py-20 px-4 sm:px-6 bg-white border-t border-[#e5e5e0]">
-        <div
-          ref={faqAnim.ref}
-          className={`max-w-2xl mx-auto transition-all duration-700 ${faqAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
-        >
+        <div className="max-w-2xl mx-auto">
           <div className="text-center mb-8">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A8A29E] mb-3">FAQ</p>
-            <h2 className="text-[#111111]" style={{ fontSize: 'clamp(26px, 3.6vw, 40px)', lineHeight: 1.05, letterSpacing: '-0.025em', fontWeight: 500 }}>
-              Common <span className="font-display italic font-normal">questions.</span>
+            <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#A8A29E] mb-3">FAQ</p>
+            <h2 className="text-[#111111]" style={{ fontSize: 'clamp(26px, 3.6vw, 40px)', lineHeight: 1.05, letterSpacing: '-0.02em', fontWeight: 500 }}>
+              Common questions.
             </h2>
           </div>
           <div className="space-y-2">
@@ -707,7 +626,7 @@ export default function LandingPage() {
                 </button>
                 {openFaq === i && (
                   <div className="px-4 sm:px-5 pb-4 sm:pb-5 pt-1 border-t border-[#EDE9E4]">
-                    <p className="text-[13px] sm:text-[14px] text-[#555] leading-relaxed">{a}</p>
+                    <p className="text-[13px] sm:text-[14px] text-[#57534E] leading-relaxed">{a}</p>
                   </div>
                 )}
               </div>
@@ -718,20 +637,20 @@ export default function LandingPage() {
 
       {/* ── PRICING ──────────────────────────────────────────────────────── */}
       <section id="pricing" className="py-12 sm:py-20 px-4 sm:px-6 bg-[#fafaf8] border-t border-[#e5e5e0]">
-        <div ref={pricingAnim.ref} className="max-w-md mx-auto flex flex-col items-center">
-          <p className={`text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A8A29E] mb-3 transition-all duration-700 ${pricingAnim.inView ? 'opacity-100' : 'opacity-0'}`}>Pricing</p>
+        <div className="max-w-md mx-auto flex flex-col items-center">
+          <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#A8A29E] mb-3">Pricing</p>
           <h2
-            className={`text-[#111111] mb-3 text-center transition-all duration-700 ${pricingAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
-            style={{ fontSize: 'clamp(28px, 4vw, 46px)', lineHeight: 1.05, letterSpacing: '-0.025em', fontWeight: 500 }}
+            className="text-[#111111] mb-3 text-center"
+            style={{ fontSize: 'clamp(28px, 4vw, 46px)', lineHeight: 1.05, letterSpacing: '-0.02em', fontWeight: 500 }}
           >
-            One plan. <span className="font-display italic font-normal">Everything included.</span>
+            One plan. <span className="text-[#A8A29E]">Everything included.</span>
           </h2>
-          <p className={`text-center mb-8 text-[15px] text-[#57534E] transition-all duration-700 delay-75 ${pricingAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+          <p className="text-center mb-8 text-[15px] text-[#57534E]">
             No caps. No tiers. No surprises.
           </p>
 
           {/* Toggle */}
-          <div className={`flex items-center gap-1 p-1 rounded-full bg-[#e8e8e3] mb-8 transition-all duration-700 delay-100 ${pricingAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+          <div className="flex items-center gap-1 p-1 rounded-full bg-[#e8e8e3] mb-8">
             <button onClick={() => setAnnual(false)} className={`px-5 py-2 rounded-full text-[13px] font-medium transition-all duration-200 ${!annual ? 'bg-white text-[#111111] shadow-sm' : 'text-[#6b6b6b]'}`}>Monthly</button>
             <button onClick={() => setAnnual(true)} className={`flex items-center gap-2 px-5 py-2 rounded-full text-[13px] font-medium transition-all duration-200 ${annual ? 'bg-white text-[#111111] shadow-sm' : 'text-[#6b6b6b]'}`}>
               Annual
@@ -741,16 +660,16 @@ export default function LandingPage() {
 
           {/* Card */}
           <div
-            className={`w-full rounded-2xl overflow-hidden transition-all duration-500 delay-150 ${pricingAnim.inView ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-[0.97]'}`}
+            className="w-full rounded-2xl overflow-hidden"
             style={{ background: '#111111', border: '1px solid rgba(224,90,40,0.3)', boxShadow: '0 20px 50px rgba(0,0,0,0.2)' }}
           >
             <div className="flex justify-center pt-6 pb-0">
-              <span className="px-3 py-1 rounded-full bg-[#E05A28]/20 text-[#E05A28] text-[10px] font-bold uppercase tracking-[0.12em]">7-day free trial</span>
+              <span className="px-3 py-1 rounded-full bg-[#E05A28]/20 text-[#E05A28] text-[10px] font-medium uppercase tracking-[0.12em]">7-day free trial</span>
             </div>
             <div className="px-6 sm:px-8 pt-4 pb-7">
-              <p className="text-center text-white font-bold text-[17px] mb-4 tracking-tight">ReplyFi Pro</p>
+              <p className="text-center text-white font-medium text-[17px] mb-4 tracking-tight">ReplyFi Pro</p>
               <div className="flex items-end justify-center gap-1 mb-1.5">
-                <span className="font-bold text-white leading-none transition-all duration-300" style={{ fontSize: 'clamp(56px, 12vw, 76px)', letterSpacing: '-0.04em' }}>
+                <span className="font-medium text-white leading-none transition-all duration-300" style={{ fontSize: 'clamp(56px, 12vw, 76px)', letterSpacing: '-0.02em' }}>
                   ${annual ? '239' : '29'}
                 </span>
                 <span className="text-[#9a9a9a] text-lg pb-2">{annual ? '/yr' : '/mo'}</span>
@@ -771,7 +690,7 @@ export default function LandingPage() {
               </ul>
               <Link
                 href={annual ? '/signup?plan=annual' : '/signup'}
-                className="block w-full text-center font-bold text-white bg-[#E05A28] hover:bg-[#C94E21] rounded-xl transition-colors duration-200 py-3.5 sm:py-4 text-[15px]"
+                className="block w-full text-center font-semibold text-white bg-[#E05A28] hover:bg-[#C94E21] rounded-xl transition-colors duration-200 py-3.5 sm:py-4 text-[15px]"
               >
                 Start Free 7-Day Trial →
               </Link>
@@ -783,10 +702,7 @@ export default function LandingPage() {
 
       {/* ── CTA ──────────────────────────────────────────────────────────── */}
       <section className="bg-[#0D0D0D] border-t border-white/[0.06] py-6 sm:py-8 px-4 sm:px-6">
-        <div
-          ref={ctaAnim.ref}
-          className={`max-w-4xl mx-auto transition-all duration-700 ${ctaAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
-        >
+        <div className="max-w-4xl mx-auto">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-10">
 
             {/* Left — text */}
@@ -795,8 +711,8 @@ export default function LandingPage() {
                 <span className="w-1.5 h-1.5 rounded-full bg-[#E05A28] animate-pulse flex-shrink-0" />
                 <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/30">500+ local businesses</span>
               </div>
-              <h2 className="text-white mb-1.5" style={{ fontSize: 'clamp(22px, 3vw, 32px)', lineHeight: 1.1, letterSpacing: '-0.025em', fontWeight: 500 }}>
-                Start replying to every review <span className="font-display italic font-normal">today.</span>
+              <h2 className="text-white mb-1.5" style={{ fontSize: 'clamp(22px, 3vw, 32px)', lineHeight: 1.1, letterSpacing: '-0.02em', fontWeight: 500 }}>
+                Start replying to every review today.
               </h2>
               <p className="text-white/65 text-[13px]">7-day free trial — no credit card required</p>
             </div>
@@ -805,7 +721,7 @@ export default function LandingPage() {
             <div className="flex flex-col items-center sm:items-end gap-3 flex-shrink-0">
               <Link
                 href="/signup"
-                className="group inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl font-bold text-[14px] text-white transition-all duration-200 active:scale-[0.97]"
+                className="group inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl font-semibold text-[14px] text-white transition-all duration-200 active:scale-[0.97]"
                 style={{ background: 'linear-gradient(135deg, #E05A28 0%, #C44A1E 100%)', boxShadow: '0 4px 16px rgba(224,90,40,0.35), inset 0 1px 0 rgba(255,255,255,0.12)' }}
               >
                 Start Free 7-Day Trial
@@ -833,7 +749,7 @@ export default function LandingPage() {
             {/* Brand */}
             <div className="col-span-2 sm:col-span-1">
               <div className="flex items-center gap-2 mb-3">
-                <div className="w-7 h-7 rounded-[7px] bg-[#E05A28] flex items-center justify-center flex-shrink-0">
+                <div className="w-7 h-7 rounded-lg bg-[#E05A28] flex items-center justify-center flex-shrink-0">
                   <svg viewBox="0 0 20 20" fill="none" className="w-[17px] h-[17px]" aria-hidden="true">
                     <path d="M2 1.5h9A1.5 1.5 0 0112.5 3v5A1.5 1.5 0 0111 9.5H7l-2 2v-2H2A1.5 1.5 0 01.5 8V3A1.5 1.5 0 012 1.5z" fill="white" fillOpacity="0.5"/>
                     <path d="M8 8h9.5A1.5 1.5 0 0119 9.5v5A1.5 1.5 0 0117.5 16H16v2.5l-3-2.5H8A1.5 1.5 0 016.5 14.5v-5A1.5 1.5 0 018 8z" fill="white"/>
@@ -841,32 +757,32 @@ export default function LandingPage() {
                 </div>
                 <span className="font-bold text-white text-[15px] tracking-[-0.02em]">ReplyFi</span>
               </div>
-              <p className="text-[12px] sm:text-[13px] text-[#555] leading-relaxed">AI-powered review replies for local businesses.</p>
+              <p className="text-[12px] sm:text-[13px] text-[#A8A29E] leading-relaxed">AI-powered review replies for local businesses.</p>
             </div>
 
             {/* Product */}
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#444] mb-2.5">Product</p>
+              <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-[#A8A29E] mb-2.5">Product</p>
               <ul className="space-y-2">
                 {[{ label: 'Features', href: '#how-it-works' }, { label: 'Pricing', href: '#pricing' }, { label: 'Sign In', href: '/login' }, { label: 'Start Free', href: '/signup' }].map(({ label, href }) => (
-                  <li key={label}><Link href={href} className="text-[13px] text-[#555] hover:text-white transition-colors duration-200">{label}</Link></li>
+                  <li key={label}><Link href={href} className="text-[13px] text-[#A8A29E] hover:text-white transition-colors duration-200">{label}</Link></li>
                 ))}
               </ul>
             </div>
 
             {/* Legal */}
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#444] mb-2.5">Legal</p>
+              <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-[#A8A29E] mb-2.5">Legal</p>
               <ul className="space-y-2">
                 {[{ label: 'Privacy', href: '/privacy' }, { label: 'Terms', href: '/terms' }, { label: 'Contact', href: '/contact' }].map(({ label, href }) => (
-                  <li key={label}><Link href={href} className="text-[13px] text-[#555] hover:text-white transition-colors duration-200">{label}</Link></li>
+                  <li key={label}><Link href={href} className="text-[13px] text-[#A8A29E] hover:text-white transition-colors duration-200">{label}</Link></li>
                 ))}
               </ul>
             </div>
           </div>
 
           <div className="border-t border-[#1E1E1E] pt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1">
-            <p className="text-[12px] text-[#444]">© 2026 ReplyFi · Austin, TX</p>
+            <p className="text-[12px] text-[#A8A29E]">© 2026 ReplyFi · Austin, TX</p>
           </div>
         </div>
       </footer>

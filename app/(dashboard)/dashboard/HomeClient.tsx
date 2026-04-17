@@ -120,7 +120,7 @@ function PendingCard({ review, userId, onAction, animDelay = 0 }: { review: Scra
   if (noText) {
     return (
       <div className="animate-fade-up flex items-center gap-3 px-4 py-2.5 bg-white rounded-xl border border-[#E4DED8] hover:border-[#D0C9C1] transition-all duration-150 opacity-60 hover:opacity-80" style={{ animationDelay: `${animDelay}ms` }}>
-        <div className={`w-7 h-7 rounded-full bg-gradient-to-br ${avatarBg} border border-[#E4DED8] flex items-center justify-center text-[10px] font-bold ${avatarText} flex-shrink-0`}>{initials}</div>
+        <div className={`w-7 h-7 rounded-full bg-gradient-to-br ${avatarBg} border border-[#E4DED8] flex items-center justify-center text-[10px] font-medium ${avatarText} flex-shrink-0`}>{initials}</div>
         <div className="flex items-center gap-1.5 min-w-0">
           <span className="text-[12px] font-medium text-[#57534E] truncate max-w-[100px]">{review.reviewer_name}</span>
           <PlatformBadge source={review.source} />
@@ -139,13 +139,13 @@ function PendingCard({ review, userId, onAction, animDelay = 0 }: { review: Scra
     <div className="animate-fade-up bg-white rounded-xl border border-[#E4DED8] overflow-hidden transition-all duration-200 hover:border-[#D0C9C1] hover:shadow-[0_4px_16px_rgba(0,0,0,0.07)]" style={{ animationDelay: `${animDelay}ms` }}>
       <div className="px-4 pt-4 pb-3">
         <div className="flex items-start gap-3">
-          <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${avatarBg} border border-[#E4DED8] flex items-center justify-center text-[11px] font-bold ${avatarText} flex-shrink-0 mt-0.5`}>{initials}</div>
+          <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${avatarBg} border border-[#E4DED8] flex items-center justify-center text-[11px] font-medium ${avatarText} flex-shrink-0 mt-0.5`}>{initials}</div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between gap-2 mb-1.5">
               <div className="flex items-center gap-1.5 flex-wrap min-w-0">
                 <span className="text-[13px] font-semibold text-[#111111] truncate leading-none">{review.reviewer_name}</span>
                 <PlatformBadge source={review.source} />
-                {review.alert_triggered && <span className="text-[10px] font-bold text-red-500 bg-red-50 border border-red-200 rounded-md px-1.5 py-0.5 leading-none">⚠ Alert</span>}
+                {review.alert_triggered && <span className="text-[10px] font-semibold text-red-500 bg-red-50 border border-red-200 rounded-md px-1.5 py-0.5 leading-none">⚠ Alert</span>}
               </div>
               <span className="text-[11px] text-[#C4BEB8] flex-shrink-0 tabular-nums leading-none">{review.review_datetime_utc ? formatTimeAgo(review.review_datetime_utc) : ''}</span>
             </div>
@@ -252,9 +252,9 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
       <div className="mb-8 text-center">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#E05A28]/10 border border-[#E05A28]/20 mb-5">
           <span className="w-1.5 h-1.5 rounded-full bg-[#E05A28] animate-pulse" />
-          <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#E05A28]/80">One-time setup</span>
+          <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#E05A28]/80">One-time setup</span>
         </div>
-        <h1 className="text-[26px] sm:text-[30px] font-black text-[#111111] tracking-[-0.03em] mb-3">
+        <h1 className="text-[26px] sm:text-[30px] font-medium text-[#111111] tracking-[-0.02em] mb-3">
           Hey {ownerName}, where are your reviews?
         </h1>
         <p className="text-[14px] text-[#57534E]/80 max-w-md mx-auto leading-relaxed">
@@ -269,8 +269,8 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
         <div className="bg-white rounded-2xl border border-[#E4DED8] p-4">
           <div className="flex items-center gap-2.5 mb-3">
             <GoogleLogo size={20} />
-            <span className="text-[13px] font-bold text-[#111]">Google Maps</span>
-            <span className="text-[10px] font-bold text-blue-500 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full uppercase tracking-wide ml-auto">Recommended</span>
+            <span className="text-[13px] font-medium text-[#111]">Google Maps</span>
+            <span className="text-[10px] font-medium text-blue-500 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full uppercase tracking-wide ml-auto">Recommended</span>
           </div>
           <input
             type="url"
@@ -286,8 +286,8 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
         <div className="bg-white rounded-2xl border border-[#E4DED8] p-4">
           <div className="flex items-center gap-2.5 mb-3">
             <YelpLogo size={20} />
-            <span className="text-[13px] font-bold text-[#111]">Yelp</span>
-            <span className="text-[10px] font-bold text-[#A8A29E] bg-[#F8F6F3] border border-[#E4DED8] px-2 py-0.5 rounded-full uppercase tracking-wide ml-auto">Optional</span>
+            <span className="text-[13px] font-medium text-[#111]">Yelp</span>
+            <span className="text-[10px] font-medium text-[#A8A29E] bg-[#F8F6F3] border border-[#E4DED8] px-2 py-0.5 rounded-full uppercase tracking-wide ml-auto">Optional</span>
           </div>
           <input
             type="url"
@@ -302,8 +302,8 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
         <div className="bg-white rounded-2xl border border-[#E4DED8] p-4">
           <div className="flex items-center gap-2.5 mb-3">
             <TripAdvisorLogo size={20} />
-            <span className="text-[13px] font-bold text-[#111]">TripAdvisor</span>
-            <span className="text-[10px] font-bold text-[#A8A29E] bg-[#F8F6F3] border border-[#E4DED8] px-2 py-0.5 rounded-full uppercase tracking-wide ml-auto">Optional</span>
+            <span className="text-[13px] font-medium text-[#111]">TripAdvisor</span>
+            <span className="text-[10px] font-medium text-[#A8A29E] bg-[#F8F6F3] border border-[#E4DED8] px-2 py-0.5 rounded-full uppercase tracking-wide ml-auto">Optional</span>
           </div>
           <input
             type="url"
@@ -330,7 +330,7 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
           onClick={handleConnect}
           disabled={saving}
           loading={saving}
-          className="h-auto px-8 py-3.5 rounded-2xl text-[15px] font-bold gap-2.5 shadow-[0_4px_20px_rgba(224,90,40,0.35)] hover:shadow-[0_6px_28px_rgba(224,90,40,0.50)] active:scale-[0.97]"
+          className="h-auto px-8 py-3.5 rounded-2xl text-[15px] font-semibold gap-2.5 shadow-[0_4px_20px_rgba(224,90,40,0.35)] hover:shadow-[0_6px_28px_rgba(224,90,40,0.50)] active:scale-[0.97]"
         >
           {saving ? (
             'Connecting…'
@@ -365,7 +365,7 @@ function ConnectNudge({ onExitManual }: { onExitManual: () => void }) {
         </p>
       </div>
       <div className="flex items-center gap-3 flex-shrink-0 pl-7 sm:pl-0">
-        <Link href="/dashboard/grow" className="text-[12px] font-bold text-[#E05A28] hover:text-[#C94E21] transition-colors whitespace-nowrap">
+        <Link href="/dashboard/grow" className="text-[12px] font-semibold text-[#E05A28] hover:text-[#C94E21] transition-colors whitespace-nowrap">
           Add platform URLs →
         </Link>
         <button onClick={() => { onExitManual(); setDismissed(true) }} className="text-[11px] text-[#C4BEB8] hover:text-[#A8A29E] transition-colors whitespace-nowrap">
@@ -420,7 +420,7 @@ function ManualGenerator({ prominent = false }: { prominent?: boolean }) {
       <div className="animate-fade-up" style={{ animationDelay: '200ms' }}>
         <button
           onClick={() => setOpen(v => !v)}
-          className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.12em] text-[#A8A29E] hover:text-[#57534E] transition-colors duration-150 mb-4"
+          className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.12em] text-[#A8A29E] hover:text-[#57534E] transition-colors duration-150 mb-4"
         >
           <div className="flex-1 h-px bg-gradient-to-r from-[#E4DED8] to-transparent" />
           <span className="flex items-center gap-1.5 px-3">
@@ -443,7 +443,7 @@ function ManualGenerator({ prominent = false }: { prominent?: boolean }) {
           <svg className="w-3.5 h-3.5 text-[#E05A28]" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd"/></svg>
         </div>
         <div>
-          <h2 className="text-[15px] font-bold text-[#111111]">Manual Reply Generator</h2>
+          <h2 className="text-[15px] font-medium text-[#111111]">Manual Reply Generator</h2>
           <p className="text-[11px] text-[#A8A29E]">Paste any review to get an AI-crafted reply instantly</p>
         </div>
       </div>
@@ -511,7 +511,7 @@ function GeneratorBody({ review, setReview, platform, setPlatform, starRating, s
           <div className="bg-[#E05A28]/[0.08] border border-[#E05A28]/20 rounded-xl px-4 py-3.5">
             <div className="flex items-center gap-1.5 mb-2">
               <div className="w-4 h-4 rounded-md bg-[#E05A28]/10 flex items-center justify-center"><svg className="w-2.5 h-2.5 text-[#E05A28]" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd"/></svg></div>
-              <p className="text-[10px] font-bold uppercase tracking-wider text-[#E05A28]/70">Generated Reply</p>
+              <p className="text-[10px] font-medium uppercase tracking-wider text-[#E05A28]/70">Generated Reply</p>
             </div>
             <p className="text-[12px] text-[#57534E] leading-relaxed">{reply}</p>
           </div>
@@ -804,7 +804,7 @@ export default function HomeClient({
           <button
             onClick={handleSync}
             disabled={syncing}
-            className="text-[12px] font-bold text-[#E05A28] hover:text-[#C94E21] transition-colors whitespace-nowrap pl-7 sm:pl-0 disabled:opacity-50"
+            className="text-[12px] font-semibold text-[#E05A28] hover:text-[#C94E21] transition-colors whitespace-nowrap pl-7 sm:pl-0 disabled:opacity-50"
           >
             {syncing ? 'Syncing…' : 'Sync now →'}
           </button>
@@ -816,8 +816,8 @@ export default function HomeClient({
         {/* Page title */}
         <div>
           <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A8A29E] mb-2">Dashboard</p>
-          <h1 className="text-[28px] sm:text-[36px] text-[#111] tracking-[-0.025em] leading-[1.05]" style={{ fontWeight: 500 }}>
-            Welcome back{ownerName ? ',' : ''}{ownerName && <span className="font-display italic font-normal">&nbsp;{ownerName}</span>}.
+          <h1 className="text-[28px] sm:text-[36px] text-[#111] tracking-[-0.03em] leading-[1.05]" style={{ fontWeight: 600 }}>
+            Welcome back{ownerName ? `, ${ownerName}` : ''}.
           </h1>
           <p className="text-[14px] text-[#57534E] mt-2">Here&apos;s how your reputation is trending.</p>
         </div>
@@ -848,7 +848,7 @@ export default function HomeClient({
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* Pending reviews */}
         <div className="lg:col-span-3">
-          <SectionLabel badge={pendingList.length > 0 ? <span className="relative inline-flex items-center justify-center min-w-[22px] h-5 px-1.5 rounded-full bg-[#E05A28] text-white text-[10px] font-bold shadow-[0_0_10px_rgba(224,90,40,0.35)]"><span className="absolute inset-0 rounded-full bg-[#E05A28] animate-ping opacity-40"/><span className="relative">{pendingList.length}</span></span> : undefined}>
+          <SectionLabel badge={pendingList.length > 0 ? <span className="relative inline-flex items-center justify-center min-w-[22px] h-5 px-1.5 rounded-full bg-[#E05A28] text-white text-[10px] font-medium"><span className="absolute inset-0 rounded-full bg-[#E05A28] animate-ping opacity-40"/><span className="relative">{pendingList.length}</span></span> : undefined}>
             Pending replies
           </SectionLabel>
           {pendingList.length === 0 ? (
@@ -889,7 +889,7 @@ export default function HomeClient({
                 <div className="divide-y divide-[#EDE9E4]">
                   {recentApproved.map(review => (
                     <div key={review.id} className="flex items-center gap-3 px-4 py-3 hover:bg-[#F8F6F3] transition-colors duration-150">
-                      <div className="w-8 h-8 rounded-full bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center text-[11px] font-bold text-[#A8A29E] flex-shrink-0">{review.reviewer_name.charAt(0).toUpperCase()}</div>
+                      <div className="w-8 h-8 rounded-full bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center text-[11px] font-medium text-[#A8A29E] flex-shrink-0">{review.reviewer_name.charAt(0).toUpperCase()}</div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5 mb-0.5">
                           <span className="text-[12px] font-semibold text-[#111111]/80 truncate">{review.reviewer_name}</span>
@@ -936,7 +936,7 @@ export default function HomeClient({
               <div key={label} className={`${tint} rounded-xl px-5 py-5 border ${border} hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all duration-200`}>
                 <div className="flex items-center gap-2 mb-3">
                   <span className={`w-2 h-2 rounded-full ${dotColor} flex-shrink-0`} />
-                  <p className="text-[10px] font-bold uppercase tracking-[0.13em] text-[#A8A29E]">{label}</p>
+                  <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-[#A8A29E]">{label}</p>
                 </div>
                 <p className={`text-[13px] leading-snug ${value ? 'font-semibold text-[#111]' : 'text-[#C4BEB8] italic'}`}>{value ?? fallback}</p>
               </div>

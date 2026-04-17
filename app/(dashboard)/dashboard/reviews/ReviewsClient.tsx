@@ -6,6 +6,7 @@ import type { BusinessProfile, ScrapedReview } from '@/types'
 import Stars from '@/components/ui/Stars'
 import PlatformBadge from '@/components/ui/PlatformBadge'
 import { Card } from '@/components/ui/Card'
+import KPI from '@/components/ui/KPI'
 
 interface Props {
   profile: BusinessProfile
@@ -665,17 +666,16 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
           ? (reviews.reduce((s, r) => s + (r.star_rating || 0), 0) / reviews.filter(r => r.star_rating).length).toFixed(1)
           : '—'
         return (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
             {[
-              { label: 'Total Reviews', value: reviews.length, color: 'text-[#111111]' },
-              { label: 'Negative Reviews', value: negCount, color: 'text-red-600' },
-              { label: 'Avg Rating', value: `${avgRat} / 5`, color: 'text-[#111111]' },
-              { label: 'Pending', value: pending.length, color: 'text-amber-600' },
-            ].map(({ label, value, color }) => (
-              <div key={label} className="bg-white rounded-xl border border-[#E4DED8] p-4">
-                <p className="text-[12px] text-[#A8A29E] font-medium">{label}</p>
-                <p className={`text-[22px] font-bold mt-1 tnum ${color}`}>{value}</p>
-              </div>
+              { label: 'TOTAL REVIEWS', value: reviews.length },
+              { label: 'NEGATIVE REVIEWS', value: negCount },
+              { label: 'AVG RATING', value: `${avgRat} / 5` },
+              { label: 'PENDING', value: pending.length },
+            ].map(({ label, value }) => (
+              <Card key={label} variant="flat" padding="md">
+                <KPI variant="secondary" label={label} value={value} />
+              </Card>
             ))}
           </div>
         )

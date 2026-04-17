@@ -222,12 +222,11 @@ function buildPlatformDeepLink(
   return 'https://business.google.com/reviews'
 }
 
-function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, showStatus, profileUrls, isCopied }: {
+function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, profileUrls, isCopied }: {
   review: ScrapedReview
   onApprove: (id: string) => Promise<void>
   onDismiss: (id: string) => void
   onRestore?: (id: string) => void
-  showStatus?: boolean
   profileUrls?: { google?: string | null; yelp?: string | null; tripadvisor?: string | null }
   isCopied?: boolean
 }) {
@@ -948,7 +947,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
               <ul className="divide-y divide-[#EDE9E4]">
                 {filtered.map((r) => (
                   <li key={r.id}>
-                    <ReviewCard review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} showStatus profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }}/>
+                    <ReviewCard review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }}/>
                   </li>
                 ))}
               </ul>

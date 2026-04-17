@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { Resend } from 'resend'
+import { FROM_DIGEST, escapeHtml, getResend } from '@/lib/email/client'
 import { TRIAL_DAYS } from '@/lib/subscription'
 
 // ---------------------------------------------------------------------------
@@ -32,6 +32,7 @@ function buildHtml(params: {
   }>
 }): string {
   const { businessName, newReviewCount, avgRating, approvedCount, reviews } = params
+  const safeBusinessName = escapeHtml(businessName)
 
   const avgDisplay = avgRating != null ? avgRating.toFixed(1) + ' ★' : 'N/A'
 
@@ -41,19 +42,19 @@ function buildHtml(params: {
       (r) => `
       <div style="margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #e5e7eb;">
         <div style="margin-bottom:6px;">
-          <span style="font-weight:600;color:#111827;">${r.reviewerName || 'Anonymous'}</span>
+          <span style="font-weight:600;color:#111827;">${escapeHtml(r.reviewerName || 'Anonymous')}</span>
           <span style="margin-left:10px;color:#E0A020;letter-spacing:1px;">${starString(r.starRating)}</span>
         </div>
         ${
           r.reviewText
-            ? `<p style="margin:0 0 10px;color:#374151;font-size:14px;line-height:1.6;">${truncate(r.reviewText, 150)}</p>`
+            ? `<p style="margin:0 0 10px;color:#374151;font-size:14px;line-height:1.6;">${escapeHtml(truncate(r.reviewText, 150))}</p>`
             : ''
         }
         ${
           r.generatedReply
             ? `<div style="background:#f3f4f6;border-left:3px solid #E05A28;padding:10px 14px;border-radius:4px;">
                 <p style="margin:0;color:#6b7280;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Your reply</p>
-                <p style="margin:0;color:#374151;font-size:13px;line-height:1.6;">${truncate(r.generatedReply, 200)}</p>
+                <p style="margin:0;color:#374151;font-size:13px;line-height:1.6;">${escapeHtml(truncate(r.generatedReply, 200))}</p>
               </div>`
             : ''
         }
@@ -66,7 +67,7 @@ function buildHtml(params: {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Your weekly review summary — ${businessName}</title>
+  <title>Your weekly review summary — ${safeBusinessName}</title>
 </head>
 <body style="margin:0;padding:0;background-color:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f9fafb;padding:32px 0;">
@@ -78,7 +79,7 @@ function buildHtml(params: {
           <tr>
             <td style="background-color:#111827;padding:28px 32px;">
               <p style="margin:0 0 6px;font-size:18px;font-weight:700;color:#E05A28;letter-spacing:.5px;">ReplyFi</p>
-              <p style="margin:0;font-size:22px;font-weight:600;color:#ffffff;">${businessName}</p>
+              <p style="margin:0;font-size:22px;font-weight:600;color:#ffffff;">${safeBusinessName}</p>
               <p style="margin:6px 0 0;font-size:13px;color:#9ca3af;">Weekly review digest</p>
             </td>
           </tr>
@@ -110,7 +111,7 @@ function buildHtml(params: {
           <!-- Reviews section -->
           <tr>
             <td style="padding:28px 32px 8px;">
-              <h2 style="margin:0 0 20px;font-size:16px;font-weight:600;color:#111827;">This week at ${businessName}:</h2>
+              <h2 style="margin:0 0 20px;font-size:16px;font-weight:600;color:#111827;">This week at ${safeBusinessName}:</h2>
               ${reviewRows}
             </td>
           </tr>
@@ -157,11 +158,11 @@ export async function POST(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
-  if (!process.env.RESEND_API_KEY) {
+  const resend = getResend()
+  if (!resend) {
     console.error('[digest] RESEND_API_KEY is not set — cannot send emails')
     return NextResponse.json({ error: 'RESEND_API_KEY not configured' }, { status: 500 })
   }
-  const resend = new Resend(process.env.RESEND_API_KEY)
   // Auth: accept Vercel cron Bearer token or manual x-cron-secret header
   if (!process.env.CRON_SECRET) {
     console.error('[digest] CRON_SECRET env var is not set')
@@ -294,9 +295,9 @@ export async function POST(request: NextRequest) {
 
       // Send email
       const { error: sendError } = await resend.emails.send({
-        from: 'ReplyFi <digest@replyfi.app>',
+        from: FROM_DIGEST,
         to: userEmail,
-        subject: `Your weekly review summary — ${restaurant.business_name}`,
+        subject: `Your weekly review summary — ${String(restaurant.business_name).replace(/[\r\n]/g, ' ')}`,
         html: buildHtml({
           businessName: restaurant.business_name,
           newReviewCount: reviews.length,

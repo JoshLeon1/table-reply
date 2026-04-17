@@ -1,11 +1,10 @@
 // lib/email/payment-failed.ts
 //
 // Sent from the Stripe webhook when an invoice payment fails.
-// Resend is already a dependency; uses RESEND_API_KEY from env.
+// Uses the shared Resend client from lib/email/client.ts so the API key
+// is resolved lazily at send time (not at module load).
 
-import { Resend } from 'resend'
-
-const resend = new Resend(process.env.RESEND_API_KEY ?? '')
+import { FROM_BILLING, getResend } from './client'
 
 export interface PaymentFailedEmailInput {
   toEmail: string
@@ -14,7 +13,8 @@ export interface PaymentFailedEmailInput {
 }
 
 export async function sendPaymentFailedEmail(input: PaymentFailedEmailInput) {
-  if (!process.env.RESEND_API_KEY) {
+  const resend = getResend()
+  if (!resend) {
     console.warn('[payment-failed-email] RESEND_API_KEY not set — skipping')
     return { skipped: true as const }
   }
@@ -25,7 +25,7 @@ export async function sendPaymentFailedEmail(input: PaymentFailedEmailInput) {
   const portalLink = `${appUrl}/settings?tab=account`
 
   await resend.emails.send({
-    from: 'ReplyFi <billing@replyfi.app>',
+    from: FROM_BILLING,
     to: toEmail,
     subject: 'Your card was declined — update your payment method',
     html: `

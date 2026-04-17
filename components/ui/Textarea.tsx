@@ -12,20 +12,20 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <div className="w-full">
         {label && (
-          <label htmlFor={id} className="block text-[13px] font-medium text-[#111111] mb-1.5">
+          <label htmlFor={id} className="block text-[13px] font-medium text-text-1 mb-1.5">
             {label}
           </label>
         )}
-        {hint && <p className="text-[12px] text-[#888] mb-1.5">{hint}</p>}
+        {hint && <p className="text-[12px] text-text-2 mb-1.5">{hint}</p>}
         <textarea
           ref={ref}
           id={id}
           className={cn(
-            'w-full px-3.5 py-3 rounded-xl border text-[#111111] text-sm placeholder:text-[#BBBAB6] bg-white resize-y',
+            'w-full px-3.5 py-3 rounded-xl border text-text-1 text-base sm:text-sm placeholder:text-text-placeholder bg-white resize-y',
             'transition-all duration-150',
-            'focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28]',
-            'disabled:bg-[#F3F0EC] disabled:cursor-not-allowed',
-            error ? 'border-red-400 focus:ring-red-400/30 focus:border-red-400' : 'border-[#E4DED8] hover:border-[#CEC8C1]',
+            'focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent',
+            'disabled:bg-surface disabled:cursor-not-allowed',
+            error ? 'border-red-400 focus:ring-red-400/30 focus:border-red-400' : 'border-border hover:border-[#CEC8C1]',
             className
           )}
           {...props}

@@ -516,7 +516,7 @@ export default function BusinessProfileForm({
       </div>
 
       {error && (
-        <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 flex items-start gap-2.5">
+        <div role="alert" className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 flex items-start gap-2.5">
           <svg
             className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5"
             fill="none"

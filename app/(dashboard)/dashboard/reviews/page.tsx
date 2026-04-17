@@ -19,12 +19,13 @@ export default async function ReviewsPage() {
 
   if (!user) redirect('/login')
 
-  // Fetch business profile
+  // Fetch business profile. maybeSingle so a missing row falls through
+  // to the redirect below instead of throwing.
   const { data: profile } = await supabaseAdmin
     .from('business_profiles')
     .select('*')
     .eq('user_id', user.id)
-    .single()
+    .maybeSingle()
 
   // If no profile at all, redirect to settings to set one up
   if (!profile) redirect('/settings')

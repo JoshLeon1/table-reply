@@ -1,32 +1,62 @@
 'use client'
 
+import { useState } from 'react'
+
 interface StarRatingProps {
-  value: number
-  onChange: (value: number) => void
+  value: number             // 0-5
+  onChange?: (n: number) => void
+  readonly?: boolean
+  size?: 'sm' | 'md' | 'lg'
+  label?: string            // e.g. "Rate this reply"
 }
 
-export default function StarRating({ value, onChange }: StarRatingProps) {
+export default function StarRating({ value, onChange, readonly, size = 'md', label = 'Rating' }: StarRatingProps) {
+  const [focusIndex, setFocusIndex] = useState(value || 1)
+  const px = size === 'sm' ? 16 : size === 'lg' ? 28 : 20
+  const isInteractive = !readonly && !!onChange
+
+  const handleKey = (e: React.KeyboardEvent) => {
+    if (!isInteractive) return
+    if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+      e.preventDefault()
+      const next = Math.min(5, focusIndex + 1)
+      setFocusIndex(next)
+      onChange!(next)
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+      e.preventDefault()
+      const next = Math.max(1, focusIndex - 1)
+      setFocusIndex(next)
+      onChange!(next)
+    }
+  }
+
   return (
-    <div className="flex gap-1">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <button
-          key={star}
-          type="button"
-          onClick={() => onChange(star)}
-          className="focus:outline-none"
-          aria-label={`${star} star`}
-        >
-          <svg
-            className={`w-8 h-8 transition-colors ${
-              star <= value ? 'text-[#E05A28]' : 'text-[#E4DED8]'
-            } hover:text-[#E05A28]`}
-            fill="currentColor"
-            viewBox="0 0 20 20"
+    <div
+      role="radiogroup"
+      aria-label={label}
+      onKeyDown={handleKey}
+      className="inline-flex items-center gap-1"
+    >
+      {[1, 2, 3, 4, 5].map((n) => {
+        const filled = n <= value
+        return (
+          <button
+            key={n}
+            type="button"
+            role="radio"
+            aria-checked={value === n}
+            aria-label={`${n} ${n === 1 ? 'star' : 'stars'}`}
+            tabIndex={value === n || (value === 0 && n === 1) ? 0 : -1}
+            disabled={!isInteractive}
+            onClick={() => isInteractive && onChange!(n)}
+            className={`min-h-[44px] min-w-[44px] flex items-center justify-center rounded-md transition-colors ${isInteractive ? 'hover:bg-surface focus:outline-none focus:ring-2 focus:ring-accent/25' : 'cursor-default'}`}
           >
-            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-          </svg>
-        </button>
-      ))}
+            <svg width={px} height={px} viewBox="0 0 20 20" fill={filled ? '#E05A28' : 'none'} stroke={filled ? '#E05A28' : '#C4BEB8'} strokeWidth="1.5">
+              <polygon points="10,2 12.5,7.5 18.5,8.2 14,12.4 15.2,18 10,15.2 4.8,18 6,12.4 1.5,8.2 7.5,7.5" strokeLinejoin="round"/>
+            </svg>
+          </button>
+        )
+      })}
     </div>
   )
 }

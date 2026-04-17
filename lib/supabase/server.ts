@@ -1,6 +1,9 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
+// NOTE: Database generic intentionally not wired here — see lib/supabase/client.ts
+// TODO(P2.5): switch to `createServerClient<Database>(...)` once types are
+// regenerated via `supabase gen types typescript --linked`.
 export function createClient() {
   const cookieStore = cookies()
 

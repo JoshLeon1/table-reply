@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import type { BusinessProfile, ScrapedReview } from '@/types'
+import Stars from '@/components/ui/Stars'
+import { Card } from '@/components/ui/Card'
 
 interface Props {
   profile: BusinessProfile
@@ -23,18 +25,6 @@ function getAvatarColor(name: string): string {
 }
 
 // ── Shared helpers ────────────────────────────────────────────────────────────
-
-function StarRow({ rating }: { rating: number }) {
-  return (
-    <div className="flex items-center gap-0.5">
-      {[1,2,3,4,5].map((i) => (
-        <svg key={i} className={`w-3 h-3 ${i <= rating ? 'text-amber-400' : 'text-[#E4DED8]'}`} fill="currentColor" viewBox="0 0 20 20">
-          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-        </svg>
-      ))}
-    </div>
-  )
-}
 
 function PlatformBadge({ source }: { source?: string | null }) {
   if (source === 'yelp') return (
@@ -338,19 +328,35 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
 
   const status = review.reply_status
 
-  // Status chip — shown on card header right side
+  // Status chip — shown on card header right side (eyebrow-chip style)
   const statusChip = (() => {
     if (status === 'pending' && review.generated_reply) {
-      return <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 flex-shrink-0">Draft Ready</span>
+      return (
+        <span className="inline-flex items-center rounded-md border border-[#C9E4D3] bg-[#E8F5EE] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.09em] text-[#0B8A5B] tnum flex-shrink-0">
+          DRAFT READY
+        </span>
+      )
     }
     if (status === 'pending' && !review.generated_reply) {
-      return <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-50 text-amber-600 border border-amber-200 flex-shrink-0">Needs Response</span>
+      return (
+        <span className="inline-flex items-center rounded-md border border-[#F5C9AD] bg-[#FEF0E8] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.09em] text-[#C94E21] tnum flex-shrink-0">
+          NEEDS REPLY
+        </span>
+      )
     }
     if (status === 'approved') {
-      return <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 border border-blue-200 flex-shrink-0">Approved</span>
+      return (
+        <span className="inline-flex items-center rounded-md border border-[#C9E4D3] bg-[#E8F5EE] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.09em] text-[#0B8A5B] tnum flex-shrink-0">
+          APPROVED
+        </span>
+      )
     }
     if (status === 'dismissed') {
-      return <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#F3F0EC] text-[#A8A29E] border border-[#E4DED8] flex-shrink-0">Dismissed</span>
+      return (
+        <span className="inline-flex items-center rounded-md border border-[#E4DED8] bg-[#F0EDE8] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.09em] text-[#6B6862] tnum flex-shrink-0">
+          DISMISSED
+        </span>
+      )
     }
     return null
   })()
@@ -362,14 +368,14 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
   // ── Compact row for rating-only (no text) reviews ──────────────────────────
   if (noText) {
     return (
-      <div className="flex items-center gap-3 px-4 py-2.5 bg-white rounded-xl border border-[#E4DED8] hover:border-[#D0C9C1] transition-all duration-150 opacity-60 hover:opacity-80">
+      <div className="flex items-center gap-3 opacity-60 hover:opacity-80 transition-opacity duration-150">
         <div className={`w-7 h-7 rounded-full ${getAvatarColor(review.reviewer_name)} flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0`}>
           {getInitials(review.reviewer_name)}
         </div>
         <div className="flex items-center gap-1.5 min-w-0">
           <span className="text-[12px] font-medium text-[#57534E] truncate max-w-[120px]">{review.reviewer_name}</span>
           <PlatformBadge source={review.source} />
-          <StarRow rating={review.star_rating} />
+          <Stars rating={review.star_rating} size="sm" />
         </div>
         <span className="text-[11px] text-[#C4BEB8] flex-shrink-0 hidden sm:block">{formatDate(review.review_datetime_utc)}</span>
         <span className="text-[10px] text-[#C4BEB8] italic flex-1 hidden sm:block">No written review</span>
@@ -388,7 +394,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
   }
 
   return (
-    <div className="bg-white rounded-xl overflow-hidden border border-[#E4DED8] shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] hover:border-[#D0C9C1]">
+    <div>
       {/* Header */}
       <div className="flex items-center justify-between px-4 sm:px-5 py-3.5 sm:py-4 border-b border-[#EDE9E4]">
         <div className="flex items-center gap-3 min-w-0">
@@ -413,7 +419,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, sh
               )}
             </div>
             <div className="flex items-center gap-2 mt-0.5">
-              <StarRow rating={review.star_rating}/>
+              <Stars rating={review.star_rating} size="sm" />
               <span className="text-[11px] text-[#A8A29E]">{formatDate(review.review_datetime_utc)}</span>
               {review.language && review.language !== 'English' && (
                 <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-blue-50 text-blue-500 border border-blue-200">{review.language}</span>
@@ -651,11 +657,11 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
     <div>
       {/* Scrape error banner */}
       {scrapeError && (
-        <div className="mb-5 flex items-start justify-between gap-3 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-[13px] text-red-500">
+        <div role="alert" className="mb-5 flex items-start justify-between gap-3 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-[13px] text-red-500">
           <p>{scrapeError}</p>
           <div className="flex items-center gap-2 flex-shrink-0">
             <button onClick={onScrapeNow} className="font-semibold underline hover:no-underline">Try again</button>
-            <button onClick={onDismissError} className="text-red-400 hover:text-red-300">
+            <button onClick={onDismissError} aria-label="Dismiss" className="text-red-400 hover:text-red-300">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
               </svg>
@@ -680,7 +686,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
             ].map(({ label, value, color }) => (
               <div key={label} className="bg-white rounded-xl border border-[#E4DED8] p-4">
                 <p className="text-[12px] text-[#A8A29E] font-medium">{label}</p>
-                <p className={`text-[22px] font-bold mt-1 ${color}`}>{value}</p>
+                <p className={`text-[22px] font-bold mt-1 tnum ${color}`}>{value}</p>
               </div>
             ))}
           </div>
@@ -786,7 +792,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
             <button
               key={star ?? 'all'}
               onClick={() => setFilterStars(star)}
-              className={`px-3 py-1 rounded-full text-[12px] font-semibold border transition-colors ${
+              className={`px-3 py-1 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full text-[12px] font-semibold border transition-colors ${
                 filterStars === star
                   ? 'bg-[#E05A28] text-white border-[#E05A28]'
                   : 'bg-white text-[#57534E] border-[#E4DED8] hover:border-[#D0C9C1] hover:text-[#111111]'
@@ -810,13 +816,15 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
         const filtered = filterStars !== null ? pending.filter((r) => r.star_rating === filterStars) : pending
         if (filtered.length > 0) {
           return (
-            <div className="space-y-3">
-              {filtered.map((r, i) => (
-                <div key={r.id} className={i < 5 ? `animate-fade-up stagger-${i + 1}` : ''}>
-                  <ReviewCard review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }} isCopied={copiedId === r.id}/>
-                </div>
-              ))}
-            </div>
+            <Card variant="standard" padding="none">
+              <ul className="divide-y divide-[#EDE9E4]">
+                {filtered.map((r, i) => (
+                  <li key={r.id} className={i < 5 ? `animate-fade-up stagger-${i + 1}` : ''}>
+                    <ReviewCard review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }} isCopied={copiedId === r.id}/>
+                  </li>
+                ))}
+              </ul>
+            </Card>
           )
         }
         // Filter is active and matched 0 → show filter empty state with clear button
@@ -905,11 +913,15 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
                   )
                 }
                 return (
-                  <div className="space-y-3">
-                    {filtered.map((r) => (
-                      <ReviewCard key={r.id} review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }}/>
-                    ))}
-                  </div>
+                  <Card variant="standard" padding="none">
+                    <ul className="divide-y divide-[#EDE9E4]">
+                      {filtered.map((r) => (
+                        <li key={r.id}>
+                          <ReviewCard review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }}/>
+                        </li>
+                      ))}
+                    </ul>
+                  </Card>
                 )
               })()}
             </>
@@ -932,13 +944,15 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
         const filtered = filterStars !== null ? dismissed.filter((r) => r.star_rating === filterStars) : dismissed
         if (filtered.length > 0) {
           return (
-            <div>
-              <div className="space-y-3">
+            <Card variant="standard" padding="none">
+              <ul className="divide-y divide-[#EDE9E4]">
                 {filtered.map((r) => (
-                  <ReviewCard key={r.id} review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} showStatus profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }}/>
+                  <li key={r.id}>
+                    <ReviewCard review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} showStatus profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }}/>
+                  </li>
                 ))}
-              </div>
-            </div>
+              </ul>
+            </Card>
           )
         }
         if (filterStars !== null && dismissed.length > 0) {

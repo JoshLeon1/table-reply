@@ -22,7 +22,7 @@ export default async function GrowPage() {
     .from('business_profiles')
     .select('*')
     .eq('user_id', user.id)
-    .single()
+    .maybeSingle()
 
   if (!profile) redirect('/settings')
 

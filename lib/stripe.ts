@@ -34,7 +34,8 @@ export function planFromPriceId(priceId: string): StripePlan | null {
 export async function createCheckoutSession(
   userId: string,
   email: string,
-  plan: StripePlan = 'monthly'
+  plan: StripePlan = 'monthly',
+  options: { stripeCustomerId?: string | null } = {}
 ) {
   const priceId = PRICE_IDS[plan]
   if (!process.env.NEXT_PUBLIC_APP_URL) {
@@ -42,14 +43,25 @@ export async function createCheckoutSession(
   }
   const appUrl = process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, '')
 
+  // Stripe will create a duplicate customer if you pass customer_email
+  // and the email already maps to one. Always prefer the known id.
+  const customerFields = options.stripeCustomerId
+    ? { customer: options.stripeCustomerId }
+    : { customer_email: email }
+
   const session = await stripe.checkout.sessions.create({
-    customer_email: email,
+    ...customerFields,
     payment_method_types: ['card'],
     line_items: [{ price: priceId, quantity: 1 }],
     mode: 'subscription',
     success_url: `${appUrl}/dashboard?upgraded=true`,
     cancel_url: `${appUrl}/settings`,
     metadata: { userId, plan },
+    // Carry metadata onto the subscription so cancel/update events
+    // carry userId without requiring a Customer→user lookup.
+    subscription_data: {
+      metadata: { userId, plan },
+    },
     allow_promotion_codes: true,
   })
 

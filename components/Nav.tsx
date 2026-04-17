@@ -4,37 +4,11 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { LogoMark } from '@/components/Logo'
+import { useModal } from '@/lib/hooks/useModal'
 
-// ─── Logo mark ────────────────────────────────────────────────────────────────
-// Two overlapping speech bubbles: customer review (top-left) + restaurant reply (bottom-right)
-
-export function LogoMark({ size = 28 }: { size?: number }) {
-  return (
-    <div
-      className="rounded-[8px] bg-[#E05A28] flex items-center justify-center flex-shrink-0"
-      style={{ width: size, height: size }}
-    >
-      <svg
-        viewBox="0 0 20 20"
-        fill="none"
-        style={{ width: size * 0.62, height: size * 0.62 }}
-        aria-hidden="true"
-      >
-        {/* Back bubble — customer review */}
-        <path
-          d="M2 1.5h9A1.5 1.5 0 0112.5 3v5A1.5 1.5 0 0111 9.5H7l-2 2v-2H2A1.5 1.5 0 01.5 8V3A1.5 1.5 0 012 1.5z"
-          fill="white"
-          fillOpacity="0.5"
-        />
-        {/* Front bubble — restaurant reply */}
-        <path
-          d="M8 8h9.5A1.5 1.5 0 0119 9.5v5A1.5 1.5 0 0117.5 16H16v2.5l-3-2.5H8A1.5 1.5 0 016.5 14.5v-5A1.5 1.5 0 018 8z"
-          fill="white"
-        />
-      </svg>
-    </div>
-  )
-}
+// Re-export from shared module for backward compatibility.
+export { LogoMark }
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
@@ -169,11 +143,11 @@ export default function Nav() {
 
   useEffect(() => { setMobileOpen(false) }, [pathname])
 
-  useEffect(() => {
-    if (mobileOpen) document.body.style.overflow = 'hidden'
-    else document.body.style.overflow = ''
-    return () => { document.body.style.overflow = '' }
-  }, [mobileOpen])
+  // Focus trap + Escape + scroll lock via shared hook
+  const { containerRef: mobileDrawerRef } = useModal({
+    open: mobileOpen,
+    onClose: () => setMobileOpen(false),
+  })
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -212,22 +186,27 @@ export default function Nav() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`relative flex items-center gap-2 px-4 py-2 rounded-xl text-[14px] font-medium transition-all duration-150 active:scale-[0.97] ${
+                    className={`relative flex items-center gap-2 px-4 py-2 rounded-lg text-[14px] transition-colors duration-150 ${
                       active
-                        ? 'text-[#111111] bg-[#F3F0EC] border border-[#E4DED8]'
-                        : 'text-[#111111]/60 hover:text-[#111111]/70 hover:bg-[#F3F0EC]'
+                        ? 'text-[#111111] font-semibold'
+                        : 'text-[#57534E] font-medium hover:text-[#111111] hover:bg-[#F0EDE8]'
                     }`}
-                    style={active ? { boxShadow: '0 1px 0 rgba(0,0,0,0.04) inset' } : undefined}
                   >
-                    <span className={active ? 'text-[#E05A28]' : 'opacity-60'}>{link.icon(active)}</span>
+                    <span className={active ? 'text-[#111111]' : 'text-[#A8A29E]'}>{link.icon(active)}</span>
                     {link.label}
                     {link.badge != null && (
-                      <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#E05A28] text-white text-[10px] font-bold flex items-center justify-center leading-none shadow-[0_0_8px_rgba(224,90,40,0.5)]">
+                      <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-[#E05A28] text-white text-[10px] font-semibold flex items-center justify-center leading-none tnum">
                         {link.badge > 99 ? '99+' : link.badge}
                       </span>
                     )}
                     {link.dot && !link.badge && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#E05A28] flex-shrink-0 shadow-[0_0_6px_rgba(224,90,40,0.6)] animate-pulse" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#E05A28] flex-shrink-0" />
+                    )}
+                    {active && (
+                      <span
+                        aria-hidden="true"
+                        className="absolute left-3 right-3 -bottom-[14px] h-[2px] bg-[#E05A28] rounded-full"
+                      />
                     )}
                   </Link>
                 )
@@ -243,14 +222,17 @@ export default function Nav() {
 
               <Link
                 href="/settings"
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-[14px] font-medium transition-all duration-150 active:scale-[0.97] ${
+                className={`relative flex items-center gap-1.5 px-3 py-2 rounded-lg text-[14px] transition-colors duration-150 ${
                   pathname === '/settings'
-                    ? 'text-[#E05A28] bg-[#F3F0EC] border border-[#E4DED8]'
-                    : 'text-[#111111]/60 hover:text-[#111111]/70 hover:bg-[#F3F0EC]'
+                    ? 'text-[#111111] font-semibold'
+                    : 'text-[#57534E] font-medium hover:text-[#111111] hover:bg-[#F0EDE8]'
                 }`}
               >
                 <IconSettings active={pathname === '/settings'} />
                 <span>Settings</span>
+                {pathname === '/settings' && (
+                  <span aria-hidden="true" className="absolute left-3 right-3 -bottom-[14px] h-[2px] bg-[#E05A28] rounded-full" />
+                )}
               </Link>
 
               <button
@@ -289,6 +271,7 @@ export default function Nav() {
           />
 
           <div
+            ref={mobileDrawerRef}
             id="mobile-nav-drawer"
             role="dialog"
             aria-modal="true"
@@ -313,22 +296,22 @@ export default function Nav() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`flex items-center gap-3 px-4 rounded-xl text-[14px] font-medium transition-all duration-150 min-h-[48px] ${
+                    className={`flex items-center gap-3 px-4 rounded-xl text-[14px] transition-colors duration-150 min-h-[48px] ${
                       active
-                        ? 'bg-[#F3F0EC] text-[#111111]'
-                        : 'text-[#111111]/60 hover:text-[#111111]/90 hover:bg-[#F3F0EC]'
+                        ? 'bg-[#FAF8F5] text-[#111111] font-semibold'
+                        : 'text-[#57534E] font-medium hover:text-[#111111] hover:bg-[#F0EDE8]'
                     }`}
                   >
                     <span className={`w-0.5 h-5 rounded-full flex-shrink-0 transition-all ${active ? 'bg-[#E05A28]' : 'bg-transparent'}`} />
                     <span className={active ? 'text-[#E05A28]' : 'opacity-60'}>{link.icon(active)}</span>
                     <span className="flex-1">{link.label}</span>
                     {link.badge != null && (
-                      <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-[#E05A28] text-white text-[10px] font-bold flex items-center justify-center shadow-[0_0_8px_rgba(224,90,40,0.4)]">
+                      <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-[#E05A28] text-white text-[10px] font-semibold flex items-center justify-center tnum">
                         {link.badge > 99 ? '99+' : link.badge}
                       </span>
                     )}
                     {link.dot && !link.badge && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#E05A28] shadow-[0_0_6px_rgba(224,90,40,0.6)]" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#E05A28] flex-shrink-0" />
                     )}
                   </Link>
                 )
@@ -337,10 +320,10 @@ export default function Nav() {
             <div className="px-3 pb-4 pt-1 border-t border-[#EDE9E4] space-y-0.5">
               <Link
                 href="/settings"
-                className={`flex items-center gap-3 w-full px-4 rounded-xl text-[14px] font-medium transition-all duration-150 min-h-[48px] ${
+                className={`flex items-center gap-3 w-full px-4 rounded-xl text-[14px] transition-colors duration-150 min-h-[48px] ${
                   pathname === '/settings'
-                    ? 'bg-[#F3F0EC] text-[#111111]'
-                    : 'text-[#111111]/60 hover:text-[#111111]/90 hover:bg-[#F3F0EC]'
+                    ? 'bg-[#FAF8F5] text-[#111111] font-semibold'
+                    : 'text-[#57534E] font-medium hover:text-[#111111] hover:bg-[#F0EDE8]'
                 }`}
               >
                 <span className={`w-0.5 h-5 rounded-full flex-shrink-0 ${pathname === '/settings' ? 'bg-[#E05A28]' : 'bg-transparent'}`} />
@@ -349,7 +332,7 @@ export default function Nav() {
               </Link>
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-3 w-full px-4 min-h-[48px] rounded-xl text-[14px] font-medium text-[#111111]/60 hover:text-[#111111]/70 hover:bg-[#F3F0EC] transition-all"
+                className="flex items-center gap-3 w-full px-4 min-h-[48px] rounded-xl text-[14px] font-medium text-[#57534E] hover:text-[#111111] hover:bg-[#F0EDE8] transition-colors duration-150"
               >
                 <span className="w-0.5 h-5 rounded-full flex-shrink-0 bg-transparent" />
                 <IconLogout />

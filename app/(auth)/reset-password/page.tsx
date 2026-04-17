@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Input from '@/components/ui/Input'
+import Logo from '@/components/Logo'
 
 export default function ResetPasswordPage() {
   const router = useRouter()
@@ -77,26 +78,23 @@ export default function ResetPasswordPage() {
       <div className="w-full max-w-[400px] animate-fade-up">
         {/* Logo */}
         <div className="flex justify-center mb-8">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#E05A28] flex items-center justify-center">
-              <svg className="text-white" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 2v4a2 2 0 002 2v6M8 2v10M11 2s2 1 2 3-2 3-2 3v4"/>
-              </svg>
-            </div>
-            <span className="text-[16px] font-bold text-[#111] tracking-tight">ReplyFi</span>
-          </div>
+          <Logo />
         </div>
 
-        <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-modal p-7 sm:p-8">
+        <div className="bg-white rounded-2xl border border-border shadow-modal p-7 sm:p-8">
           <h1 className="text-[20px] font-bold text-[#111] tracking-[-0.02em] mb-1">Set New Password</h1>
           <p className="text-[14px] text-[#7C7672] mb-6">Choose a strong password for your account.</p>
 
           {authorized === null ? (
-            <div className="flex items-center justify-center py-10">
-              <svg className="animate-spin h-5 w-5 text-[#E05A28]" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
+            <div className="py-6 text-center">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-accent-light mb-4">
+                <svg className="animate-spin h-5 w-5 text-accent" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+              </div>
+              <h2 className="text-[18px] font-semibold text-text-1 mb-1">Verifying your link…</h2>
+              <p className="text-[13px] text-text-2">This usually takes a second or two.</p>
             </div>
           ) : authorized === false ? (
             <div className="rounded-xl bg-amber-50 border border-amber-200 px-4 py-4 text-[13px] text-amber-800">
@@ -134,7 +132,7 @@ export default function ResetPasswordPage() {
                 autoComplete="new-password"
               />
               {error && (
-                <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3">
+                <div role="alert" className="rounded-xl bg-red-50 border border-red-100 px-4 py-3">
                   <p className="text-[13px] text-red-600">{error}</p>
                 </div>
               )}

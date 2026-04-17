@@ -36,3 +36,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.superpowers/
+.worktrees/
+
+# Claude Code local scratch — agent worktrees, local caches, dashboard state.
+# The superpowers skill metadata stays with the project; this only ignores
+# ephemeral per-session dirs that shouldn't be committed.
+.claude/worktrees/
+.claude/agent-state/
+.superpowers/agent-dashboard/state/

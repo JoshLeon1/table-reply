@@ -31,7 +31,7 @@ export default function BillingButtons() {
   return (
     <div className="space-y-3">
       {error && (
-        <p className="text-[12px] text-red-600 bg-red-50 border border-red-200 rounded-xl px-3 py-2">
+        <p role="alert" className="text-[12px] text-red-600 bg-red-50 border border-red-200 rounded-xl px-3 py-2">
           {error}
         </p>
       )}

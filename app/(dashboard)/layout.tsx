@@ -1,29 +1,24 @@
 import { createClient } from '@/lib/supabase/server'
 import Nav from '@/components/Nav'
 import SubscriptionGateWrapper from '@/components/SubscriptionGateWrapper'
+import { hasAccess, type AccessProfile, type AccessResult } from '@/lib/subscription/access'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  let isPaid = true       // default to paid so unauthenticated redirect is handled by page
-  let daysRemaining = 7
+  // Default: authenticated-paid equivalent so unauthenticated redirect stays
+  // the page's job (not the layout's). This matches the previous behavior.
+  let access: AccessResult = { ok: true, reason: 'paid', daysRemaining: 0 }
 
   if (user) {
     const { data: profile } = await supabase
       .from('profiles')
-      .select('is_paid, trial_started_at')
+      .select('is_paid, trial_started_at, subscription_period_end, subscription_canceled_at, subscription_past_due')
       .eq('id', user.id)
       .maybeSingle()
 
-    isPaid = profile?.is_paid ?? false
-
-    if (!isPaid && profile?.trial_started_at) {
-      const trialEnd = new Date(profile.trial_started_at).getTime() + 7 * 24 * 60 * 60 * 1000
-      daysRemaining = Math.max(0, Math.ceil((trialEnd - Date.now()) / (1000 * 60 * 60 * 24)))
-    } else if (!isPaid) {
-      daysRemaining = 0
-    }
+    access = hasAccess(profile as AccessProfile | null)
   }
 
   return (
@@ -36,9 +31,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <Nav />
       {/* Spacer so content clears the fixed nav (64px nav + safe-area-inset-top for iOS notch) */}
       <div className="flex-shrink-0" style={{ height: 'calc(64px + env(safe-area-inset-top))' }} />
-      <SubscriptionGateWrapper isPaid={isPaid} daysRemaining={daysRemaining}>
-        {children}
-      </SubscriptionGateWrapper>
+      <main id="main" className="flex-1 flex flex-col">
+        <SubscriptionGateWrapper access={access}>
+          {children}
+        </SubscriptionGateWrapper>
+      </main>
     </div>
   )
 }

@@ -208,6 +208,7 @@ export default function LandingPage() {
         </div>
       </nav>
 
+      <main id="main">
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
       <section className="bg-[#111111] pt-10 sm:pt-16 lg:pt-24 pb-10 sm:pb-16 lg:pb-20 px-4 sm:px-6 overflow-hidden relative">
         <div aria-hidden="true" className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 70% 60% at 15% 50%, rgba(224,90,40,0.13) 0%, transparent 65%)' }} />
@@ -525,7 +526,7 @@ export default function LandingPage() {
             {steps.map(({ num, title, desc }, i) => (
               <div
                 key={num}
-                className="relative flex sm:flex-col items-start gap-4 sm:gap-4 p-5 sm:p-6 rounded-2xl bg-[#fafaf8] border border-[#E4DED8] transition-all duration-500 hover:shadow-[0_4px_20px_rgba(0,0,0,0.07)] hover:-translate-y-0.5"
+                className="relative flex sm:flex-col items-start gap-4 sm:gap-4 p-5 sm:p-6 rounded-2xl bg-white border border-border shadow-card transition-all duration-500 hover:shadow-card-hover hover:-translate-y-0.5"
                 style={{
                   transitionDelay: howItWorksAnim.inView ? `${i * 100}ms` : '0ms',
                   opacity: howItWorksAnim.inView ? 1 : 0,
@@ -601,7 +602,7 @@ export default function LandingPage() {
             ].map(({ num, title, desc, tagline, icon, color, bg, border }, i) => (
               <div
                 key={num}
-                className="bg-white border border-[#E4DED8] rounded-2xl p-6 sm:p-7 flex flex-col transition-all duration-500 hover:shadow-[0_4px_20px_rgba(0,0,0,0.07)] hover:-translate-y-0.5"
+                className="bg-white border border-border rounded-2xl shadow-card p-6 sm:p-7 flex flex-col transition-all duration-500 hover:shadow-card-hover hover:-translate-y-0.5"
                 style={{
                   transitionDelay: featuresAnim.inView ? `${i * 80}ms` : '0ms',
                   opacity: featuresAnim.inView ? 1 : 0,
@@ -838,6 +839,8 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      </main>
 
       {/* ── FOOTER ───────────────────────────────────────────────────────── */}
       <footer className="bg-[#111111] border-t border-[#1E1E1E] py-6 sm:py-8 px-4 sm:px-6">

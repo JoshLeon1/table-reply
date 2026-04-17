@@ -8,24 +8,12 @@
 // Go to console.cloud.google.com → OAuth consent screen → Test users → Add your email
 // To allow all users, publish the app (Audience → Publish App)
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Input from '@/components/ui/Input'
-
-function Logo() {
-  return (
-    <div className="flex items-center gap-2.5">
-      <div className="w-8 h-8 rounded-lg bg-[#E05A28] flex items-center justify-center flex-shrink-0">
-        <svg className="text-white" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M5 2v4a2 2 0 002 2v6M8 2v10M11 2s2 1 2 3-2 3-2 3v4"/>
-        </svg>
-      </div>
-      <span className="text-[16px] font-bold text-[#111] tracking-tight">ReplyFi</span>
-    </div>
-  )
-}
+import Logo from '@/components/Logo'
 
 function GoogleIcon() {
   return (
@@ -46,6 +34,30 @@ export default function SignupPage() {
   const [googleLoading, setGoogleLoading] = useState(false)
   const [error, setError] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
+  const [resendCooldown, setResendCooldown] = useState(0)
+  const [resendStatus, setResendStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return
+    const t = setTimeout(() => setResendCooldown((c) => c - 1), 1000)
+    return () => clearTimeout(t)
+  }, [resendCooldown])
+
+  const handleResend = async () => {
+    if (resendCooldown > 0 || resendStatus === 'sending') return
+    setResendStatus('sending')
+    const r = await fetch('/api/auth/resend-confirmation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    })
+    if (r.ok) {
+      setResendStatus('sent')
+      setResendCooldown(60)
+    } else {
+      setResendStatus('error')
+    }
+  }
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -130,13 +142,39 @@ export default function SignupPage() {
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-modal p-6 sm:p-8">
+        <div className="bg-white rounded-2xl border border-border shadow-modal p-6 sm:p-8">
           <h1 className="text-[20px] font-bold text-[#111] tracking-[-0.02em] mb-1">Start Your Free Trial</h1>
           <p className="text-[13px] text-[#A8A29E] mb-6">7 days free — no credit card required.</p>
 
           {successMessage ? (
-            <div className="rounded-xl bg-emerald-50 border border-emerald-100 px-4 py-4">
-              <p className="text-[13px] text-emerald-700 font-medium">{successMessage}</p>
+            <div className="space-y-4">
+              <div className="rounded-xl bg-emerald-50 border border-emerald-100 px-4 py-4">
+                <p className="text-[13px] text-emerald-700 font-medium">{successMessage}</p>
+              </div>
+
+              <div className="rounded-xl border border-border bg-white px-4 py-4 space-y-3">
+                <p className="text-[12px] text-text-2">Didn&apos;t see it? Check your spam folder, or:</p>
+                <button
+                  type="button"
+                  onClick={handleResend}
+                  disabled={resendCooldown > 0 || resendStatus === 'sending'}
+                  className="w-full h-10 rounded-lg border border-border bg-white hover:bg-surface text-text-1 text-[13px] font-medium transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {resendStatus === 'sending' && 'Sending…'}
+                  {resendStatus === 'sent' && resendCooldown > 0 && `Sent — resend in ${resendCooldown}s`}
+                  {resendStatus === 'idle' && 'Resend confirmation email'}
+                  {resendStatus === 'error' && 'Resend failed — try again'}
+                  {resendStatus === 'sent' && resendCooldown === 0 && 'Resend confirmation email'}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleGoogleSignup}
+                  className="w-full h-10 rounded-lg border border-border bg-white hover:bg-surface text-text-1 text-[13px] font-medium transition-all duration-150 flex items-center justify-center gap-2"
+                >
+                  <GoogleIcon />
+                  Use Google instead
+                </button>
+              </div>
             </div>
           ) : (
             <>
@@ -187,7 +225,7 @@ export default function SignupPage() {
                 />
 
                 {error && (
-                  <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 flex items-start gap-2.5">
+                  <div role="alert" className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 flex items-start gap-2.5">
                     <svg className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>

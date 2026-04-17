@@ -1,8 +1,10 @@
 'use client'
 
+import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import ErrorBoundary from '@/components/ErrorBoundary'
+import type { AccessResult } from '@/lib/subscription/access'
 
 // ── Trial countdown banner ────────────────────────────────────────────────────
 function TrialBanner({ daysRemaining }: { daysRemaining: number }) {
@@ -53,6 +55,29 @@ function TrialBanner({ daysRemaining }: { daysRemaining: number }) {
 
 // ── Expired paywall ───────────────────────────────────────────────────────────
 function ExpiredPaywall() {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const handleResubscribe = async () => {
+    setLoading(true)
+    setError('')
+    try {
+      const res = await fetch('/api/stripe/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan: 'annual' }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.url) {
+        throw new Error(data?.error ?? 'Could not start checkout. Please try again.')
+      }
+      window.location.href = data.url
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+      setLoading(false)
+    }
+  }
+
   return (
     <div className="relative flex-1 flex items-center justify-center px-4 py-16 min-h-[60vh]">
       {/* Blurred background hint */}
@@ -104,19 +129,42 @@ function ExpiredPaywall() {
             </div>
 
             {/* CTA */}
-            <Link
-              href="/settings?tab=account"
-              className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-[14px] font-bold shadow-[0_4px_16px_rgba(224,90,40,0.35)] hover:shadow-[0_6px_24px_rgba(224,90,40,0.45)] transition-all duration-200 active:scale-[0.97]"
+            <button
+              type="button"
+              onClick={handleResubscribe}
+              disabled={loading}
+              className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-[14px] font-bold shadow-[0_4px_16px_rgba(224,90,40,0.35)] hover:shadow-[0_6px_24px_rgba(224,90,40,0.45)] transition-all duration-200 active:scale-[0.97] disabled:opacity-70 disabled:cursor-wait"
             >
-              <svg className="w-4 h-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/>
-              </svg>
-              View subscription plans
-            </Link>
+              {loading ? (
+                <>
+                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                  </svg>
+                  Redirecting to checkout…
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                  </svg>
+                  Resubscribe — $239/yr
+                </>
+              )}
+            </button>
 
-            <p className="mt-3.5 text-[11px] text-[#A8A29E]">
-              Annual plan · $239/yr · under $20/month
-            </p>
+            {error ? (
+              <p role="alert" className="mt-2 text-[12px] text-red-500">
+                {error}{' '}
+                <Link href="/settings?tab=account" className="underline">
+                  Go to settings
+                </Link>
+              </p>
+            ) : (
+              <p className="mt-3.5 text-[11px] text-[#A8A29E]">
+                Annual plan · under $20/month · cancel anytime
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -124,31 +172,73 @@ function ExpiredPaywall() {
   )
 }
 
+// ── Canceled-but-in-grace banner ──────────────────────────────────────────────
+function CanceledBanner({ daysRemaining }: { daysRemaining: number }) {
+  const label = daysRemaining === 1 ? '1 day left' : `${daysRemaining} days left`
+  return (
+    <div className="w-full border-b bg-amber-50 border-amber-200 px-4 py-2.5">
+      <div className="max-w-6xl mx-auto flex items-center justify-between gap-3">
+        <span className="text-[13px] font-semibold text-amber-700">
+          Subscription canceled — <span className="tabular-nums">{label}</span> of access remaining
+        </span>
+        <Link
+          href="/settings?tab=account"
+          className="flex-shrink-0 px-3.5 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-[12px] font-bold"
+        >
+          Reactivate
+        </Link>
+      </div>
+    </div>
+  )
+}
+
+// ── Past-due banner ───────────────────────────────────────────────────────────
+function PastDueBanner() {
+  return (
+    <div className="w-full border-b bg-red-50 border-red-200 px-4 py-2.5">
+      <div className="max-w-6xl mx-auto flex items-center justify-between gap-3">
+        <span className="text-[13px] font-semibold text-red-700">
+          Your card was declined — update your payment to keep access
+        </span>
+        <Link
+          href="/settings?tab=account"
+          className="flex-shrink-0 px-3.5 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-[12px] font-bold"
+        >
+          Update card
+        </Link>
+      </div>
+    </div>
+  )
+}
+
 // ── Main wrapper ──────────────────────────────────────────────────────────────
 interface Props {
-  isPaid: boolean
-  daysRemaining: number
+  access: AccessResult
   children: React.ReactNode
 }
 
-export default function SubscriptionGateWrapper({ isPaid, daysRemaining, children }: Props) {
+export default function SubscriptionGateWrapper({ access, children }: Props) {
   const pathname = usePathname()
   const isSettings = pathname?.startsWith('/settings')
 
-  const isExpired  = !isPaid && daysRemaining <= 0
-  const isOnTrial  = !isPaid && daysRemaining > 0
+  const showTrialBanner    = access.ok && access.reason === 'trialing'
+  const showCanceledBanner = access.ok && access.reason === 'canceled_in_grace'
+  const showPastDueBanner  = access.ok && access.reason === 'past_due'
+  const showExpiredPaywall = !access.ok
 
   return (
     <>
-      {/* Trial countdown bar — shown on all pages while on trial */}
-      {isOnTrial && <TrialBanner daysRemaining={daysRemaining} />}
+      {showTrialBanner    && <TrialBanner    daysRemaining={access.daysRemaining} />}
+      {showCanceledBanner && <CanceledBanner daysRemaining={access.daysRemaining} />}
+      {showPastDueBanner  && <PastDueBanner />}
 
-      {/* Main content area */}
-      <main className="relative flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-5 sm:py-8 min-w-0">
+      {/* Inner content region — NOT a <main>; the parent layout already
+          provides the single page <main id="main"> landmark. */}
+      <div className="relative flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-5 sm:py-8 min-w-0">
         <ErrorBoundary>
-          {isExpired && !isSettings ? <ExpiredPaywall /> : children}
+          {showExpiredPaywall && !isSettings ? <ExpiredPaywall /> : children}
         </ErrorBoundary>
-      </main>
+      </div>
     </>
   )
 }

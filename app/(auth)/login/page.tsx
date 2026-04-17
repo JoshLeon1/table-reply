@@ -13,19 +13,7 @@ import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Input from '@/components/ui/Input'
-
-function Logo() {
-  return (
-    <div className="flex items-center gap-2.5">
-      <div className="w-8 h-8 rounded-lg bg-[#E05A28] flex items-center justify-center flex-shrink-0">
-        <svg className="w-4.5 h-4.5 text-white" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M5 2v4a2 2 0 002 2v6M8 2v10M11 2s2 1 2 3-2 3-2 3v4"/>
-        </svg>
-      </div>
-      <span className="text-[16px] font-bold text-[#111] tracking-tight">ReplyFi</span>
-    </div>
-  )
-}
+import Logo from '@/components/Logo'
 
 function GoogleIcon() {
   return (
@@ -131,7 +119,7 @@ function LoginForm() {
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-modal p-6 sm:p-8">
+        <div className="bg-white rounded-2xl border border-border shadow-modal p-6 sm:p-8">
           {accountDeleted && (
             <div className="rounded-xl bg-emerald-50 border border-emerald-200 px-4 py-3 flex items-start gap-2.5 mb-5">
               <svg className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -195,7 +183,7 @@ function LoginForm() {
             </div>
 
             {error && (
-              <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 flex items-start gap-2.5">
+              <div role="alert" className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 flex items-start gap-2.5">
                 <svg className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>

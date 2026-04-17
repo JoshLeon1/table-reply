@@ -22,6 +22,35 @@
   --accent-hover:  #C94E21;
   --accent-light:  #FEF0E8;
   --accent-border: #F5C9AD;
+
+  /* Radii — available as raw CSS variables for arbitrary-value usage (e.g. rounded-[var(--radius-lg)]); not mapped into Tailwind's rounded-* defaults to avoid a site-wide visual shift. */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+
+  /* Shadows — used by Tailwind via theme.boxShadow */
+  --shadow-card:       0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.05);
+  --shadow-card-hover: 0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+  --shadow-modal:      0 20px 60px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-accent:     0 2px 12px rgba(224,90,40,0.30);
+
+  /* Focus ring */
+  --ring-accent: 0 0 0 2px rgba(224,90,40,0.25);
+
+  /* Slate scale — new gray system for inset/flat surfaces */
+  --slate-50:  #FAF8F5;
+  --slate-100: #F0EDE8;
+  --slate-300: #CEC8C1;
+
+  /* Status tokens (data, not brand) */
+  --positive: #0B8A5B;
+  --negative: #B8281E;
+  --neutral:  #6B6862;
+
+  /* Hover-only shadow (replaces ambient --shadow-card on interactive cards) */
+  --shadow-hover: 0 2px 8px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06);
 }
 
 html {
@@ -52,6 +81,8 @@ body {
   html { font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
   body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
   * { box-sizing: border-box; }
+  button, a, [role="button"] { -webkit-tap-highlight-color: transparent; }
+  input, textarea, select { font-size: 16px; }   /* prevent iOS zoom-on-focus */
   ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: #E4DED8; }
   ::-webkit-scrollbar-thumb { background: #C4BEB8; border-radius: 99px; }
@@ -76,11 +107,7 @@ body {
   .stagger-6 { animation-delay: 320ms; }
 
   /* premium card shadow system */
-  .shadow-card       { box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.05); }
-  .shadow-card-hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04); }
   .shadow-lifted     { box-shadow: 0 8px 30px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06); }
-  .shadow-accent     { box-shadow: 0 4px 14px rgba(224,90,40,0.28); }
-  .shadow-accent-lg  { box-shadow: 0 6px 22px rgba(224,90,40,0.35); }
 
   /* card hover — lift + glow */
   .card-hover {
@@ -119,13 +146,7 @@ body {
     box-shadow: 0 0 0 1px rgba(224,90,40,0.15), 0 2px 8px rgba(224,90,40,0.12);
   }
 
-  /* gradient text */
-  .text-gradient-orange {
-    background: linear-gradient(135deg, #E05A28 0%, #F07040 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
+  .tnum { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
 }
 
 @keyframes fadeIn    { from { opacity: 0; } to { opacity: 1; } }

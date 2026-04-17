@@ -1,13 +1,14 @@
 'use client'
 
-import { useEffect, useState, useMemo, useCallback } from 'react'
+import { useEffect, useState, useMemo, useCallback, type SVGProps } from 'react'
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer,
   Area, AreaChart, BarChart, Bar, Cell, ComposedChart,
-} from 'recharts'
+} from '@/components/charts/LazyRecharts'
 import type { ScrapedReview } from '@/types'
 import Eyebrow from '@/components/ui/Eyebrow'
 import KPI from '@/components/ui/KPI'
+import Stars from '@/components/ui/Stars'
 import { Card } from '@/components/ui/Card'
 
 interface TooltipPayloadEntry {
@@ -40,7 +41,11 @@ interface ThemeResult {
 
 // ─── Chart constants ──────────────────────────────────────────────────────────
 
-const AXIS_TICK = { fontSize: 11, fontFeatureSettings: '"tnum" 1', fill: '#A8A29E' } as const
+const AXIS_TICK: Omit<SVGProps<SVGTextElement>, 'children'> = {
+  fontSize: 11,
+  fill: '#A8A29E',
+  style: { fontFeatureSettings: '"tnum" 1' },
+}
 const CHART_PRIMARY = '#111111'
 const CHART_COMPARE = '#CEC8C1'
 const CHART_ACCENT = '#E05A28'
@@ -75,19 +80,6 @@ const STOP_WORDS = new Set([
   'at','in','on','to','of','a','an','is','i','if','as','up',
 ])
 
-// ─── Stars ────────────────────────────────────────────────────────────────────
-
-function Stars({ rating }: { rating: number }) {
-  return (
-    <div className="flex items-center gap-0.5">
-      {[1, 2, 3, 4, 5].map((i) => (
-        <svg key={i} className={`w-3.5 h-3.5 ${i <= Math.round(rating) ? 'text-amber-400' : 'text-[#E4DED8]'}`} fill="currentColor" viewBox="0 0 20 20">
-          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-        </svg>
-      ))}
-    </div>
-  )
-}
 
 // ─── Section Label ────────────────────────────────────────────────────────────
 
@@ -1405,9 +1397,9 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
             </div>
             <ResponsiveContainer width="100%" height={200}>
               <ComposedChart data={dowData} margin={{ top: 8, right: 20, bottom: 0, left: -20 }}>
-                <XAxis dataKey="label" tick={AXIS_TICK as any} axisLine={false} tickLine={false} />
-                <YAxis yAxisId="left" allowDecimals={false} tick={AXIS_TICK as any} axisLine={false} tickLine={false} />
-                <YAxis yAxisId="right" orientation="right" domain={[0, 5]} tick={AXIS_TICK as any} axisLine={false} tickLine={false} />
+                <XAxis dataKey="label" tick={AXIS_TICK} axisLine={false} tickLine={false} />
+                <YAxis yAxisId="left" allowDecimals={false} tick={AXIS_TICK} axisLine={false} tickLine={false} />
+                <YAxis yAxisId="right" orientation="right" domain={[0, 5]} tick={AXIS_TICK} axisLine={false} tickLine={false} />
                 <Tooltip content={({ active, payload, label }: any) => {
                   if (!active || !payload?.length) return null
                   return (
@@ -1468,8 +1460,8 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                   </defs>
                   <Area type="monotone" dataKey="rating" stroke={CHART_PRIMARY} strokeWidth={2.5} fill="url(#ratingGrad)"
                     dot={{ fill: CHART_PRIMARY, strokeWidth: 0, r: 3.5 }} activeDot={{ r: 5, fill: CHART_ACCENT, strokeWidth: 0 }} connectNulls />
-                  <XAxis dataKey="month" tick={AXIS_TICK as any} axisLine={false} tickLine={false} interval="preserveStartEnd" />
-                  <YAxis domain={[1, 5]} tick={AXIS_TICK as any} axisLine={false} tickLine={false} />
+                  <XAxis dataKey="month" tick={AXIS_TICK} axisLine={false} tickLine={false} interval="preserveStartEnd" />
+                  <YAxis domain={[1, 5]} tick={AXIS_TICK} axisLine={false} tickLine={false} />
                   <Tooltip content={<LineTooltip />} />
                 </AreaChart>
               </ResponsiveContainer>
@@ -1481,8 +1473,8 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                 <p className="text-[11px] font-medium text-[#A8A29E] mb-3">Review volume per month</p>
                 <ResponsiveContainer width="100%" height={120}>
                   <BarChart data={trendData} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
-                    <XAxis dataKey="month" tick={AXIS_TICK as any} axisLine={false} tickLine={false} interval="preserveStartEnd" />
-                    <YAxis allowDecimals={false} tick={AXIS_TICK as any} axisLine={false} tickLine={false} />
+                    <XAxis dataKey="month" tick={AXIS_TICK} axisLine={false} tickLine={false} interval="preserveStartEnd" />
+                    <YAxis allowDecimals={false} tick={AXIS_TICK} axisLine={false} tickLine={false} />
                     <Tooltip content={<BarChartTooltip />} />
                     <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                       {trendData.map((entry, index) => (

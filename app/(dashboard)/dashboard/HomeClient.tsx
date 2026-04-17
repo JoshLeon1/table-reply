@@ -10,6 +10,7 @@ import KPI from '@/components/ui/KPI'
 import Eyebrow from '@/components/ui/Eyebrow'
 import Delta from '@/components/ui/Delta'
 import Stars from '@/components/ui/Stars'
+import PlatformBadge from '@/components/ui/PlatformBadge'
 import { Card } from '@/components/ui/Card'
 import { ArrowRight, MessageSquare, RefreshCw, CheckCircle2 } from 'lucide-react'
 
@@ -62,21 +63,6 @@ function TripAdvisorLogo({ size = 22 }: { size?: number }) {
   )
 }
 
-// ── Small shared UI ───────────────────────────────────────────────────────────
-function StarRow({ rating, size = 'sm' }: { rating: number; size?: 'sm' | 'md' }) {
-  const cls = size === 'md' ? 'w-3.5 h-3.5' : 'w-3 h-3'
-  return (
-    <div className="flex gap-0.5">
-      {[1,2,3,4,5].map(i => <svg key={i} className={`${cls} ${i <= rating ? 'text-amber-400' : 'text-[#E4DED8]'}`} fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>)}
-    </div>
-  )
-}
-
-function PlatformBadge({ source }: { source?: string | null }) {
-  if (source === 'yelp') return <span className="inline-flex items-center text-[10px] font-bold tracking-wide text-red-500 bg-red-50 border border-red-200 rounded-md px-1.5 py-0.5 leading-none">YELP</span>
-  if (source === 'tripadvisor') return <span className="inline-flex items-center text-[10px] font-bold tracking-wide text-emerald-600 bg-emerald-50 border border-emerald-200 rounded-md px-1.5 py-0.5 leading-none">TA</span>
-  return <span className="inline-flex items-center text-[10px] font-bold tracking-wide text-blue-500 bg-blue-50 border border-blue-200 rounded-md px-1.5 py-0.5 leading-none">G</span>
-}
 
 function SectionLabel({ children, badge }: { children: React.ReactNode; badge?: React.ReactNode }) {
   return (
@@ -138,7 +124,7 @@ function PendingCard({ review, userId, onAction, animDelay = 0 }: { review: Scra
         <div className="flex items-center gap-1.5 min-w-0">
           <span className="text-[12px] font-medium text-[#57534E] truncate max-w-[100px]">{review.reviewer_name}</span>
           <PlatformBadge source={review.source} />
-          <StarRow rating={review.star_rating} />
+          <Stars rating={review.star_rating} size="sm" />
         </div>
         <span className="text-[11px] text-[#C4BEB8] flex-shrink-0 hidden sm:block">{review.review_datetime_utc ? formatTimeAgo(review.review_datetime_utc) : ''}</span>
         <span className="text-[10px] text-[#C4BEB8] italic flex-1 hidden sm:block">No written review</span>
@@ -163,7 +149,7 @@ function PendingCard({ review, userId, onAction, animDelay = 0 }: { review: Scra
               </div>
               <span className="text-[11px] text-[#C4BEB8] flex-shrink-0 tabular-nums leading-none">{review.review_datetime_utc ? formatTimeAgo(review.review_datetime_utc) : ''}</span>
             </div>
-            <StarRow rating={review.star_rating} />
+            <Stars rating={review.star_rating} size="sm" />
           </div>
         </div>
         <p className="text-[13px] text-[#57534E] leading-relaxed mt-3 pl-10 sm:pl-12 line-clamp-3">{review.review_text || <span className="italic text-[#C4BEB8]">No review text</span>}</p>

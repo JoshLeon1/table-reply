@@ -4,7 +4,9 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import type { BusinessProfile, ScrapedReview } from '@/types'
 import Stars from '@/components/ui/Stars'
+import PlatformBadge from '@/components/ui/PlatformBadge'
 import { Card } from '@/components/ui/Card'
+import KPI from '@/components/ui/KPI'
 
 interface Props {
   profile: BusinessProfile
@@ -25,18 +27,6 @@ function getAvatarColor(name: string): string {
 }
 
 // ── Shared helpers ────────────────────────────────────────────────────────────
-
-function PlatformBadge({ source }: { source?: string | null }) {
-  if (source === 'yelp') return (
-    <span className="inline-flex items-center text-[10px] font-bold text-red-500 bg-red-50 border border-red-200 rounded-md px-1.5 py-0.5 leading-none">YELP</span>
-  )
-  if (source === 'tripadvisor') return (
-    <span className="inline-flex items-center text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 rounded-md px-1.5 py-0.5 leading-none">TA</span>
-  )
-  return (
-    <span className="inline-flex items-center text-[10px] font-bold text-blue-500 bg-blue-50 border border-blue-200 rounded-md px-1.5 py-0.5 leading-none">G</span>
-  )
-}
 
 function formatDate(utcStr: string) {
   if (!utcStr) return ''
@@ -222,12 +212,11 @@ function buildPlatformDeepLink(
   return 'https://business.google.com/reviews'
 }
 
-function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, showStatus, profileUrls, isCopied }: {
+function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, profileUrls, isCopied }: {
   review: ScrapedReview
   onApprove: (id: string) => Promise<void>
   onDismiss: (id: string) => void
   onRestore?: (id: string) => void
-  showStatus?: boolean
   profileUrls?: { google?: string | null; yelp?: string | null; tripadvisor?: string | null }
   isCopied?: boolean
 }) {
@@ -677,17 +666,16 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
           ? (reviews.reduce((s, r) => s + (r.star_rating || 0), 0) / reviews.filter(r => r.star_rating).length).toFixed(1)
           : '—'
         return (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
             {[
-              { label: 'Total Reviews', value: reviews.length, color: 'text-[#111111]' },
-              { label: 'Negative Reviews', value: negCount, color: 'text-red-600' },
-              { label: 'Avg Rating', value: `${avgRat} / 5`, color: 'text-[#111111]' },
-              { label: 'Pending', value: pending.length, color: 'text-amber-600' },
-            ].map(({ label, value, color }) => (
-              <div key={label} className="bg-white rounded-xl border border-[#E4DED8] p-4">
-                <p className="text-[12px] text-[#A8A29E] font-medium">{label}</p>
-                <p className={`text-[22px] font-bold mt-1 tnum ${color}`}>{value}</p>
-              </div>
+              { label: 'TOTAL REVIEWS', value: reviews.length },
+              { label: 'NEGATIVE REVIEWS', value: negCount },
+              { label: 'AVG RATING', value: `${avgRat} / 5` },
+              { label: 'PENDING', value: pending.length },
+            ].map(({ label, value }) => (
+              <Card key={label} variant="flat" padding="md">
+                <KPI variant="secondary" label={label} value={value} />
+              </Card>
             ))}
           </div>
         )
@@ -948,7 +936,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
               <ul className="divide-y divide-[#EDE9E4]">
                 {filtered.map((r) => (
                   <li key={r.id}>
-                    <ReviewCard review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} showStatus profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }}/>
+                    <ReviewCard review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }}/>
                   </li>
                 ))}
               </ul>

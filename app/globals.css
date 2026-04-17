@@ -30,11 +30,12 @@
   --radius-xl: 16px;
   --radius-2xl: 20px;
 
-  /* Shadows — used by Tailwind via theme.boxShadow */
-  --shadow-card:       0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.05);
-  --shadow-card-hover: 0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
-  --shadow-modal:      0 20px 60px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.08);
-  --shadow-accent:     0 2px 12px rgba(224,90,40,0.30);
+  /* Shadows — quiet by default. Cards should read as "hairline-bordered paper",
+     not "3D lifted panel". Reserved elevation for modals and hover states. */
+  --shadow-card:       0 1px 2px rgba(17,17,17,0.02);
+  --shadow-card-hover: 0 2px 4px rgba(17,17,17,0.04), 0 8px 24px rgba(17,17,17,0.04);
+  --shadow-modal:      0 24px 64px rgba(17,17,17,0.12), 0 2px 8px rgba(17,17,17,0.04);
+  --shadow-accent:     0 1px 2px rgba(224,90,40,0.18), 0 6px 16px rgba(224,90,40,0.18);
 
   /* Focus ring */
   --ring-accent: 0 0 0 2px rgba(224,90,40,0.25);

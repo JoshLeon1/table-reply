@@ -1,15 +1,22 @@
 import type { Metadata } from 'next'
-import { Inter, Playfair_Display } from 'next/font/google'
+import { Inter, Instrument_Serif } from 'next/font/google'
 import './globals.css'
 
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
+  display: 'swap',
 })
 
-const playfair = Playfair_Display({
+// Editorial display face — used for marketing headlines and eyebrow moments.
+// Instrument Serif at weight 400 + italic reads like Vercel Ship / Stripe press
+// pages: modern, confident, warm. Intentionally not Playfair (wedding-card vibe).
+const displaySerif = Instrument_Serif({
   subsets: ['latin'],
-  variable: '--font-playfair',
+  weight: '400',
+  style: ['normal', 'italic'],
+  variable: '--font-display',
+  display: 'swap',
 })
 
 export const viewport = {
@@ -48,7 +55,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} ${inter.variable} ${playfair.variable}`}>
+      <body className={`${inter.className} ${inter.variable} ${displaySerif.variable}`}>
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-accent focus:text-white focus:rounded-lg focus:shadow-card-hover"

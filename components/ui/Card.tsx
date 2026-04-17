@@ -18,10 +18,10 @@ const PADDINGS: Record<NonNullable<CardProps['padding']>, string> = {
 }
 
 const VARIANTS: Record<CardVariant, string> = {
-  hero:     'bg-white rounded-[20px] border-0',
+  hero:     'bg-white rounded-2xl border border-[#EDE9E4]',
   standard: 'bg-white rounded-2xl border border-[#E4DED8]',
   flat:     'bg-transparent rounded-xl border border-[#E4DED8]',
-  inset:    'bg-[#FAF8F5] rounded-xl border-0',
+  inset:    'bg-[#FAF8F5] rounded-xl border border-[#EDE9E4]',
 }
 
 /**
@@ -35,11 +35,11 @@ const VARIANTS: Record<CardVariant, string> = {
  * hover shadow. Flat and inset never show shadows.
  */
 export function Card({ className, padding = 'md', variant = 'standard', interactive = false, children, ...props }: CardProps) {
+  // Hairline borders do the heavy lifting. Shadows are rare and reserved for
+  // interactive hover — modern editorial feel, not 2019 lifted-panel feel.
   const base =
-    variant === 'hero'
-      ? 'shadow-[0_2px_8px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]'
-      : variant === 'standard' && interactive
-      ? 'transition-shadow duration-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]'
+    variant === 'standard' && interactive
+      ? 'transition-colors duration-200 hover:border-[#D0C9C1]'
       : ''
 
   return (

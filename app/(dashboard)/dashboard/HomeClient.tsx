@@ -815,10 +815,11 @@ export default function HomeClient({
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Page title */}
         <div>
-          <h1 className="text-[22px] sm:text-[26px] font-semibold text-[#111] tracking-[-0.01em]">
-            Welcome back{ownerName ? `, ${ownerName}` : ''}
+          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A8A29E] mb-2">Dashboard</p>
+          <h1 className="text-[28px] sm:text-[36px] text-[#111] tracking-[-0.025em] leading-[1.05]" style={{ fontWeight: 500 }}>
+            Welcome back{ownerName ? ',' : ''}{ownerName && <span className="font-display italic font-normal">&nbsp;{ownerName}</span>}.
           </h1>
-          <p className="text-[13px] text-[#57534E] mt-1">Here&apos;s how your reputation is trending.</p>
+          <p className="text-[14px] text-[#57534E] mt-2">Here&apos;s how your reputation is trending.</p>
         </div>
 
         <HeroRow reviews={allReviews} />

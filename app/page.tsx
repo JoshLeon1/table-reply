@@ -208,7 +208,7 @@ export default function LandingPage() {
                 style={{ fontSize: 'clamp(34px, 6.2vw, 72px)', fontWeight: 600, lineHeight: 1.02, letterSpacing: '-0.035em', animationDelay: '160ms' }}
               >
                 Reply to every review<br className="hidden sm:block" /> in seconds,{' '}
-                <span className="font-display italic font-normal text-white/90" style={{ letterSpacing: '-0.01em' }}>without losing your voice.</span>
+                <span className="text-white/55">without losing your voice.</span>
               </h1>
 
               <p className="text-white/55 mb-8 animate-fade-up" style={{ fontSize: 'clamp(15px, 1.6vw, 17px)', lineHeight: '1.55', animationDelay: '260ms', maxWidth: '480px' }}>
@@ -357,8 +357,8 @@ export default function LandingPage() {
         >
           <div className="text-center mb-10 sm:mb-12">
             <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A8A29E] mb-3">Real Example</p>
-            <h2 className="text-[#111111]" style={{ fontSize: 'clamp(28px, 4vw, 44px)', lineHeight: 1.05, letterSpacing: '-0.025em', fontWeight: 500 }}>
-              See exactly <span className="font-display italic font-normal">what you&apos;ll get</span>.
+            <h2 className="text-[#111111]" style={{ fontSize: 'clamp(28px, 4vw, 44px)', lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 600 }}>
+              See exactly what you&apos;ll get.
             </h2>
             <p className="text-[15px] text-[#57534E] mt-4 max-w-sm mx-auto leading-relaxed">A real 1-star review. The reply ReplyFi drafts in seconds.</p>
           </div>
@@ -424,8 +424,8 @@ export default function LandingPage() {
           {/* Section label */}
           <div className={`text-center mb-12 transition-all duration-700 ${problemAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
             <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/40 mb-3">The Reality</p>
-            <h2 className="text-white" style={{ fontSize: 'clamp(26px, 3.6vw, 42px)', lineHeight: 1.08, letterSpacing: '-0.025em', fontWeight: 500 }}>
-              Most owners want to reply.<br /><span className="font-display italic font-normal text-white/80">Few actually do.</span>
+            <h2 className="text-white" style={{ fontSize: 'clamp(26px, 3.6vw, 42px)', lineHeight: 1.08, letterSpacing: '-0.03em', fontWeight: 600 }}>
+              Most owners want to reply. <span className="text-white/50">Few actually do.</span>
             </h2>
           </div>
 
@@ -495,8 +495,8 @@ export default function LandingPage() {
             className={`mb-10 text-center transition-all duration-600 ${howItWorksAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
           >
             <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A8A29E] mb-3">How It Works</p>
-            <h2 className="text-[#111111]" style={{ fontSize: 'clamp(28px, 4vw, 44px)', lineHeight: 1.05, letterSpacing: '-0.025em', fontWeight: 500 }}>
-              Set up once. <span className="font-display italic font-normal">Replies ready every morning.</span>
+            <h2 className="text-[#111111]" style={{ fontSize: 'clamp(28px, 4vw, 44px)', lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 600 }}>
+              Set up once. <span className="text-[#A8A29E]">Replies ready every morning.</span>
             </h2>
             <p className="text-[15px] text-[#57534E] mt-4 max-w-md mx-auto leading-relaxed">
               ReplyFi syncs your reviews automatically — you just approve, edit, and post.
@@ -537,8 +537,8 @@ export default function LandingPage() {
         <div ref={featuresAnim.ref} className="max-w-5xl mx-auto">
           <div className={`text-center mb-8 sm:mb-12 transition-all duration-700 ${featuresAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
             <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A8A29E] mb-3">Why It Works</p>
-            <h2 className="text-[#111111]" style={{ fontSize: 'clamp(28px, 4vw, 46px)', lineHeight: 1.05, letterSpacing: '-0.025em', fontWeight: 500 }}>
-              Everything you need to handle reviews — <span className="font-display italic font-normal">without the work.</span>
+            <h2 className="text-[#111111]" style={{ fontSize: 'clamp(28px, 4vw, 46px)', lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 600 }}>
+              Everything you need to handle reviews — <span className="text-[#A8A29E]">without the work.</span>
             </h2>
           </div>
 
@@ -649,8 +649,8 @@ export default function LandingPage() {
             className={`mb-8 sm:mb-12 text-center px-4 sm:px-6 transition-all duration-700 ${testimonialsAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
           >
             <p className="text-white/40 text-[11px] font-semibold uppercase tracking-[0.14em] mb-3">What Owners Say</p>
-            <h2 className="text-white" style={{ fontSize: 'clamp(26px, 3.8vw, 44px)', lineHeight: 1.05, letterSpacing: '-0.025em', fontWeight: 500 }}>
-              Local business owners <span className="font-display italic font-normal text-white/80">love it.</span>
+            <h2 className="text-white" style={{ fontSize: 'clamp(26px, 3.8vw, 44px)', lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 600 }}>
+              Local business owners love it.
             </h2>
           </div>
 
@@ -691,8 +691,8 @@ export default function LandingPage() {
         >
           <div className="text-center mb-8">
             <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A8A29E] mb-3">FAQ</p>
-            <h2 className="text-[#111111]" style={{ fontSize: 'clamp(26px, 3.6vw, 40px)', lineHeight: 1.05, letterSpacing: '-0.025em', fontWeight: 500 }}>
-              Common <span className="font-display italic font-normal">questions.</span>
+            <h2 className="text-[#111111]" style={{ fontSize: 'clamp(26px, 3.6vw, 40px)', lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 600 }}>
+              Common questions.
             </h2>
           </div>
           <div className="space-y-2">
@@ -722,9 +722,9 @@ export default function LandingPage() {
           <p className={`text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A8A29E] mb-3 transition-all duration-700 ${pricingAnim.inView ? 'opacity-100' : 'opacity-0'}`}>Pricing</p>
           <h2
             className={`text-[#111111] mb-3 text-center transition-all duration-700 ${pricingAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
-            style={{ fontSize: 'clamp(28px, 4vw, 46px)', lineHeight: 1.05, letterSpacing: '-0.025em', fontWeight: 500 }}
+            style={{ fontSize: 'clamp(28px, 4vw, 46px)', lineHeight: 1.05, letterSpacing: '-0.03em', fontWeight: 600 }}
           >
-            One plan. <span className="font-display italic font-normal">Everything included.</span>
+            One plan. <span className="text-[#A8A29E]">Everything included.</span>
           </h2>
           <p className={`text-center mb-8 text-[15px] text-[#57534E] transition-all duration-700 delay-75 ${pricingAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
             No caps. No tiers. No surprises.
@@ -795,8 +795,8 @@ export default function LandingPage() {
                 <span className="w-1.5 h-1.5 rounded-full bg-[#E05A28] animate-pulse flex-shrink-0" />
                 <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/30">500+ local businesses</span>
               </div>
-              <h2 className="text-white mb-1.5" style={{ fontSize: 'clamp(22px, 3vw, 32px)', lineHeight: 1.1, letterSpacing: '-0.025em', fontWeight: 500 }}>
-                Start replying to every review <span className="font-display italic font-normal">today.</span>
+              <h2 className="text-white mb-1.5" style={{ fontSize: 'clamp(22px, 3vw, 32px)', lineHeight: 1.1, letterSpacing: '-0.03em', fontWeight: 600 }}>
+                Start replying to every review today.
               </h2>
               <p className="text-white/65 text-[13px]">7-day free trial — no credit card required</p>
             </div>

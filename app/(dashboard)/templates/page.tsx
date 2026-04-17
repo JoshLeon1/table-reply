@@ -57,9 +57,9 @@ export default async function TemplatesPage() {
   ]
 
   const categoryMeta: Record<string, { bg: string; text: string; dot: string }> = {
-    SMS:        { bg: 'bg-blue-50',   text: 'text-blue-600',   dot: 'bg-blue-400' },
-    Email:      { bg: 'bg-violet-50', text: 'text-violet-600', dot: 'bg-violet-400' },
-    'In-Person':{ bg: 'bg-[#FEF0E8]',  text: 'text-[#C94E21]',  dot: 'bg-[#E05A28]' },
+    SMS:        { bg: 'bg-[#F3F0EC]', text: 'text-[#57534E]', dot: 'bg-[#A8A29E]' },
+    Email:      { bg: 'bg-[#F3F0EC]', text: 'text-[#57534E]', dot: 'bg-[#A8A29E]' },
+    'In-Person':{ bg: 'bg-[#F3F0EC]', text: 'text-[#57534E]', dot: 'bg-[#57534E]' },
   }
 
   const grouped = templates.reduce<Record<string, typeof templates>>((acc, t) => {
@@ -71,13 +71,13 @@ export default async function TemplatesPage() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-[22px] font-semibold text-[#111]">Review Request Templates</h1>
-        <p className="text-[13px] text-[#57534E] mt-0.5 max-w-xl">
+      <div className="pt-8 pb-2">
+        <h1 className="text-[22px] sm:text-[24px] text-[#111] tracking-[-0.02em] leading-[1.2]" style={{ fontWeight: 500 }}>Review Request Templates</h1>
+        <p className="text-[13px] text-[#57534E] mt-1.5 max-w-xl">
           Ready-to-send messages to collect more Google reviews.{' '}
           {restaurantProfile.google_maps_url
             ? 'Your Google review link has been filled in automatically.'
-            : <>Connect your Google listing in <a href="/dashboard/grow" className="text-[#E05A28] hover:underline">Grow</a> to auto-fill your review link into these templates.</>
+            : <>Connect your Google listing in <a href="/dashboard/grow" className="text-[#57534E] underline underline-offset-2 hover:text-[#111]">Grow</a> to auto-fill your review link.</>
           }
         </p>
       </div>
@@ -91,18 +91,18 @@ export default async function TemplatesPage() {
             <div className="flex items-center gap-2 mb-3">
               <span className={`w-2 h-2 rounded-full ${meta.dot}`} />
               {category === 'SMS' && (
-                <svg className="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                <svg className="w-3.5 h-3.5 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
                 </svg>
               )}
               {category === 'Email' && (
-                <svg className="w-3.5 h-3.5 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                <svg className="w-3.5 h-3.5 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                 </svg>
               )}
               {category === 'In-Person' && (
-                <svg className="w-3.5 h-3.5 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                <svg className="w-3.5 h-3.5 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
                 </svg>
               )}
               <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E]">
@@ -114,16 +114,16 @@ export default async function TemplatesPage() {
               {items.map((template, i) => (
                 <div
                   key={i}
-                  className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden"
+                  className="bg-white rounded-xl border border-[#E4DED8] overflow-hidden"
                 >
                   {/* Card header */}
                   <div className="flex items-start justify-between gap-3 px-4 sm:px-5 py-3.5 border-b border-[#EDE9E4]">
                     <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2.5 min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0 ${meta.bg} ${meta.text}`}>
+                        <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full flex-shrink-0 ${meta.bg} ${meta.text}`}>
                           {category}
                         </span>
-                        <span className="text-[13px] font-semibold text-[#111]">{template.title}</span>
+                        <span className="text-[13px] font-medium text-[#111]">{template.title}</span>
                       </div>
                       {'subject' in template && template.subject && (
                         <span className="text-[12px] text-[#AAA] truncate">· {template.subject}</span>

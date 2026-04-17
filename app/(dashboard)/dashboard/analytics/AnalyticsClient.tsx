@@ -111,7 +111,7 @@ function ThemeSkeleton() {
 function SparkTooltip({ active, payload, label }: RechartsTooltipProps) {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-white rounded-xl border border-[#E4DED8] shadow-[0_2px_8px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)] p-3 min-w-[140px]">
+    <div className="bg-white rounded-xl border border-[#E4DED8] shadow-card p-3 min-w-[140px]">
       <Eyebrow className="block mb-1">{label ?? ''}</Eyebrow>
       {payload?.map((entry) => (
         <div key={entry.name} className="flex items-baseline justify-between gap-3 text-[13px] tnum">
@@ -126,7 +126,7 @@ function SparkTooltip({ active, payload, label }: RechartsTooltipProps) {
 function LineTooltip({ active, payload, label }: RechartsTooltipProps) {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-white rounded-xl border border-[#E4DED8] shadow-[0_2px_8px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)] p-3 min-w-[140px]">
+    <div className="bg-white rounded-xl border border-[#E4DED8] shadow-card p-3 min-w-[140px]">
       <Eyebrow className="block mb-1">{label ?? ''}</Eyebrow>
       {payload?.map((entry) => (
         <div key={entry.name} className="flex items-baseline justify-between gap-3 text-[13px] tnum">
@@ -143,7 +143,7 @@ function LineTooltip({ active, payload, label }: RechartsTooltipProps) {
 function BarChartTooltip({ active, payload, label }: RechartsTooltipProps) {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-white rounded-xl border border-[#E4DED8] shadow-[0_2px_8px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)] p-3 min-w-[140px]">
+    <div className="bg-white rounded-xl border border-[#E4DED8] shadow-card p-3 min-w-[140px]">
       <Eyebrow className="block mb-1">{label ?? ''}</Eyebrow>
       {payload?.map((entry) => (
         <div key={entry.name} className="flex items-baseline justify-between gap-3 text-[13px] tnum">
@@ -1151,7 +1151,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       )}
 
       {/* ── RATING HERO ────────────────────────────────────────────────────── */}
-      <div className="rounded-2xl bg-white border border-[#E4DED8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <div className="rounded-2xl bg-white border border-[#E4DED8] overflow-hidden ">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
 
           {/* Big number */}
@@ -1319,7 +1319,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                 iconClass: 'text-[#E05A28]',
               },
             ].map(({ icon, title, items, emptyText, chipClass, iconClass }) => (
-              <div key={title} className="bg-white rounded-xl border border-[#E4DED8] p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+              <div key={title} className="bg-white rounded-xl border border-[#E4DED8] p-5 ">
                 <div className={`flex items-center gap-1.5 mb-4 ${iconClass}`}>
                   {icon}
                   <span className="text-[13px] font-semibold text-[#111111]">{title}</span>
@@ -1380,7 +1380,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       {hasDowData && (
         <div>
           <SectionLabel>Busiest review days</SectionLabel>
-          <div className="rounded-2xl border border-[#E4DED8] bg-white p-5 sm:p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <div className="rounded-2xl border border-[#E4DED8] bg-white p-5 sm:p-6 ">
             <div className="flex items-center justify-between mb-5">
               <p className="text-[12px] text-[#A8A29E]">Which days of the week generate the most reviews for your business.</p>
               <div className="flex items-center gap-4 flex-shrink-0 ml-4">
@@ -1403,7 +1403,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                 <Tooltip content={({ active, payload, label }: any) => {
                   if (!active || !payload?.length) return null
                   return (
-                    <div className="bg-white rounded-xl border border-[#E4DED8] shadow-[0_2px_8px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)] p-3 min-w-[140px]">
+                    <div className="bg-white rounded-xl border border-[#E4DED8] shadow-card p-3 min-w-[140px]">
                       <Eyebrow className="block mb-1">{label ?? ''}</Eyebrow>
                       {payload.map((p: any) => (
                         <div key={p.dataKey} className="flex items-baseline justify-between gap-3 text-[13px] tnum">
@@ -1446,7 +1446,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
             </div>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl border border-[#E4DED8] p-4 sm:p-6 space-y-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <div className="bg-white rounded-2xl border border-[#E4DED8] p-4 sm:p-6 space-y-6 ">
             {/* Rating trend */}
             <div>
               <p className="text-[11px] font-medium text-[#A8A29E] mb-3">Average rating per month</p>
@@ -1493,7 +1493,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       {hasMultipleLanguages && (
         <div>
           <SectionLabel>Review languages</SectionLabel>
-          <div className="bg-white rounded-2xl border border-[#E4DED8] p-5 sm:p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <div className="bg-white rounded-2xl border border-[#E4DED8] p-5 sm:p-6 ">
             <p className="text-[12px] text-[#A8A29E] mb-5">Your business attracts international customers. ReplyFi auto-generates replies in each reviewer's language.</p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {languageData.map(({ lang, count, pct }) => (
@@ -1514,7 +1514,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
           <SectionLabel>Notable reviews</SectionLabel>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {bestReview && (
-              <div className="bg-white rounded-2xl border border-[#E4DED8] p-5 sm:p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+              <div className="bg-white rounded-2xl border border-[#E4DED8] p-5 sm:p-6 ">
                 <div className="flex items-center gap-2 mb-4">
                   <div className="flex gap-0.5">
                     {[1,2,3,4,5].map((i) => (
@@ -1533,7 +1533,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
               </div>
             )}
             {worstReview && worstReview.id !== bestReview?.id && (
-              <div className="bg-white rounded-2xl border border-[#E4DED8] p-5 sm:p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+              <div className="bg-white rounded-2xl border border-[#E4DED8] p-5 sm:p-6 ">
                 <div className="flex items-center gap-2 mb-4">
                   <div className="flex gap-0.5">
                     {[1,2,3,4,5].map((i) => (

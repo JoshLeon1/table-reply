@@ -7,6 +7,8 @@ import Stars from '@/components/ui/Stars'
 import PlatformBadge from '@/components/ui/PlatformBadge'
 import { Card } from '@/components/ui/Card'
 import KPI from '@/components/ui/KPI'
+import PageHeader from '@/components/ui/PageHeader'
+import Tabs from '@/components/ui/Tabs'
 
 interface Props {
   profile: BusinessProfile
@@ -16,14 +18,8 @@ interface Props {
 
 // ── Avatar color helpers ──────────────────────────────────────────────────────
 
-const AVATAR_COLORS = [
-  'bg-emerald-500', 'bg-blue-500', 'bg-violet-500', 'bg-pink-500',
-  'bg-amber-500', 'bg-cyan-500', 'bg-rose-500', 'bg-indigo-500'
-]
-function getAvatarColor(name: string): string {
-  let hash = 0
-  for (const c of name) hash = (hash * 31 + c.charCodeAt(0)) & 0xffff
-  return AVATAR_COLORS[hash % AVATAR_COLORS.length]
+function getAvatarColor(_name: string): string {
+  return 'bg-[#F3F0EC]'
 }
 
 // ── Shared helpers ────────────────────────────────────────────────────────────
@@ -60,7 +56,7 @@ function ScrapeProgress() {
 
   return (
     <div className="flex items-center gap-3 px-4 py-3.5 rounded-xl bg-[#F8F6F3] border border-[#E4DED8] text-[#111111] mb-5">
-      <svg className="animate-spin w-4 h-4 text-[#E05A28] flex-shrink-0" fill="none" viewBox="0 0 24 24">
+      <svg className="animate-spin w-4 h-4 text-[#A8A29E] flex-shrink-0" fill="none" viewBox="0 0 24 24">
         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
       </svg>
@@ -99,13 +95,13 @@ function SetupPanel({ profile, onSaved }: { profile: BusinessProfile; onSaved: (
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[55vh] text-center">
-      <div className="w-12 h-12 rounded-2xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mb-6">
-        <svg className="w-6 h-6 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="w-12 h-12 rounded-xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mb-6">
+        <svg className="w-6 h-6 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75}
             d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
         </svg>
       </div>
-      <h1 className="text-xl font-semibold text-[#111111] mb-2">Put Your Review Replies on Autopilot</h1>
+      <h1 className="text-[22px] text-[#111111] tracking-[-0.02em] mb-2" style={{ fontWeight: 500 }}>Put Your Review Replies on Autopilot</h1>
       <p className="text-[13px] text-[#57534E]/80 max-w-[280px] sm:max-w-sm mb-8 leading-relaxed">
         Connect Google Maps, Yelp, or TripAdvisor and ReplyFi will sync new reviews every morning, generate personalized replies, and queue them for your approval.
       </p>
@@ -124,15 +120,15 @@ function SetupPanel({ profile, onSaved }: { profile: BusinessProfile; onSaved: (
 
         {/* Helper bullets */}
         <div className="space-y-1.5 pt-1">
-          <p className="flex items-center gap-2 text-[12px] text-[#57534E]"><span>📍</span> Go to Google Maps</p>
-          <p className="flex items-center gap-2 text-[12px] text-[#57534E]"><span>🔍</span> Search for your business</p>
-          <p className="flex items-center gap-2 text-[12px] text-[#57534E]"><span>🔗</span> Copy the URL from address bar</p>
+          <p className="flex items-center gap-2 text-[12px] text-[#57534E]"><svg className="w-3.5 h-3.5 text-[#A8A29E] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg> Go to Google Maps</p>
+          <p className="flex items-center gap-2 text-[12px] text-[#57534E]"><svg className="w-3.5 h-3.5 text-[#A8A29E] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg> Search for your business</p>
+          <p className="flex items-center gap-2 text-[12px] text-[#57534E]"><svg className="w-3.5 h-3.5 text-[#A8A29E] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg> Copy the URL from address bar</p>
         </div>
 
         <button
           onClick={handleSave}
           disabled={saving || !url.trim()}
-          className="w-full min-h-[52px] rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.98] text-white text-[15px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-[0_2px_12px_rgba(224,90,40,0.25)]"
+          className="w-full min-h-[52px] rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.98] text-white text-[15px] font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-all"
         >
           {saving ? 'Saving…' : 'Connect Google Maps'}
         </button>
@@ -358,7 +354,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
   if (noText) {
     return (
       <div className="flex items-center gap-3 opacity-60 hover:opacity-80 transition-opacity duration-150">
-        <div className={`w-7 h-7 rounded-full ${getAvatarColor(review.reviewer_name)} flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0`}>
+        <div className={`w-7 h-7 rounded-full ${getAvatarColor(review.reviewer_name)} border border-[#E4DED8] flex items-center justify-center text-[10px] font-medium text-[#57534E] flex-shrink-0`}>
           {getInitials(review.reviewer_name)}
         </div>
         <div className="flex items-center gap-1.5 min-w-0">
@@ -388,20 +384,20 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
       <div className="flex items-center justify-between px-4 sm:px-5 py-3.5 sm:py-4 border-b border-[#EDE9E4]">
         <div className="flex items-center gap-3 min-w-0">
           {/* Initials avatar */}
-          <div className={`w-9 h-9 rounded-full ${getAvatarColor(review.reviewer_name)} flex items-center justify-center text-[12px] font-bold text-white flex-shrink-0`}>
+          <div className={`w-9 h-9 rounded-full ${getAvatarColor(review.reviewer_name)} border border-[#E4DED8] flex items-center justify-center text-[12px] font-medium text-[#57534E] flex-shrink-0`}>
             {getInitials(review.reviewer_name)}
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-[13px] font-semibold text-[#111111]">{review.reviewer_name}</span>
+              <span className="text-[13px] font-medium text-[#111111]">{review.reviewer_name}</span>
               <PlatformBadge source={review.source} />
               {review.star_rating >= 4 ? (
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200">Positive</span>
+                <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#F3F0EC] text-[#57534E] border border-[#E4DED8]">Positive</span>
               ) : review.star_rating <= 2 ? (
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-red-50 text-red-500 border border-red-200">Critical</span>
+                <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#FEF0E8] text-[#B84A1A] border border-[#FCDCCA]">Critical</span>
               ) : null}
               {review.alert_triggered && (
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-50 text-red-500 border border-red-200 flex items-center gap-1">
+                <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#FEF0E8] text-[#B84A1A] border border-[#FCDCCA] flex items-center gap-1">
                   <svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd"/></svg>
                   Alert
                 </span>
@@ -411,7 +407,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
               <Stars rating={review.star_rating} size="sm" />
               <span className="text-[11px] text-[#A8A29E]">{formatDate(review.review_datetime_utc)}</span>
               {review.language && review.language !== 'English' && (
-                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-blue-50 text-blue-500 border border-blue-200">{review.language}</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#F3F0EC] text-[#57534E] border border-[#E4DED8]">{review.language}</span>
               )}
             </div>
           </div>
@@ -428,7 +424,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
             {isLong && (
               <button
                 onClick={() => setExpanded(!expanded)}
-                className="text-[12px] text-[#E05A28] hover:text-[#C94E21] font-medium mt-1.5 transition-colors"
+                className="text-[12px] text-[#57534E] hover:text-[#111] font-medium mt-1.5 transition-colors"
               >
                 {expanded ? 'Show less' : 'Read more'}
               </button>
@@ -440,7 +436,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
         <div className="px-4 sm:px-5 py-3.5 sm:py-4">
             {review.generated_reply ? (
               /* AI reply card */
-              <div className="rounded-xl bg-[#F8F6F3] border border-[#E4DED8] border-l-2 border-l-[#E05A28] px-4 py-3.5">
+              <div className="rounded-xl bg-[#F8F6F3] border border-[#E4DED8] px-4 py-3.5">
                 <div className="flex items-center justify-end gap-2 mb-2">
                   {status === 'pending' && !editing && (
                     <button
@@ -461,13 +457,13 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
                       onChange={(e) => setEditedReply(e.target.value)}
                       rows={5}
                       autoFocus
-                      className="w-full text-[13px] text-[#57534E] leading-relaxed bg-white border border-[#E05A28]/30 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] resize-none transition-all"
+                      className="w-full text-[13px] text-[#57534E] leading-relaxed bg-white border border-[#E4DED8] rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#111]/10 focus:border-[#111] resize-none transition-all"
                     />
                     <div className="flex items-center gap-2">
                       <button
                         onClick={handleSaveEdit}
                         disabled={savingEdit || !editedReply.trim()}
-                        className="px-3.5 py-1.5 rounded-lg bg-[#E05A28] hover:bg-[#C94E21] text-white text-[12px] font-semibold disabled:opacity-40 transition-all"
+                        className="px-3.5 py-1.5 rounded-lg bg-[#111] hover:bg-[#2A2A2A] text-white text-[12px] font-medium disabled:opacity-40 transition-all"
                       >
                         {savingEdit ? 'Saving…' : 'Save Changes'}
                       </button>
@@ -497,7 +493,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
                   <div>
                     <button
                       onClick={handleGenerateReply}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#E05A28]/10 hover:bg-[#E05A28]/15 border border-[#E05A28]/25 text-[#E05A28] text-[12px] font-semibold transition-all duration-150 active:scale-[0.98]"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#F3F0EC] hover:bg-[#EDE9E4] border border-[#E4DED8] text-[#57534E] text-[12px] font-medium transition-all duration-150 active:scale-[0.98]"
                     >
                       <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/>
@@ -520,7 +516,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
             <button
               onClick={handleCopyReply}
               disabled={!review.generated_reply}
-              className="flex items-center justify-center gap-1.5 px-4 min-h-[44px] rounded-xl bg-[#111827] hover:bg-[#1f2937] active:scale-[0.97] text-white text-[13px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
+              className="flex items-center justify-center gap-1.5 px-4 min-h-[44px] rounded-xl bg-[#111] hover:bg-[#2A2A2A] active:scale-[0.97] text-white text-[13px] font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
             >
               {copied ? (
                 <><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied!</>
@@ -564,7 +560,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
             <button
               onClick={handleApprove}
               disabled={actioning || !review.generated_reply || editing}
-              className={`flex items-center justify-center gap-1.5 px-4 min-h-[44px] rounded-xl text-white text-[13px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 shadow-[0_1px_3px_rgba(224,90,40,0.3)] ${isCopied ? 'bg-green-600 hover:bg-green-600 active:bg-green-600' : 'bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.97]'}`}
+              className={`flex items-center justify-center gap-1.5 px-4 min-h-[44px] rounded-xl text-white text-[13px] font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 ${isCopied ? 'bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700' : 'bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.97]'}`}
             >
               {isCopied ? (
                 <>
@@ -681,45 +677,33 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
         )
       })()}
 
-      {/* Page header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <div>
-          <h1 className="text-[22px] sm:text-[24px] font-bold tracking-tight text-[#111111]">Reviews</h1>
-          <div className="flex items-center gap-2 mt-1 flex-wrap">
-            <span className="relative flex h-2 w-2 flex-shrink-0">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-            </span>
-            <span className="text-[13px] text-[#57534E]">
-              {profile.business_name}
-              {lastScrapedAt && <> · Synced {formatDate(lastScrapedAt)}</>}
-            </span>
-          </div>
-        </div>
-        <div className="flex items-center gap-2 flex-shrink-0">
+      <PageHeader
+        title="Reviews"
+        description={profile.business_name + (lastScrapedAt ? ` · Synced ${formatDate(lastScrapedAt)}` : '')}
+        action={
           <button onClick={onScrapeNow} disabled={scraping}
-            className="group flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#F3F0EC] border border-[#E4DED8] hover:border-[#D0C9C1] hover:shadow-sm text-[13px] font-medium text-[#57534E] hover:text-[#111111] disabled:opacity-40 transition-all min-h-[44px]">
+            className="group flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#F3F0EC] border border-[#E4DED8] hover:border-[#D0C9C1] text-[13px] font-medium text-[#57534E] hover:text-[#111111] disabled:opacity-40 transition-all min-h-[36px]">
             <svg className={`w-3.5 h-3.5 transition-transform duration-500 ${scraping ? 'animate-spin' : 'group-hover:rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
             </svg>
             {scraping ? 'Syncing…' : 'Sync Now'}
           </button>
-        </div>
-      </div>
+        }
+      />
 
       {/* Response rate stat */}
       {reviews.length > 0 && (
-        <div className="flex items-center gap-4 px-5 py-4 rounded-2xl bg-white border border-[#E4DED8] shadow-[0_1px_4px_rgba(0,0,0,0.04)] mb-5">
+        <div className="flex items-center gap-4 px-5 py-4 rounded-xl bg-white border border-[#E4DED8] mb-5">
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-2">
               <p className="text-[12px] font-medium text-[#A8A29E]">Response rate</p>
-              <span className={`text-[13px] font-bold ${responseRate >= 80 ? 'text-emerald-600' : responseRate >= 50 ? 'text-[#111111]' : 'text-[#E05A28]'}`}>
+              <span className={`text-[13px] font-medium tabular-nums ${responseRate >= 80 ? 'text-emerald-600' : responseRate >= 50 ? 'text-[#111111]' : 'text-[#B84A1A]'}`}>
                 {approvedCount} / {totalWithText} &nbsp;·&nbsp; {responseRate}%
               </span>
             </div>
             <div className="h-1.5 rounded-full bg-[#EDE9E4] overflow-hidden">
               <div
-                className={`h-full rounded-full transition-all duration-700 ${responseRate >= 80 ? 'bg-emerald-500' : responseRate >= 50 ? 'bg-[#E05A28]' : 'bg-red-400'}`}
+                className={`h-full rounded-full transition-all duration-700 ${responseRate >= 80 ? 'bg-emerald-500' : responseRate >= 50 ? 'bg-[#111]' : 'bg-[#B84A1A]'}`}
                 style={{ width: `${Math.min(responseRate, 100)}%` }}
               />
             </div>
@@ -729,48 +713,23 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
 
       {/* Pending banner */}
       {pending.length > 0 && !scraping && (
-        <div className="mb-5 flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-[#E05A28]/10 border border-[#E05A28]/25">
-          <span className="relative flex-shrink-0">
-            <span className="absolute inset-0 rounded-full bg-[#E05A28] animate-ping opacity-30" />
-            <span className="relative w-6 h-6 rounded-full bg-[#E05A28] text-white text-[11px] font-bold flex items-center justify-center shadow-[0_0_8px_rgba(224,90,40,0.4)]">
-              {pending.length}
-            </span>
+        <div className="mb-5 flex items-center gap-3 px-4 py-3.5 rounded-xl bg-white border border-[#E4DED8]">
+          <span className="inline-flex items-center justify-center min-w-[20px] h-[18px] px-1.5 rounded-full bg-[#F3F0EC] border border-[#E4DED8] text-[10px] text-[#57534E] tabular-nums flex-shrink-0">
+            {pending.length}
           </span>
-          <p className="text-[13px] text-[#E05A28]/80">
-            <span className="font-semibold text-[#E05A28]">{pending.length} {pending.length === 1 ? 'review' : 'reviews'}</span>
-            <span className="opacity-80"> waiting — review the reply, edit if needed, then approve.</span>
+          <p className="text-[13px] text-[#57534E]">
+            <span className="font-medium text-[#111]">{pending.length} {pending.length === 1 ? 'review' : 'reviews'}</span>
+            {' '}waiting — review the reply, edit if needed, then approve.
           </p>
         </div>
       )}
 
-      {/* Tab bar */}
-      <div className="flex gap-1 p-1 bg-white rounded-xl border border-[#E4DED8] mb-5 w-full sm:w-fit">
-        {tabs.map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => { setActiveTab(tab.key); setFilterStars(null) }}
-            className={`flex flex-1 sm:flex-none items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2 text-[12px] sm:text-[13px] font-semibold rounded-lg transition-all duration-200 whitespace-nowrap ${
-              activeTab === tab.key
-                ? 'bg-white text-[#111111] shadow-[0_1px_3px_rgba(0,0,0,0.08)]'
-                : 'text-[#A8A29E] hover:text-[#57534E]'
-            }`}
-          >
-            {tab.label}
-            {tab.count > 0 && (
-              <span className={`min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-bold flex items-center justify-center leading-none transition-all ${
-                activeTab === tab.key
-                  ? tab.key === 'pending'
-                    ? 'bg-[#E05A28] text-white shadow-[0_0_6px_rgba(224,90,40,0.4)]'
-                    : tab.key === 'approved'
-                    ? 'bg-emerald-500 text-white'
-                    : 'bg-[#A8A29E] text-white'
-                  : 'bg-[#E4DED8] text-[#A8A29E]'
-              }`}>
-                {tab.count}
-              </span>
-            )}
-          </button>
-        ))}
+      <div className="mb-5">
+        <Tabs
+          tabs={tabs.map(t => ({ key: t.key, label: t.label, count: t.count }))}
+          active={activeTab}
+          onChange={(key) => { setActiveTab(key as ReviewTab); setFilterStars(null) }}
+        />
       </div>
 
       {/* Star filter */}
@@ -780,9 +739,9 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
             <button
               key={star ?? 'all'}
               onClick={() => setFilterStars(star)}
-              className={`px-3 py-1 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full text-[12px] font-semibold border transition-colors ${
+              className={`px-3 py-1 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full text-[12px] font-medium border transition-colors ${
                 filterStars === star
-                  ? 'bg-[#E05A28] text-white border-[#E05A28]'
+                  ? 'bg-[#111] text-white border-[#111]'
                   : 'bg-white text-[#57534E] border-[#E4DED8] hover:border-[#D0C9C1] hover:text-[#111111]'
               }`}
             >
@@ -818,8 +777,8 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
         // Filter is active and matched 0 → show filter empty state with clear button
         if (filterStars !== null && pending.length > 0) {
           return (
-            <div className="text-center py-14 bg-white rounded-2xl border border-[#E4DED8]">
-              <div className="w-11 h-11 rounded-2xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mx-auto mb-4">
+            <div className="text-center py-14 bg-white rounded-xl border border-[#E4DED8]">
+              <div className="w-11 h-11 rounded-xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mx-auto mb-4">
                 <svg className="w-5 h-5 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
                 </svg>
@@ -827,7 +786,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
               <p className="text-[14px] font-semibold text-[#111111]">No {filterStars}-star reviews pending</p>
               <button
                 onClick={() => setFilterStars(null)}
-                className="mt-3 inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#E05A28] hover:text-[#C94E21] transition-colors"
+                className="mt-3 inline-flex items-center gap-1.5 text-[12px] font-medium text-[#57534E] hover:text-[#111] transition-colors"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
@@ -839,9 +798,9 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
         }
         // No filter and nothing pending → caught-up state
         return (
-          <div className="text-center py-14 bg-white rounded-2xl border border-[#E4DED8]">
-            <div className="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center mx-auto mb-4">
-              <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="text-center py-14 bg-white rounded-xl border border-[#E4DED8]">
+            <div className="w-11 h-11 rounded-xl bg-white border border-[#E4DED8] flex items-center justify-center mx-auto mb-4">
+              <svg className="w-5 h-5 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/>
               </svg>
             </div>
@@ -858,12 +817,12 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
             <>
               {/* Instruction banner */}
               {!readyBannerDismissed && (
-                <div className="flex items-start gap-3 px-4 py-3.5 mb-4 rounded-xl bg-emerald-50 border border-emerald-200/70">
-                  <svg className="w-4 h-4 flex-shrink-0 mt-0.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="flex items-start gap-3 px-4 py-3.5 mb-4 rounded-xl bg-white border border-[#E4DED8]">
+                  <svg className="w-4 h-4 flex-shrink-0 mt-0.5 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                   </svg>
-                  <p className="text-[13px] text-emerald-700 leading-snug flex-1">
-                    <span className="font-semibold">Ready to post.</span>{' '}
+                  <p className="text-[13px] text-[#57534E] leading-snug flex-1">
+                    <span className="font-medium text-[#111]">Ready to post.</span>{' '}
                     Copy each reply and paste it directly on the review platform.
                   </p>
                   <button
@@ -881,8 +840,8 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
                 const filtered = filterStars !== null ? approved.filter((r) => r.star_rating === filterStars) : approved
                 if (filtered.length === 0) {
                   return (
-                    <div className="text-center py-14 bg-white rounded-2xl border border-[#E4DED8]">
-                      <div className="w-11 h-11 rounded-2xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mx-auto mb-4">
+                    <div className="text-center py-14 bg-white rounded-xl border border-[#E4DED8]">
+                      <div className="w-11 h-11 rounded-xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mx-auto mb-4">
                         <svg className="w-5 h-5 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
                         </svg>
@@ -890,7 +849,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
                       <p className="text-[14px] font-semibold text-[#111111]">No {filterStars}-star approved replies</p>
                       <button
                         onClick={() => setFilterStars(null)}
-                        className="mt-3 inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#E05A28] hover:text-[#C94E21] transition-colors"
+                        className="mt-3 inline-flex items-center gap-1.5 text-[12px] font-medium text-[#57534E] hover:text-[#111] transition-colors"
                       >
                         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
@@ -914,8 +873,8 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
               })()}
             </>
           ) : (
-            <div className="text-center py-14 bg-white rounded-2xl border border-[#E4DED8]">
-              <div className="w-11 h-11 rounded-2xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mx-auto mb-4">
+            <div className="text-center py-14 bg-white rounded-xl border border-[#E4DED8]">
+              <div className="w-11 h-11 rounded-xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mx-auto mb-4">
                 <svg className="w-5 h-5 text-[#C4BEB8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                 </svg>
@@ -945,8 +904,8 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
         }
         if (filterStars !== null && dismissed.length > 0) {
           return (
-            <div className="text-center py-14 bg-white rounded-2xl border border-[#E4DED8]">
-              <div className="w-11 h-11 rounded-2xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mx-auto mb-4">
+            <div className="text-center py-14 bg-white rounded-xl border border-[#E4DED8]">
+              <div className="w-11 h-11 rounded-xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mx-auto mb-4">
                 <svg className="w-5 h-5 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
                 </svg>
@@ -954,7 +913,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
               <p className="text-[14px] font-semibold text-[#111111]">No {filterStars}-star dismissed reviews</p>
               <button
                 onClick={() => setFilterStars(null)}
-                className="mt-3 inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#E05A28] hover:text-[#C94E21] transition-colors"
+                className="mt-3 inline-flex items-center gap-1.5 text-[12px] font-medium text-[#57534E] hover:text-[#111] transition-colors"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
@@ -965,8 +924,8 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
           )
         }
         return (
-          <div className="text-center py-14 bg-white rounded-2xl border border-[#E4DED8]">
-            <div className="w-11 h-11 rounded-2xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mx-auto mb-4">
+          <div className="text-center py-14 bg-white rounded-xl border border-[#E4DED8]">
+            <div className="w-11 h-11 rounded-xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mx-auto mb-4">
               <svg className="w-5 h-5 text-[#C4BEB8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
               </svg>

@@ -38,6 +38,13 @@ interface ThemeResult {
   error?: string
 }
 
+// ─── Chart constants ──────────────────────────────────────────────────────────
+
+const AXIS_TICK = { fontSize: 11, fontFeatureSettings: '"tnum" 1', fill: '#A8A29E' } as const
+const CHART_PRIMARY = '#111111'
+const CHART_COMPARE = '#CEC8C1'
+const CHART_ACCENT = '#E05A28'
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function avg(nums: number[]) {
@@ -1398,9 +1405,9 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
             </div>
             <ResponsiveContainer width="100%" height={200}>
               <ComposedChart data={dowData} margin={{ top: 8, right: 20, bottom: 0, left: -20 }}>
-                <XAxis dataKey="label" tick={{ fontSize: 11, fontFeatureSettings: '"tnum" 1', fill: '#A8A29E' } as any} axisLine={false} tickLine={false} />
-                <YAxis yAxisId="left" allowDecimals={false} tick={{ fontSize: 11, fontFeatureSettings: '"tnum" 1', fill: '#A8A29E' } as any} axisLine={false} tickLine={false} />
-                <YAxis yAxisId="right" orientation="right" domain={[0, 5]} tick={{ fontSize: 11, fontFeatureSettings: '"tnum" 1', fill: '#A8A29E' } as any} axisLine={false} tickLine={false} />
+                <XAxis dataKey="label" tick={AXIS_TICK as any} axisLine={false} tickLine={false} />
+                <YAxis yAxisId="left" allowDecimals={false} tick={AXIS_TICK as any} axisLine={false} tickLine={false} />
+                <YAxis yAxisId="right" orientation="right" domain={[0, 5]} tick={AXIS_TICK as any} axisLine={false} tickLine={false} />
                 <Tooltip content={({ active, payload, label }: any) => {
                   if (!active || !payload?.length) return null
                   return (
@@ -1419,8 +1426,8 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                     </div>
                   )
                 }} />
-                <Bar yAxisId="left" dataKey="count" radius={[4, 4, 0, 0]} fill="#111111" fillOpacity={0.85} name="count" />
-                <Line yAxisId="right" type="monotone" dataKey="avgRating" stroke="#CEC8C1" strokeWidth={2} dot={{ fill: '#CEC8C1', r: 3, strokeWidth: 0 }} name="avgRating" connectNulls />
+                <Bar yAxisId="left" dataKey="count" radius={[4, 4, 0, 0]} fill={CHART_PRIMARY} fillOpacity={0.85} name="count" />
+                <Line yAxisId="right" type="monotone" dataKey="avgRating" stroke={CHART_COMPARE} strokeWidth={2} dot={{ fill: CHART_COMPARE, r: 3, strokeWidth: 0 }} name="avgRating" connectNulls />
               </ComposedChart>
             </ResponsiveContainer>
           </div>
@@ -1455,14 +1462,14 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                 <AreaChart data={trendData} margin={{ top: 8, right: 4, bottom: 0, left: -20 }}>
                   <defs>
                     <linearGradient id="ratingGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#111111" stopOpacity={0.08} />
-                      <stop offset="95%" stopColor="#111111" stopOpacity={0} />
+                      <stop offset="5%" stopColor={CHART_PRIMARY} stopOpacity={0.08} />
+                      <stop offset="95%" stopColor={CHART_PRIMARY} stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <Area type="monotone" dataKey="rating" stroke="#111111" strokeWidth={2.5} fill="url(#ratingGrad)"
-                    dot={{ fill: '#111111', strokeWidth: 0, r: 3.5 }} activeDot={{ r: 5, fill: '#E05A28', strokeWidth: 0 }} connectNulls />
-                  <XAxis dataKey="month" tick={{ fontSize: 11, fontFeatureSettings: '"tnum" 1', fill: '#A8A29E' } as any} axisLine={false} tickLine={false} interval="preserveStartEnd" />
-                  <YAxis domain={[1, 5]} tick={{ fontSize: 11, fontFeatureSettings: '"tnum" 1', fill: '#A8A29E' } as any} axisLine={false} tickLine={false} />
+                  <Area type="monotone" dataKey="rating" stroke={CHART_PRIMARY} strokeWidth={2.5} fill="url(#ratingGrad)"
+                    dot={{ fill: CHART_PRIMARY, strokeWidth: 0, r: 3.5 }} activeDot={{ r: 5, fill: CHART_ACCENT, strokeWidth: 0 }} connectNulls />
+                  <XAxis dataKey="month" tick={AXIS_TICK as any} axisLine={false} tickLine={false} interval="preserveStartEnd" />
+                  <YAxis domain={[1, 5]} tick={AXIS_TICK as any} axisLine={false} tickLine={false} />
                   <Tooltip content={<LineTooltip />} />
                 </AreaChart>
               </ResponsiveContainer>
@@ -1474,12 +1481,12 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                 <p className="text-[11px] font-medium text-[#A8A29E] mb-3">Review volume per month</p>
                 <ResponsiveContainer width="100%" height={120}>
                   <BarChart data={trendData} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
-                    <XAxis dataKey="month" tick={{ fontSize: 11, fontFeatureSettings: '"tnum" 1', fill: '#A8A29E' } as any} axisLine={false} tickLine={false} interval="preserveStartEnd" />
-                    <YAxis allowDecimals={false} tick={{ fontSize: 11, fontFeatureSettings: '"tnum" 1', fill: '#A8A29E' } as any} axisLine={false} tickLine={false} />
+                    <XAxis dataKey="month" tick={AXIS_TICK as any} axisLine={false} tickLine={false} interval="preserveStartEnd" />
+                    <YAxis allowDecimals={false} tick={AXIS_TICK as any} axisLine={false} tickLine={false} />
                     <Tooltip content={<BarChartTooltip />} />
                     <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                       {trendData.map((entry, index) => (
-                        <Cell key={index} fill={entry.count > 0 ? '#111111' : '#D0C9C1'} fillOpacity={entry.count > 0 ? 0.85 : 0.5} />
+                        <Cell key={index} fill={entry.count > 0 ? CHART_PRIMARY : '#D0C9C1'} fillOpacity={entry.count > 0 ? 0.85 : 0.5} />
                       ))}
                     </Bar>
                   </BarChart>

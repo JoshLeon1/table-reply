@@ -17,18 +17,18 @@ interface MarketingNavProps {
  */
 export default function MarketingNav({ right = 'cta' }: MarketingNavProps) {
   return (
-    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-[#E4DED8]" style={{ boxShadow: '0 1px 0 rgba(0,0,0,0.03)' }}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
+    <nav className="sticky top-0 z-50 bg-white/85 backdrop-blur-xl border-b border-[#E4DED8]">
+      <div className="max-w-6xl mx-auto px-5 sm:px-6 h-14 sm:h-[60px] flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 group">
-          <LogoMark size={28} className="transition-transform duration-200 group-hover:scale-[1.03]" />
-          <span className="font-bold text-[15px] sm:text-[17px] tracking-[-0.025em] text-[#111111]">ReplyFi</span>
+          <LogoMark size={26} />
+          <span className="font-bold text-[15px] sm:text-[16px] tracking-[-0.025em] text-[#111111]">ReplyFi</span>
         </Link>
 
         {right === 'cta' ? (
-          <div className="flex items-center gap-3 sm:gap-5">
+          <div className="flex items-center gap-4 sm:gap-6">
             <Link
               href="/login"
-              className="relative text-[13px] sm:text-sm font-medium text-[#57534E] hover:text-[#111] transition-colors duration-200 py-1
+              className="relative text-[13px] sm:text-[14px] font-medium text-[#57534E] hover:text-[#111] transition-colors duration-200 py-1
                          after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-px after:bg-[#111]
                          after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-200 after:origin-left"
             >
@@ -36,13 +36,13 @@ export default function MarketingNav({ right = 'cta' }: MarketingNavProps) {
             </Link>
             <Link
               href="/signup"
-              className="inline-flex items-center justify-center px-3.5 sm:px-4 h-9 bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-[13px] sm:text-sm font-semibold rounded-lg transition-all duration-150 whitespace-nowrap shadow-[0_1px_2px_rgba(224,90,40,0.25)] hover:shadow-[0_2px_8px_rgba(224,90,40,0.35)]"
+              className="inline-flex items-center justify-center px-4 h-9 bg-[#111] hover:bg-[#2A2A2A] text-white text-[13px] sm:text-[14px] font-semibold rounded-lg transition-colors duration-150 whitespace-nowrap"
             >
-              Try Free
+              Try free
             </Link>
           </div>
         ) : (
-          <Link href="/" className="text-[13px] text-[#A8A29E] hover:text-[#111] transition-colors font-medium">← Back</Link>
+          <Link href="/" className="text-[13px] text-[#57534E] hover:text-[#111] transition-colors font-medium">← Back</Link>
         )}
       </div>
     </nav>

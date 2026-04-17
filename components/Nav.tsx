@@ -165,17 +165,14 @@ export default function Nav() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-b border-[#E4DED8]" style={{ boxShadow: '0 1px 0 rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.06)', paddingTop: 'env(safe-area-inset-top)' }}>
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-[#E4DED8]" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-16">
 
             {/* Logo */}
-            <Link href="/dashboard" className="flex items-center gap-2.5 flex-shrink-0 group">
-              <div className="relative">
-                <LogoMark size={30} />
-                <div className="absolute inset-0 rounded-[8px] bg-[#E05A28]/20 blur-md group-hover:bg-[#E05A28]/30 transition-all duration-300 -z-10" />
-              </div>
-              <span className="text-[14px] font-bold text-[#111111] tracking-[-0.02em]">ReplyFi</span>
+            <Link href="/dashboard" className="flex items-center gap-2 flex-shrink-0">
+              <LogoMark size={26} />
+              <span className="text-[14px] font-bold text-[#111111] tracking-[-0.025em]">ReplyFi</span>
             </Link>
 
             {/* Desktop links */}

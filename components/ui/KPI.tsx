@@ -24,16 +24,16 @@ interface KPIProps extends HTMLAttributes<HTMLDivElement> {
  */
 export default function KPI({ label, value, sub, trailing, footer, variant = 'hero', className, ...props }: KPIProps) {
   const sizes = variant === 'hero'
-    ? 'text-[36px] sm:text-[44px] leading-[1.1]'
-    : 'text-[24px] sm:text-[28px] leading-[1.2]'
+    ? 'text-[40px] sm:text-[52px] leading-[0.95]'
+    : 'text-[26px] sm:text-[32px] leading-[1.05]'
 
   return (
-    <div className={cn('flex flex-col gap-1', className)} {...props}>
+    <div className={cn('flex flex-col gap-2', className)} {...props}>
       <div className="flex items-center justify-between gap-2">
         <Eyebrow>{label}</Eyebrow>
         {trailing}
       </div>
-      <div className={cn('font-semibold tracking-[-0.02em] text-[#111111] tnum', sizes)}>
+      <div className={cn('tracking-[-0.035em] text-[#111111] tnum', sizes)} style={{ fontWeight: 500 }}>
         {value}
       </div>
       {sub && <div className="text-[12px] text-[#57534E] tnum">{sub}</div>}

@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { createClient as createServerClient } from '@/lib/supabase/server'
 import { callClaude } from '@/lib/anthropic'
-import { Resend } from 'resend'
+import { FROM_ALERTS, escapeHtml, getResend } from '@/lib/email/client'
 import { hasActiveAccess } from '@/lib/subscription'
 
 function escapeRegExp(s: string): string {
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
-  const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
+  const resend = getResend()
   // ── Parse body once (readable stream can only be consumed once) ─────────
   const body = await request.json().catch(() => ({}))
 
@@ -367,20 +367,26 @@ export async function POST(request: NextRequest) {
       } catch { /* silent fail */ }
 
       // ── Feature 2: Send alert email if triggered ─────────────────────────
-      if (alertTriggered && userEmail && resend) {
+      if (alertTriggered && userEmail && resend && matchedKeyword) {
+        // Escape all user-supplied strings before interpolating into HTML.
+        const safeKeyword = escapeHtml(matchedKeyword)
+        const safeBusiness = escapeHtml(profile.business_name)
+        const safeAuthor = escapeHtml(author_title ?? 'Anonymous')
+        const safeText = escapeHtml((review_text ?? '').slice(0, 300))
+        const appUrl = (process.env.NEXT_PUBLIC_APP_URL ?? 'https://replyfi.app').replace(/\/$/, '')
         await resend.emails.send({
-          from: 'ReplyFi Alerts <alerts@replyfi.app>',
+          from: FROM_ALERTS,
           to: userEmail,
-          subject: `⚠️ Alert: A review mentioned "${matchedKeyword}"`,
+          subject: `⚠️ Alert: A review mentioned "${matchedKeyword.replace(/[\r\n]/g, ' ')}"`,
           html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:20px">
-            <h2 style="color:#111">⚠️ Keyword Alert for ${profile.business_name}</h2>
-            <p>A new review mentioned <strong>"${matchedKeyword}"</strong> — you may want to respond quickly.</p>
+            <h2 style="color:#111">⚠️ Keyword Alert for ${safeBusiness}</h2>
+            <p>A new review mentioned <strong>"${safeKeyword}"</strong> — you may want to respond quickly.</p>
             <div style="background:#FEF2F2;border-left:4px solid #EF4444;padding:16px;margin:16px 0;border-radius:8px">
-              <p style="margin:0;font-weight:600">${author_title ?? 'Anonymous'} · ${review_rating}★</p>
-              <p style="margin:8px 0 0;color:#555">"${review_text.slice(0, 300)}..."</p>
+              <p style="margin:0;font-weight:600">${safeAuthor} · ${review_rating}★</p>
+              <p style="margin:8px 0 0;color:#555">"${safeText}..."</p>
             </div>
-            <a href="${process.env.NEXT_PUBLIC_APP_URL ?? 'https://replyfi.app'}/dashboard/reviews" style="display:inline-block;background:#111;color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600">View Review →</a>
-            <p style="color:#AAA;font-size:12px;margin-top:24px">ReplyFi · Manage alerts in <a href="https://replyfi.app/settings">Settings</a></p>
+            <a href="${appUrl}/dashboard/reviews" style="display:inline-block;background:#111;color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600">View Review →</a>
+            <p style="color:#AAA;font-size:12px;margin-top:24px">ReplyFi · Manage alerts in <a href="${appUrl}/settings">Settings</a></p>
           </div>`
         }).catch(err => console.error('[scrape-reviews] Alert email error:', err))
       }

@@ -783,7 +783,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
                 </svg>
               </div>
-              <p className="text-[14px] font-semibold text-[#111111]">No {filterStars}-star reviews pending</p>
+              <p className="text-[14px] font-medium text-[#111111]">No {filterStars}-star reviews pending</p>
               <button
                 onClick={() => setFilterStars(null)}
                 className="mt-3 inline-flex items-center gap-1.5 text-[12px] font-medium text-[#57534E] hover:text-[#111] transition-colors"
@@ -804,7 +804,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/>
               </svg>
             </div>
-            <p className="text-[14px] font-semibold text-[#111111]">You&apos;re all caught up!</p>
+            <p className="text-[14px] font-medium text-[#111111]">You&apos;re all caught up!</p>
             <p className="text-[12px] text-[#A8A29E] mt-1 max-w-[220px] mx-auto leading-relaxed">New reviews will appear here after your next sync.</p>
           </div>
         )
@@ -846,7 +846,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
                         </svg>
                       </div>
-                      <p className="text-[14px] font-semibold text-[#111111]">No {filterStars}-star approved replies</p>
+                      <p className="text-[14px] font-medium text-[#111111]">No {filterStars}-star approved replies</p>
                       <button
                         onClick={() => setFilterStars(null)}
                         className="mt-3 inline-flex items-center gap-1.5 text-[12px] font-medium text-[#57534E] hover:text-[#111] transition-colors"
@@ -879,7 +879,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                 </svg>
               </div>
-              <p className="text-[14px] font-semibold text-[#111111]">No approved replies yet</p>
+              <p className="text-[14px] font-medium text-[#111111]">No approved replies yet</p>
               <p className="text-[12px] text-[#A8A29E] mt-1 max-w-[220px] mx-auto leading-relaxed">Approve a reply to see it here.</p>
             </div>
           )}
@@ -910,7 +910,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
                 </svg>
               </div>
-              <p className="text-[14px] font-semibold text-[#111111]">No {filterStars}-star dismissed reviews</p>
+              <p className="text-[14px] font-medium text-[#111111]">No {filterStars}-star dismissed reviews</p>
               <button
                 onClick={() => setFilterStars(null)}
                 className="mt-3 inline-flex items-center gap-1.5 text-[12px] font-medium text-[#57534E] hover:text-[#111] transition-colors"
@@ -930,7 +930,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
               </svg>
             </div>
-            <p className="text-[14px] font-semibold text-[#111111]">Nothing dismissed</p>
+            <p className="text-[14px] font-medium text-[#111111]">Nothing dismissed</p>
             <p className="text-[12px] text-[#A8A29E] mt-1 max-w-[220px] mx-auto leading-relaxed">Dismissed reviews will appear here.</p>
           </div>
         )

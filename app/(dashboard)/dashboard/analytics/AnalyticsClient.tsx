@@ -160,8 +160,8 @@ function BarChartTooltip({ active, payload, label }: RechartsTooltipProps) {
 function EmptyState({ restaurantName }: { restaurantName: string }) {
   return (
     <div className="flex flex-col items-center justify-center min-h-[55vh] text-center">
-      <div className="w-12 h-12 rounded-2xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mb-6">
-        <svg className="w-6 h-6 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="w-12 h-12 rounded-xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mb-6">
+        <svg className="w-6 h-6 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
         </svg>
       </div>
@@ -1078,14 +1078,14 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
             {showDownloadMenu && (
               <div className="absolute right-0 top-full mt-1.5 w-48 bg-white rounded-xl border border-[#E4DED8] shadow-lg z-20 overflow-hidden animate-scale-in" onClick={(e) => e.stopPropagation()}>
                 <button onClick={handleDownloadReport} className="w-full flex items-center gap-2.5 px-4 py-3 text-[13px] text-[#111111] hover:bg-[#F3F0EC] transition-colors text-left">
-                  <svg className="w-4 h-4 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                   Download PDF Report
                 </button>
                 <div className="h-px bg-[#EDE9E4]" />
                 <button onClick={handleDownloadCsv} className="w-full flex items-center gap-2.5 px-4 py-3 text-[13px] text-[#111111] hover:bg-[#F3F0EC] transition-colors text-left">
-                  <svg className="w-4 h-4 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                   </svg>
                   Download CSV Data
@@ -1116,7 +1116,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
 
       {/* No data for selected range */}
       {totalReviews === 0 && (
-        <div className="rounded-2xl bg-[#F8F6F3] border border-[#E4DED8] px-6 py-8 text-center">
+        <div className="rounded-xl bg-[#F8F6F3] border border-[#E4DED8] px-6 py-8 text-center">
           <p className="text-[#111111] font-medium mb-1">No reviews in this period</p>
           <p className="text-[13px] text-[#A8A29E]">Try selecting a wider date range</p>
         </div>
@@ -1135,15 +1135,15 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       {/* ── QUICK WIN ──────────────────────────────────────────────────────── */}
       {!themesLoading && !themes.insufficient && themes.opportunities.length > 0 && (
         <div>
-          <div className="bg-[#E05A28]/10 rounded-2xl border border-[#E05A28]/25 px-6 py-5 flex items-start gap-4">
-            <div className="w-10 h-10 rounded-xl bg-[#E05A28]/10 border border-[#E05A28]/25 flex items-center justify-center flex-shrink-0 mt-0.5">
-              <svg className="w-5 h-5 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          <div className="bg-white rounded-xl border border-[#E4DED8] px-6 py-5 flex items-start gap-4">
+            <div className="w-10 h-10 rounded-xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg className="w-5 h-5 text-[#57534E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M13 10V3L4 14h7v7l9-11h-7z"/>
               </svg>
             </div>
             <div>
-              <p className="text-[11px] font-semibold text-[#E05A28] mb-1.5">Your #1 opportunity right now</p>
-              <p className="text-[16px] font-semibold text-[#111111] leading-snug mb-2">{themes.opportunities[0]}</p>
+              <p className="text-[11px] font-medium text-[#A8A29E] mb-1.5 uppercase tracking-[0.1em]">Your #1 opportunity right now</p>
+              <p className="text-[16px] font-medium text-[#111111] leading-snug mb-2">{themes.opportunities[0]}</p>
               <p className="text-[12px] text-[#A8A29E]">Based on patterns across your {totalReviews} review{totalReviews !== 1 ? 's' : ''}</p>
             </div>
           </div>
@@ -1151,7 +1151,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       )}
 
       {/* ── RATING HERO ────────────────────────────────────────────────────── */}
-      <div className="rounded-2xl bg-white border border-[#E4DED8] overflow-hidden ">
+      <div className="rounded-xl bg-white border border-[#E4DED8] overflow-hidden ">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
 
           {/* Big number */}
@@ -1162,7 +1162,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
             <Stars rating={avgRating} />
             <p className="text-[#A8A29E] text-[12px] mt-3 sm:mt-4">
               {totalReviews} reviews ·{' '}
-              <span className={responseRate >= 80 ? 'text-emerald-600 font-medium' : responseRate < 50 ? 'text-[#E05A28] font-medium' : 'text-[#A8A29E]'}>
+              <span className={responseRate >= 80 ? 'text-emerald-600 font-medium' : responseRate < 50 ? 'text-[#B84A1A] font-medium' : 'text-[#A8A29E]'}>
                 {responseRate}% replied
               </span>
             </p>
@@ -1173,7 +1173,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
 
           {/* Breakdown */}
           <div className="order-2 md:order-1 px-5 sm:px-8 py-6 sm:py-12 border-b md:border-b-0 md:border-r border-[#EDE9E4]">
-            <p className="text-[11px] font-semibold text-[#E05A28]/70 mb-4 sm:mb-6">Breakdown</p>
+            <p className="text-[11px] font-medium text-[#A8A29E] mb-4 sm:mb-6 uppercase tracking-[0.1em]">Breakdown</p>
             <div className="space-y-2.5 sm:space-y-3">
               {[5, 4, 3, 2, 1].map((star) => {
                 const count = ratingDist[star] ?? 0
@@ -1182,7 +1182,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                   <div key={star} className="flex items-center gap-2.5 sm:gap-3">
                     <span className="text-[11px] text-[#A8A29E] w-5 flex-shrink-0 text-right">{star}★</span>
                     <div className="flex-1 h-1.5 sm:h-2 bg-[#EDE9E4] rounded-full overflow-hidden">
-                      <div className="h-full rounded-full bg-[#E05A28] transition-all duration-700" style={{ width: `${pct}%` }} />
+                      <div className="h-full rounded-full bg-[#111] transition-all duration-700" style={{ width: `${pct}%` }} />
                     </div>
                     <span className="text-[11px] text-[#A8A29E] w-12 sm:w-14 flex-shrink-0 text-right tabular-nums">{count} · {Math.round(pct)}%</span>
                   </div>
@@ -1194,9 +1194,9 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
           {/* Trend */}
           <div className="order-3 px-5 sm:px-8 py-6 sm:py-12 md:border-l border-[#EDE9E4]">
             <div className="flex items-center justify-between mb-1">
-              <p className="text-[11px] font-semibold text-[#E05A28]/70">Trend</p>
+              <p className="text-[11px] font-medium text-[#A8A29E] uppercase tracking-[0.1em]">Trend</p>
               {hasSparkData && (
-                <span className={`text-[11px] font-semibold ${sparkTrend === 'up' ? 'text-emerald-600' : sparkTrend === 'down' ? 'text-red-500' : 'text-[#A8A29E]'}`}>
+                <span className={`text-[11px] font-medium ${sparkTrend === 'up' ? 'text-emerald-600' : sparkTrend === 'down' ? 'text-[#B84A1A]' : 'text-[#A8A29E]'}`}>
                   {sparkTrend === 'up' ? '▲ Improving' : sparkTrend === 'down' ? '▼ Declining' : '→ Steady'}
                 </span>
               )}
@@ -1299,7 +1299,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                 title: 'They love',
                 items: themes.praised,
                 emptyText: 'Nothing notable yet',
-                chipClass: 'bg-emerald-50 text-emerald-700 border-emerald-100',
+                chipClass: 'bg-[#F3F0EC] text-[#57534E] border-[#E4DED8]',
                 iconClass: 'text-emerald-500',
               },
               {
@@ -1315,14 +1315,14 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                 title: 'Opportunities',
                 items: themes.opportunities,
                 emptyText: 'No opportunities found',
-                chipClass: 'bg-[#FEF0E8] text-[#C94E21] border-[#F5C9AD]',
-                iconClass: 'text-[#E05A28]',
+                chipClass: 'bg-[#F3F0EC] text-[#57534E] border-[#E4DED8]',
+                iconClass: 'text-[#A8A29E]',
               },
             ].map(({ icon, title, items, emptyText, chipClass, iconClass }) => (
               <div key={title} className="bg-white rounded-xl border border-[#E4DED8] p-5 ">
                 <div className={`flex items-center gap-1.5 mb-4 ${iconClass}`}>
                   {icon}
-                  <span className="text-[13px] font-semibold text-[#111111]">{title}</span>
+                  <span className="text-[13px] font-medium text-[#111111]">{title}</span>
                 </div>
                 {items.length === 0 ? (
                   <p className="text-[12px] text-[#C4BEB8]">{emptyText}</p>
@@ -1344,7 +1344,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       {/* ── RESPONSE RATE BY RATING ─────────────────────────────────────────── */}
       <div>
         <SectionLabel>Response rate by star rating</SectionLabel>
-        <div className="bg-white rounded-2xl border border-[#E4DED8] p-5 sm:p-6">
+        <div className="bg-white rounded-xl border border-[#E4DED8] p-5 sm:p-6">
           <p className="text-[12px] text-[#A8A29E] mb-5">Are you replying to the reviews that matter most? Low-star reviews with no reply damage trust.</p>
           <div className="space-y-4">
             {[1, 2, 3, 4, 5].reverse().map((star) => {
@@ -1356,18 +1356,18 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                 <div key={star} className="flex items-center gap-3">
                   <div className="flex items-center gap-1 w-14 flex-shrink-0">
                     {Array.from({ length: star }).map((_, i) => (
-                      <svg key={i} className={`w-3 h-3 ${isLow ? 'text-red-400' : star <= 3 ? 'text-amber-400' : 'text-[#E05A28]'}`} fill="currentColor" viewBox="0 0 20 20">
+                      <svg key={i} className={`w-3 h-3 ${isLow ? 'text-[#B84A1A]' : star <= 3 ? 'text-amber-400' : 'text-[#E0A82E]'}`} fill="currentColor" viewBox="0 0 20 20">
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                       </svg>
                     ))}
                   </div>
                   <div className="flex-1 h-2.5 bg-[#EDE9E4] rounded-full overflow-hidden">
                     <div
-                      className={`h-full rounded-full transition-all duration-700 ${pct === 100 ? 'bg-emerald-500' : isLow && pct < 50 ? 'bg-red-400' : 'bg-[#E05A28]'}`}
+                      className={`h-full rounded-full transition-all duration-700 ${pct === 100 ? 'bg-emerald-500' : isLow && pct < 50 ? 'bg-[#B84A1A]' : 'bg-[#111]'}`}
                       style={{ width: `${pct}%` }}
                     />
                   </div>
-                  <span className={`text-[12px] font-semibold w-10 text-right ${pct === 100 ? 'text-emerald-600' : isLow && pct < 50 ? 'text-red-500' : 'text-[#111111]'}`}>{pct}%</span>
+                  <span className={`text-[12px] font-medium w-10 text-right tabular-nums ${pct === 100 ? 'text-emerald-600' : isLow && pct < 50 ? 'text-[#B84A1A]' : 'text-[#111111]'}`}>{pct}%</span>
                   <span className="text-[11px] text-[#A8A29E] w-16 sm:w-20 flex-shrink-0 tabular-nums">{d.replied}/{d.total}</span>
                 </div>
               )
@@ -1380,7 +1380,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       {hasDowData && (
         <div>
           <SectionLabel>Busiest review days</SectionLabel>
-          <div className="rounded-2xl border border-[#E4DED8] bg-white p-5 sm:p-6 ">
+          <div className="rounded-xl border border-[#E4DED8] bg-white p-5 sm:p-6 ">
             <div className="flex items-center justify-between mb-5">
               <p className="text-[12px] text-[#A8A29E]">Which days of the week generate the most reviews for your business.</p>
               <div className="flex items-center gap-4 flex-shrink-0 ml-4">
@@ -1430,23 +1430,23 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       <div>
         <SectionLabel>Rating &amp; volume over time</SectionLabel>
         {!hasEnoughTrend ? (
-          <div className="rounded-2xl border border-[#E4DED8] bg-[#F8F6F3] px-6 sm:px-8 py-8 sm:py-10">
+          <div className="rounded-xl border border-[#E4DED8] bg-[#F8F6F3] px-6 sm:px-8 py-8 sm:py-10">
             <div className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-8">
               <div className="text-center sm:text-left flex-shrink-0">
-                <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#E05A28] mb-2">
+                <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#A8A29E] mb-2">
                   {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                 </p>
-                <p className="text-[#111111] leading-none text-5xl sm:text-6xl font-bold">{avgRating.toFixed(1)}</p>
+                <p className="text-[#111111] leading-none text-5xl sm:text-6xl" style={{ fontWeight: 500 }}>{avgRating.toFixed(1)}</p>
                 <p className="text-[12px] text-[#A8A29E] mt-2">avg this month · {totalReviews} review{totalReviews !== 1 ? 's' : ''}</p>
               </div>
               <div className="flex-1">
-                <p className="text-[14px] font-semibold text-[#111111] mb-1">Your trend chart will fill in over time.</p>
+                <p className="text-[14px] font-medium text-[#111111] mb-1">Your trend chart will fill in over time.</p>
                 <p className="text-[13px] text-[#A8A29E] leading-relaxed">Once you have data across 2+ months, you'll see how your rating is moving. Keep responding to reviews to build momentum.</p>
               </div>
             </div>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl border border-[#E4DED8] p-4 sm:p-6 space-y-6 ">
+          <div className="bg-white rounded-xl border border-[#E4DED8] p-4 sm:p-6 space-y-6 ">
             {/* Rating trend */}
             <div>
               <p className="text-[11px] font-medium text-[#A8A29E] mb-3">Average rating per month</p>
@@ -1493,13 +1493,13 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       {hasMultipleLanguages && (
         <div>
           <SectionLabel>Review languages</SectionLabel>
-          <div className="bg-white rounded-2xl border border-[#E4DED8] p-5 sm:p-6 ">
+          <div className="bg-white rounded-xl border border-[#E4DED8] p-5 sm:p-6 ">
             <p className="text-[12px] text-[#A8A29E] mb-5">Your business attracts international customers. ReplyFi auto-generates replies in each reviewer's language.</p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {languageData.map(({ lang, count, pct }) => (
                 <div key={lang} className="flex flex-col gap-1 p-4 bg-[#F8F6F3] rounded-xl border border-[#E4DED8]">
-                  <p className="text-[13px] font-semibold text-[#111111]">{lang}</p>
-                  <p className="text-[24px] font-bold text-[#E05A28] leading-none tnum">{pct}%</p>
+                  <p className="text-[13px] font-medium text-[#111111]">{lang}</p>
+                  <p className="text-[24px] text-[#111] leading-none tabular-nums" style={{ fontWeight: 500 }}>{pct}%</p>
                   <p className="text-[11px] text-[#A8A29E] tnum">{count} review{count !== 1 ? 's' : ''}</p>
                 </div>
               ))}
@@ -1514,26 +1514,26 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
           <SectionLabel>Notable reviews</SectionLabel>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {bestReview && (
-              <div className="bg-white rounded-2xl border border-[#E4DED8] p-5 sm:p-6 ">
+              <div className="bg-white rounded-xl border border-[#E4DED8] p-5 sm:p-6 ">
                 <div className="flex items-center gap-2 mb-4">
                   <div className="flex gap-0.5">
                     {[1,2,3,4,5].map((i) => (
-                      <svg key={i} className={`w-3 h-3 ${i <= bestReview.star_rating ? 'text-[#E05A28]' : 'text-[#E4DED8]'}`} fill="currentColor" viewBox="0 0 20 20">
+                      <svg key={i} className={`w-3 h-3 ${i <= bestReview.star_rating ? 'text-[#E0A82E]' : 'text-[#E4DED8]'}`} fill="currentColor" viewBox="0 0 20 20">
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                       </svg>
                     ))}
                   </div>
-                  <span className="text-[13px] font-semibold text-[#111111]">{bestReview.reviewer_name}</span>
+                  <span className="text-[13px] font-medium text-[#111111]">{bestReview.reviewer_name}</span>
                   <span className="text-[11px] text-[#C4BEB8] ml-auto">{formatDate(bestReview.review_datetime_utc)}</span>
                 </div>
                 <div className="relative">
-                  <span className="absolute -top-4 -left-1 text-[#E05A28]/10 select-none pointer-events-none text-[120px] leading-none">"</span>
+                  <span className="absolute -top-4 -left-1 text-[#E4DED8] select-none pointer-events-none text-[120px] leading-none">"</span>
                   <p className="relative text-[#57534E] text-[14px] leading-relaxed italic">{bestReview.review_text}</p>
                 </div>
               </div>
             )}
             {worstReview && worstReview.id !== bestReview?.id && (
-              <div className="bg-white rounded-2xl border border-[#E4DED8] p-5 sm:p-6 ">
+              <div className="bg-white rounded-xl border border-[#E4DED8] p-5 sm:p-6 ">
                 <div className="flex items-center gap-2 mb-4">
                   <div className="flex gap-0.5">
                     {[1,2,3,4,5].map((i) => (

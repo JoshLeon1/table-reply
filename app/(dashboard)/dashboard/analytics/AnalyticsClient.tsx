@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useMemo, useCallback } from 'react'
+import { useEffect, useState, useMemo, useCallback, type SVGProps } from 'react'
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer,
   Area, AreaChart, BarChart, Bar, Cell, ComposedChart,
@@ -41,7 +41,11 @@ interface ThemeResult {
 
 // ─── Chart constants ──────────────────────────────────────────────────────────
 
-const AXIS_TICK = { fontSize: 11, fontFeatureSettings: '"tnum" 1', fill: '#A8A29E' } as const
+const AXIS_TICK: Omit<SVGProps<SVGTextElement>, 'children'> = {
+  fontSize: 11,
+  fill: '#A8A29E',
+  style: { fontFeatureSettings: '"tnum" 1' },
+}
 const CHART_PRIMARY = '#111111'
 const CHART_COMPARE = '#CEC8C1'
 const CHART_ACCENT = '#E05A28'
@@ -1393,9 +1397,9 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
             </div>
             <ResponsiveContainer width="100%" height={200}>
               <ComposedChart data={dowData} margin={{ top: 8, right: 20, bottom: 0, left: -20 }}>
-                <XAxis dataKey="label" tick={AXIS_TICK as any} axisLine={false} tickLine={false} />
-                <YAxis yAxisId="left" allowDecimals={false} tick={AXIS_TICK as any} axisLine={false} tickLine={false} />
-                <YAxis yAxisId="right" orientation="right" domain={[0, 5]} tick={AXIS_TICK as any} axisLine={false} tickLine={false} />
+                <XAxis dataKey="label" tick={AXIS_TICK} axisLine={false} tickLine={false} />
+                <YAxis yAxisId="left" allowDecimals={false} tick={AXIS_TICK} axisLine={false} tickLine={false} />
+                <YAxis yAxisId="right" orientation="right" domain={[0, 5]} tick={AXIS_TICK} axisLine={false} tickLine={false} />
                 <Tooltip content={({ active, payload, label }: any) => {
                   if (!active || !payload?.length) return null
                   return (
@@ -1456,8 +1460,8 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                   </defs>
                   <Area type="monotone" dataKey="rating" stroke={CHART_PRIMARY} strokeWidth={2.5} fill="url(#ratingGrad)"
                     dot={{ fill: CHART_PRIMARY, strokeWidth: 0, r: 3.5 }} activeDot={{ r: 5, fill: CHART_ACCENT, strokeWidth: 0 }} connectNulls />
-                  <XAxis dataKey="month" tick={AXIS_TICK as any} axisLine={false} tickLine={false} interval="preserveStartEnd" />
-                  <YAxis domain={[1, 5]} tick={AXIS_TICK as any} axisLine={false} tickLine={false} />
+                  <XAxis dataKey="month" tick={AXIS_TICK} axisLine={false} tickLine={false} interval="preserveStartEnd" />
+                  <YAxis domain={[1, 5]} tick={AXIS_TICK} axisLine={false} tickLine={false} />
                   <Tooltip content={<LineTooltip />} />
                 </AreaChart>
               </ResponsiveContainer>
@@ -1469,8 +1473,8 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                 <p className="text-[11px] font-medium text-[#A8A29E] mb-3">Review volume per month</p>
                 <ResponsiveContainer width="100%" height={120}>
                   <BarChart data={trendData} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
-                    <XAxis dataKey="month" tick={AXIS_TICK as any} axisLine={false} tickLine={false} interval="preserveStartEnd" />
-                    <YAxis allowDecimals={false} tick={AXIS_TICK as any} axisLine={false} tickLine={false} />
+                    <XAxis dataKey="month" tick={AXIS_TICK} axisLine={false} tickLine={false} interval="preserveStartEnd" />
+                    <YAxis allowDecimals={false} tick={AXIS_TICK} axisLine={false} tickLine={false} />
                     <Tooltip content={<BarChartTooltip />} />
                     <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                       {trendData.map((entry, index) => (

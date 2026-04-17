@@ -6,6 +6,9 @@ import {
   Area, AreaChart, BarChart, Bar, Cell, ComposedChart,
 } from 'recharts'
 import type { ScrapedReview } from '@/types'
+import Eyebrow from '@/components/ui/Eyebrow'
+import KPI from '@/components/ui/KPI'
+import { Card } from '@/components/ui/Card'
 
 interface TooltipPayloadEntry {
   name: string
@@ -109,9 +112,14 @@ function ThemeSkeleton() {
 function SparkTooltip({ active, payload, label }: RechartsTooltipProps) {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-white text-[#111] text-[11px] px-2.5 py-1.5 rounded-lg border border-[#E4DED8] shadow-sm">
-      <span className="text-[#A8A29E]">{label} · </span>
-      <span className="font-semibold">{Number(payload[0].value).toFixed(1)}★</span>
+    <div className="bg-white rounded-xl border border-[#E4DED8] shadow-[0_2px_8px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)] p-3 min-w-[140px]">
+      <Eyebrow className="block mb-1">{label ?? ''}</Eyebrow>
+      {payload?.map((entry) => (
+        <div key={entry.name} className="flex items-baseline justify-between gap-3 text-[13px] tnum">
+          <span className="text-[#57534E]">{entry.name}</span>
+          <span className="font-semibold text-[#111]">{Number(entry.value).toFixed(1)}★</span>
+        </div>
+      ))}
     </div>
   )
 }
@@ -119,12 +127,15 @@ function SparkTooltip({ active, payload, label }: RechartsTooltipProps) {
 function LineTooltip({ active, payload, label }: RechartsTooltipProps) {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-white text-[#111] text-[12px] px-3 py-2 rounded-xl shadow-lg border border-[#E4DED8]">
-      <p className="text-[#A8A29E] text-[11px] mb-0.5">{label}</p>
-      {payload.map((p, i) => (
-        <p key={i} className="font-semibold">
-          {p.name === 'count' ? `${p.value} review${p.value !== 1 ? 's' : ''}` : `${Number(p.value).toFixed(1)} ★`}
-        </p>
+    <div className="bg-white rounded-xl border border-[#E4DED8] shadow-[0_2px_8px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)] p-3 min-w-[140px]">
+      <Eyebrow className="block mb-1">{label ?? ''}</Eyebrow>
+      {payload?.map((entry) => (
+        <div key={entry.name} className="flex items-baseline justify-between gap-3 text-[13px] tnum">
+          <span className="text-[#57534E]">{entry.name === 'count' ? 'Reviews' : 'Avg rating'}</span>
+          <span className="font-semibold text-[#111]">
+            {entry.name === 'count' ? `${entry.value} review${entry.value !== 1 ? 's' : ''}` : `${Number(entry.value).toFixed(1)} ★`}
+          </span>
+        </div>
       ))}
     </div>
   )
@@ -133,10 +144,13 @@ function LineTooltip({ active, payload, label }: RechartsTooltipProps) {
 function BarChartTooltip({ active, payload, label }: RechartsTooltipProps) {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-white text-[#111] text-[12px] px-3 py-2 rounded-xl shadow-lg border border-[#E4DED8]">
-      <p className="text-[#A8A29E] text-[11px] mb-0.5">{label}</p>
-      {payload.map((p, i) => (
-        <p key={i} className="font-semibold">{p.value} review{p.value !== 1 ? 's' : ''}</p>
+    <div className="bg-white rounded-xl border border-[#E4DED8] shadow-[0_2px_8px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)] p-3 min-w-[140px]">
+      <Eyebrow className="block mb-1">{label ?? ''}</Eyebrow>
+      {payload?.map((entry) => (
+        <div key={entry.name} className="flex items-baseline justify-between gap-3 text-[13px] tnum">
+          <span className="text-[#57534E]">Reviews</span>
+          <span className="font-semibold text-[#111]">{entry.value} review{entry.value !== 1 ? 's' : ''}</span>
+        </div>
       ))}
     </div>
   )
@@ -1013,8 +1027,8 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       <div className="flex flex-col gap-3">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
           <div>
-            <h1 className="text-[22px] font-bold tracking-tight text-[#111111] leading-tight">{restaurantName}</h1>
-            <p className="text-[#A8A29E] text-[13px] mt-1">
+            <h1 className="text-[22px] sm:text-[26px] font-semibold text-[#111] tracking-[-0.01em]">{restaurantName}</h1>
+            <p className="text-[13px] text-[#57534E] mt-1">
               {totalReviews} review{totalReviews !== 1 ? 's' : ''} {dateRange !== 'all' ? `in last ${dateRange.replace('d', ' days')}` : 'analyzed'}
               {ratingDelta !== null && (
                 <span className={`ml-2 font-semibold ${ratingDelta > 0 ? 'text-emerald-600' : ratingDelta < 0 ? 'text-red-500' : 'text-[#A8A29E]'}`}>
@@ -1214,39 +1228,39 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       </div>
 
       {/* ── QUICK STATS ROW ────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
-        {[
-          {
-            label: 'This month',
-            value: thisMonthReviews.length ? thisMonthAvg.toFixed(1) + ' ★' : '—',
-            sub: `${thisMonthReviews.length} review${thisMonthReviews.length !== 1 ? 's' : ''}`,
-            color: 'text-[#E05A28]',
-          },
-          {
-            label: 'Last month',
-            value: lastMonthReviews.length ? lastMonthAvg.toFixed(1) + ' ★' : '—',
-            sub: `${lastMonthReviews.length} review${lastMonthReviews.length !== 1 ? 's' : ''}`,
-            color: 'text-[#111111]',
-          },
-          {
-            label: 'Response rate',
-            value: `${responseRate}%`,
-            sub: `${approvedCount} of ${totalReviews} replied`,
-            color: responseRate >= 80 ? 'text-emerald-600' : responseRate >= 50 ? 'text-[#111111]' : 'text-[#E05A28]',
-          },
-          {
-            label: 'Critical unanswered',
-            value: criticalUnanswered === 0 ? '✓ None' : String(criticalUnanswered),
-            sub: criticalUnanswered === 0 ? 'All addressed' : '1–2★ with no reply',
-            color: criticalUnanswered === 0 ? 'text-emerald-600' : 'text-red-500',
-          },
-        ].map((stat, i) => (
-          <div key={i} className={`bg-white rounded-xl border border-[#E4DED8] p-3.5 sm:p-4 stagger-${i + 1} animate-fade-up shadow-[0_1px_3px_rgba(0,0,0,0.04)]`}>
-            <p className="text-[11px] font-medium text-[#A8A29E] mb-2 leading-tight">{stat.label}</p>
-            <p className={`text-[20px] sm:text-[26px] font-bold leading-none mb-1 tracking-tight ${stat.color}`}>{stat.value}</p>
-            <p className="text-[11px] text-[#A8A29E] leading-tight">{stat.sub}</p>
-          </div>
-        ))}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <Card variant="flat" padding="md">
+          <KPI
+            variant="secondary"
+            label="THIS MONTH"
+            value={thisMonthReviews.length ? thisMonthAvg.toFixed(1) + ' ★' : '—'}
+            sub={`${thisMonthReviews.length} review${thisMonthReviews.length !== 1 ? 's' : ''}`}
+          />
+        </Card>
+        <Card variant="flat" padding="md">
+          <KPI
+            variant="secondary"
+            label="LAST MONTH"
+            value={lastMonthReviews.length ? lastMonthAvg.toFixed(1) + ' ★' : '—'}
+            sub={`${lastMonthReviews.length} review${lastMonthReviews.length !== 1 ? 's' : ''}`}
+          />
+        </Card>
+        <Card variant="flat" padding="md">
+          <KPI
+            variant="secondary"
+            label="RESPONSE RATE"
+            value={`${responseRate}%`}
+            sub={`${approvedCount} of ${totalReviews} replied`}
+          />
+        </Card>
+        <Card variant="flat" padding="md">
+          <KPI
+            variant="secondary"
+            label="CRITICAL UNANSWERED"
+            value={criticalUnanswered === 0 ? '✓ None' : String(criticalUnanswered)}
+            sub={criticalUnanswered === 0 ? 'All addressed' : '1–2★ with no reply'}
+          />
+        </Card>
       </div>
 
       {/* ── WHAT CUSTOMERS ARE SAYING ──────────────────────────────────────── */}
@@ -1372,38 +1386,41 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
               <p className="text-[12px] text-[#A8A29E]">Which days of the week generate the most reviews for your business.</p>
               <div className="flex items-center gap-4 flex-shrink-0 ml-4">
                 <div className="flex items-center gap-1.5">
-                  <div className="w-3 h-3 rounded-sm bg-[#E05A28] opacity-85" />
+                  <div className="w-3 h-3 rounded-sm bg-[#111111] opacity-85" />
                   <span className="text-[11px] text-[#A8A29E]">Reviews</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <div className="w-4 h-0.5 bg-[#10b981] rounded-full" />
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#10b981] -ml-2.5" />
+                  <div className="w-4 h-0.5 bg-[#CEC8C1] rounded-full" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#CEC8C1] -ml-2.5" />
                   <span className="text-[11px] text-[#A8A29E]">Avg rating</span>
                 </div>
               </div>
             </div>
             <ResponsiveContainer width="100%" height={200}>
               <ComposedChart data={dowData} margin={{ top: 8, right: 20, bottom: 0, left: -20 }}>
-                <XAxis dataKey="label" tick={{ fontSize: 11, fill: 'rgba(0,0,0,0.35)' }} axisLine={false} tickLine={false} />
-                <YAxis yAxisId="left" allowDecimals={false} tick={{ fontSize: 10, fill: 'rgba(0,0,0,0.25)' }} axisLine={false} tickLine={false} />
-                <YAxis yAxisId="right" orientation="right" domain={[0, 5]} tick={{ fontSize: 10, fill: 'rgba(0,0,0,0.25)' }} axisLine={false} tickLine={false} />
+                <XAxis dataKey="label" tick={{ fontSize: 11, fontFeatureSettings: '"tnum" 1', fill: '#A8A29E' } as any} axisLine={false} tickLine={false} />
+                <YAxis yAxisId="left" allowDecimals={false} tick={{ fontSize: 11, fontFeatureSettings: '"tnum" 1', fill: '#A8A29E' } as any} axisLine={false} tickLine={false} />
+                <YAxis yAxisId="right" orientation="right" domain={[0, 5]} tick={{ fontSize: 11, fontFeatureSettings: '"tnum" 1', fill: '#A8A29E' } as any} axisLine={false} tickLine={false} />
                 <Tooltip content={({ active, payload, label }: any) => {
                   if (!active || !payload?.length) return null
                   return (
-                    <div className="bg-white text-[#111] text-[12px] px-3 py-2 rounded-xl shadow-lg border border-[#E4DED8]">
-                      <p className="text-[#A8A29E] text-[11px] mb-0.5">{label}</p>
-                      {payload.map((p: any, i: number) => (
-                        <p key={i} className="font-semibold">
-                          {p.dataKey === 'count'
-                            ? `${p.value} review${p.value !== 1 ? 's' : ''}`
-                            : `${Number(p.value).toFixed(1)} ★ avg`}
-                        </p>
+                    <div className="bg-white rounded-xl border border-[#E4DED8] shadow-[0_2px_8px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)] p-3 min-w-[140px]">
+                      <Eyebrow className="block mb-1">{label ?? ''}</Eyebrow>
+                      {payload.map((p: any) => (
+                        <div key={p.dataKey} className="flex items-baseline justify-between gap-3 text-[13px] tnum">
+                          <span className="text-[#57534E]">{p.dataKey === 'count' ? 'Reviews' : 'Avg rating'}</span>
+                          <span className="font-semibold text-[#111]">
+                            {p.dataKey === 'count'
+                              ? `${p.value} review${p.value !== 1 ? 's' : ''}`
+                              : `${Number(p.value).toFixed(1)} ★ avg`}
+                          </span>
+                        </div>
                       ))}
                     </div>
                   )
                 }} />
-                <Bar yAxisId="left" dataKey="count" radius={[4, 4, 0, 0]} fill="#E05A28" fillOpacity={0.85} name="count" />
-                <Line yAxisId="right" type="monotone" dataKey="avgRating" stroke="#10b981" strokeWidth={2} dot={{ fill: '#10b981', r: 3, strokeWidth: 0 }} name="avgRating" connectNulls />
+                <Bar yAxisId="left" dataKey="count" radius={[4, 4, 0, 0]} fill="#111111" fillOpacity={0.85} name="count" />
+                <Line yAxisId="right" type="monotone" dataKey="avgRating" stroke="#CEC8C1" strokeWidth={2} dot={{ fill: '#CEC8C1', r: 3, strokeWidth: 0 }} name="avgRating" connectNulls />
               </ComposedChart>
             </ResponsiveContainer>
           </div>
@@ -1438,14 +1455,14 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                 <AreaChart data={trendData} margin={{ top: 8, right: 4, bottom: 0, left: -20 }}>
                   <defs>
                     <linearGradient id="ratingGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#E05A28" stopOpacity={0.15} />
-                      <stop offset="95%" stopColor="#E05A28" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#111111" stopOpacity={0.08} />
+                      <stop offset="95%" stopColor="#111111" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <Area type="monotone" dataKey="rating" stroke="#E05A28" strokeWidth={2.5} fill="url(#ratingGrad)"
-                    dot={{ fill: '#E05A28', strokeWidth: 0, r: 3.5 }} activeDot={{ r: 5, fill: '#E05A28', strokeWidth: 0 }} connectNulls />
-                  <XAxis dataKey="month" tick={{ fontSize: 11, fill: 'rgba(0,0,0,0.35)' }} axisLine={false} tickLine={false} />
-                  <YAxis domain={[1, 5]} tick={{ fontSize: 10, fill: 'rgba(0,0,0,0.25)' }} axisLine={false} tickLine={false} />
+                  <Area type="monotone" dataKey="rating" stroke="#111111" strokeWidth={2.5} fill="url(#ratingGrad)"
+                    dot={{ fill: '#111111', strokeWidth: 0, r: 3.5 }} activeDot={{ r: 5, fill: '#E05A28', strokeWidth: 0 }} connectNulls />
+                  <XAxis dataKey="month" tick={{ fontSize: 11, fontFeatureSettings: '"tnum" 1', fill: '#A8A29E' } as any} axisLine={false} tickLine={false} interval="preserveStartEnd" />
+                  <YAxis domain={[1, 5]} tick={{ fontSize: 11, fontFeatureSettings: '"tnum" 1', fill: '#A8A29E' } as any} axisLine={false} tickLine={false} />
                   <Tooltip content={<LineTooltip />} />
                 </AreaChart>
               </ResponsiveContainer>
@@ -1457,12 +1474,12 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                 <p className="text-[11px] font-medium text-[#A8A29E] mb-3">Review volume per month</p>
                 <ResponsiveContainer width="100%" height={120}>
                   <BarChart data={trendData} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
-                    <XAxis dataKey="month" tick={{ fontSize: 11, fill: 'rgba(0,0,0,0.35)' }} axisLine={false} tickLine={false} />
-                    <YAxis allowDecimals={false} tick={{ fontSize: 10, fill: 'rgba(0,0,0,0.25)' }} axisLine={false} tickLine={false} />
+                    <XAxis dataKey="month" tick={{ fontSize: 11, fontFeatureSettings: '"tnum" 1', fill: '#A8A29E' } as any} axisLine={false} tickLine={false} interval="preserveStartEnd" />
+                    <YAxis allowDecimals={false} tick={{ fontSize: 11, fontFeatureSettings: '"tnum" 1', fill: '#A8A29E' } as any} axisLine={false} tickLine={false} />
                     <Tooltip content={<BarChartTooltip />} />
                     <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                       {trendData.map((entry, index) => (
-                        <Cell key={index} fill={entry.count > 0 ? '#E05A28' : '#D0C9C1'} fillOpacity={entry.count > 0 ? 0.85 : 0.5} />
+                        <Cell key={index} fill={entry.count > 0 ? '#111111' : '#D0C9C1'} fillOpacity={entry.count > 0 ? 0.85 : 0.5} />
                       ))}
                     </Bar>
                   </BarChart>

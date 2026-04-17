@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo, useCallback, type SVGProps } from 'react'
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer,
   Area, AreaChart, BarChart, Bar, Cell, ComposedChart,
-} from 'recharts'
+} from '@/components/charts/LazyRecharts'
 import type { ScrapedReview } from '@/types'
 import Eyebrow from '@/components/ui/Eyebrow'
 import KPI from '@/components/ui/KPI'

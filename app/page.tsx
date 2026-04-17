@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import MarketingNav from '@/components/MarketingNav'
 
 // ── Scroll-triggered animation hook ──────────────────────────────────────────
 function useInView(threshold = 0.12) {
@@ -185,28 +186,7 @@ export default function LandingPage() {
     <div className="text-[#111111]" style={{ fontFamily: 'Inter, sans-serif', background: '#fafaf8' }}>
 
       {/* ── NAV ─────────────────────────────────────────────────────────── */}
-      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-[#e5e5e0]" style={{ boxShadow: '0 1px 0 rgba(0,0,0,0.04)' }}>
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-[7px] sm:rounded-[8px] bg-[#E05A28] flex items-center justify-center flex-shrink-0">
-              <svg viewBox="0 0 20 20" fill="none" className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true">
-                <path d="M2 1.5h9A1.5 1.5 0 0112.5 3v5A1.5 1.5 0 0111 9.5H7l-2 2v-2H2A1.5 1.5 0 01.5 8V3A1.5 1.5 0 012 1.5z" fill="white" fillOpacity="0.5"/>
-                <path d="M8 8h9.5A1.5 1.5 0 0119 9.5v5A1.5 1.5 0 0117.5 16H16v2.5l-3-2.5H8A1.5 1.5 0 016.5 14.5v-5A1.5 1.5 0 018 8z" fill="white"/>
-              </svg>
-            </div>
-            <span className="font-bold text-[15px] sm:text-[17px] tracking-[-0.025em] text-[#111111]">ReplyFi</span>
-          </Link>
-
-          <div className="flex items-center gap-2 sm:gap-4">
-            <Link href="/login" className="text-[13px] sm:text-sm font-medium text-[#6b6b6b] hover:text-[#111] transition-colors duration-200">
-              Sign in
-            </Link>
-            <Link href="/signup" className="px-3.5 sm:px-4 py-2 bg-[#E05A28] hover:bg-[#C94E21] text-white text-[13px] sm:text-sm font-semibold rounded-lg transition-colors duration-200 whitespace-nowrap">
-              Try Free
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <MarketingNav right="cta" />
 
       <main id="main">
       {/* ── HERO ─────────────────────────────────────────────────────────── */}

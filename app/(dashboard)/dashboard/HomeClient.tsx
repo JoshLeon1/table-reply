@@ -443,7 +443,7 @@ function ManualGenerator({ prominent = false }: { prominent?: boolean }) {
           <svg className="w-3.5 h-3.5 text-[#57534E]" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd"/></svg>
         </div>
         <div>
-          <h2 className="text-[15px] font-medium text-[#111111]">Manual Reply Generator</h2>
+          <h2 className="text-[15px] text-[#111111]" style={{ fontWeight: 600, letterSpacing: '-0.01em' }}>Manual Reply Generator</h2>
           <p className="text-[11px] text-[#A8A29E]">Paste any review to get an AI-crafted reply instantly</p>
         </div>
       </div>

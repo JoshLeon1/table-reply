@@ -85,7 +85,7 @@ const STOP_WORDS = new Set([
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-[13px] font-semibold text-[#57534E] mb-5">{children}</p>
+    <p className="text-[15px] text-[#111] mb-5" style={{ fontWeight: 600, letterSpacing: '-0.01em' }}>{children}</p>
   )
 }
 
@@ -1026,7 +1026,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       <div className="flex flex-col gap-3">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
           <div>
-            <h1 className="text-[22px] sm:text-[26px] font-semibold text-[#111] tracking-[-0.01em]">{restaurantName}</h1>
+            <h1 className="text-[22px] sm:text-[26px] text-[#111] leading-[1.15]" style={{ fontWeight: 600, letterSpacing: '-0.022em' }}>{restaurantName}</h1>
             <p className="text-[13px] text-[#57534E] mt-1">
               {totalReviews} review{totalReviews !== 1 ? 's' : ''} {dateRange !== 'all' ? `in last ${dateRange.replace('d', ' days')}` : 'analyzed'}
               {ratingDelta !== null && (
@@ -1436,7 +1436,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                 <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#A8A29E] mb-2">
                   {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                 </p>
-                <p className="text-[#111111] leading-none text-5xl sm:text-6xl" style={{ fontWeight: 500 }}>{avgRating.toFixed(1)}</p>
+                <p className="text-[#111111] leading-none text-5xl sm:text-6xl tnum" style={{ fontWeight: 500 }}>{avgRating.toFixed(1)}</p>
                 <p className="text-[12px] text-[#A8A29E] mt-2">avg this month · {totalReviews} review{totalReviews !== 1 ? 's' : ''}</p>
               </div>
               <div className="flex-1">

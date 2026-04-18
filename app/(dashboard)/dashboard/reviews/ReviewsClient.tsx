@@ -101,7 +101,7 @@ function SetupPanel({ profile, onSaved }: { profile: BusinessProfile; onSaved: (
             d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
         </svg>
       </div>
-      <h1 className="text-[22px] text-[#111111] tracking-[-0.02em] mb-2" style={{ fontWeight: 500 }}>Put Your Review Replies on Autopilot</h1>
+      <h1 className="text-[22px] text-[#111111] leading-[1.15] mb-2" style={{ fontWeight: 600, letterSpacing: '-0.022em' }}>Put Your Review Replies on Autopilot</h1>
       <p className="text-[13px] text-[#57534E]/80 max-w-[280px] sm:max-w-sm mb-8 leading-relaxed">
         Connect Google Maps, Yelp, or TripAdvisor and ReplyFi will sync new reviews every morning, generate personalized replies, and queue them for your approval.
       </p>

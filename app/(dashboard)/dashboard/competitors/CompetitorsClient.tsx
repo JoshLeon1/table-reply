@@ -45,7 +45,7 @@ function StarRating({ rating }: { rating: number | null }) {
     <div className="flex items-center gap-1">
       <div className="flex gap-0.5">
         {[1,2,3,4,5].map((i) => (
-          <svg key={i} className={`w-3 h-3 ${i <= Math.round(rating) ? 'text-amber-400' : 'text-[#E4DED8]'}`} fill="currentColor" viewBox="0 0 20 20">
+          <svg key={i} className={`w-3 h-3 ${i <= Math.round(rating) ? 'text-[#E0A82E]' : 'text-[#E4DED8]'}`} fill="currentColor" viewBox="0 0 20 20">
             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
           </svg>
         ))}
@@ -121,7 +121,7 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
 
   return (
     <div className="flex items-center justify-center py-12 sm:py-16">
-      <div className="w-full max-w-lg bg-white rounded-2xl border border-[#E4DED8] shadow-card p-5 sm:p-7">
+      <div className="w-full max-w-lg bg-white rounded-2xl border border-[#EDE6DC] shadow-card p-5 sm:p-7">
         <div className="mb-7 text-center">
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#E05A28]/10 border border-[#E05A28]/25 mb-4">
             <svg className="w-6 h-6 text-[#E05A28]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
@@ -146,21 +146,21 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
         </button>
 
         {suggestError && (
-          <div className="flex items-start gap-2 text-[12px] text-amber-600 bg-amber-50 border border-amber-200 rounded-xl px-3.5 py-2.5 mb-4">
+          <div className="flex items-start gap-2 text-[12px] text-[#E0A82E] bg-[#FEF0E8] border border-amber-200 rounded-xl px-3.5 py-2.5 mb-4">
             <svg className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
             {suggestError}
           </div>
         )}
 
         {suggestions.length > 0 && (
-          <div className="mb-4 p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.10em] text-emerald-700 mb-3">Found {suggestions.length} nearby — review below</p>
+          <div className="mb-4 p-4 bg-[#0B8A5B] border border-[#C9E4D3] rounded-xl">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.10em] text-[#0B8A5B] mb-3">Found {suggestions.length} nearby — review below</p>
             <div className="space-y-2">
               {suggestions.map((s, i) => (
                 <div key={s.placeId} className="flex items-center gap-2 text-[13px]">
-                  <span className="text-emerald-600 font-bold w-4 flex-shrink-0">{i + 1}.</span>
+                  <span className="text-[#0B8A5B] font-bold w-4 flex-shrink-0">{i + 1}.</span>
                   <span className="font-medium text-[#111111] flex-1 truncate">{s.name}</span>
-                  {s.rating && <span className="text-amber-500 text-[12px] flex-shrink-0 tnum">{s.rating.toFixed(1)}★</span>}
+                  {s.rating && <span className="text-[#E0A82E] text-[12px] flex-shrink-0 tnum">{s.rating.toFixed(1)}★</span>}
                   <button
                     onClick={() => {
                       const next = [...urls]
@@ -168,7 +168,7 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
                       setUrls(next)
                       setSuggestions(prev => prev.filter((_, j) => j !== i))
                     }}
-                    className="ml-2 text-[#A8A29E] hover:text-red-500 transition text-[11px] flex-shrink-0"
+                    className="ml-2 text-[#A8A29E] hover:text-[#B84A1A] transition text-[11px] flex-shrink-0"
                   >
                     Remove
                   </button>
@@ -199,14 +199,14 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
                   setUrls(next)
                 }}
                 placeholder="https://google.com/maps/place/business-name..."
-                className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] text-[13px] text-[#111111] placeholder:text-[#C4BEB8] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] bg-[#F8F6F3] focus:bg-white transition-all"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[#EDE6DC] text-[13px] text-[#111111] placeholder:text-[#C4BEB8] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] bg-[#F3EEE4] focus:bg-white transition-all"
               />
             </div>
           ))}
         </div>
 
         {error && (
-          <div className="flex items-center gap-2 text-[12px] text-red-500 mb-4">
+          <div className="flex items-center gap-2 text-[12px] text-[#B84A1A] mb-4">
             <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             {error}
           </div>
@@ -269,7 +269,7 @@ function AddMoreForm({
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E4DED8] shadow-card p-5 mb-6">
+    <div className="bg-white rounded-2xl border border-[#EDE6DC] shadow-card p-5 mb-6">
       <p className="text-[13px] font-semibold text-[#111111] mb-4">Add more competitors</p>
       <div className="space-y-3 mb-4">
         {Array.from({ length: slots }).map((_, i) => (
@@ -286,12 +286,12 @@ function AddMoreForm({
                 setUrls(next)
               }}
               placeholder="https://google.com/maps/place/business-name..."
-              className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4DED8] text-[13px] text-[#111111] placeholder:text-[#C4BEB8] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] bg-[#F8F6F3] focus:bg-white transition-all"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#EDE6DC] text-[13px] text-[#111111] placeholder:text-[#C4BEB8] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] bg-[#F3EEE4] focus:bg-white transition-all"
             />
           </div>
         ))}
       </div>
-      {error && <p className="text-[12px] text-red-500 mb-3">{error}</p>}
+      {error && <p className="text-[12px] text-[#B84A1A] mb-3">{error}</p>}
       <div className="flex items-center gap-2">
         <button
           onClick={handleSubmit}
@@ -302,7 +302,7 @@ function AddMoreForm({
         </button>
         <button
           onClick={onCancel}
-          className="h-9 px-4 rounded-xl border border-[#E4DED8] text-[13px] font-medium text-[#57534E] hover:bg-[#F3F0EC] transition-all"
+          className="h-9 px-4 rounded-xl border border-[#EDE6DC] text-[13px] font-medium text-[#57534E] hover:bg-[#F3F0EC] transition-all"
         >
           Cancel
         </button>
@@ -379,7 +379,7 @@ function ComparisonTable({
         key={String(value)}
         className={`px-4 py-3 text-[13px] text-center tnum ${
           isYou ? 'bg-[#E05A28]/[0.06]' : ''
-        } ${highlight ? 'text-emerald-600 font-semibold' : 'text-[#111111]'}`}
+        } ${highlight ? 'text-[#0B8A5B] font-semibold' : 'text-[#111111]'}`}
       >
         {value ?? '—'}
       </td>
@@ -387,11 +387,11 @@ function ComparisonTable({
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E4DED8] overflow-hidden mb-6">
+    <div className="bg-white rounded-2xl border border-[#EDE6DC] overflow-hidden mb-6">
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-[#E4DED8]">
+            <tr className="border-b border-[#EDE6DC]">
               <th className="px-4 py-3 text-left text-[12px] font-medium text-[#A8A29E] w-36">Metric</th>
               {colHeaders.slice(0, activeCount).map((name, i) => (
                 <th
@@ -504,7 +504,7 @@ function RatingChart({
   ]
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E4DED8] p-5 sm:p-6 mb-6">
+    <div className="bg-white rounded-2xl border border-[#EDE6DC] p-5 sm:p-6 mb-6">
       <p className="text-[13px] font-semibold text-[#111111] mb-5">Rating comparison</p>
       <ResponsiveContainer width="100%" height={220}>
         <BarChart data={data} margin={{ top: 20, right: 16, left: -20, bottom: 0 }} barSize={40}>
@@ -608,7 +608,7 @@ function InsightCallout({
       {insights.map((ins) => (
         <div
           key={ins.key}
-          className="bg-white rounded-2xl border border-[#E4DED8] border-l-4 border-l-[#E05A28] px-5 py-4"
+          className="bg-white rounded-2xl border border-[#EDE6DC] border-l-4 border-l-[#E05A28] px-5 py-4"
         >
           <p className="text-[13px] text-[#57534E] leading-relaxed">{ins.text}</p>
         </div>
@@ -654,7 +654,7 @@ function CompetitorCard({
     : null
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E4DED8] hover:border-[#D0C9C1] p-5 transition-all duration-200">
+    <div className="bg-white rounded-2xl border border-[#EDE6DC] hover:border-[#D0C9C1] p-5 transition-all duration-200">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="text-[14px] font-semibold text-[#111111] truncate">
@@ -672,21 +672,21 @@ function CompetitorCard({
         <button
           onClick={handleRemove}
           disabled={removing}
-          className="flex-shrink-0 px-3.5 min-h-[36px] rounded-xl border border-[#E4DED8] bg-[#F8F6F3] text-[12px] font-medium text-[#A8A29E] hover:bg-red-50 hover:text-red-500 hover:border-red-200 active:scale-[0.97] transition-all disabled:opacity-50"
+          className="flex-shrink-0 px-3.5 min-h-[36px] rounded-xl border border-[#EDE6DC] bg-[#F3EEE4] text-[12px] font-medium text-[#A8A29E] hover:bg-[#FEF0E8] hover:text-[#B84A1A] hover:border-[#FCDCCA] active:scale-[0.97] transition-all disabled:opacity-50"
         >
           {removing ? 'Removing…' : 'Remove'}
         </button>
       </div>
-      {removeError && <p className="text-[12px] text-red-500 mt-2">{removeError}</p>}
+      {removeError && <p className="text-[12px] text-[#B84A1A] mt-2">{removeError}</p>}
 
-      <div className="flex flex-wrap items-center gap-3 sm:gap-5 mt-4 pt-4 border-t border-[#E4DED8]">
+      <div className="flex flex-wrap items-center gap-3 sm:gap-5 mt-4 pt-4 border-t border-[#EDE6DC]">
         <div>
           <p className="text-[11px] font-medium text-[#A8A29E] mb-1">Avg Rating</p>
           <div className="flex items-center gap-2">
             <StarRating rating={competitor.avg_rating} />
             {ratingDiff !== null && (
               <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-md tnum ${
-                ratingDiff > 0 ? 'bg-red-50 text-red-500' : ratingDiff < 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-[#F3F0EC] text-[#A8A29E]'
+                ratingDiff > 0 ? 'bg-[#FEF0E8] text-[#B84A1A]' : ratingDiff < 0 ? 'bg-[#0B8A5B] text-[#0B8A5B]' : 'bg-[#F3F0EC] text-[#A8A29E]'
               }`}>
                 {ratingDiff > 0 ? `+${ratingDiff.toFixed(1)} vs you` : ratingDiff < 0 ? `${ratingDiff.toFixed(1)} vs you` : '= you'}
               </span>
@@ -744,7 +744,7 @@ export default function CompetitorsClient({
           {competitors.length < 3 && !showAddMore && (
             <button
               onClick={() => setShowAddMore(true)}
-              className="flex-shrink-0 h-9 px-4 rounded-xl border border-[#E4DED8] bg-[#F3F0EC] text-[13px] font-medium text-[#57534E] hover:bg-[#EDE9E4] transition-all"
+              className="flex-shrink-0 h-9 px-4 rounded-xl border border-[#EDE6DC] bg-[#F3F0EC] text-[13px] font-medium text-[#57534E] hover:bg-[#EDE9E4] transition-all"
             >
               + Add competitor
             </button>

@@ -120,7 +120,7 @@ function PendingCard({ review, userId, onAction, animDelay = 0 }: { review: Scra
   if (noText) {
     return (
       <div className="animate-fade-up flex items-center gap-3 px-4 py-2.5 bg-[#FEFCF8] rounded-xl border border-[#EDE6DC] transition-all duration-150 opacity-60 hover:opacity-80" style={{ animationDelay: `${animDelay}ms` }}>
-        <div className={`w-7 h-7 rounded-full ${avatarBg} border border-[#E4DED8] flex items-center justify-center text-[10px] font-medium ${avatarText} flex-shrink-0`}>{initials}</div>
+        <div className={`w-7 h-7 rounded-full ${avatarBg} border border-[#EDE6DC] flex items-center justify-center text-[10px] font-medium ${avatarText} flex-shrink-0`}>{initials}</div>
         <div className="flex items-center gap-1.5 min-w-0">
           <span className="text-[12px] font-medium text-[#57534E] truncate max-w-[100px]">{review.reviewer_name}</span>
           <PlatformBadge source={review.source} />
@@ -139,7 +139,7 @@ function PendingCard({ review, userId, onAction, animDelay = 0 }: { review: Scra
     <div className="animate-fade-up bg-[#FEFCF8] rounded-xl border border-[#EDE6DC] overflow-hidden transition-all duration-200" style={{ animationDelay: `${animDelay}ms` }}>
       <div className="px-4 pt-4 pb-3">
         <div className="flex items-start gap-3">
-          <div className={`w-9 h-9 rounded-full ${avatarBg} border border-[#E4DED8] flex items-center justify-center text-[11px] font-medium ${avatarText} flex-shrink-0 mt-0.5`}>{initials}</div>
+          <div className={`w-9 h-9 rounded-full ${avatarBg} border border-[#EDE6DC] flex items-center justify-center text-[11px] font-medium ${avatarText} flex-shrink-0 mt-0.5`}>{initials}</div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between gap-2 mb-1.5">
               <div className="flex items-center gap-1.5 flex-wrap min-w-0">
@@ -250,7 +250,7 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
     <div className="animate-fade-up pb-16">
       {/* Header */}
       <div className="mb-8 text-center">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#F3F0EC] border border-[#E4DED8] mb-5">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#F3F0EC] border border-[#EDE6DC] mb-5">
           <span className="w-1.5 h-1.5 rounded-full bg-[#A8A29E]" />
           <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#A8A29E]">One-time setup</span>
         </div>
@@ -270,14 +270,14 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
           <div className="flex items-center gap-2.5 mb-3">
             <GoogleLogo size={20} />
             <span className="text-[13px] font-medium text-[#111]">Google Maps</span>
-            <span className="text-[10px] font-medium text-[#57534E] bg-[#F3F0EC] border border-[#E4DED8] px-2 py-0.5 rounded-full uppercase tracking-wide ml-auto">Recommended</span>
+            <span className="text-[10px] font-medium text-[#57534E] bg-[#F3F0EC] border border-[#EDE6DC] px-2 py-0.5 rounded-full uppercase tracking-wide ml-auto">Recommended</span>
           </div>
           <input
             type="url"
             value={googleUrl}
             onChange={e => setGoogleUrl(e.target.value)}
             placeholder="https://maps.google.com/maps?cid=..."
-            className="w-full h-10 px-3.5 rounded-xl bg-[#F8F6F3] border border-[#E4DED8] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10 transition-all"
+            className="w-full h-10 px-3.5 rounded-xl bg-[#F8F6F3] border border-[#EDE6DC] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10 transition-all"
           />
           <p className="mt-1.5 text-[11px] text-[#A8A29E]">Find your listing on Google Maps, click Share, and copy the link.</p>
         </div>
@@ -287,14 +287,14 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
           <div className="flex items-center gap-2.5 mb-3">
             <YelpLogo size={20} />
             <span className="text-[13px] font-medium text-[#111]">Yelp</span>
-            <span className="text-[10px] font-medium text-[#A8A29E] bg-[#F8F6F3] border border-[#E4DED8] px-2 py-0.5 rounded-full uppercase tracking-wide ml-auto">Optional</span>
+            <span className="text-[10px] font-medium text-[#A8A29E] bg-[#F8F6F3] border border-[#EDE6DC] px-2 py-0.5 rounded-full uppercase tracking-wide ml-auto">Optional</span>
           </div>
           <input
             type="url"
             value={yelpUrl}
             onChange={e => setYelpUrl(e.target.value)}
             placeholder="https://www.yelp.com/biz/your-business"
-            className="w-full h-10 px-3.5 rounded-xl bg-[#F8F6F3] border border-[#E4DED8] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10 transition-all"
+            className="w-full h-10 px-3.5 rounded-xl bg-[#F8F6F3] border border-[#EDE6DC] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10 transition-all"
           />
         </div>
 
@@ -303,14 +303,14 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
           <div className="flex items-center gap-2.5 mb-3">
             <TripAdvisorLogo size={20} />
             <span className="text-[13px] font-medium text-[#111]">TripAdvisor</span>
-            <span className="text-[10px] font-medium text-[#A8A29E] bg-[#F8F6F3] border border-[#E4DED8] px-2 py-0.5 rounded-full uppercase tracking-wide ml-auto">Optional</span>
+            <span className="text-[10px] font-medium text-[#A8A29E] bg-[#F8F6F3] border border-[#EDE6DC] px-2 py-0.5 rounded-full uppercase tracking-wide ml-auto">Optional</span>
           </div>
           <input
             type="url"
             value={taUrl}
             onChange={e => setTaUrl(e.target.value)}
             placeholder="https://www.tripadvisor.com/Restaurant_Review-..."
-            className="w-full h-10 px-3.5 rounded-xl bg-[#F8F6F3] border border-[#E4DED8] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10 transition-all"
+            className="w-full h-10 px-3.5 rounded-xl bg-[#F8F6F3] border border-[#EDE6DC] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10 transition-all"
           />
         </div>
       </div>
@@ -439,7 +439,7 @@ function ManualGenerator({ prominent = false }: { prominent?: boolean }) {
   return (
     <div className="animate-fade-up">
       <div className="flex items-center gap-2.5 mb-4">
-        <div className="w-7 h-7 rounded-lg bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center flex-shrink-0">
+        <div className="w-7 h-7 rounded-lg bg-[#F3F0EC] border border-[#EDE6DC] flex items-center justify-center flex-shrink-0">
           <svg className="w-3.5 h-3.5 text-[#57534E]" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd"/></svg>
         </div>
         <div>
@@ -469,7 +469,7 @@ function GeneratorBody({ review, setReview, platform, setPlatform, starRating, s
                 className={`px-3 py-2.5 rounded-lg text-xs font-medium min-h-[44px] transition-all duration-150 ${
                   platform === p.value
                     ? 'bg-[#F3F0EC] text-[#111] border border-[#D0C9C1]'
-                    : 'text-[#A8A29E] border border-[#E4DED8] hover:text-[#57534E] hover:border-[#D0C9C1]'
+                    : 'text-[#A8A29E] border border-[#EDE6DC] hover:text-[#57534E] hover:border-[#D0C9C1]'
                 }`}
               >
                 {p.label}
@@ -493,7 +493,7 @@ function GeneratorBody({ review, setReview, platform, setPlatform, starRating, s
           onKeyDown={e => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') onGenerate() }}
           placeholder={`Paste a ${platform} review to generate a reply…`}
           rows={prominent ? 5 : 3}
-          className="w-full resize-none px-3.5 py-3 rounded-xl border border-[#E4DED8] bg-white hover:bg-[#F8F6F3] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] text-[13px] text-[#111111] placeholder:text-[#C4BEB8] transition-all duration-200 leading-relaxed"
+          className="w-full resize-none px-3.5 py-3 rounded-xl border border-[#EDE6DC] hover:bg-[#F3EEE4] focus:bg-[#FEFCF8] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] text-[13px] text-[#111111] placeholder:text-[#C4BEB8] transition-all duration-200 leading-relaxed"
         />
         <button
           onClick={onGenerate}
@@ -504,7 +504,7 @@ function GeneratorBody({ review, setReview, platform, setPlatform, starRating, s
         </button>
       </div>
 
-      {error && <p className="px-4 pb-3 text-[12px] text-red-400 animate-fade-in">{error}</p>}
+      {error && <p className="px-4 pb-3 text-[12px] text-[#B84A1A] animate-fade-in">{error}</p>}
 
       {reply && (
         <div className="border-t border-[#EDE9E4] p-4 space-y-3 animate-fade-up">
@@ -845,7 +845,7 @@ export default function HomeClient({
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* Pending reviews */}
         <div className="lg:col-span-3">
-          <SectionLabel badge={pendingList.length > 0 ? <span className="inline-flex items-center justify-center min-w-[20px] h-[18px] px-1.5 rounded-full bg-[#F3F0EC] border border-[#E4DED8] text-[10px] text-[#57534E] tabular-nums">{pendingList.length}</span> : undefined}>
+          <SectionLabel badge={pendingList.length > 0 ? <span className="inline-flex items-center justify-center min-w-[20px] h-[18px] px-1.5 rounded-full bg-[#F3F0EC] border border-[#EDE6DC] text-[10px] text-[#57534E] tabular-nums">{pendingList.length}</span> : undefined}>
             Pending replies
           </SectionLabel>
           {pendingList.length === 0 ? (

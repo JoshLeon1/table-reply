@@ -209,7 +209,7 @@ function CreatePostModal({
         <div className="px-5 pt-5 pb-4 flex-shrink-0">
           {/* Review pill */}
           <div className="flex items-center gap-2 mb-4">
-            <div id="create-post-modal-title" className="flex-1 min-w-0 flex items-center gap-2 px-3 py-2 bg-[#F3F0EC] rounded-xl border border-[#E4DED8]">
+            <div id="create-post-modal-title" className="flex-1 min-w-0 flex items-center gap-2 px-3 py-2 bg-[#F3F0EC] rounded-xl border border-[#EDE6DC]">
               <Stars rating={review.star_rating} />
               <span className="text-[12px] font-semibold text-[#111111] truncate">{review.reviewer_name}</span>
               <span className="text-[12px] text-[#57534E] truncate flex-1">
@@ -256,7 +256,7 @@ function CreatePostModal({
                       className={`px-3 py-1.5 rounded-lg text-[12px] font-semibold border transition-all ${
                         platform === p
                           ? 'bg-[#E05A28]/10 text-[#E05A28] border-[#E05A28]/20'
-                          : 'bg-transparent text-[#A8A29E] border-[#E4DED8] hover:border-[#D0C9C1]'
+                          : 'bg-transparent text-[#A8A29E] border-[#EDE6DC] hover:border-[#D0C9C1]'
                       }`}
                     >
                       {p}
@@ -276,7 +276,7 @@ function CreatePostModal({
                       className={`px-3 py-1.5 rounded-lg text-[12px] font-semibold border transition-all ${
                         captionStyle === s
                           ? 'bg-[#E05A28] text-white border-[#E05A28]'
-                          : 'bg-transparent text-[#A8A29E] border-[#E4DED8] hover:border-[#D0C9C1]'
+                          : 'bg-transparent text-[#A8A29E] border-[#EDE6DC] hover:border-[#D0C9C1]'
                       }`}
                     >
                       {s}
@@ -298,20 +298,20 @@ function CreatePostModal({
               </button>
 
               {captionError && (
-                <p role="alert" className="text-[12px] text-red-500 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{captionError}</p>
+                <p role="alert" className="text-[12px] text-[#B84A1A] bg-[#FEF0E8] border border-[#FCDCCA] rounded-lg px-3 py-2">{captionError}</p>
               )}
 
               {caption && (
                 <>
                   {/* Caption text with char count */}
                   <div className="relative">
-                    <div className="bg-[#F8F6F3] rounded-xl border border-[#E4DED8] p-4">
+                    <div className="bg-[#F3EEE4] rounded-xl border border-[#EDE6DC] p-4">
                       <p className="text-[14px] text-[#111111] leading-relaxed font-medium">{caption}</p>
                       {hashtags.length > 0 && (
                         <p className="text-[13px] text-[#C94E21] mt-2 leading-relaxed">{hashtags.join(' ')}</p>
                       )}
                     </div>
-                    <span className={`absolute bottom-2 right-3 text-[10px] font-medium tnum ${caption.length > platformCharLimit[platform] ? 'text-red-500' : caption.length > platformCharLimit[platform] * 0.85 ? 'text-amber-600' : 'text-[#A8A29E]'}`}>
+                    <span className={`absolute bottom-2 right-3 text-[10px] font-medium tnum ${caption.length > platformCharLimit[platform] ? 'text-[#B84A1A]' : caption.length > platformCharLimit[platform] * 0.85 ? 'text-[#E0A82E]' : 'text-[#A8A29E]'}`}>
                       {caption.length}/{platformCharLimit[platform]}
                     </span>
                   </div>
@@ -321,8 +321,8 @@ function CreatePostModal({
                     onClick={copyCaption}
                     className={`w-full h-[44px] rounded-xl text-[13px] font-semibold border transition-all flex items-center justify-center gap-2 ${
                       copied
-                        ? 'bg-emerald-50 text-emerald-600 border-emerald-200'
-                        : 'bg-[#F3F0EC] text-[#57534E] border-[#E4DED8] hover:border-[#D0C9C1] hover:text-[#111111]'
+                        ? 'bg-[#0B8A5B] text-[#0B8A5B] border-[#C9E4D3]'
+                        : 'bg-[#F3F0EC] text-[#57534E] border-[#EDE6DC] hover:border-[#D0C9C1] hover:text-[#111111]'
                     }`}
                   >
                     {copied ? (
@@ -357,7 +357,7 @@ function CreatePostModal({
                         className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-left transition-all ${
                           graphicStyle === s
                             ? 'border-[#E05A28] ring-2 ring-[#E05A28]/20 bg-[#E05A28]/10'
-                            : 'border-[#E4DED8] bg-[#F8F6F3] hover:border-[#D0C9C1]'
+                            : 'border-[#EDE6DC] bg-[#F3EEE4] hover:border-[#D0C9C1]'
                         }`}
                       >
                         <div
@@ -389,13 +389,13 @@ function CreatePostModal({
               </button>
 
               {graphicError && (
-                <p role="alert" className="text-[12px] text-red-500 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{graphicError}</p>
+                <p role="alert" className="text-[12px] text-[#B84A1A] bg-[#FEF0E8] border border-[#FCDCCA] rounded-lg px-3 py-2">{graphicError}</p>
               )}
 
               {graphicHtml && (
                 <div className="flex flex-col items-center gap-4">
                   {/* Preview */}
-                  <div className="rounded-2xl overflow-hidden shadow-lg border border-[#E4DED8] w-full" style={{ maxWidth: 320, aspectRatio: '1 / 1' }}>
+                  <div className="rounded-2xl overflow-hidden shadow-lg border border-[#EDE6DC] w-full" style={{ maxWidth: 320, aspectRatio: '1 / 1' }}>
                     <iframe
                       ref={iframeRef}
                       srcDoc={graphicHtml}
@@ -429,8 +429,8 @@ function CreatePostModal({
 }
 
 const AVATAR_COLORS = [
-  'bg-emerald-500', 'bg-blue-500', 'bg-violet-500', 'bg-pink-500',
-  'bg-amber-500', 'bg-cyan-500', 'bg-rose-500', 'bg-indigo-500',
+  'bg-[#0B8A5B]', 'bg-[#EDE6DC]', 'bg-violet-500', 'bg-pink-500',
+  'bg-[#FEF0E8]', 'bg-cyan-500', 'bg-rose-500', 'bg-indigo-500',
 ]
 function getAvatarColor(name: string): string {
   let hash = 0
@@ -439,9 +439,9 @@ function getAvatarColor(name: string): string {
 }
 
 function sourceBadge(source?: string | null) {
-  if (source === 'yelp') return <span className="text-[10px] font-bold text-red-500 bg-red-50 border border-red-200 rounded-md px-1.5 py-0.5 leading-none">YELP</span>
-  if (source === 'tripadvisor') return <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 rounded-md px-1.5 py-0.5 leading-none">TA</span>
-  return <span className="text-[10px] font-bold text-blue-500 bg-blue-50 border border-blue-200 rounded-md px-1.5 py-0.5 leading-none">G</span>
+  if (source === 'yelp') return <span className="text-[10px] font-bold text-[#B84A1A] bg-[#FEF0E8] border border-[#FCDCCA] rounded-md px-1.5 py-0.5 leading-none">YELP</span>
+  if (source === 'tripadvisor') return <span className="text-[10px] font-bold text-[#0B8A5B] bg-[#0B8A5B] border border-[#C9E4D3] rounded-md px-1.5 py-0.5 leading-none">TA</span>
+  return <span className="text-[10px] font-bold text-[#57534E] bg-[#EDE6DC] border border-[#EDE6DC] rounded-md px-1.5 py-0.5 leading-none">G</span>
 }
 
 
@@ -462,7 +462,7 @@ export default function SocialClient({ reviews, restaurantProfile }: Props) {
       </div>
 
       {goodReviews.length === 0 ? (
-        <div className="bg-white rounded-xl border border-[#E4DED8] px-6 py-12 sm:p-14 text-center">
+        <div className="bg-[#FEFCF8] rounded-xl border border-[#EDE6DC] px-6 py-12 sm:p-14 text-center">
           <div className="w-14 h-14 rounded-xl bg-[#FEF0E8] border border-[#F5C9AD] flex items-center justify-center mx-auto mb-4">
             <svg className="w-7 h-7 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/>
@@ -486,7 +486,7 @@ export default function SocialClient({ reviews, restaurantProfile }: Props) {
           {goodReviews.map((review) => (
             <div
               key={review.id}
-              className="bg-white rounded-xl border border-[#E4DED8] p-4 sm:p-5 flex flex-col gap-3 hover:border-[#D0C9C1] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-all duration-150"
+              className="bg-[#FEFCF8] rounded-xl border border-[#EDE6DC] p-4 sm:p-5 flex flex-col gap-3 hover:border-[#D0C9C1] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-all duration-150"
             >
               {/* Header row: platform badge + timestamp */}
               <div className="flex items-center justify-between gap-2">

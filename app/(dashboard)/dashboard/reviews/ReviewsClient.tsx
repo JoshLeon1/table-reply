@@ -55,7 +55,7 @@ function ScrapeProgress() {
   }, [])
 
   return (
-    <div className="flex items-center gap-3 px-4 py-3.5 rounded-xl bg-[#F8F6F3] border border-[#E4DED8] text-[#111111] mb-5">
+    <div className="flex items-center gap-3 px-4 py-3.5 rounded-xl bg-[#F3EEE4] border border-[#EDE6DC] text-[#111111] mb-5">
       <svg className="animate-spin w-4 h-4 text-[#A8A29E] flex-shrink-0" fill="none" viewBox="0 0 24 24">
         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
@@ -95,7 +95,7 @@ function SetupPanel({ profile, onSaved }: { profile: BusinessProfile; onSaved: (
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[55vh] text-center">
-      <div className="w-12 h-12 rounded-xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mb-6">
+      <div className="w-12 h-12 rounded-xl bg-[#F3F0EC] border border-[#EDE6DC] flex items-center justify-center mb-6">
         <svg className="w-6 h-6 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75}
             d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
@@ -113,10 +113,10 @@ function SetupPanel({ profile, onSaved }: { profile: BusinessProfile; onSaved: (
           value={url}
           onChange={(e) => { setUrl(e.target.value); setError('') }}
           onKeyDown={(e) => e.key === 'Enter' && handleSave()}
-          className="w-full px-3.5 py-3.5 rounded-xl border border-[#E4DED8] text-[15px] text-[#111111] placeholder:text-[#C4BEB8] bg-white focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:bg-white focus:border-[#E05A28] transition-all"
+          className="w-full px-3.5 py-3.5 rounded-xl border border-[#EDE6DC] text-[15px] text-[#111111] placeholder:text-[#C4BEB8] bg-white focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:bg-white focus:border-[#E05A28] transition-all"
         />
         <p className="text-[11px] text-[#A8A29E] mt-1.5">e.g. maps.google.com/maps/place/your-business...</p>
-        {error && <p className="text-[12px] text-red-500">{error}</p>}
+        {error && <p className="text-[12px] text-[#B84A1A]">{error}</p>}
 
         {/* Helper bullets */}
         <div className="space-y-1.5 pt-1">
@@ -144,7 +144,7 @@ function SetupPanel({ profile, onSaved }: { profile: BusinessProfile; onSaved: (
           </svg>
           How do I find my Google Maps URL?
         </summary>
-        <div className="mt-3 p-4 rounded-xl bg-[#F8F6F3] border border-[#E4DED8] text-[12px] text-[#57534E] leading-relaxed space-y-1">
+        <div className="mt-3 p-4 rounded-xl bg-[#F3EEE4] border border-[#EDE6DC] text-[12px] text-[#57534E] leading-relaxed space-y-1">
           <p>1. Go to <strong>Google Maps</strong> and search for your business.</p>
           <p>2. Click your listing to open the info panel.</p>
           <p>3. Copy the URL from your browser address bar.</p>
@@ -159,7 +159,7 @@ function SetupPanel({ profile, onSaved }: { profile: BusinessProfile; onSaved: (
 
 function SkeletonCard() {
   return (
-    <div className="bg-white rounded-xl overflow-hidden border border-[#E4DED8] animate-pulse">
+    <div className="bg-white rounded-xl overflow-hidden border border-[#EDE6DC] animate-pulse">
       <div className="flex items-center gap-3 px-5 py-4 border-b border-[#EDE9E4]">
         <div className="w-8 h-8 rounded-full bg-[#F3F0EC] flex-shrink-0" />
         <div className="flex-1 space-y-1.5">
@@ -338,7 +338,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
     }
     if (status === 'dismissed') {
       return (
-        <span className="inline-flex items-center rounded-md border border-[#E4DED8] bg-[#F0EDE8] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.09em] text-[#6B6862] tnum flex-shrink-0">
+        <span className="inline-flex items-center rounded-md border border-[#EDE6DC] bg-[#F0EDE8] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.09em] text-[#6B6862] tnum flex-shrink-0">
           DISMISSED
         </span>
       )
@@ -354,7 +354,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
   if (noText) {
     return (
       <div className="flex items-center gap-3 opacity-60 hover:opacity-80 transition-opacity duration-150">
-        <div className={`w-7 h-7 rounded-full ${getAvatarColor(review.reviewer_name)} border border-[#E4DED8] flex items-center justify-center text-[10px] font-medium text-[#57534E] flex-shrink-0`}>
+        <div className={`w-7 h-7 rounded-full ${getAvatarColor(review.reviewer_name)} border border-[#EDE6DC] flex items-center justify-center text-[10px] font-medium text-[#57534E] flex-shrink-0`}>
           {getInitials(review.reviewer_name)}
         </div>
         <div className="flex items-center gap-1.5 min-w-0">
@@ -384,7 +384,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
       <div className="flex items-center justify-between px-4 sm:px-5 py-3.5 sm:py-4 border-b border-[#EDE9E4]">
         <div className="flex items-center gap-3 min-w-0">
           {/* Initials avatar */}
-          <div className={`w-9 h-9 rounded-full ${getAvatarColor(review.reviewer_name)} border border-[#E4DED8] flex items-center justify-center text-[12px] font-medium text-[#57534E] flex-shrink-0`}>
+          <div className={`w-9 h-9 rounded-full ${getAvatarColor(review.reviewer_name)} border border-[#EDE6DC] flex items-center justify-center text-[12px] font-medium text-[#57534E] flex-shrink-0`}>
             {getInitials(review.reviewer_name)}
           </div>
           <div className="min-w-0">
@@ -392,7 +392,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
               <span className="text-[13px] font-medium text-[#111111]">{review.reviewer_name}</span>
               <PlatformBadge source={review.source} />
               {review.star_rating >= 4 ? (
-                <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#F3F0EC] text-[#57534E] border border-[#E4DED8]">Positive</span>
+                <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#F3F0EC] text-[#57534E] border border-[#EDE6DC]">Positive</span>
               ) : review.star_rating <= 2 ? (
                 <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#FEF0E8] text-[#B84A1A] border border-[#FCDCCA]">Critical</span>
               ) : null}
@@ -407,7 +407,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
               <Stars rating={review.star_rating} size="sm" />
               <span className="text-[11px] text-[#A8A29E]">{formatDate(review.review_datetime_utc)}</span>
               {review.language && review.language !== 'English' && (
-                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#F3F0EC] text-[#57534E] border border-[#E4DED8]">{review.language}</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#F3F0EC] text-[#57534E] border border-[#EDE6DC]">{review.language}</span>
               )}
             </div>
           </div>
@@ -436,7 +436,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
         <div className="px-4 sm:px-5 py-3.5 sm:py-4">
             {review.generated_reply ? (
               /* AI reply card */
-              <div className="rounded-xl bg-[#F8F6F3] border border-[#E4DED8] px-4 py-3.5">
+              <div className="rounded-xl bg-[#F3EEE4] border border-[#EDE6DC] px-4 py-3.5">
                 <div className="flex items-center justify-end gap-2 mb-2">
                   {status === 'pending' && !editing && (
                     <button
@@ -457,7 +457,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
                       onChange={(e) => setEditedReply(e.target.value)}
                       rows={5}
                       autoFocus
-                      className="w-full text-[13px] text-[#57534E] leading-relaxed bg-white border border-[#E4DED8] rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#111]/10 focus:border-[#111] resize-none transition-all"
+                      className="w-full text-[13px] text-[#57534E] leading-relaxed bg-[#FEFCF8] border border-[#EDE6DC] rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#111]/10 focus:border-[#111] resize-none transition-all"
                     />
                     <div className="flex items-center gap-2">
                       <button
@@ -493,14 +493,14 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
                   <div>
                     <button
                       onClick={handleGenerateReply}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#F3F0EC] hover:bg-[#EDE9E4] border border-[#E4DED8] text-[#57534E] text-[12px] font-medium transition-all duration-150 active:scale-[0.98]"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#F3F0EC] hover:bg-[#EDE9E4] border border-[#EDE6DC] text-[#57534E] text-[12px] font-medium transition-all duration-150 active:scale-[0.98]"
                     >
                       <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/>
                       </svg>
                       Generate Reply
                     </button>
-                    {genError && <p className="text-[12px] text-red-400 mt-2">{genError}</p>}
+                    {genError && <p className="text-[12px] text-[#B84A1A] mt-2">{genError}</p>}
                   </div>
                 )}
               </div>
@@ -531,7 +531,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
                 target="_blank"
                 rel="noopener noreferrer"
                 title={platformHint}
-                className="flex items-center justify-center gap-1.5 px-4 min-h-[44px] rounded-xl border border-[#E4DED8] hover:border-[#D0C9C1] bg-white hover:bg-[#F8F6F3] text-[#57534E] hover:text-[#111111] text-[13px] font-medium active:scale-[0.97] transition-all duration-150 group"
+                className="flex items-center justify-center gap-1.5 px-4 min-h-[44px] rounded-xl border border-[#EDE6DC] hover:bg-[#F3EEE4] hover:bg-[#F3EEE4] text-[#57534E] hover:text-[#111111] text-[13px] font-medium active:scale-[0.97] transition-all duration-150 group"
               >
                 <svg className="w-3.5 h-3.5 opacity-50 group-hover:opacity-80 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
@@ -551,7 +551,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
           <button
             onClick={handleRestore}
             disabled={actioning}
-            className="flex items-center justify-center gap-1.5 px-4 min-h-[44px] rounded-xl bg-[#F3F0EC] border border-[#E4DED8] hover:border-[#D0C9C1] text-[#57534E] hover:text-[#111111] text-[13px] font-medium active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
+            className="flex items-center justify-center gap-1.5 px-4 min-h-[44px] rounded-xl bg-[#F3F0EC] border border-[#EDE6DC] hover:border-[#D0C9C1] text-[#57534E] hover:text-[#111111] text-[13px] font-medium active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
           >
             Restore
           </button>
@@ -560,7 +560,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
             <button
               onClick={handleApprove}
               disabled={actioning || !review.generated_reply || editing}
-              className={`flex items-center justify-center gap-1.5 px-4 min-h-[44px] rounded-xl text-white text-[13px] font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 ${isCopied ? 'bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700' : 'bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.97]'}`}
+              className={`flex items-center justify-center gap-1.5 px-4 min-h-[44px] rounded-xl text-white text-[13px] font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 ${isCopied ? 'bg-[#0B8A5B] hover:bg-[#077A51]' : 'bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.97]'}`}
             >
               {isCopied ? (
                 <>
@@ -581,7 +581,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
             <button
               onClick={handleGenerateReply}
               disabled={generating || actioning}
-              className="px-3.5 min-h-[44px] rounded-xl text-[13px] font-medium text-[#A8A29E] hover:text-[#57534E] hover:bg-[#F3F0EC] border border-[#E4DED8] active:scale-[0.97] disabled:opacity-40 transition-all duration-150"
+              className="px-3.5 min-h-[44px] rounded-xl text-[13px] font-medium text-[#A8A29E] hover:text-[#57534E] hover:bg-[#F3F0EC] border border-[#EDE6DC] active:scale-[0.97] disabled:opacity-40 transition-all duration-150"
             >
               Regenerate
             </button>
@@ -642,11 +642,11 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
     <div>
       {/* Scrape error banner */}
       {scrapeError && (
-        <div role="alert" className="mb-5 flex items-start justify-between gap-3 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-[13px] text-red-500">
+        <div role="alert" className="mb-5 flex items-start justify-between gap-3 px-4 py-3 rounded-xl bg-[#FEF0E8] border border-[#FCDCCA] text-[13px] text-[#B84A1A]">
           <p>{scrapeError}</p>
           <div className="flex items-center gap-2 flex-shrink-0">
             <button onClick={onScrapeNow} className="font-semibold underline hover:no-underline">Try again</button>
-            <button onClick={onDismissError} aria-label="Dismiss" className="text-red-400 hover:text-red-300">
+            <button onClick={onDismissError} aria-label="Dismiss" className="text-[#B84A1A] hover:text-[#57534E]">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
               </svg>
@@ -682,7 +682,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
         description={profile.business_name + (lastScrapedAt ? ` · Synced ${formatDate(lastScrapedAt)}` : '')}
         action={
           <button onClick={onScrapeNow} disabled={scraping}
-            className="group flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#F3F0EC] border border-[#E4DED8] hover:border-[#D0C9C1] text-[13px] font-medium text-[#57534E] hover:text-[#111111] disabled:opacity-40 transition-all min-h-[36px]">
+            className="group flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#F3F0EC] border border-[#EDE6DC] hover:border-[#D0C9C1] text-[13px] font-medium text-[#57534E] hover:text-[#111111] disabled:opacity-40 transition-all min-h-[36px]">
             <svg className={`w-3.5 h-3.5 transition-transform duration-500 ${scraping ? 'animate-spin' : 'group-hover:rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
             </svg>
@@ -693,17 +693,17 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
 
       {/* Response rate stat */}
       {reviews.length > 0 && (
-        <div className="flex items-center gap-4 px-5 py-4 rounded-xl bg-white border border-[#E4DED8] mb-5">
+        <div className="flex items-center gap-4 px-5 py-4 rounded-xl bg-[#FEFCF8] border border-[#EDE6DC] mb-5">
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-2">
               <p className="text-[12px] font-medium text-[#A8A29E]">Response rate</p>
-              <span className={`text-[13px] font-medium tabular-nums ${responseRate >= 80 ? 'text-emerald-600' : responseRate >= 50 ? 'text-[#111111]' : 'text-[#B84A1A]'}`}>
+              <span className={`text-[13px] font-medium tabular-nums tnum ${responseRate >= 80 ? 'text-[#0B8A5B]' : responseRate >= 50 ? 'text-[#111111]' : 'text-[#B84A1A]'}`}>
                 {approvedCount} / {totalWithText} &nbsp;·&nbsp; {responseRate}%
               </span>
             </div>
             <div className="h-1.5 rounded-full bg-[#EDE9E4] overflow-hidden">
               <div
-                className={`h-full rounded-full transition-all duration-700 ${responseRate >= 80 ? 'bg-emerald-500' : responseRate >= 50 ? 'bg-[#111]' : 'bg-[#B84A1A]'}`}
+                className={`h-full rounded-full transition-all duration-700 ${responseRate >= 80 ? 'bg-[#0B8A5B]' : responseRate >= 50 ? 'bg-[#111]' : 'bg-[#B84A1A]'}`}
                 style={{ width: `${Math.min(responseRate, 100)}%` }}
               />
             </div>
@@ -713,8 +713,8 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
 
       {/* Pending banner */}
       {pending.length > 0 && !scraping && (
-        <div className="mb-5 flex items-center gap-3 px-4 py-3.5 rounded-xl bg-white border border-[#E4DED8]">
-          <span className="inline-flex items-center justify-center min-w-[20px] h-[18px] px-1.5 rounded-full bg-[#F3F0EC] border border-[#E4DED8] text-[10px] text-[#57534E] tabular-nums flex-shrink-0">
+        <div className="mb-5 flex items-center gap-3 px-4 py-3.5 rounded-xl bg-[#FEFCF8] border border-[#EDE6DC]">
+          <span className="inline-flex items-center justify-center min-w-[20px] h-[18px] px-1.5 rounded-full bg-[#F3F0EC] border border-[#EDE6DC] text-[10px] text-[#57534E] tabular-nums flex-shrink-0">
             {pending.length}
           </span>
           <p className="text-[13px] text-[#57534E]">
@@ -777,8 +777,8 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
         // Filter is active and matched 0 → show filter empty state with clear button
         if (filterStars !== null && pending.length > 0) {
           return (
-            <div className="text-center py-14 bg-white rounded-xl border border-[#E4DED8]">
-              <div className="w-11 h-11 rounded-xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mx-auto mb-4">
+            <div className="text-center py-14 bg-[#FEFCF8] rounded-xl border border-[#EDE6DC]">
+              <div className="w-11 h-11 rounded-xl bg-[#F3F0EC] border border-[#EDE6DC] flex items-center justify-center mx-auto mb-4">
                 <svg className="w-5 h-5 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
                 </svg>
@@ -798,8 +798,8 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
         }
         // No filter and nothing pending → caught-up state
         return (
-          <div className="text-center py-14 bg-white rounded-xl border border-[#E4DED8]">
-            <div className="w-11 h-11 rounded-xl bg-white border border-[#E4DED8] flex items-center justify-center mx-auto mb-4">
+          <div className="text-center py-14 bg-[#FEFCF8] rounded-xl border border-[#EDE6DC]">
+            <div className="w-11 h-11 rounded-xl bg-[#FEFCF8] border border-[#EDE6DC] flex items-center justify-center mx-auto mb-4">
               <svg className="w-5 h-5 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/>
               </svg>
@@ -817,7 +817,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
             <>
               {/* Instruction banner */}
               {!readyBannerDismissed && (
-                <div className="flex items-start gap-3 px-4 py-3.5 mb-4 rounded-xl bg-white border border-[#E4DED8]">
+                <div className="flex items-start gap-3 px-4 py-3.5 mb-4 rounded-xl bg-[#FEFCF8] border border-[#EDE6DC]">
                   <svg className="w-4 h-4 flex-shrink-0 mt-0.5 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                   </svg>
@@ -840,8 +840,8 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
                 const filtered = filterStars !== null ? approved.filter((r) => r.star_rating === filterStars) : approved
                 if (filtered.length === 0) {
                   return (
-                    <div className="text-center py-14 bg-white rounded-xl border border-[#E4DED8]">
-                      <div className="w-11 h-11 rounded-xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mx-auto mb-4">
+                    <div className="text-center py-14 bg-[#FEFCF8] rounded-xl border border-[#EDE6DC]">
+                      <div className="w-11 h-11 rounded-xl bg-[#F3F0EC] border border-[#EDE6DC] flex items-center justify-center mx-auto mb-4">
                         <svg className="w-5 h-5 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
                         </svg>
@@ -873,8 +873,8 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
               })()}
             </>
           ) : (
-            <div className="text-center py-14 bg-white rounded-xl border border-[#E4DED8]">
-              <div className="w-11 h-11 rounded-xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mx-auto mb-4">
+            <div className="text-center py-14 bg-[#FEFCF8] rounded-xl border border-[#EDE6DC]">
+              <div className="w-11 h-11 rounded-xl bg-[#F3F0EC] border border-[#EDE6DC] flex items-center justify-center mx-auto mb-4">
                 <svg className="w-5 h-5 text-[#C4BEB8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                 </svg>
@@ -904,8 +904,8 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
         }
         if (filterStars !== null && dismissed.length > 0) {
           return (
-            <div className="text-center py-14 bg-white rounded-xl border border-[#E4DED8]">
-              <div className="w-11 h-11 rounded-xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mx-auto mb-4">
+            <div className="text-center py-14 bg-[#FEFCF8] rounded-xl border border-[#EDE6DC]">
+              <div className="w-11 h-11 rounded-xl bg-[#F3F0EC] border border-[#EDE6DC] flex items-center justify-center mx-auto mb-4">
                 <svg className="w-5 h-5 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
                 </svg>
@@ -924,8 +924,8 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
           )
         }
         return (
-          <div className="text-center py-14 bg-white rounded-xl border border-[#E4DED8]">
-            <div className="w-11 h-11 rounded-xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mx-auto mb-4">
+          <div className="text-center py-14 bg-[#FEFCF8] rounded-xl border border-[#EDE6DC]">
+            <div className="w-11 h-11 rounded-xl bg-[#F3F0EC] border border-[#EDE6DC] flex items-center justify-center mx-auto mb-4">
               <svg className="w-5 h-5 text-[#C4BEB8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
               </svg>

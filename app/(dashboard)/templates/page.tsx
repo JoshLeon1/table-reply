@@ -72,8 +72,8 @@ export default async function TemplatesPage() {
     <div className="space-y-8">
       {/* Header */}
       <div className="pt-8 pb-2">
-        <h1 className="text-[22px] sm:text-[24px] text-[#111] tracking-[-0.02em] leading-[1.2]" style={{ fontWeight: 500 }}>Review Request Templates</h1>
-        <p className="text-[13px] text-[#57534E] mt-1.5 max-w-xl">
+        <h1 className="text-[22px] sm:text-[24px] text-[#111] leading-[1.15]" style={{ fontWeight: 600, letterSpacing: '-0.022em' }}>Review Request Templates</h1>
+        <p className="text-[13px] text-[#57534E] mt-1.5 max-w-xl" style={{ letterSpacing: '-0.006em' }}>
           Ready-to-send messages to collect more Google reviews.{' '}
           {restaurantProfile.google_maps_url
             ? 'Your Google review link has been filled in automatically.'
@@ -88,7 +88,7 @@ export default async function TemplatesPage() {
         return (
           <div key={category}>
             {/* Section label */}
-            <div className="flex items-center gap-2 mb-3">
+            <div className="flex items-center gap-2 mb-4">
               <span className={`w-2 h-2 rounded-full ${meta.dot}`} />
               {category === 'SMS' && (
                 <svg className="w-3.5 h-3.5 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -110,38 +110,25 @@ export default async function TemplatesPage() {
               </span>
             </div>
 
-            <div className="space-y-3">
+            <div className="divide-y divide-[#EDE6DC]">
               {items.map((template, i) => (
-                <div
-                  key={i}
-                  className="bg-white rounded-xl border border-[#E4DED8] overflow-hidden"
-                >
-                  {/* Card header */}
-                  <div className="flex items-start justify-between gap-3 px-4 sm:px-5 py-3.5 border-b border-[#EDE9E4]">
+                <div key={i} className="py-4">
+                  <div className="flex items-start justify-between gap-3 mb-3">
                     <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2.5 min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full flex-shrink-0 ${meta.bg} ${meta.text}`}>
-                          {category}
-                        </span>
                         <span className="text-[13px] font-medium text-[#111]">{template.title}</span>
                       </div>
                       {'subject' in template && template.subject && (
-                        <span className="text-[12px] text-[#AAA] truncate">· {template.subject}</span>
+                        <span className="text-[12px] text-[#A8A29E] truncate">· {template.subject}</span>
                       )}
                     </div>
-                    <div className="flex-shrink-0 mt-0.5">
+                    <div className="flex-shrink-0">
                       <CopyButton text={template.content} />
                     </div>
                   </div>
-
-                  {/* Card body */}
-                  <div className="px-4 sm:px-5 py-4">
-                    <div className="bg-[#FAFAF9] rounded-xl p-4 border border-[#EDE9E4]">
-                      <p className="text-[13px] text-[#555] whitespace-pre-wrap leading-relaxed">
-                        {template.content}
-                      </p>
-                    </div>
-                  </div>
+                  <p className="text-[13px] text-[#57534E] whitespace-pre-wrap leading-relaxed">
+                    {template.content}
+                  </p>
                 </div>
               ))}
             </div>

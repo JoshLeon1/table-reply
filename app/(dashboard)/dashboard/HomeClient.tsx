@@ -119,7 +119,7 @@ function PendingCard({ review, userId, onAction, animDelay = 0 }: { review: Scra
 
   if (noText) {
     return (
-      <div className="animate-fade-up flex items-center gap-3 px-4 py-2.5 bg-white rounded-xl border border-[#E4DED8] hover:border-[#D0C9C1] transition-all duration-150 opacity-60 hover:opacity-80" style={{ animationDelay: `${animDelay}ms` }}>
+      <div className="animate-fade-up flex items-center gap-3 px-4 py-2.5 bg-[#FEFCF8] rounded-xl border border-[#EDE6DC] transition-all duration-150 opacity-60 hover:opacity-80" style={{ animationDelay: `${animDelay}ms` }}>
         <div className={`w-7 h-7 rounded-full ${avatarBg} border border-[#E4DED8] flex items-center justify-center text-[10px] font-medium ${avatarText} flex-shrink-0`}>{initials}</div>
         <div className="flex items-center gap-1.5 min-w-0">
           <span className="text-[12px] font-medium text-[#57534E] truncate max-w-[100px]">{review.reviewer_name}</span>
@@ -136,7 +136,7 @@ function PendingCard({ review, userId, onAction, animDelay = 0 }: { review: Scra
   }
 
   return (
-    <div className="animate-fade-up bg-white rounded-xl border border-[#E4DED8] overflow-hidden transition-all duration-200 hover:border-[#D0C9C1]" style={{ animationDelay: `${animDelay}ms` }}>
+    <div className="animate-fade-up bg-[#FEFCF8] rounded-xl border border-[#EDE6DC] overflow-hidden transition-all duration-200" style={{ animationDelay: `${animDelay}ms` }}>
       <div className="px-4 pt-4 pb-3">
         <div className="flex items-start gap-3">
           <div className={`w-9 h-9 rounded-full ${avatarBg} border border-[#E4DED8] flex items-center justify-center text-[11px] font-medium ${avatarText} flex-shrink-0 mt-0.5`}>{initials}</div>
@@ -162,7 +162,7 @@ function PendingCard({ review, userId, onAction, animDelay = 0 }: { review: Scra
             {expanded ? 'Hide AI draft' : 'Preview AI draft'}
           </button>
           {expanded && (
-            <div className="mt-2.5 bg-white rounded-xl px-4 py-3.5 border border-[#E4DED8] animate-fade-up">
+            <div className="mt-2.5 bg-[#FEFCF8] rounded-xl px-4 py-3.5 border border-[#EDE6DC] animate-fade-up">
               <div className="flex items-center gap-1.5 mb-2">
                 <div className="w-4 h-4 rounded-md bg-[#F3F0EC] flex items-center justify-center">
                   <svg className="w-2.5 h-2.5 text-[#57534E]" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd"/></svg>
@@ -176,7 +176,7 @@ function PendingCard({ review, userId, onAction, animDelay = 0 }: { review: Scra
       )}
 
       <div className="flex items-center gap-2 px-4 pb-4 pt-1">
-        <button onClick={handleApprove} disabled={actioning || !review.generated_reply} className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-white text-[12px] font-medium disabled:opacity-40 transition-all duration-200 active:scale-[0.97] ${copied ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-[#E05A28] hover:bg-[#C94E21]'}`}>
+        <button onClick={handleApprove} disabled={actioning || !review.generated_reply} className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-white text-[12px] font-medium disabled:opacity-40 transition-all duration-200 active:scale-[0.97] ${copied ? 'bg-[#0B8A5B] hover:bg-[#077A51]' : 'bg-[#E05A28] hover:bg-[#C94E21]'}`}>
           {copied ? <><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied</> : <><svg className="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Copy &amp; Approve</>}
         </button>
         <button onClick={handleDismiss} disabled={actioning} className="px-3 py-2 rounded-xl text-[12px] font-medium text-[#A8A29E] hover:text-[#57534E] hover:bg-[#F3F0EC] disabled:opacity-40 transition-all duration-150">Dismiss</button>
@@ -266,7 +266,7 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
       <div className="max-w-lg mx-auto space-y-3 mb-6">
 
         {/* Google */}
-        <div className="bg-white rounded-xl border border-[#E4DED8] p-4">
+        <div className="bg-[#FEFCF8] rounded-xl border border-[#EDE6DC] p-4">
           <div className="flex items-center gap-2.5 mb-3">
             <GoogleLogo size={20} />
             <span className="text-[13px] font-medium text-[#111]">Google Maps</span>
@@ -283,7 +283,7 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
         </div>
 
         {/* Yelp */}
-        <div className="bg-white rounded-xl border border-[#E4DED8] p-4">
+        <div className="bg-[#FEFCF8] rounded-xl border border-[#EDE6DC] p-4">
           <div className="flex items-center gap-2.5 mb-3">
             <YelpLogo size={20} />
             <span className="text-[13px] font-medium text-[#111]">Yelp</span>
@@ -299,7 +299,7 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
         </div>
 
         {/* TripAdvisor */}
-        <div className="bg-white rounded-xl border border-[#E4DED8] p-4">
+        <div className="bg-[#FEFCF8] rounded-xl border border-[#EDE6DC] p-4">
           <div className="flex items-center gap-2.5 mb-3">
             <TripAdvisorLogo size={20} />
             <span className="text-[13px] font-medium text-[#111]">TripAdvisor</span>
@@ -317,9 +317,9 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
 
       {/* Error */}
       {error && (
-        <div role="alert" className="max-w-lg mx-auto mb-4 rounded-xl bg-red-50 border border-red-100 px-4 py-3 flex items-start gap-2.5">
-          <svg className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          <p className="text-[13px] text-red-600">{error}</p>
+        <div role="alert" className="max-w-lg mx-auto mb-4 rounded-xl bg-[#FEF0E8] border border-[#FCDCCA] px-4 py-3 flex items-start gap-2.5">
+          <svg className="w-4 h-4 text-[#B84A1A] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <p className="text-[13px] text-[#B84A1A]">{error}</p>
         </div>
       )}
 
@@ -357,7 +357,7 @@ function ConnectNudge({ onExitManual }: { onExitManual: () => void }) {
   const [dismissed, setDismissed] = useState(false)
   if (dismissed) return null
   return (
-    <div className="animate-fade-up flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-5 py-3.5 rounded-xl bg-white border border-[#E4DED8]">
+    <div className="animate-fade-up flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-5 py-3.5 rounded-xl bg-[#FEFCF8] border border-[#EDE6DC]">
       <div className="flex items-center gap-3">
         <svg className="w-4 h-4 text-[#57534E] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
         <p className="text-[13px] text-[#57534E]">
@@ -456,7 +456,7 @@ function GeneratorBody({ review, setReview, platform, setPlatform, starRating, s
   review: string; setReview: (v: string) => void; platform: string; setPlatform: (v: string) => void; starRating: number; setStarRating: (v: number) => void; reply: string; loading: boolean; error: string; copied: boolean; onGenerate: () => void; onCopy: () => void; prominent: boolean
 }) {
   return (
-    <div className={`bg-white rounded-xl border border-[#E4DED8] overflow-hidden ${prominent ? 'shadow-card' : ''}`}>
+    <div className={`bg-[#FEFCF8] rounded-xl border border-[#EDE6DC] overflow-hidden ${prominent ? 'shadow-card' : ''}`}>
       <div className="p-4 space-y-3">
         {/* Platform + star rating selectors */}
         <div className="flex items-center justify-between gap-3">
@@ -482,7 +482,7 @@ function GeneratorBody({ review, setReview, platform, setPlatform, starRating, s
                 key={s}
                 type="button"
                 onClick={() => setStarRating(s)}
-                className={`min-w-[44px] min-h-[44px] flex items-center justify-center text-[16px] leading-none transition-all duration-100 ${s <= starRating ? 'text-amber-400' : 'text-[#E4DED8]'}`}
+                className={`min-w-[44px] min-h-[44px] flex items-center justify-center text-[16px] leading-none transition-all duration-100 ${s <= starRating ? 'text-[#E0A82E]' : 'text-[#E4DED8]'}`}
               >★</button>
             ))}
           </div>
@@ -508,14 +508,14 @@ function GeneratorBody({ review, setReview, platform, setPlatform, starRating, s
 
       {reply && (
         <div className="border-t border-[#EDE9E4] p-4 space-y-3 animate-fade-up">
-          <div className="bg-white border border-[#E4DED8] rounded-xl px-4 py-3.5">
+          <div className="rounded-xl px-4 py-3.5 bg-[#FAF7F2]">
             <div className="flex items-center gap-1.5 mb-2">
               <div className="w-4 h-4 rounded-md bg-[#F3F0EC] flex items-center justify-center"><svg className="w-2.5 h-2.5 text-[#57534E]" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd"/></svg></div>
               <p className="text-[10px] font-medium uppercase tracking-wider text-[#A8A29E]">Generated Reply</p>
             </div>
             <p className="text-[12px] text-[#57534E] leading-relaxed">{reply}</p>
           </div>
-          <button onClick={onCopy} className={`w-full py-2 rounded-xl text-[12px] font-medium border transition-all duration-200 active:scale-[0.98] ${copied ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'bg-[#F3F0EC] text-[#57534E] border-[#E4DED8] hover:border-[#D0C9C1] hover:text-[#111111]'}`}>
+          <button onClick={onCopy} className={`w-full py-2 rounded-xl text-[12px] font-medium border transition-all duration-200 active:scale-[0.98] ${copied ? 'bg-[#E8F5EE] text-[#0B8A5B] border-[#C9E4D3]' : 'bg-[#F3F0EC] text-[#57534E] border-[#EDE6DC] hover:bg-[#F3EEE4] hover:text-[#111111]'}`}>
             {copied ? 'Copied to clipboard' : 'Copy Reply'}
           </button>
         </div>
@@ -590,7 +590,7 @@ function ActionStrip({ pendingCount, repliesSentCount, lastSyncAt }: {
     <div className="flex gap-3 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory sm:snap-none pb-2 sm:pb-0">
       {actions.map((a) => (
         <Link key={a.label} href={a.href} className="group flex-1 min-w-[240px] sm:min-w-0 snap-start">
-          <Card variant="flat" padding="md" className="h-full hover:bg-white transition-colors">
+          <Card variant="flat" padding="md" className="h-full hover:bg-[#F3EEE4] transition-colors">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-lg bg-[#FAF8F5] flex items-center justify-center text-[#57534E] flex-shrink-0">
                 {a.icon}
@@ -616,16 +616,14 @@ function RecentReviewsList({ reviews }: { reviews: ScrapedReview[] }) {
   if (recent.length === 0) return null
 
   return (
-    <Card variant="standard" padding="none">
-      <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-[#EDE9E4]">
-        <Eyebrow>RECENT REVIEWS</Eyebrow>
-        <Link href="/dashboard/reviews" className="text-[12px] font-medium text-[#57534E] hover:text-[#111] inline-flex items-center gap-1">
-          See all <ArrowRight size={12} strokeWidth={2} />
-        </Link>
+    <section className="mb-2">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-[15px] text-[#111]" style={{ fontWeight: 600, letterSpacing: '-0.01em' }}>Recent reviews</h2>
+        <Link href="/dashboard/reviews" className="text-[12px] text-[#57534E] hover:text-[#111]">View all →</Link>
       </div>
-      <ul className="divide-y divide-[#EDE9E4]">
+      <div className="divide-y divide-[#EDE6DC]">
         {recent.map((r) => (
-          <li key={r.id} className="px-5 sm:px-6 py-3.5">
+          <div key={r.id} className="py-3.5">
             <div className="flex items-start sm:items-center gap-3 flex-col sm:flex-row">
               <div className="flex items-center gap-3 flex-1 min-w-0 w-full">
                 <div className="w-8 h-8 rounded-full bg-[#F0EDE8] text-[#57534E] flex items-center justify-center text-[12px] font-medium flex-shrink-0">
@@ -643,10 +641,10 @@ function RecentReviewsList({ reviews }: { reviews: ScrapedReview[] }) {
                 {formatTimeAgo(r.review_datetime_utc)}
               </span>
             </div>
-          </li>
+          </div>
         ))}
-      </ul>
-    </Card>
+      </div>
+    </section>
   )
 }
 
@@ -789,7 +787,7 @@ export default function HomeClient({
 
       {/* First-sync nudge — shown only when platforms connected but never synced */}
       {hasAnyPlatform && !lastScrapedAt && (
-        <div className="animate-fade-up flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-5 py-3.5 rounded-xl bg-white border border-[#E4DED8]">
+        <div className="animate-fade-up flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-5 py-3.5 rounded-xl bg-[#FEFCF8] border border-[#EDE6DC]">
           <div className="flex items-center gap-3">
             <svg className="w-4 h-4 text-[#57534E] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
             <div>
@@ -815,10 +813,10 @@ export default function HomeClient({
       <div className="space-y-6">
         {/* Page title */}
         <div className="pt-8 pb-2">
-          <h1 className="text-[22px] sm:text-[24px] text-[#111] tracking-[-0.02em] leading-[1.2]" style={{ fontWeight: 500 }}>
+          <h1 className="text-[22px] sm:text-[24px] text-[#111] leading-[1.15]" style={{ fontWeight: 600, letterSpacing: '-0.022em' }}>
             Welcome back{ownerName ? `, ${ownerName}` : ''}.
           </h1>
-          <p className="text-[13px] text-[#57534E] mt-1.5">Here&apos;s how your reputation is trending.</p>
+          <p className="text-[13px] text-[#57534E] mt-1.5" style={{ letterSpacing: '-0.006em' }}>Here&apos;s how your reputation is trending.</p>
         </div>
 
         <HeroRow reviews={allReviews} />
@@ -832,8 +830,8 @@ export default function HomeClient({
 
       {/* ── Sync status message ────────────────────────────────────────────── */}
       {syncMsg && (
-        <div className="flex items-center justify-between gap-3 px-4 sm:px-5 py-3 rounded-xl bg-white border border-[#E4DED8]">
-          <span className={`text-[12px] font-medium ${syncMsg.type === 'success' ? 'text-emerald-600' : 'text-[#B84A1A]'}`}>
+        <div className="flex items-center justify-between gap-3 px-4 sm:px-5 py-3 rounded-xl bg-[#FEFCF8] border border-[#EDE6DC]">
+          <span className={`text-[12px] font-medium ${syncMsg.type === 'success' ? 'text-[#0B8A5B]' : 'text-[#B84A1A]'}`}>
             {syncMsg.text}
           </span>
           <button onClick={handleSync} disabled={syncing} className="group flex items-center gap-1.5 text-[12px] font-medium text-[#A8A29E] hover:text-[#57534E] disabled:opacity-40 transition-colors duration-150">
@@ -851,9 +849,9 @@ export default function HomeClient({
             Pending replies
           </SectionLabel>
           {pendingList.length === 0 ? (
-            <div className="flex items-center gap-4 px-5 py-5 bg-white border border-[#E4DED8] rounded-xl animate-fade-up">
+            <div className="flex items-center gap-4 py-5 animate-fade-up">
               <div className="flex-shrink-0">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
+                <span className="w-2 h-2 rounded-full bg-[#0B8A5B] inline-block" />
               </div>
               <div>
                 <p className="text-[13px] font-medium text-[#111]">All caught up</p>
@@ -876,35 +874,35 @@ export default function HomeClient({
         {/* Recent activity */}
         <div className="lg:col-span-2">
           <div className="animate-fade-up" style={{ animationDelay: '120ms' }}>
-            <SectionLabel>Recent activity</SectionLabel>
-            <div className="bg-white rounded-xl border border-[#E4DED8] overflow-hidden">
-              {recentApproved.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-10 px-4 text-center">
-                  <div className="w-10 h-10 rounded-xl bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center mb-3"><svg className="text-[#C4BEB8]" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ width: 18, height: 18 }}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg></div>
-                  <p className="text-[12px] font-medium text-[#A8A29E]">No approved replies yet</p>
-                  <p className="text-[11px] text-[#C4BEB8] mt-0.5">Approved reviews will show here</p>
-                </div>
-              ) : (
-                <div className="divide-y divide-[#EDE9E4]">
-                  {recentApproved.map(review => (
-                    <div key={review.id} className="flex items-center gap-3 px-4 py-3 hover:bg-[#F8F6F3] transition-colors duration-150">
-                      <div className="w-8 h-8 rounded-full bg-[#F3F0EC] border border-[#E4DED8] flex items-center justify-center text-[11px] font-medium text-[#A8A29E] flex-shrink-0">{review.reviewer_name.charAt(0).toUpperCase()}</div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5 mb-0.5">
-                          <span className="text-[12px] font-medium text-[#111111] truncate">{review.reviewer_name}</span>
-                          <PlatformBadge source={review.source} />
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-amber-400 text-[10px]">{'★'.repeat(review.star_rating)}</span>
-                          <span className="text-[10px] text-[#C4BEB8]">{formatTimeAgo(review.review_datetime_utc ?? review.created_at)}</span>
-                        </div>
-                      </div>
-                      <div className="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0" />
-                    </div>
-                  ))}
-                </div>
-              )}
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-[15px] text-[#111]" style={{ fontWeight: 600, letterSpacing: '-0.01em' }}>Recent activity</h2>
             </div>
+            {recentApproved.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-10 px-4 text-center">
+                <div className="w-10 h-10 rounded-xl bg-[#F3F0EC] flex items-center justify-center mb-3"><svg className="text-[#C4BEB8]" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ width: 18, height: 18 }}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg></div>
+                <p className="text-[12px] font-medium text-[#A8A29E]">No approved replies yet</p>
+                <p className="text-[11px] text-[#C4BEB8] mt-0.5">Approved reviews will show here</p>
+              </div>
+            ) : (
+              <div className="divide-y divide-[#EDE6DC]">
+                {recentApproved.map(review => (
+                  <div key={review.id} className="flex items-center gap-3 py-3 hover:bg-[#F3EEE4] transition-colors duration-150 -mx-1 px-1 rounded-lg">
+                    <div className="w-8 h-8 rounded-full bg-[#F3F0EC] flex items-center justify-center text-[11px] font-medium text-[#A8A29E] flex-shrink-0">{review.reviewer_name.charAt(0).toUpperCase()}</div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5 mb-0.5">
+                        <span className="text-[12px] font-medium text-[#111111] truncate">{review.reviewer_name}</span>
+                        <PlatformBadge source={review.source} />
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[#E0A82E] text-[10px]">{'★'.repeat(review.star_rating)}</span>
+                        <span className="text-[10px] text-[#C4BEB8] tnum">{formatTimeAgo(review.review_datetime_utc ?? review.created_at)}</span>
+                      </div>
+                    </div>
+                    <div className="w-2 h-2 rounded-full bg-[#0B8A5B] flex-shrink-0" />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -916,7 +914,7 @@ export default function HomeClient({
       <div className="animate-fade-up" style={{ animationDelay: '220ms' }}>
         <SectionLabel>At a glance</SectionLabel>
         {!hasAnalytics ? (
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-5 sm:px-6 py-5 bg-white rounded-xl border border-[#E4DED8]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-5">
             <div>
               <p className="text-[14px] font-medium text-[#111111]">Get insights from your reviews</p>
               <p className="text-[13px] text-[#57534E] mt-1 leading-snug">Discover what customers love, what needs work, and your top growth opportunity.</p>
@@ -926,18 +924,18 @@ export default function HomeClient({
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="divide-y divide-[#EDE6DC]">
             {([
-              { label: 'Customers love', value: themes?.praised?.[0], fallback: 'Run analytics to see what resonates most.', dotColor: 'bg-emerald-400', tint: 'bg-white', border: 'border-[#E4DED8]' },
-              { label: 'Needs attention', value: themes?.complaints?.[0], fallback: 'No recurring complaints — great sign.', dotColor: 'bg-[#E05A28]', tint: 'bg-white', border: 'border-[#E4DED8]' },
-              { label: 'Top opportunity', value: themes?.opportunities?.[0], fallback: 'Run analytics to find your growth lever.', dotColor: 'bg-blue-400', tint: 'bg-white', border: 'border-[#E4DED8]' },
-            ] as const).map(({ label, value, fallback, dotColor, tint, border }) => (
-              <div key={label} className={`${tint} rounded-xl px-5 py-5 border ${border} transition-all duration-200`}>
-                <div className="flex items-center gap-2 mb-3">
+              { label: 'Customers love', value: themes?.praised?.[0], fallback: 'Run analytics to see what resonates most.', dotColor: 'bg-[#0B8A5B]' },
+              { label: 'Needs attention', value: themes?.complaints?.[0], fallback: 'No recurring complaints — great sign.', dotColor: 'bg-[#E05A28]' },
+              { label: 'Top opportunity', value: themes?.opportunities?.[0], fallback: 'Run analytics to find your growth lever.', dotColor: 'bg-[#57534E]' },
+            ] as const).map(({ label, value, fallback, dotColor }) => (
+              <div key={label} className="py-4">
+                <div className="flex items-center gap-2 mb-1.5">
                   <span className={`w-2 h-2 rounded-full ${dotColor} flex-shrink-0`} />
-                  <p className="text-[10px] font-medium uppercase tracking-[0.13em] text-[#A8A29E]">{label}</p>
+                  <p className="text-[11px] font-medium uppercase tracking-[0.1em] text-[#A8A29E]">{label}</p>
                 </div>
-                <p className={`text-[13px] leading-snug ${value ? 'font-medium text-[#111]' : 'text-[#C4BEB8] italic'}`}>{value ?? fallback}</p>
+                <p className={`text-[13px] leading-snug pl-4 ${value ? 'font-medium text-[#111]' : 'text-[#C4BEB8] italic'}`}>{value ?? fallback}</p>
               </div>
             ))}
           </div>

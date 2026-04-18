@@ -4,8 +4,10 @@
 
 /* ── Design tokens ─────────────────────────────────── */
 :root {
-  --bg:       #F8F6F3;
+  --bg:       #FAF7F2;
   --card:     #FFFFFF;
+  --surface-raised: #FEFCF8;
+  --divider-warm:   #EDE6DC;
   --dark:     #0A0A0A;
   --dark-2:   #181818;
 
@@ -76,6 +78,7 @@ body {
   color: var(--text-1);
   /* Inherit scroll anchor prevention from html */
   overflow-anchor: none;
+  letter-spacing: -0.006em;
 }
 
 @layer base {

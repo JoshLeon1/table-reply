@@ -19,8 +19,8 @@ const PADDINGS: Record<NonNullable<CardProps['padding']>, string> = {
 
 const VARIANTS: Record<CardVariant, string> = {
   hero:     'bg-white rounded-2xl border border-[#EDE9E4]',
-  standard: 'bg-white rounded-2xl border border-[#E4DED8]',
-  flat:     'bg-transparent rounded-xl border border-[#E4DED8]',
+  standard: 'bg-[#FEFCF8] rounded-xl border border-[#EDE6DC]',
+  flat:     'bg-transparent rounded-xl',
   inset:    'bg-[#FAF8F5] rounded-xl border border-[#EDE9E4]',
 }
 

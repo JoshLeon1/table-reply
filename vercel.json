@@ -5,6 +5,14 @@
       "schedule": "0 8 * * *"
     },
     {
+      "path": "/api/cron/autopilot",
+      "schedule": "15 8 * * *"
+    },
+    {
+      "path": "/api/cron/autopilot-digest",
+      "schedule": "30 8 * * *"
+    },
+    {
       "path": "/api/digest",
       "schedule": "0 9 * * 1"
     }

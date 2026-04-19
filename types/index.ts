@@ -7,6 +7,26 @@ export interface Profile {
   stripe_customer_id: string | null
 }
 
+// ─── Autopilot ────────────────────────────────────────────────────────────────
+
+export interface AutopilotRules {
+  enabled: boolean
+  mode: 'draft' | 'auto_approve' // draft = generate but keep status=pending; auto_approve = status=approved
+  minStarRating: number           // only auto-handle reviews >= this (default 4)
+  keywordBlocklist: string[]      // escalate to user if review contains any
+  skipNoText: boolean             // skip reviews with empty review_text (default true)
+  dailyDigest: boolean            // include in daily autopilot digest email
+}
+
+export interface ReplyPreferences {
+  endWithOwnerName?: boolean
+  includeBusinessName?: boolean
+  inviteBack?: boolean
+  autopilot?: AutopilotRules
+}
+
+// ─── Business profile ─────────────────────────────────────────────────────────
+
 export interface BusinessProfile {
   id: string
   user_id: string
@@ -28,7 +48,7 @@ export interface BusinessProfile {
   tripadvisor_last_scraped_at: string | null
   review_request_messages?: { sms: string; email: string; receipt: string; tablecard: string } | null
   reply_language?: string | null
-  reply_preferences?: Record<string, unknown> | null
+  reply_preferences?: ReplyPreferences | null
 }
 
 export interface Reply {
@@ -57,6 +77,11 @@ export interface ScrapedReview {
   staff_mentions?: string[] | null
   language?: string | null
   source?: 'google' | 'yelp' | 'tripadvisor' | null
+  // Autopilot fields
+  autopilot_handled?: boolean
+  autopilot_action?: string | null
+  autopilot_processed_at?: string | null
+  autopilot_posted_at?: string | null
 }
 
 export interface KeywordAlert {

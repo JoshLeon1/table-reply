@@ -37,6 +37,9 @@ export default async function SettingsPage() {
     ...(profile?.email_notifications ?? {}),
   }
 
+  // Extract autopilot rules from reply_preferences, if present
+  const savedAutopilot = (restaurantProfile?.reply_preferences as { autopilot?: unknown } | null)?.autopilot
+
   return (
     <div className="max-w-2xl">
       <SettingsPageClient
@@ -49,6 +52,7 @@ export default async function SettingsPage() {
         isPaid={profile?.is_paid ?? false}
         daysRemaining={daysRemaining}
         stripePlan={profile?.stripe_plan ?? null}
+        autopilotRules={savedAutopilot as import('@/types').AutopilotRules | null ?? null}
       />
     </div>
   )

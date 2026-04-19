@@ -30,7 +30,7 @@ export default async function ReviewsPage() {
   // If no profile at all, redirect to settings to set one up
   if (!profile) redirect('/settings')
 
-  // Fetch pending + approved reviews (most recent 50)
+  // Fetch pending + approved reviews (most recent 50), include autopilot columns
   const { data: reviews } = await supabaseAdmin
     .from('scraped_reviews')
     .select('*')

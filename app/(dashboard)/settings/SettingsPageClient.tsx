@@ -11,7 +11,7 @@ import ManageBillingButton from './ManageBillingButton'
 import BillingButtons from './BillingButtons'
 import Toggle from '@/components/ui/Toggle'
 import { Card } from '@/components/ui/Card'
-import type { BusinessProfile, KeywordAlert } from '@/types'
+import type { BusinessProfile, KeywordAlert, AutopilotRules } from '@/types'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -25,6 +25,15 @@ interface EmailNotifications {
   weeklyDigest: boolean
 }
 
+const DEFAULT_AUTOPILOT: AutopilotRules = {
+  enabled: false,
+  mode: 'draft',
+  minStarRating: 4,
+  keywordBlocklist: [],
+  skipNoText: true,
+  dailyDigest: true,
+}
+
 interface Props {
   userId: string
   userEmail: string
@@ -35,6 +44,7 @@ interface Props {
   isPaid: boolean
   daysRemaining: number
   stripePlan?: string | null
+  autopilotRules?: AutopilotRules | null
 }
 
 // ─── Section header ───────────────────────────────────────────────────────────
@@ -79,6 +89,15 @@ const TABS = [
     ),
   },
   {
+    id: 'autopilot',
+    label: 'Autopilot',
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M13 10V3L4 14h7v7l9-11h-7z" />
+      </svg>
+    ),
+  },
+  {
     id: 'account',
     label: 'Account',
     icon: (
@@ -103,12 +122,13 @@ export default function SettingsPageClient({
   isPaid,
   daysRemaining,
   stripePlan,
+  autopilotRules: initialAutopilotRules,
 }: Props) {
   // If arriving from the trial banner / paywall "Upgrade now" link, open Account tab directly
   const searchParams = useSearchParams()
   const tabParam = searchParams.get('tab')
   const [activeTab, setActiveTab] = useState<TabId>(
-    tabParam === 'account' ? 'account' : 'profile'
+    tabParam === 'account' ? 'account' : tabParam === 'autopilot' ? 'autopilot' : tabParam === 'replies' ? 'replies' : 'profile'
   )
 
   // Reply prefs state
@@ -118,6 +138,15 @@ export default function SettingsPageClient({
   const [savingEmail, setSavingEmail] = useState(false)
   const [prefsToast, setPrefsToast] = useState<'saved' | 'error' | null>(null)
   const [emailToast, setEmailToast] = useState<'saved' | 'error' | null>(null)
+
+  // Autopilot state
+  const [autopilot, setAutopilot] = useState<AutopilotRules>(initialAutopilotRules ?? DEFAULT_AUTOPILOT)
+  const [savingAutopilot, setSavingAutopilot] = useState(false)
+  const [autopilotToast, setAutopilotToast] = useState<'saved' | 'error' | null>(null)
+  // Keyword blocklist as raw textarea string
+  const [keywordInput, setKeywordInput] = useState<string>(
+    (initialAutopilotRules?.keywordBlocklist ?? []).join(', ')
+  )
 
   // Account / danger zone state
   const [deleteInput, setDeleteInput] = useState('')
@@ -172,6 +201,30 @@ export default function SettingsPageClient({
     const previous = emailNotifs
     const updated = { ...emailNotifs, [key]: value }
     setEmailNotifs(updated); saveEmailNotifs(updated, previous)
+  }
+
+  async function saveAutopilotRules(rules: AutopilotRules) {
+    setSavingAutopilot(true); setAutopilotToast(null)
+    try {
+      const res = await fetch('/api/user/preferences', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ replyPreferences: { ...replyPrefs, autopilot: rules } }),
+      })
+      if (!res.ok) throw new Error()
+      setAutopilotToast('saved')
+    } catch {
+      setAutopilotToast('error')
+    } finally {
+      setSavingAutopilot(false)
+      setTimeout(() => setAutopilotToast(null), 2500)
+    }
+  }
+
+  function handleAutopilotChange<K extends keyof AutopilotRules>(key: K, value: AutopilotRules[K]) {
+    const updated = { ...autopilot, [key]: value }
+    setAutopilot(updated)
+    saveAutopilotRules(updated)
   }
 
   async function handleExport() {
@@ -314,6 +367,146 @@ export default function SettingsPageClient({
         </div>
       </Card>
     </div>
+  )
+
+  const renderAutopilot = () => (
+    <Card padding="none" className="overflow-hidden">
+      {/* Header with toggle */}
+      <div className="px-5 sm:px-6 py-4 sm:py-5 border-b border-[#EDE9E4] flex items-center justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A8A29E]">Autopilot</h2>
+          <p className="text-[12px] text-[#57534E] mt-0.5">Auto-generate (and optionally approve) replies overnight.</p>
+        </div>
+        <div className="flex items-center gap-3 flex-shrink-0">
+          {autopilotToast && (
+            <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full animate-scale-in ${
+              autopilotToast === 'saved' ? 'bg-emerald-50 text-emerald-600 border border-emerald-200' : 'bg-red-50 text-red-500 border border-red-200'
+            }`}>
+              {autopilotToast === 'saved' ? '✓ Saved' : 'Error saving'}
+            </span>
+          )}
+          <Toggle
+            checked={autopilot.enabled}
+            onChange={(v) => handleAutopilotChange('enabled', v)}
+            disabled={savingAutopilot}
+            ariaLabel="Enable Autopilot"
+          />
+        </div>
+      </div>
+
+      {/* Explainer banner */}
+      <div className="px-5 sm:px-6 py-3 bg-[#F3EEE4] border-b border-[#EDE9E4]">
+        <p className="text-[12px] text-[#57534E] leading-relaxed">
+          Autopilot runs nightly at 8am. High-risk reviews (low stars, blocked keywords) are always escalated to you.
+        </p>
+      </div>
+
+      {/* Controls — only shown when enabled */}
+      {autopilot.enabled && (
+        <div className="divide-y divide-[#EDE9E4]">
+
+          {/* Minimum star rating */}
+          <div className="px-5 sm:px-6 py-4 flex items-center justify-between gap-4">
+            <div className="min-w-0 flex-1">
+              <p className="text-[13px] font-medium text-[#111111]">Minimum star rating</p>
+              <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">Only auto-handle reviews at or above this rating</p>
+            </div>
+            <select
+              value={autopilot.minStarRating}
+              onChange={(e) => handleAutopilotChange('minStarRating', Number(e.target.value))}
+              disabled={savingAutopilot}
+              className="flex-shrink-0 px-3 py-2 rounded-xl border border-[#EDE6DC] bg-white text-[13px] font-medium text-[#111111] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] transition-all disabled:opacity-50 min-h-[44px]"
+            >
+              <option value={3}>3 stars and above</option>
+              <option value={4}>4 stars and above</option>
+              <option value={5}>5 stars only</option>
+            </select>
+          </div>
+
+          {/* Reply mode */}
+          <div className="px-5 sm:px-6 py-4">
+            <p className="text-[13px] font-medium text-[#111111] mb-2.5">After generating a reply</p>
+            <div className="space-y-2.5">
+              {([
+                { value: 'draft', label: 'Draft for my approval', desc: 'Reply stays pending — you review and approve manually' },
+                { value: 'auto_approve', label: 'Auto-approve for one-click post', desc: 'Reply moves straight to the Autopilot Queue, ready to copy and post' },
+              ] as const).map(({ value, label, desc }) => (
+                <label key={value} className={`flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${
+                  autopilot.mode === value
+                    ? 'border-[#E05A28] bg-[#FEF0E8]/40'
+                    : 'border-[#EDE6DC] hover:border-[#D0C9C1]'
+                }`}>
+                  <input
+                    type="radio"
+                    name="autopilot-mode"
+                    value={value}
+                    checked={autopilot.mode === value}
+                    onChange={() => handleAutopilotChange('mode', value)}
+                    disabled={savingAutopilot}
+                    className="mt-0.5 accent-[#E05A28] flex-shrink-0"
+                  />
+                  <div>
+                    <p className="text-[13px] font-medium text-[#111111]">{label}</p>
+                    <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">{desc}</p>
+                  </div>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Keyword blocklist */}
+          <div className="px-5 sm:px-6 py-4">
+            <div className="mb-2.5">
+              <p className="text-[13px] font-medium text-[#111111]">Keyword blocklist</p>
+              <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">If a review contains any of these words, it gets escalated to you (comma-separated)</p>
+            </div>
+            <textarea
+              value={keywordInput}
+              onChange={(e) => setKeywordInput(e.target.value)}
+              onBlur={() => {
+                const list = keywordInput
+                  .split(',')
+                  .map((k) => k.trim())
+                  .filter(Boolean)
+                handleAutopilotChange('keywordBlocklist', list)
+              }}
+              rows={2}
+              placeholder="refund, rude, disgusting, health code…"
+              disabled={savingAutopilot}
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#EDE6DC] bg-white text-[13px] text-[#111111] placeholder:text-[#C4BEB8] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] transition-all resize-none disabled:opacity-50 min-h-[44px]"
+            />
+          </div>
+
+          {/* Skip no-text + daily digest checkboxes */}
+          <div className="divide-y divide-[#EDE9E4]">
+            {([
+              { key: 'skipNoText' as const, label: 'Skip reviews without text', desc: 'Rating-only reviews won\'t be processed by Autopilot' },
+              { key: 'dailyDigest' as const, label: 'Daily digest email', desc: 'Receive a morning email summarising what Autopilot processed overnight' },
+            ]).map(({ key, label, desc }) => (
+              <div key={key} className="px-5 sm:px-6 py-4 flex items-center justify-between gap-4">
+                <div className="min-w-0 flex-1">
+                  <p className="text-[13px] font-medium text-[#111111]">{label}</p>
+                  <p className="text-[12px] text-[#A8A29E] mt-0.5 leading-snug">{desc}</p>
+                </div>
+                <Toggle
+                  checked={autopilot[key]}
+                  onChange={(v) => handleAutopilotChange(key, v)}
+                  disabled={savingAutopilot}
+                  ariaLabel={label}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Disabled state hint */}
+      {!autopilot.enabled && (
+        <div className="px-5 sm:px-6 py-4">
+          <p className="text-[12px] text-[#A8A29E]">Toggle on to configure your Autopilot rules.</p>
+        </div>
+      )}
+    </Card>
   )
 
   const renderAccount = () => (
@@ -459,6 +652,7 @@ export default function SettingsPageClient({
     profile: renderProfile(),
     integrations: renderIntegrations(),
     replies: renderReplies(),
+    autopilot: renderAutopilot(),
     account: renderAccount(),
   }
 

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import type { BusinessProfile, ScrapedReview } from '@/types'
 import Stars from '@/components/ui/Stars'
@@ -402,6 +403,12 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
                   Alert
                 </span>
               )}
+              {review.autopilot_action?.startsWith('escalated') && (
+                <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#F3EEE4] text-[#57534E] border border-[#EDE6DC] flex items-center gap-1">
+                  <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                  Escalated by Autopilot
+                </span>
+              )}
             </div>
             <div className="flex items-center gap-2 mt-0.5">
               <Stars rating={review.star_rating} size="sm" />
@@ -604,7 +611,101 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
 
 // ── Connected panel ───────────────────────────────────────────────────────────
 
-type ReviewTab = 'pending' | 'approved' | 'dismissed'
+type ReviewTab = 'pending' | 'approved' | 'autopilot_queue' | 'dismissed'
+
+// ── Autopilot Queue row ────────────────────────────────────────────────────────
+
+function AutopilotQueueRow({ review, onPosted }: { review: ScrapedReview; onPosted: (id: string) => void }) {
+  const [posting, setPosting] = useState(false)
+  const [posted, setPosted] = useState(!!review.autopilot_posted_at)
+
+  const handlePostToGoogle = async () => {
+    setPosting(true)
+    try {
+      await navigator.clipboard.writeText(review.generated_reply ?? '').catch(() => {})
+      // Mark posted via API
+      await fetch(`/api/reviews/${review.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ autopilot_posted_at: new Date().toISOString() }),
+      }).catch(() => {})
+      setPosted(true)
+      onPosted(review.id)
+      window.open('https://business.google.com/reviews', '_blank')
+    } finally {
+      setPosting(false)
+    }
+  }
+
+  const initials = review.reviewer_name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)
+
+  return (
+    <div className="px-4 sm:px-5 py-4">
+      {/* Header row */}
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-8 h-8 rounded-full bg-[#F3F0EC] border border-[#EDE6DC] flex items-center justify-center text-[11px] font-medium text-[#57534E] flex-shrink-0">
+          {initials}
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-[13px] font-medium text-[#111111]">{review.reviewer_name}</span>
+            <PlatformBadge source={review.source} />
+            <Stars rating={review.star_rating} size="sm" />
+          </div>
+          <span className="text-[11px] text-[#A8A29E]">{formatDate(review.review_datetime_utc)}</span>
+        </div>
+        <span className="inline-flex items-center rounded-md border border-[#C9E4D3] bg-[#E8F5EE] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.09em] text-[#0B8A5B] flex-shrink-0">
+          AUTOPILOT
+        </span>
+      </div>
+
+      {/* Review text */}
+      {review.review_text?.trim() && (
+        <p className="text-[12px] text-[#57534E] leading-relaxed mb-3 line-clamp-2">&ldquo;{review.review_text}&rdquo;</p>
+      )}
+
+      {/* Generated reply preview */}
+      {review.generated_reply && (
+        <div className="rounded-xl bg-[#F3EEE4] border border-[#EDE6DC] px-4 py-3 mb-3">
+          <p className="text-[11px] font-semibold text-[#A8A29E] uppercase tracking-[0.09em] mb-1.5">Your reply</p>
+          <p className="text-[12px] text-[#57534E] leading-relaxed line-clamp-3">{review.generated_reply}</p>
+        </div>
+      )}
+
+      {/* Action row */}
+      <div className="flex items-center gap-2">
+        <button
+          onClick={handlePostToGoogle}
+          disabled={posting || posted}
+          className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-[13px] font-medium transition-all min-h-[44px] ${
+            posted
+              ? 'bg-[#E8F5EE] text-[#0B8A5B] border border-[#C9E4D3]'
+              : 'bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white disabled:opacity-40'
+          }`}
+        >
+          {posted ? (
+            <>
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/>
+              </svg>
+              Posted
+            </>
+          ) : (
+            <>
+              <svg className="w-3.5 h-3.5 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+              Post to Google
+            </>
+          )}
+        </button>
+        {!posted && (
+          <p className="text-[11px] text-[#C4BEB8]">Copies reply · opens Google Business Profile</p>
+        )}
+      </div>
+    </div>
+  )
+}
 
 function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onScrapeNow, scraping, scrapeError, onDismissError, lastScrapedAt, copiedId }: {
   profile: BusinessProfile
@@ -623,8 +724,17 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
     .filter((r) => r.reply_status === 'pending')
     .sort((a, b) => (b.alert_triggered ? 1 : 0) - (a.alert_triggered ? 1 : 0))
   const approved  = reviews.filter((r) => r.reply_status === 'approved')
+  // Autopilot queue: approved by autopilot and not yet posted
+  const autopilotQueue = reviews.filter(
+    (r) => r.reply_status === 'approved' && r.autopilot_action === 'auto_approved'
+  )
   const dismissed = reviews.filter((r) => r.reply_status === 'dismissed')
-  const [activeTab, setActiveTab] = useState<ReviewTab>('pending')
+  const searchParams = useSearchParams()
+  const filterParam = searchParams.get('filter')
+  const [postedIds, setPostedIds] = useState<Set<string>>(new Set())
+  const [activeTab, setActiveTab] = useState<ReviewTab>(
+    filterParam === 'autopilot' && autopilotQueue.length > 0 ? 'autopilot_queue' : 'pending'
+  )
   const [readyBannerDismissed, setReadyBannerDismissed] = useState(false)
   const [filterStars, setFilterStars] = useState<number | null>(null)
 
@@ -634,9 +744,10 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
 
   const tabs: { key: ReviewTab; label: string; count: number }[] = [
     { key: 'pending',  label: 'Pending',  count: pending.length  },
+    { key: 'autopilot_queue', label: 'Autopilot Queue', count: autopilotQueue.filter(r => !postedIds.has(r.id) && !r.autopilot_posted_at).length },
     { key: 'approved', label: 'Approved', count: approved.length  },
     { key: 'dismissed', label: 'Dismissed', count: dismissed.length },
-  ]
+  ].filter(t => t.key !== 'autopilot_queue' || autopilotQueue.length > 0) as { key: ReviewTab; label: string; count: number }[]
 
   return (
     <div>
@@ -809,6 +920,51 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
           </div>
         )
       })()}
+
+      {/* Autopilot Queue tab */}
+      {!scraping && activeTab === 'autopilot_queue' && (
+        <div>
+          {autopilotQueue.length > 0 ? (
+            <>
+              <div className="flex items-start gap-3 px-4 py-3.5 mb-4 rounded-xl bg-[#F3EEE4] border border-[#EDE6DC]">
+                <svg className="w-4 h-4 flex-shrink-0 mt-0.5 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+                <p className="text-[13px] text-[#57534E] leading-snug flex-1">
+                  <span className="font-medium text-[#111]">Auto-approved overnight.</span>{' '}
+                  Click &ldquo;Post to Google&rdquo; to copy the reply and open your Google Business Profile.
+                </p>
+              </div>
+              <Card variant="standard" padding="none">
+                <ul className="divide-y divide-[#EDE9E4]">
+                  {autopilotQueue.map((r) => (
+                    <li key={r.id}>
+                      <AutopilotQueueRow
+                        review={r}
+                        onPosted={(id) => setPostedIds((prev) => new Set([...prev, id]))}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            </>
+          ) : (
+            <div className="text-center py-14 bg-[#FEFCF8] rounded-xl border border-[#EDE6DC]">
+              <div className="w-11 h-11 rounded-xl bg-[#F3F0EC] border border-[#EDE6DC] flex items-center justify-center mx-auto mb-4">
+                <svg className="w-5 h-5 text-[#A8A29E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+              </div>
+              <p className="text-[14px] font-medium text-[#111111]">No autopilot replies queued</p>
+              <p className="text-[12px] text-[#A8A29E] mt-1 max-w-[240px] mx-auto leading-relaxed">
+                Enable Autopilot in{' '}
+                <a href="/settings?tab=autopilot" className="text-[#E05A28] hover:underline">Settings</a>
+                {' '}with &ldquo;Auto-approve&rdquo; mode to populate this queue.
+              </p>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Approved tab */}
       {!scraping && activeTab === 'approved' && (

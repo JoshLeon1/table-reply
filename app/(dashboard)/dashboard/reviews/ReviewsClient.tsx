@@ -265,6 +265,11 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
 
   const handleApprove = async () => {
     if (!review.generated_reply) return
+    // Open the platform deep-link synchronously (inside the user-initiated click)
+    // so popup blockers don't kill it. Fire-and-forget.
+    if (platformUrl) {
+      try { window.open(platformUrl, '_blank', 'noopener,noreferrer') } catch { /* noop */ }
+    }
     setActioning(true)
     await onApprove(review.id)
     setActioning(false)
@@ -603,7 +608,11 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
         )}
       </div>
       {status !== 'approved' && status !== 'dismissed' && review.generated_reply && (
-        <p className="text-[11px] text-[#C4BEB8] text-center mt-1 pb-3">Copies reply to clipboard — then paste it on the platform</p>
+        <p className="text-[11px] text-[#C4BEB8] text-center mt-1 pb-3">
+          {platformUrl
+            ? `Copies reply and opens ${platformLabel} in a new tab — just paste and post`
+            : 'Copies reply to clipboard — then paste it on the platform'}
+        </p>
       )}
     </div>
   )

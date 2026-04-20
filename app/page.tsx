@@ -73,7 +73,7 @@ export default function LandingPage() {
   const steps = [
     { num: '1', title: 'Connect your listings once', desc: 'Link Google, Yelp, and TripAdvisor in under 2 minutes.' },
     { num: '2', title: 'Reviews appear automatically', desc: 'ReplyFi pulls in new reviews every day — no manual work.' },
-    { num: '3', title: 'Approve and post in seconds', desc: 'Edit the AI draft inline, approve it, then copy-paste directly on the platform.' },
+    { num: '3', title: 'Approve and post in seconds', desc: 'Edit inline, approve, then copy-paste on the platform.' },
   ]
 
   const proFeatures = [

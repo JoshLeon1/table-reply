@@ -46,6 +46,22 @@ function SignupForm() {
     return () => clearTimeout(t)
   }, [resendCooldown])
 
+  // Reset loading state when the page is restored from the browser's
+  // back-forward cache (bfcache). Without this, a user who clicks "Continue
+  // with Google", lands on Google's OAuth screen, then hits Back, sees the
+  // signup page stuck with the Google spinner spinning and the email form
+  // disabled — because the component was never re-mounted.
+  useEffect(() => {
+    const handlePageShow = (e: PageTransitionEvent) => {
+      if (e.persisted) {
+        setLoading(false)
+        setGoogleLoading(false)
+      }
+    }
+    window.addEventListener('pageshow', handlePageShow)
+    return () => window.removeEventListener('pageshow', handlePageShow)
+  }, [])
+
   const handleResend = async () => {
     if (resendCooldown > 0 || resendStatus === 'sending') return
     setResendStatus('sending')

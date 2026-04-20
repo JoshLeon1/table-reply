@@ -8,7 +8,7 @@
 // Go to console.cloud.google.com → OAuth consent screen → Test users → Add your email
 // To allow all users, publish the app (Audience → Publish App)
 
-import { useState, Suspense } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -45,6 +45,22 @@ function LoginForm() {
     if (authError === 'auth_failed') return 'Sign-in link expired or invalid. Please try again.'
     return ''
   })
+
+  // Reset loading state when the page is restored from the browser's
+  // back-forward cache (bfcache). Without this, a user who clicks "Continue
+  // with Google", lands on Google's OAuth screen, then hits Back, sees the
+  // login page stuck with the Google spinner spinning and the Sign In button
+  // disabled — because the component was never re-mounted.
+  useEffect(() => {
+    const handlePageShow = (e: PageTransitionEvent) => {
+      if (e.persisted) {
+        setLoading(false)
+        setGoogleLoading(false)
+      }
+    }
+    window.addEventListener('pageshow', handlePageShow)
+    return () => window.removeEventListener('pageshow', handlePageShow)
+  }, [])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()

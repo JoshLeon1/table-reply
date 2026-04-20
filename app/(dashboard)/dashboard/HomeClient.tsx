@@ -670,6 +670,73 @@ interface Props {
   recentApproved: ScrapedReview[]
   themes: { praised: string[]; complaints: string[]; opportunities: string[] } | null
   hasAnalytics: boolean
+  voiceTrained: number
+  voiceApproved: number
+  voiceMatchRate: number
+  voiceTrainedThisMonth: number
+}
+
+// ── Voice DNA ─────────────────────────────────────────────────────────────────
+// Surfaces how trained the AI is on this user's voice. The compounding-value
+// hook: every approval makes the AI more "you", which makes it harder to leave.
+function VoiceDNA({
+  trained,
+  matchRate,
+  thisMonth,
+}: {
+  trained: number
+  matchRate: number
+  thisMonth: number
+}) {
+  // Stage thresholds keyed off corpus size — narrative reinforces progress
+  const stage =
+    trained === 0   ? { label: 'Not yet trained',          pct: 2,  copy: 'Approve your first reply to start training your AI voice.' } :
+    trained < 25    ? { label: 'Just getting started',     pct: Math.max(8,  (trained / 25)  * 25),  copy: 'Each approval teaches your AI how you sound.' } :
+    trained < 100   ? { label: 'Learning your voice',      pct: 25 + ((trained - 25)  / 75)  * 25,   copy: 'Your AI is picking up your tone and phrasing.' } :
+    trained < 500   ? { label: 'Your voice is taking shape', pct: 50 + ((trained - 100) / 400) * 30, copy: 'Replies sound increasingly like you wrote them.' } :
+                      { label: 'Trained on your voice',    pct: Math.min(98, 80 + ((trained - 500) / 1000) * 18), copy: 'Your AI has a strong model of how you write.' }
+
+  return (
+    <section className="animate-fade-up" style={{ animationDelay: '160ms' }}>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-[15px] text-[#111]" style={{ fontWeight: 600, letterSpacing: '-0.01em' }}>Your AI voice</h2>
+        {trained > 0 && (
+          <span className="text-[11px] text-[#A8A29E] tabular-nums">
+            {matchRate}% match rate
+          </span>
+        )}
+      </div>
+
+      <div className="bg-[#FEFCF8] border border-[#EDE6DC] rounded-xl px-4 sm:px-5 py-4 sm:py-5">
+        <div className="flex items-baseline justify-between gap-4 mb-3">
+          <div>
+            <div className="text-[22px] text-[#111] tabular-nums leading-none" style={{ fontWeight: 600, letterSpacing: '-0.022em' }}>
+              {trained.toLocaleString()}
+            </div>
+            <div className="text-[11px] font-medium uppercase tracking-[0.1em] text-[#A8A29E] mt-1.5">
+              {trained === 1 ? 'Reply trained' : 'Replies trained'}
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-[13px] font-medium text-[#111]">{stage.label}</div>
+            {thisMonth > 0 && (
+              <div className="text-[11px] text-[#57534E] mt-0.5 tabular-nums">+{thisMonth} this month</div>
+            )}
+          </div>
+        </div>
+
+        {/* Progress bar */}
+        <div className="h-1.5 w-full rounded-full bg-[#F3EEE4] overflow-hidden mb-3">
+          <div
+            className="h-full bg-[#E05A28] rounded-full transition-all duration-700 ease-out"
+            style={{ width: `${Math.min(100, Math.max(2, stage.pct))}%` }}
+          />
+        </div>
+
+        <p className="text-[12px] text-[#57534E] leading-relaxed">{stage.copy}</p>
+      </div>
+    </section>
+  )
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
@@ -694,6 +761,9 @@ export default function HomeClient({
   recentApproved,
   themes,
   hasAnalytics,
+  voiceTrained,
+  voiceMatchRate,
+  voiceTrainedThisMonth,
 }: Props) {
   const hasAnyPlatform = !!(googleMapsUrl || yelpUrl || tripadvisorUrl)
 
@@ -906,6 +976,13 @@ export default function HomeClient({
           </div>
         </div>
       </div>
+
+      {/* ── Voice DNA — moat surface ─────────────────────────────────────── */}
+      <VoiceDNA
+        trained={voiceTrained}
+        matchRate={voiceMatchRate}
+        thisMonth={voiceTrainedThisMonth}
+      />
 
       {/* ── Manual generator (secondary, collapsed by default) ────────────── */}
       <ManualGenerator prominent={false} />

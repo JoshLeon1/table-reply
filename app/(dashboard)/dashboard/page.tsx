@@ -42,6 +42,9 @@ export default async function DashboardPage() {
     { data: recentApproved },
     { data: analyticsCache },
     { count: approvedAllTime },
+    { count: voiceTrainedCount },
+    { count: voiceApprovedCount },
+    { count: voiceTrainedThisMonth },
   ] = await Promise.all([
     supabase.from('profiles').select('*').eq('id', user.id).maybeSingle(),
     supabase.from('business_profiles').select('*').eq('user_id', user.id).maybeSingle(),
@@ -55,6 +58,12 @@ export default async function DashboardPage() {
     supabase.from('scraped_reviews').select('*').eq('user_id', user.id).eq('reply_status', 'approved').order('created_at', { ascending: false }).limit(5),
     supabase.from('business_analytics').select('themes, last_analyzed_at').eq('user_id', user.id).maybeSingle(),
     supabase.from('scraped_reviews').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('reply_status', 'approved'),
+    // Voice DNA: total replies generated for this user (training corpus size)
+    supabase.from('scraped_reviews').select('id', { count: 'exact', head: true }).eq('user_id', user.id).not('generated_reply', 'is', null),
+    // Voice DNA: approvals against generated replies (match rate numerator)
+    supabase.from('scraped_reviews').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('reply_status', 'approved').not('generated_reply', 'is', null),
+    // Voice DNA: training velocity this month
+    supabase.from('scraped_reviews').select('id', { count: 'exact', head: true }).eq('user_id', user.id).not('generated_reply', 'is', null).gte('created_at', monthStart),
   ])
 
   // Start trial if not started
@@ -82,6 +91,12 @@ export default async function DashboardPage() {
   const themes = analyticsCache?.themes as { praised: string[]; complaints: string[]; opportunities: string[] } | null
   const hasAnalytics = !!analyticsCache
 
+  // Voice DNA — derived metrics
+  const voiceTrained   = voiceTrainedCount   ?? 0
+  const voiceApproved  = voiceApprovedCount  ?? 0
+  const voiceMonth     = voiceTrainedThisMonth ?? 0
+  const voiceMatchRate = voiceTrained > 0 ? Math.round((voiceApproved / voiceTrained) * 100) : 0
+
   return (
     <HomeClient
       ownerName={restaurantProfile?.owner_name ?? 'there'}
@@ -104,6 +119,10 @@ export default async function DashboardPage() {
       recentApproved={recentApproved ?? []}
       themes={themes}
       hasAnalytics={hasAnalytics}
+      voiceTrained={voiceTrained}
+      voiceApproved={voiceApproved}
+      voiceMatchRate={voiceMatchRate}
+      voiceTrainedThisMonth={voiceMonth}
     />
   )
 }

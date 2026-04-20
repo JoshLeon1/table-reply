@@ -131,12 +131,26 @@ export async function GET(request: NextRequest) {
     errors.push(`autopilot-digest: ${msg}`)
   }
 
+  let trialReminders: unknown = null
+  try {
+    const trRes = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/cron/trial-reminders`, {
+      method: 'GET',
+      headers: { 'x-cron-secret': process.env.CRON_SECRET! },
+    })
+    trialReminders = await trRes.json().catch(() => ({ error: 'invalid json' }))
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    console.error('[daily-scrape] trial-reminders chain failed:', msg)
+    errors.push(`trial-reminders: ${msg}`)
+  }
+
   return NextResponse.json({
     processed,
     totalNewReplies,
     total:  profiles.length,
     autopilot,
     autopilotDigest,
+    trialReminders,
     errors: errors.length > 0 ? errors : undefined,
   })
 }

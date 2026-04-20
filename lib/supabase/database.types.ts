@@ -56,6 +56,9 @@ export interface Database {
           subscription_canceled_at: string | null
           subscription_past_due: boolean | null
           has_seen_demo: boolean | null
+          welcome_email_sent_at: string | null
+          trial_reminder_3d_sent_at: string | null
+          trial_reminder_1d_sent_at: string | null
           created_at: string | null
           updated_at: string | null
         }

@@ -423,13 +423,13 @@ export default function LandingPage() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────────────────── */}
-      <section className="bg-[#0D0D0D] border-t border-white/[0.06] py-16 sm:py-14 px-4 sm:px-6 relative overflow-hidden">
+      <section className="bg-[#0D0D0D] border-t border-white/[0.06] py-12 sm:py-14 px-4 sm:px-6 relative overflow-hidden">
         <div aria-hidden="true" className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 60% 80% at 50% 100%, rgba(224,90,40,0.10) 0%, transparent 70%)' }} />
         <div
           ref={ctaAnim.ref}
           className={`max-w-4xl mx-auto relative transition-all duration-700 ${ctaAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
         >
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-7 sm:gap-10">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-5 sm:gap-10">
 
             {/* Left — text */}
             <div className="text-center sm:text-left">
@@ -460,12 +460,13 @@ export default function LandingPage() {
       </main>
 
       {/* ── FOOTER ───────────────────────────────────────────────────────── */}
-      <footer className="bg-[#111111] border-t border-[#1E1E1E] py-6 sm:py-8 px-4 sm:px-6">
+      <footer className="bg-[#111111] border-t border-[#1E1E1E] py-7 sm:py-8 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-5 sm:gap-8 mb-5 sm:mb-6">
+          {/* Mobile: brand on top row, Product/Legal side-by-side below. Desktop: 3 equal columns. */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-5 sm:gap-8 mb-5 sm:mb-6">
             {/* Brand */}
             <div className="col-span-2 sm:col-span-1">
-              <div className="flex items-center gap-2 mb-3">
+              <div className="flex items-center gap-2 mb-2">
                 <div className="w-7 h-7 rounded-[7px] bg-[#E05A28] flex items-center justify-center flex-shrink-0">
                   <svg viewBox="0 0 20 20" fill="none" className="w-[17px] h-[17px]" aria-hidden="true">
                     <path d="M2 1.5h9A1.5 1.5 0 0112.5 3v5A1.5 1.5 0 0111 9.5H7l-2 2v-2H2A1.5 1.5 0 01.5 8V3A1.5 1.5 0 012 1.5z" fill="white" fillOpacity="0.5"/>
@@ -479,8 +480,8 @@ export default function LandingPage() {
 
             {/* Product */}
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#444] mb-2.5">Product</p>
-              <ul className="space-y-2">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#444] mb-2">Product</p>
+              <ul className="space-y-1.5">
                 {[{ label: 'Features', href: '#how-it-works' }, { label: 'Pricing', href: '#pricing' }, { label: 'FAQ', href: '#faq' }, { label: 'Sign In', href: '/login' }, { label: 'Start Free', href: '/signup' }].map(({ label, href }) => (
                   <li key={label}><Link href={href} className="text-[13px] text-[#555] hover:text-white transition-colors duration-200">{label}</Link></li>
                 ))}
@@ -489,8 +490,8 @@ export default function LandingPage() {
 
             {/* Legal */}
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#444] mb-2.5">Legal</p>
-              <ul className="space-y-2">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#444] mb-2">Legal</p>
+              <ul className="space-y-1.5">
                 {[{ label: 'Privacy', href: '/privacy' }, { label: 'Terms', href: '/terms' }, { label: 'Contact', href: '/contact' }].map(({ label, href }) => (
                   <li key={label}><Link href={href} className="text-[13px] text-[#555] hover:text-white transition-colors duration-200">{label}</Link></li>
                 ))}

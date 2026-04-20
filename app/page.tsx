@@ -68,7 +68,39 @@ export default function LandingPage() {
   // Section animation refs
   const howItWorksAnim = useInView(0.08)
   const pricingAnim    = useInView(0.1)
+  const faqAnim        = useInView(0.08)
   const ctaAnim        = useInView(0.15)
+
+  const faqs = [
+    {
+      q: 'Will the AI actually sound like me?',
+      a: 'Yes. ReplyFi learns your tone from the replies you approve. By week two, most owners say they can\'t tell which replies they wrote and which ones the AI drafted.',
+    },
+    {
+      q: 'Do replies auto-post, or do I approve each one?',
+      a: 'You approve every reply. ReplyFi drafts them overnight, you review them in the morning, and copy-paste to the platform. Nothing goes public without your click.',
+    },
+    {
+      q: 'Which review platforms are supported?',
+      a: 'Google, Yelp, and TripAdvisor today. We pull in new reviews daily and draft replies for all of them in one inbox.',
+    },
+    {
+      q: 'What about bad or unfair reviews?',
+      a: 'Low-star and keyword-flagged reviews get highlighted with an alert so you never miss them. The AI drafts a professional, empathetic response — you can edit inline before approving.',
+    },
+    {
+      q: 'How is this different from the reply tool my platform already has?',
+      a: 'Google and Yelp give you a blank box. ReplyFi gives you a draft that sounds like you, for every review across every platform, ready the moment you open your laptop.',
+    },
+    {
+      q: 'Do I need a credit card to start?',
+      a: 'No. The 7-day free trial is genuinely free — no card on file. If you don\'t love it, walk away and nothing happens.',
+    },
+    {
+      q: 'Can I cancel anytime?',
+      a: 'Yes. One click in your dashboard. No phone calls, no retention gauntlet.',
+    },
+  ]
 
   const steps = [
     { num: '1', title: 'Connect your listings once', desc: 'Link Google, Yelp, and TripAdvisor in under 2 minutes.' },
@@ -348,6 +380,48 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ── FAQ ──────────────────────────────────────────────────────────── */}
+      <section id="faq" className="scroll-mt-20 py-16 sm:py-20 px-4 sm:px-6 bg-white border-t border-[#e5e5e0]">
+        <div ref={faqAnim.ref} className="max-w-2xl mx-auto">
+          <div className={`mb-10 text-center transition-all duration-700 ${faqAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A8A29E] mb-3">FAQ</p>
+            <h2 className="text-[#111111]" style={{ fontSize: 'clamp(28px, 4vw, 44px)', lineHeight: 1.05, letterSpacing: '-0.025em', fontWeight: 500 }}>
+              Questions, <span className="text-[#A8A29E]">answered.</span>
+            </h2>
+          </div>
+
+          <div className="divide-y divide-[#e5e5e0] border-y border-[#e5e5e0]">
+            {faqs.map(({ q, a }, i) => (
+              <details
+                key={q}
+                className="group"
+                style={{
+                  transitionDelay: faqAnim.inView ? `${i * 50}ms` : '0ms',
+                  opacity: faqAnim.inView ? 1 : 0,
+                  transform: faqAnim.inView ? 'translateY(0)' : 'translateY(10px)',
+                  transition: 'opacity 500ms ease, transform 500ms ease',
+                }}
+              >
+                <summary className="flex items-center justify-between gap-4 py-5 cursor-pointer list-none select-none">
+                  <span className="text-[#111111] text-[15px] sm:text-[16px] font-medium tracking-tight pr-2">{q}</span>
+                  <span className="flex-shrink-0 w-7 h-7 rounded-full border border-[#e5e5e0] flex items-center justify-center transition-all duration-200 group-open:bg-[#E05A28] group-open:border-[#E05A28]">
+                    <svg className="w-3.5 h-3.5 text-[#666] transition-all duration-200 group-open:rotate-180 group-open:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </span>
+                </summary>
+                <p className="pb-5 pr-10 text-[14px] leading-relaxed text-[#555]">{a}</p>
+              </details>
+            ))}
+          </div>
+
+          <p className="text-center text-[13px] text-[#666] mt-8">
+            Still have questions?{' '}
+            <Link href="/contact" className="text-[#E05A28] font-medium hover:underline">Get in touch</Link>
+          </p>
+        </div>
+      </section>
+
       {/* ── CTA ──────────────────────────────────────────────────────────── */}
       <section className="bg-[#0D0D0D] border-t border-white/[0.06] py-16 sm:py-14 px-4 sm:px-6 relative overflow-hidden">
         <div aria-hidden="true" className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 60% 80% at 50% 100%, rgba(224,90,40,0.10) 0%, transparent 70%)' }} />
@@ -407,7 +481,7 @@ export default function LandingPage() {
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#444] mb-2.5">Product</p>
               <ul className="space-y-2">
-                {[{ label: 'Features', href: '#how-it-works' }, { label: 'Pricing', href: '#pricing' }, { label: 'Sign In', href: '/login' }, { label: 'Start Free', href: '/signup' }].map(({ label, href }) => (
+                {[{ label: 'Features', href: '#how-it-works' }, { label: 'Pricing', href: '#pricing' }, { label: 'FAQ', href: '#faq' }, { label: 'Sign In', href: '/login' }, { label: 'Start Free', href: '/signup' }].map(({ label, href }) => (
                   <li key={label}><Link href={href} className="text-[13px] text-[#555] hover:text-white transition-colors duration-200">{label}</Link></li>
                 ))}
               </ul>

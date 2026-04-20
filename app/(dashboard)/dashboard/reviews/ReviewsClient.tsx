@@ -269,6 +269,18 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
     // so popup blockers don't kill it. Fire-and-forget.
     if (platformUrl) {
       try { window.open(platformUrl, '_blank', 'noopener,noreferrer') } catch { /* noop */ }
+      // For platforms without per-review deep-links (Google, TripAdvisor), show
+      // a toast so the user knows which review to scroll for in the new tab.
+      if (review.source !== 'yelp') {
+        window.dispatchEvent(new CustomEvent('replyfi:post-reminder', {
+          detail: {
+            platformLabel,
+            reviewerName: review.reviewer_name ?? 'this reviewer',
+            starRating: review.star_rating ?? null,
+            reviewDate: review.review_datetime_utc ?? null,
+          },
+        }))
+      }
     }
     setActioning(true)
     await onApprove(review.id)
@@ -1216,21 +1228,101 @@ export default function ReviewsClient({ profile, initialReviews, userId }: Props
 
   const hasAnyPlatform = !!(mapsUrl || profile.yelp_url || profile.tripadvisor_url)
 
-  return !hasAnyPlatform ? (
-    <SetupPanel profile={profile} onSaved={handleSaved}/>
-  ) : (
-    <ConnectedPanel
-      profile={profile}
-      reviews={reviews}
-      onApprove={handleApprove}
-      onDismiss={handleDismiss}
-      onRestore={handleRestore}
-      onScrapeNow={() => handleScrapeNow()}
-      scraping={scraping}
-      scrapeError={scrapeError}
-      onDismissError={() => setScrapeError('')}
-      lastScrapedAt={lastScrapedAt}
-      copiedId={copiedId}
-    />
+  return (
+    <>
+      {!hasAnyPlatform ? (
+        <SetupPanel profile={profile} onSaved={handleSaved}/>
+      ) : (
+        <ConnectedPanel
+          profile={profile}
+          reviews={reviews}
+          onApprove={handleApprove}
+          onDismiss={handleDismiss}
+          onRestore={handleRestore}
+          onScrapeNow={() => handleScrapeNow()}
+          scraping={scraping}
+          scrapeError={scrapeError}
+          onDismissError={() => setScrapeError('')}
+          lastScrapedAt={lastScrapedAt}
+          copiedId={copiedId}
+        />
+      )}
+      <PostReminderToast />
+    </>
+  )
+}
+
+// ── Post-reminder toast ───────────────────────────────────────────────────────
+// Shown after "Copy & Approve" on platforms without per-review deep links
+// (Google, TripAdvisor). Helps users know which review to scroll for in the
+// platform tab that just opened.
+function PostReminderToast() {
+  const [state, setState] = useState<null | {
+    platformLabel: string
+    reviewerName: string
+    starRating: number | null
+    reviewDate: string | null
+    id: number
+  }>(null)
+
+  useEffect(() => {
+    let hideTimer: ReturnType<typeof setTimeout> | null = null
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail as {
+        platformLabel: string
+        reviewerName: string
+        starRating: number | null
+        reviewDate: string | null
+      }
+      setState({ ...detail, id: Date.now() })
+      if (hideTimer) clearTimeout(hideTimer)
+      hideTimer = setTimeout(() => setState(null), 7000)
+    }
+    window.addEventListener('replyfi:post-reminder', handler)
+    return () => {
+      window.removeEventListener('replyfi:post-reminder', handler)
+      if (hideTimer) clearTimeout(hideTimer)
+    }
+  }, [])
+
+  if (!state) return null
+
+  const stars = state.starRating
+    ? '★'.repeat(Math.round(state.starRating)) + '☆'.repeat(5 - Math.round(state.starRating))
+    : null
+
+  return (
+    <div
+      key={state.id}
+      role="status"
+      aria-live="polite"
+      className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-[92vw] sm:max-w-md w-[360px] animate-slide-up"
+    >
+      <div className="bg-[#111111] text-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.35)] border border-white/[0.08] p-4 flex items-start gap-3">
+        <div className="w-8 h-8 rounded-full bg-[#E05A28]/15 border border-[#E05A28]/30 flex items-center justify-center flex-shrink-0">
+          <svg className="w-4 h-4 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <div className="flex-1 min-w-0 pr-1">
+          <p className="text-[13px] font-semibold text-white mb-0.5">Reply copied to clipboard</p>
+          <p className="text-[12px] text-white/70 leading-relaxed">
+            Find review from <span className="text-white font-medium">{state.reviewerName}</span>
+            {stars && <> (<span className="text-amber-400">{stars}</span>
+              {state.reviewDate && <span className="text-white/40"> · {formatDate(state.reviewDate)}</span>})</>}
+            {' '}in {state.platformLabel} and paste.
+          </p>
+        </div>
+        <button
+          onClick={() => setState(null)}
+          aria-label="Dismiss"
+          className="flex-shrink-0 w-6 h-6 rounded-md text-white/40 hover:text-white hover:bg-white/[0.06] flex items-center justify-center transition-colors"
+        >
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+    </div>
   )
 }

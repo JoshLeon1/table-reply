@@ -179,8 +179,8 @@ export default function OnboardingPage() {
       setError("That Google Maps URL doesn't look right. Search your business on maps.google.com and copy the URL from your browser.")
       return
     }
-    if (yelpUrl.trim() && !yelpUrl.includes('yelp.com/biz/')) {
-      setError("That Yelp URL doesn't look right. It should look like: yelp.com/biz/your-business-city")
+    if (yelpUrl.trim() && !/yelp\.(com|to)/i.test(yelpUrl)) {
+      setError("That Yelp URL doesn't look right. It should be a yelp.com link.")
       return
     }
     if (taUrl.trim() && !taUrl.includes('tripadvisor.com')) {

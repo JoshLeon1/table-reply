@@ -41,8 +41,10 @@ export default function YelpConnectSection({
       setError('Please enter your Yelp business URL.')
       return
     }
-    if (!trimmed.includes('yelp.com/biz/')) {
-      setError('URL must be a Yelp business page (e.g. yelp.com/biz/your-business).')
+    // Accept any Yelp URL — biz pages, shortened (yelp.to), mobile (m.yelp.com).
+    // Strict /biz/ match was rejecting valid URLs and failing silently.
+    if (!/yelp\.(com|to)/i.test(trimmed)) {
+      setError(`That doesn't look like a Yelp URL. Got: "${trimmed.slice(0, 60)}" — expected something containing yelp.com`)
       return
     }
     setSaving(true)

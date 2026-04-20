@@ -209,8 +209,8 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
       setError("That Google Maps URL doesn't look right. Find your listing on maps.google.com and copy the full URL.")
       return
     }
-    if (yTrimmed && !yTrimmed.includes('yelp.com/biz/')) {
-      setError("That Yelp URL doesn't look right. It should contain \"yelp.com/biz/\".")
+    if (yTrimmed && !/yelp\.(com|to)/i.test(yTrimmed)) {
+      setError("That Yelp URL doesn't look right. It should be a yelp.com link.")
       return
     }
     if (tTrimmed && !tTrimmed.includes('tripadvisor.com')) {

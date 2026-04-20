@@ -462,7 +462,7 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
           placeholder="https://www.yelp.com/biz/your-business-city"
           validate={(url) => {
             if (!url) return 'Please enter your Yelp business URL.'
-            if (!url.includes('yelp.com/biz/')) return 'URL must be a Yelp business page (e.g. yelp.com/biz/your-business).'
+            if (!/yelp\.(com|to)/i.test(url)) return 'URL must be a Yelp link (yelp.com).'
             return null
           }}
           hint={

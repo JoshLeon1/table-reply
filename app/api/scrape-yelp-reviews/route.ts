@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { createClient as createServerClient } from '@/lib/supabase/server'
 import { callClaude } from '@/lib/anthropic'
-import { FROM_ALERTS, REPLY_TO_SUPPORT, escapeHtml, getResend } from '@/lib/email/client'
+import { FROM_ALERTS, REPLY_TO_SUPPORT, buildUnsubscribeHeaders, escapeHtml, getResend, isEmailOptedIn } from '@/lib/email/client'
 import { hasActiveAccess } from '@/lib/subscription'
 
 function escapeRegExp(s: string): string {
@@ -136,7 +136,12 @@ export async function POST(request: NextRequest) {
       if (!outscrapeRes.ok) {
         const errBody = await outscrapeRes.text().catch(() => '(unreadable)')
         console.error('[scrape-yelp] Outscraper error body:', errBody.slice(0, 500))
-        throw new Error(`Outscraper returned ${outscrapeRes.status}: ${outscrapeRes.statusText}`)
+        const friendlyMsg =
+          outscrapeRes.status === 402 ? 'Yelp sync failed — your Outscraper account has an unpaid balance. Please settle it at outscraper.com.' :
+          outscrapeRes.status === 401 ? 'Yelp sync failed — invalid Outscraper API credentials.' :
+          outscrapeRes.status === 429 ? 'Yelp sync rate-limited by Outscraper. Please try again in a few minutes.' :
+          `Yelp sync failed (Outscraper error ${outscrapeRes.status}). Please try again.`
+        throw new Error(friendlyMsg)
       }
 
       let result = await outscrapeRes.json()
@@ -289,8 +294,8 @@ export async function POST(request: NextRequest) {
           if (Array.isArray(parsed)) staffMentions = parsed
         } catch { /* silent */ }
 
-        // Send alert email
-        if (alertTriggered && userEmail && resend && matchedKeyword) {
+        // Send alert email (honor keyword-alerts opt-out)
+        if (alertTriggered && userEmail && resend && matchedKeyword && await isEmailOptedIn(supabaseAdmin, userId, 'keywordAlerts')) {
           const safeKeyword = escapeHtml(matchedKeyword)
           const safeBusiness = escapeHtml(profile.business_name)
           const safeAuthor = escapeHtml(author_title ?? 'Anonymous')
@@ -301,6 +306,7 @@ export async function POST(request: NextRequest) {
             to: userEmail,
             replyTo: REPLY_TO_SUPPORT,
             subject: `⚠️ Alert: A Yelp review mentioned "${matchedKeyword.replace(/[\r\n]/g, ' ')}"`,
+            headers: buildUnsubscribeHeaders(),
             html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:20px">
               <h2 style="color:#111">⚠️ Yelp Keyword Alert for ${safeBusiness}</h2>
               <p>A new Yelp review mentioned <strong>"${safeKeyword}"</strong> — you may want to respond quickly.</p>

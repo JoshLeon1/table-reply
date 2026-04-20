@@ -10,6 +10,7 @@
 //      dev/staging/prod can override without code changes.
 
 import { Resend } from 'resend'
+import type { SupabaseClient } from '@supabase/supabase-js'
 
 let _resend: Resend | null = null
 
@@ -60,3 +61,52 @@ export const FROM_BILLING = process.env.FROM_EMAIL_BILLING ?? 'ReplyFi <billing@
  * the from-address, which is send-only on Resend and will bounce.
  */
 export const REPLY_TO_SUPPORT = process.env.REPLY_TO_SUPPORT ?? 'support@replyfi.app'
+
+/**
+ * Build the List-Unsubscribe header for an outbound email.
+ *
+ * Gmail/Yahoo bulk-sender rules (effective Feb 2024) require a valid
+ * List-Unsubscribe header on marketing/bulk mail. A mailto: form is always
+ * valid and keeps us out of spam folders as volume grows.
+ *
+ * Override `UNSUBSCRIBE_MAILTO` to point at a monitored inbox (default:
+ * unsubscribe@replyfi.app, which should be routed to support).
+ */
+export function buildUnsubscribeHeaders(): Record<string, string> {
+  const mailto = process.env.UNSUBSCRIBE_MAILTO ?? 'unsubscribe@replyfi.app'
+  return {
+    'List-Unsubscribe': `<mailto:${mailto}?subject=unsubscribe>`,
+  }
+}
+
+/**
+ * Email-notification preference categories stored in profiles.email_notifications (jsonb).
+ * Each key defaults to opted-in when unset or null. Explicit string "false" or
+ * boolean false disables that category.
+ *
+ * Categories:
+ *  - weeklyDigest: the Monday recap email
+ *  - keywordAlerts: real-time negative-keyword/safety alerts during scraping
+ *  - trialReminders: T-3 and T-1 trial-ending nudges
+ *
+ * Transactional emails (welcome, payment-failed) bypass this check — they're
+ * account-state changes the user needs to see regardless of marketing prefs.
+ */
+export type EmailCategory = 'weeklyDigest' | 'keywordAlerts' | 'trialReminders'
+
+export async function isEmailOptedIn(
+  supabaseAdmin: SupabaseClient,
+  userId: string,
+  category: EmailCategory,
+): Promise<boolean> {
+  const { data } = await supabaseAdmin
+    .from('profiles')
+    .select('email_notifications')
+    .eq('id', userId)
+    .maybeSingle()
+
+  const prefs = (data?.email_notifications ?? {}) as Record<string, unknown>
+  const val = prefs[category]
+  // Default to opted-in; treat explicit false/'false' as opted-out.
+  return val !== false && val !== 'false'
+}

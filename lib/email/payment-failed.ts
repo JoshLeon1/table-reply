@@ -4,7 +4,7 @@
 // Uses the shared Resend client from lib/email/client.ts so the API key
 // is resolved lazily at send time (not at module load).
 
-import { FROM_BILLING, REPLY_TO_SUPPORT, getResend } from './client'
+import { FROM_BILLING, REPLY_TO_SUPPORT, buildUnsubscribeHeaders, getResend } from './client'
 
 export interface PaymentFailedEmailInput {
   toEmail: string
@@ -29,6 +29,7 @@ export async function sendPaymentFailedEmail(input: PaymentFailedEmailInput) {
     to: toEmail,
     replyTo: REPLY_TO_SUPPORT,
     subject: 'Your card was declined — update your payment method',
+    headers: buildUnsubscribeHeaders(),
     html: `
       <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 24px; color: #111;">
         <h1 style="font-size: 20px; font-weight: 700; margin: 0 0 16px;">Your most recent payment didn't go through</h1>

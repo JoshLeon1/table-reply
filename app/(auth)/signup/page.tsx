@@ -91,12 +91,9 @@ function SignupForm() {
         return
       }
 
-      if (data.user) {
-        await supabase
-          .from('profiles')
-          .update({ trial_started_at: new Date().toISOString() })
-          .eq('id', data.user.id)
-      }
+      // trial_started_at is set automatically by the handle_new_user()
+      // Postgres trigger when the auth.users row is created. No client-side
+      // write needed (and the old one failed RLS pre-confirmation anyway).
 
       if (data.session) {
         router.push('/onboarding')

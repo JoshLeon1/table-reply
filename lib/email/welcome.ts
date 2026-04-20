@@ -4,7 +4,7 @@
 // Idempotent: guarded by profiles.welcome_email_sent_at timestamp written
 // by the caller after a successful send.
 
-import { FROM_DIGEST, REPLY_TO_SUPPORT, escapeHtml, getResend } from './client'
+import { FROM_DIGEST, REPLY_TO_SUPPORT, buildUnsubscribeHeaders, escapeHtml, getResend } from './client'
 
 export interface WelcomeEmailInput {
   toEmail: string
@@ -65,6 +65,7 @@ export async function sendWelcomeEmail(input: WelcomeEmailInput) {
     replyTo: REPLY_TO_SUPPORT,
     subject: 'Welcome to ReplyFi — here\'s how to get your first reply out the door',
     html,
+    headers: buildUnsubscribeHeaders(),
   })
 
   if (sendError) {

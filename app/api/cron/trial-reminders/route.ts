@@ -13,6 +13,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { TRIAL_DAYS } from '@/lib/subscription'
 import { sendTrialReminderEmail, type TrialReminderVariant } from '@/lib/email/trial-reminder'
+import { isEmailOptedIn } from '@/lib/email/client'
 
 interface ProfileRow {
   id: string
@@ -125,6 +126,19 @@ export async function GET(request: NextRequest) {
     }
 
     if (!variant) continue
+
+    // Honor the user's email-notification opt-out for trial reminders.
+    // Still mark the column so we don't re-check every cron run.
+    const optedIn = await isEmailOptedIn(supabaseAdmin, p.id, 'trialReminders')
+    if (!optedIn) {
+      const col =
+        variant === '1day' ? 'trial_reminder_1d_sent_at' : 'trial_reminder_3d_sent_at'
+      await supabaseAdmin
+        .from('profiles')
+        .update({ [col]: new Date().toISOString() })
+        .eq('id', p.id)
+      continue
+    }
 
     // Count replies generated during the trial for social proof
     let repliedCount: number | undefined

@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { createClient as createServerClient } from '@/lib/supabase/server'
 import { callClaude } from '@/lib/anthropic'
-import { FROM_ALERTS, REPLY_TO_SUPPORT, escapeHtml, getResend } from '@/lib/email/client'
+import { FROM_ALERTS, REPLY_TO_SUPPORT, buildUnsubscribeHeaders, escapeHtml, getResend, isEmailOptedIn } from '@/lib/email/client'
 import { hasActiveAccess } from '@/lib/subscription'
 
 function escapeRegExp(s: string): string {
@@ -367,7 +367,7 @@ export async function POST(request: NextRequest) {
       } catch { /* silent fail */ }
 
       // ── Feature 2: Send alert email if triggered ─────────────────────────
-      if (alertTriggered && userEmail && resend && matchedKeyword) {
+      if (alertTriggered && userEmail && resend && matchedKeyword && await isEmailOptedIn(supabaseAdmin, userId, 'keywordAlerts')) {
         // Escape all user-supplied strings before interpolating into HTML.
         const safeKeyword = escapeHtml(matchedKeyword)
         const safeBusiness = escapeHtml(profile.business_name)
@@ -379,6 +379,7 @@ export async function POST(request: NextRequest) {
           to: userEmail,
           replyTo: REPLY_TO_SUPPORT,
           subject: `⚠️ Alert: A review mentioned "${matchedKeyword.replace(/[\r\n]/g, ' ')}"`,
+          headers: buildUnsubscribeHeaders(),
           html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:20px">
             <h2 style="color:#111">⚠️ Keyword Alert for ${safeBusiness}</h2>
             <p>A new review mentioned <strong>"${safeKeyword}"</strong> — you may want to respond quickly.</p>

@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { FROM_DIGEST, REPLY_TO_SUPPORT, escapeHtml, getResend } from '@/lib/email/client'
+import { FROM_DIGEST, REPLY_TO_SUPPORT, buildUnsubscribeHeaders, escapeHtml, getResend } from '@/lib/email/client'
 import { TRIAL_DAYS } from '@/lib/subscription'
 
 // ---------------------------------------------------------------------------
@@ -299,6 +299,7 @@ export async function POST(request: NextRequest) {
         to: userEmail,
         replyTo: REPLY_TO_SUPPORT,
         subject: `Your weekly review summary — ${String(restaurant.business_name).replace(/[\r\n]/g, ' ')}`,
+        headers: buildUnsubscribeHeaders(),
         html: buildHtml({
           businessName: restaurant.business_name,
           newReviewCount: reviews.length,

@@ -5,7 +5,7 @@
 // trial_reminder_1d_sent_at timestamps written by the caller after a
 // successful send.
 
-import { FROM_BILLING, REPLY_TO_SUPPORT, escapeHtml, getResend } from './client'
+import { FROM_BILLING, REPLY_TO_SUPPORT, buildUnsubscribeHeaders, escapeHtml, getResend } from './client'
 
 export type TrialReminderVariant = '3day' | '1day'
 
@@ -83,6 +83,7 @@ export async function sendTrialReminderEmail(input: TrialReminderEmailInput) {
     replyTo: REPLY_TO_SUPPORT,
     subject,
     html,
+    headers: buildUnsubscribeHeaders(),
   })
 
   if (sendError) {

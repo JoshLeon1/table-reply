@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { generateReviewReply } from '@/lib/anthropic'
 import { decide } from '@/lib/autopilot/rules'
-import type { AutopilotRules } from '@/types'
+import type { AutopilotRules, ReplyPreferences } from '@/types'
 
 // ---------------------------------------------------------------------------
 // Auth guard (shared pattern from /api/cron/daily-scrape)
@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
   const windowStart = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString()
 
   for (const profile of profiles) {
-    const prefs = profile.reply_preferences as { autopilot?: AutopilotRules } | null
+    const prefs = profile.reply_preferences as ReplyPreferences | null
     const rules = prefs?.autopilot
 
     if (!rules?.enabled) continue

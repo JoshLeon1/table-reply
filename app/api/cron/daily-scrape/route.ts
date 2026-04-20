@@ -102,10 +102,41 @@ export async function GET(request: NextRequest) {
     })
   )
 
+  // After all scrapes complete, run Autopilot processor + daily digest
+  // (chained here instead of as their own cron entries to stay under
+  // Vercel Hobby's 2-cron limit).
+  let autopilot: unknown = null
+  let autopilotDigest: unknown = null
+  try {
+    const apRes = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/cron/autopilot`, {
+      method: 'GET',
+      headers: { 'x-cron-secret': process.env.CRON_SECRET! },
+    })
+    autopilot = await apRes.json().catch(() => ({ error: 'invalid json' }))
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    console.error('[daily-scrape] autopilot chain failed:', msg)
+    errors.push(`autopilot: ${msg}`)
+  }
+
+  try {
+    const digestRes = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/cron/autopilot-digest`, {
+      method: 'GET',
+      headers: { 'x-cron-secret': process.env.CRON_SECRET! },
+    })
+    autopilotDigest = await digestRes.json().catch(() => ({ error: 'invalid json' }))
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    console.error('[daily-scrape] autopilot-digest chain failed:', msg)
+    errors.push(`autopilot-digest: ${msg}`)
+  }
+
   return NextResponse.json({
     processed,
     totalNewReplies,
     total:  profiles.length,
+    autopilot,
+    autopilotDigest,
     errors: errors.length > 0 ? errors : undefined,
   })
 }

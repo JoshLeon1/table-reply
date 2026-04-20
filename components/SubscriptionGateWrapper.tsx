@@ -55,17 +55,17 @@ function TrialBanner({ daysRemaining }: { daysRemaining: number }) {
 
 // ── Expired paywall ───────────────────────────────────────────────────────────
 function ExpiredPaywall() {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState<'annual' | 'monthly' | null>(null)
   const [error, setError] = useState('')
 
-  const handleResubscribe = async () => {
-    setLoading(true)
+  const handleResubscribe = async (plan: 'annual' | 'monthly') => {
+    setLoading(plan)
     setError('')
     try {
       const res = await fetch('/api/stripe/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan: 'annual' }),
+        body: JSON.stringify({ plan }),
       })
       const data = await res.json()
       if (!res.ok || !data.url) {
@@ -74,7 +74,7 @@ function ExpiredPaywall() {
       window.location.href = data.url
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
-      setLoading(false)
+      setLoading(null)
     }
   }
 
@@ -128,30 +128,54 @@ function ExpiredPaywall() {
               ))}
             </div>
 
-            {/* CTA */}
-            <button
-              type="button"
-              onClick={handleResubscribe}
-              disabled={loading}
-              className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-[14px] font-bold shadow-[0_4px_16px_rgba(224,90,40,0.35)] hover:shadow-[0_6px_24px_rgba(224,90,40,0.45)] transition-all duration-200 active:scale-[0.97] disabled:opacity-70 disabled:cursor-wait"
-            >
-              {loading ? (
-                <>
-                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
-                  </svg>
-                  Redirecting to checkout…
-                </>
-              ) : (
-                <>
-                  <svg className="w-4 h-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                  </svg>
-                  Resubscribe — $239/yr
-                </>
-              )}
-            </button>
+            {/* CTAs — annual (primary) + monthly */}
+            <div className="space-y-2.5">
+              <button
+                type="button"
+                onClick={() => handleResubscribe('annual')}
+                disabled={loading !== null}
+                className="w-full flex items-center justify-between px-5 py-3.5 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white shadow-[0_4px_16px_rgba(224,90,40,0.35)] hover:shadow-[0_6px_24px_rgba(224,90,40,0.45)] transition-all duration-200 active:scale-[0.97] disabled:opacity-70 disabled:cursor-wait"
+              >
+                <div className="text-left">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-[13px] font-bold">Annual Plan</span>
+                    <span className="px-1.5 py-0.5 rounded-md bg-white/20 text-white text-[9px] font-bold uppercase tracking-wide leading-none">
+                      Best Value
+                    </span>
+                  </div>
+                  <p className="text-white/80 text-[11px]">$239/yr · save $109 · under $20/month</p>
+                </div>
+                <span className="text-[13px] font-bold flex items-center gap-1 flex-shrink-0">
+                  {loading === 'annual' ? (
+                    <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                    </svg>
+                  ) : (
+                    '$239/yr →'
+                  )}
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleResubscribe('monthly')}
+                disabled={loading !== null}
+                className="w-full flex items-center justify-between px-5 py-3 rounded-xl border border-[#E4DED8] hover:border-[#D4CFC6] bg-white text-[#111] text-[13px] transition-all duration-150 disabled:opacity-70"
+              >
+                <span className="font-medium">Monthly Plan</span>
+                <span className="text-[#888] flex items-center gap-1">
+                  {loading === 'monthly' ? (
+                    <svg className="w-4 h-4 animate-spin text-[#E05A28]" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                    </svg>
+                  ) : (
+                    '$29/mo →'
+                  )}
+                </span>
+              </button>
+            </div>
 
             {error ? (
               <p role="alert" className="mt-2 text-[12px] text-red-500">
@@ -162,7 +186,7 @@ function ExpiredPaywall() {
               </p>
             ) : (
               <p className="mt-3.5 text-[11px] text-[#A8A29E]">
-                Annual plan · under $20/month · cancel anytime
+                Cancel anytime · no hidden fees
               </p>
             )}
           </div>

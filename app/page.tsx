@@ -266,18 +266,43 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── INDUSTRIES STRIP — static, confident ─────────────────────────── */}
-      <div className="bg-[#0D0D0D] border-y border-white/[0.06] py-7 sm:py-5 px-4 sm:px-6">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-3">
-          <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-white/35">Trusted by local businesses in</p>
-          <p className="text-[12px] sm:text-[13px] text-white/55 font-medium text-center sm:text-right leading-relaxed">
-            {['Dental', 'Salons', 'HVAC', 'Restaurants', 'Med Spas', 'Law Firms', 'Veterinary'].map((label, i, arr) => (
-              <span key={label} className="whitespace-nowrap">
-                {label}
-                {i < arr.length - 1 && <span className="text-white/20 mx-1.5">·</span>}
-              </span>
-            ))}
+      {/* ── INDUSTRIES STRIP — infinite marquee ─────────────────────────── */}
+      <div className="bg-[#0D0D0D] border-y border-white/[0.06] py-6 sm:py-5 px-4 sm:px-6 overflow-hidden">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+          <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-white/35 whitespace-nowrap flex-shrink-0">
+            Trusted by local businesses in
           </p>
+
+          {/* Marquee viewport with edge fades */}
+          <div
+            className="relative flex-1 w-full overflow-hidden"
+            style={{
+              WebkitMaskImage: 'linear-gradient(to right, transparent 0, #000 48px, #000 calc(100% - 48px), transparent 100%)',
+              maskImage:       'linear-gradient(to right, transparent 0, #000 48px, #000 calc(100% - 48px), transparent 100%)',
+            }}
+          >
+            <div className="flex gap-0 animate-industry-scroll whitespace-nowrap will-change-transform">
+              {/* Render the list twice for seamless loop */}
+              {[0, 1].map((dup) => (
+                <div key={dup} className="flex items-center shrink-0" aria-hidden={dup === 1}>
+                  {[
+                    'Dental', 'Salons', 'HVAC', 'Restaurants', 'Med Spas', 'Law Firms', 'Veterinary',
+                    'Auto Repair', 'Chiropractors', 'Cafés', 'Barbershops', 'Plumbing',
+                    'Real Estate', 'Fitness Studios', 'Dermatology', 'Pet Grooming',
+                    'Landscaping', 'Spas', 'Accounting', 'Orthodontics', 'Roofing',
+                    'Dog Training', 'Optometry', 'Tattoo Studios', 'Nail Salons',
+                  ].map((label) => (
+                    <span key={`${dup}-${label}`} className="flex items-center">
+                      <span className="text-[12px] sm:text-[13px] text-white/55 font-medium px-3 sm:px-4">
+                        {label}
+                      </span>
+                      <span className="text-white/20 text-[10px]" aria-hidden="true">·</span>
+                    </span>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 

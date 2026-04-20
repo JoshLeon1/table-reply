@@ -674,6 +674,69 @@ interface Props {
   voiceApproved: number
   voiceMatchRate: number
   voiceTrainedThisMonth: number
+  autopilotEnabled: boolean
+}
+
+// ── Autopilot discoverability banner ──────────────────────────────────────────
+// Surfaces Autopilot to users who haven't enabled it yet — biggest activation
+// lever since Autopilot is buried in Settings today. Dismissable per-browser.
+const LS_AP_DISMISSED = 'tr_autopilot_banner_dismissed'
+
+function AutopilotNudge() {
+  const [dismissed, setDismissed] = useState(false)
+  const [hydrated, setHydrated] = useState(false)
+
+  useEffect(() => {
+    try {
+      if (localStorage.getItem(LS_AP_DISMISSED) === 'true') setDismissed(true)
+    } catch { /* ignore */ }
+    setHydrated(true)
+  }, [])
+
+  const handleDismiss = () => {
+    setDismissed(true)
+    try { localStorage.setItem(LS_AP_DISMISSED, 'true') } catch { /* ignore */ }
+  }
+
+  if (!hydrated || dismissed) return null
+
+  return (
+    <div className="animate-fade-up relative flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-4 sm:px-5 py-4 rounded-xl bg-gradient-to-r from-[#FEF6EF] to-[#FEFCF8] border border-[#F4DCC4]">
+      <div className="flex items-start sm:items-center gap-3 pr-8 sm:pr-0">
+        <div className="w-9 h-9 rounded-lg bg-white border border-[#F4DCC4] flex items-center justify-center flex-shrink-0">
+          <svg className="w-4 h-4 text-[#E05A28]" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd"/>
+          </svg>
+        </div>
+        <div className="min-w-0">
+          <p className="text-[13px] font-medium text-[#111]">
+            Let ReplyFi handle replies overnight
+          </p>
+          <p className="text-[12px] text-[#57534E] mt-0.5 leading-snug">
+            Autopilot drafts a reply for every new review while you sleep. Wake up to a queue ready to post.
+          </p>
+        </div>
+      </div>
+      <div className="flex items-center gap-2 flex-shrink-0 sm:self-center">
+        <Link
+          href="/settings?tab=autopilot"
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-[12px] font-medium transition-all duration-150 active:scale-[0.97] whitespace-nowrap"
+        >
+          Turn on Autopilot
+          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7"/>
+          </svg>
+        </Link>
+      </div>
+      <button
+        onClick={handleDismiss}
+        aria-label="Dismiss"
+        className="absolute top-2 right-2 sm:top-3 sm:right-3 w-6 h-6 flex items-center justify-center text-[#A8A29E] hover:text-[#57534E] transition-colors"
+      >
+        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+  )
 }
 
 // ── Voice DNA ─────────────────────────────────────────────────────────────────
@@ -764,6 +827,7 @@ export default function HomeClient({
   voiceTrained,
   voiceMatchRate,
   voiceTrainedThisMonth,
+  autopilotEnabled,
 }: Props) {
   const hasAnyPlatform = !!(googleMapsUrl || yelpUrl || tripadvisorUrl)
 
@@ -878,6 +942,9 @@ export default function HomeClient({
           </button>
         </div>
       )}
+
+      {/* ── Autopilot discoverability — only show after first sync ─────────── */}
+      {hasAnyPlatform && lastScrapedAt && !autopilotEnabled && <AutopilotNudge />}
 
       {/* ── New hero layout ────────────────────────────────────────────────── */}
       <div className="space-y-6">

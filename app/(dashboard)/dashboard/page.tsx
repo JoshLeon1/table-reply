@@ -91,6 +91,9 @@ export default async function DashboardPage() {
   const themes = analyticsCache?.themes as { praised: string[]; complaints: string[]; opportunities: string[] } | null
   const hasAnalytics = !!analyticsCache
 
+  // Autopilot enablement — drives discoverability banner on home
+  const autopilotEnabled = !!(restaurantProfile?.reply_preferences as { autopilot?: { enabled?: boolean } } | null)?.autopilot?.enabled
+
   // Voice DNA — derived metrics
   const voiceTrained   = voiceTrainedCount   ?? 0
   const voiceApproved  = voiceApprovedCount  ?? 0
@@ -123,6 +126,7 @@ export default async function DashboardPage() {
       voiceApproved={voiceApproved}
       voiceMatchRate={voiceMatchRate}
       voiceTrainedThisMonth={voiceMonth}
+      autopilotEnabled={autopilotEnabled}
     />
   )
 }

@@ -4,7 +4,7 @@
 // Uses the shared Resend client from lib/email/client.ts so the API key
 // is resolved lazily at send time (not at module load).
 
-import { FROM_BILLING, getResend } from './client'
+import { FROM_BILLING, REPLY_TO_SUPPORT, getResend } from './client'
 
 export interface PaymentFailedEmailInput {
   toEmail: string
@@ -24,9 +24,10 @@ export async function sendPaymentFailedEmail(input: PaymentFailedEmailInput) {
   const appUrl = (process.env.NEXT_PUBLIC_APP_URL ?? 'https://replyfi.app').replace(/\/$/, '')
   const portalLink = `${appUrl}/settings?tab=account`
 
-  await resend.emails.send({
+  const { error: sendError } = await resend.emails.send({
     from: FROM_BILLING,
     to: toEmail,
+    replyTo: REPLY_TO_SUPPORT,
     subject: 'Your card was declined — update your payment method',
     html: `
       <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 24px; color: #111;">
@@ -47,6 +48,11 @@ export async function sendPaymentFailedEmail(input: PaymentFailedEmailInput) {
       </div>
     `,
   })
+
+  if (sendError) {
+    console.error('[payment-failed-email] Resend send failed:', sendError)
+    return { skipped: false as const, error: sendError }
+  }
 
   return { skipped: false as const }
 }

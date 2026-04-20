@@ -52,3 +52,11 @@ export function escapeHtml(input: string | null | undefined): string {
 export const FROM_ALERTS  = process.env.FROM_EMAIL_ALERTS  ?? 'ReplyFi Alerts <alerts@replyfi.app>'
 export const FROM_DIGEST  = process.env.FROM_EMAIL_DIGEST  ?? 'ReplyFi <digest@replyfi.app>'
 export const FROM_BILLING = process.env.FROM_EMAIL_BILLING ?? 'ReplyFi <billing@replyfi.app>'
+
+/**
+ * Reply-To address — where user replies to any ReplyFi email land.
+ * Set this to an inbox you actually monitor (e.g. via Cloudflare Email
+ * Routing forwarding to your personal Gmail). If not set, replies go to
+ * the from-address, which is send-only on Resend and will bounce.
+ */
+export const REPLY_TO_SUPPORT = process.env.REPLY_TO_SUPPORT ?? 'support@replyfi.app'

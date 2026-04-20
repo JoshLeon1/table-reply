@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { createClient as createServerClient } from '@/lib/supabase/server'
 import { callClaude } from '@/lib/anthropic'
-import { FROM_ALERTS, escapeHtml, getResend } from '@/lib/email/client'
+import { FROM_ALERTS, REPLY_TO_SUPPORT, escapeHtml, getResend } from '@/lib/email/client'
 import { hasActiveAccess } from '@/lib/subscription'
 
 function escapeRegExp(s: string): string {
@@ -374,9 +374,10 @@ export async function POST(request: NextRequest) {
         const safeAuthor = escapeHtml(author_title ?? 'Anonymous')
         const safeText = escapeHtml((review_text ?? '').slice(0, 300))
         const appUrl = (process.env.NEXT_PUBLIC_APP_URL ?? 'https://replyfi.app').replace(/\/$/, '')
-        await resend.emails.send({
+        const { error: alertSendError } = await resend.emails.send({
           from: FROM_ALERTS,
           to: userEmail,
+          replyTo: REPLY_TO_SUPPORT,
           subject: `⚠️ Alert: A review mentioned "${matchedKeyword.replace(/[\r\n]/g, ' ')}"`,
           html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:20px">
             <h2 style="color:#111">⚠️ Keyword Alert for ${safeBusiness}</h2>
@@ -388,7 +389,10 @@ export async function POST(request: NextRequest) {
             <a href="${appUrl}/dashboard/reviews" style="display:inline-block;background:#111;color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600">View Review →</a>
             <p style="color:#AAA;font-size:12px;margin-top:24px">ReplyFi · Manage alerts in <a href="${appUrl}/settings">Settings</a></p>
           </div>`
-        }).catch(err => console.error('[scrape-reviews] Alert email error:', err))
+        })
+        if (alertSendError) {
+          console.error('[scrape-reviews] Alert email error (Resend response):', alertSendError)
+        }
       }
     }
 

@@ -3,7 +3,7 @@ export const maxDuration = 60
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { FROM_DIGEST, escapeHtml, getResend } from '@/lib/email/client'
+import { FROM_DIGEST, REPLY_TO_SUPPORT, escapeHtml, getResend } from '@/lib/email/client'
 import type { AutopilotRules } from '@/types'
 
 // ---------------------------------------------------------------------------
@@ -232,6 +232,7 @@ export async function GET(request: NextRequest) {
       const { error: sendErr } = await resend.emails.send({
         from: FROM_DIGEST,
         to: userEmail,
+        replyTo: REPLY_TO_SUPPORT,
         subject,
         html: buildDigestHtml({ businessName: profile.business_name, counts }),
       })

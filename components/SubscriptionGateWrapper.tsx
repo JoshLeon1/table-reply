@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import ErrorBoundary from '@/components/ErrorBoundary'
@@ -57,6 +57,18 @@ function TrialBanner({ daysRemaining }: { daysRemaining: number }) {
 function ExpiredPaywall() {
   const [loading, setLoading] = useState<'annual' | 'monthly' | null>(null)
   const [error, setError] = useState('')
+
+  // Reset loading state on bfcache restore (user clicked Stripe redirect, then hit Back)
+  useEffect(() => {
+    const handlePageShow = (e: PageTransitionEvent) => {
+      if (e.persisted) {
+        setLoading(null)
+        setError('')
+      }
+    }
+    window.addEventListener('pageshow', handlePageShow)
+    return () => window.removeEventListener('pageshow', handlePageShow)
+  }, [])
 
   const handleResubscribe = async (plan: 'annual' | 'monthly') => {
     setLoading(plan)

@@ -1,10 +1,22 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function BillingButtons() {
   const [loading, setLoading] = useState<'annual' | 'monthly' | null>(null)
   const [error, setError] = useState<string | null>(null)
+
+  // Reset loading state on bfcache restore (user clicked Stripe redirect, then hit Back)
+  useEffect(() => {
+    const handlePageShow = (e: PageTransitionEvent) => {
+      if (e.persisted) {
+        setLoading(null)
+        setError(null)
+      }
+    }
+    window.addEventListener('pageshow', handlePageShow)
+    return () => window.removeEventListener('pageshow', handlePageShow)
+  }, [])
 
   async function startCheckout(plan: 'annual' | 'monthly') {
     setLoading(plan)

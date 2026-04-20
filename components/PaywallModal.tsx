@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Button from './ui/Button'
 import { useModal } from '@/lib/hooks/useModal'
 
@@ -13,6 +13,18 @@ export default function PaywallModal({ onClose }: PaywallModalProps) {
   const [loading, setLoading] = useState(false)
   const [checkoutError, setCheckoutError] = useState('')
   const { containerRef } = useModal({ open: true, onClose: () => onClose?.() })
+
+  // Reset loading state on bfcache restore (user clicked Stripe redirect, then hit Back)
+  useEffect(() => {
+    const handlePageShow = (e: PageTransitionEvent) => {
+      if (e.persisted) {
+        setLoading(false)
+        setCheckoutError('')
+      }
+    }
+    window.addEventListener('pageshow', handlePageShow)
+    return () => window.removeEventListener('pageshow', handlePageShow)
+  }, [])
 
   const handleUpgrade = async () => {
     setLoading(true)

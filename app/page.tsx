@@ -92,7 +92,7 @@ export default function LandingPage() {
 
       <main id="main">
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
-      <section className="bg-[#111111] pt-10 sm:pt-16 lg:pt-24 pb-10 sm:pb-16 lg:pb-20 px-4 sm:px-6 overflow-hidden relative">
+      <section className="bg-[#111111] pt-10 sm:pt-16 lg:pt-24 pb-14 sm:pb-16 lg:pb-20 px-4 sm:px-6 overflow-hidden relative">
         <div aria-hidden="true" className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 70% 60% at 15% 50%, rgba(224,90,40,0.13) 0%, transparent 65%)' }} />
 
         <div className="max-w-6xl mx-auto relative">
@@ -235,23 +235,22 @@ export default function LandingPage() {
       </section>
 
       {/* ── INDUSTRIES STRIP — static, confident ─────────────────────────── */}
-      <div className="bg-[#0D0D0D] border-b border-white/[0.06] py-5 px-4 sm:px-6">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="bg-[#0D0D0D] border-y border-white/[0.06] py-7 sm:py-5 px-4 sm:px-6">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-3">
           <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-white/35">Trusted by local businesses in</p>
-          <p className="text-[12px] sm:text-[13px] text-white/55 font-medium text-center sm:text-right">
-            Dental <span className="text-white/20 mx-1">·</span>
-            Salons <span className="text-white/20 mx-1">·</span>
-            HVAC <span className="text-white/20 mx-1">·</span>
-            Restaurants <span className="text-white/20 mx-1">·</span>
-            Med Spas <span className="text-white/20 mx-1">·</span>
-            Law Firms <span className="text-white/20 mx-1">·</span>
-            Veterinary
+          <p className="text-[12px] sm:text-[13px] text-white/55 font-medium text-center sm:text-right leading-relaxed">
+            {['Dental', 'Salons', 'HVAC', 'Restaurants', 'Med Spas', 'Law Firms', 'Veterinary'].map((label, i, arr) => (
+              <span key={label} className="whitespace-nowrap">
+                {label}
+                {i < arr.length - 1 && <span className="text-white/20 mx-1.5">·</span>}
+              </span>
+            ))}
           </p>
         </div>
       </div>
 
       {/* ── HOW IT WORKS ─────────────────────────────────────────────────── */}
-      <section id="how-it-works" className="scroll-mt-20 py-12 sm:py-20 px-4 sm:px-6 bg-white border-t border-[#e5e5e0]">
+      <section id="how-it-works" className="scroll-mt-20 py-16 sm:py-20 px-4 sm:px-6 bg-white border-t border-[#e5e5e0]">
         <div className="max-w-4xl mx-auto">
           <div
             ref={howItWorksAnim.ref}
@@ -288,7 +287,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── PRICING ──────────────────────────────────────────────────────── */}
-      <section id="pricing" className="py-12 sm:py-20 px-4 sm:px-6 bg-[#fafaf8] border-t border-[#e5e5e0]">
+      <section id="pricing" className="py-16 sm:py-20 px-4 sm:px-6 bg-[#fafaf8] border-t border-[#e5e5e0]">
         <div ref={pricingAnim.ref} className="max-w-md mx-auto flex flex-col items-center">
           <p className={`text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A8A29E] mb-3 transition-all duration-700 ${pricingAnim.inView ? 'opacity-100' : 'opacity-0'}`}>Pricing</p>
           <h2
@@ -350,26 +349,27 @@ export default function LandingPage() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────────────────── */}
-      <section className="bg-[#0D0D0D] border-t border-white/[0.06] py-6 sm:py-8 px-4 sm:px-6">
+      <section className="bg-[#0D0D0D] border-t border-white/[0.06] py-16 sm:py-14 px-4 sm:px-6 relative overflow-hidden">
+        <div aria-hidden="true" className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 60% 80% at 50% 100%, rgba(224,90,40,0.10) 0%, transparent 70%)' }} />
         <div
           ref={ctaAnim.ref}
-          className={`max-w-4xl mx-auto transition-all duration-700 ${ctaAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
+          className={`max-w-4xl mx-auto relative transition-all duration-700 ${ctaAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
         >
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-10">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-7 sm:gap-10">
 
             {/* Left — text */}
             <div className="text-center sm:text-left">
-              <h2 className="text-white mb-1.5" style={{ fontSize: 'clamp(22px, 3vw, 32px)', lineHeight: 1.1, letterSpacing: '-0.025em', fontWeight: 500 }}>
+              <h2 className="text-white mb-2" style={{ fontSize: 'clamp(24px, 3vw, 32px)', lineHeight: 1.12, letterSpacing: '-0.025em', fontWeight: 500 }}>
                 Start replying to every review <span className="text-white/55">today.</span>
               </h2>
               <p className="text-white/65 text-[13px]">7-day free trial, no card required.</p>
             </div>
 
             {/* Right — CTA */}
-            <div className="flex flex-col items-center sm:items-end gap-3 flex-shrink-0">
+            <div className="flex flex-col items-center sm:items-end gap-3 flex-shrink-0 w-full sm:w-auto">
               <Link
                 href="/signup"
-                className="group inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl font-bold text-[14px] text-white transition-all duration-200 active:scale-[0.97]"
+                className="group inline-flex items-center justify-center gap-2.5 w-full sm:w-auto px-6 py-4 sm:py-3.5 rounded-xl font-bold text-[14px] text-white transition-all duration-200 active:scale-[0.97]"
                 style={{ background: 'linear-gradient(135deg, #E05A28 0%, #C44A1E 100%)', boxShadow: '0 4px 16px rgba(224,90,40,0.35), inset 0 1px 0 rgba(255,255,255,0.12)' }}
               >
                 Start Free 7-Day Trial

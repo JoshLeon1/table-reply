@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
       .eq('business_profile_id', profile.id)
       .eq('autopilot_handled', false)
       .eq('reply_status', 'pending')
-      .gte('created_at', windowStart)
+      .gte('review_datetime_utc', windowStart)
 
     if (reviewsErr) {
       console.error(`[autopilot-cron] Error fetching reviews for profile ${profile.id}:`, reviewsErr)

@@ -1,4 +1,9 @@
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /onboarding/
+Disallow: /settings/
+Disallow: /auth/
 
-Sitemap: https://replyfi.com/sitemap.xml
+Sitemap: https://replyfi.app/sitemap.xml

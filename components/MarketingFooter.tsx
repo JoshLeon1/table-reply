@@ -13,6 +13,8 @@ export default function MarketingFooter() {
       <div className="max-w-6xl mx-auto px-5 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-[12px] text-[#A8A29E]">
         <p className="text-[#C4BEB8]">© {new Date().getFullYear()} ReplyFi. All rights reserved.</p>
         <nav className="flex items-center gap-5">
+          <Link href="/blog" className="hover:text-[#111] transition-colors">Blog</Link>
+          <span className="text-[#E4DED8]" aria-hidden="true">·</span>
           <Link href="/privacy" className="hover:text-[#111] transition-colors">Privacy</Link>
           <span className="text-[#E4DED8]" aria-hidden="true">·</span>
           <Link href="/terms" className="hover:text-[#111] transition-colors">Terms</Link>

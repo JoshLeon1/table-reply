@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { createClient as createServerClient } from '@/lib/supabase/server'
+import { hasActiveAccess } from '@/lib/subscription'
 
 function extractNameFromUrl(url: string): string | null {
   try {
@@ -31,6 +32,11 @@ export async function POST(request: NextRequest) {
 
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const allowed = await hasActiveAccess(supabaseAdmin, user.id)
+  if (!allowed) {
+    return NextResponse.json({ error: 'Subscription required' }, { status: 402 })
   }
 
   const body = await request.json().catch(() => ({}))

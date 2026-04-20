@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { hasAccess } from '@/lib/subscription/access'
 
 export async function GET(request: NextRequest) {
   const supabaseAdmin = createClient(
@@ -25,18 +26,83 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  // Fetch all restaurant profiles (we'll filter per platform below)
-  const { data: profiles, error } = await supabaseAdmin
+  // Fetch all business profiles joined to account-status fields so we can
+  // filter out expired-trial / unpaid / never-converted users. We only want
+  // to burn Outscraper quota on users who currently have access.
+  const { data: rawProfiles, error } = await supabaseAdmin
     .from('business_profiles')
-    .select('id, user_id, google_maps_url, yelp_url, tripadvisor_url')
+    .select(`
+      id,
+      user_id,
+      google_maps_url,
+      yelp_url,
+      tripadvisor_url,
+      profile:profiles!restaurant_profiles_user_id_fkey (
+        is_paid,
+        trial_started_at,
+        subscription_period_end,
+        subscription_canceled_at,
+        subscription_past_due
+      )
+    `)
 
   if (error) {
     console.error('[daily-scrape] Failed to fetch profiles:', error)
-    return NextResponse.json({ error: 'Failed to fetch restaurant profiles' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to fetch business profiles' }, { status: 500 })
   }
 
-  if (!profiles || profiles.length === 0) {
+  if (!rawProfiles || rawProfiles.length === 0) {
     return NextResponse.json({ processed: 0, totalNewReplies: 0, message: 'No profiles configured' })
+  }
+
+  // Supabase embed can return the related row as either a single object or an
+  // array depending on FK cardinality inference; normalize to a single object.
+  const profiles = rawProfiles
+    .map((row) => {
+      const p = row as unknown as {
+        id: string
+        user_id: string
+        google_maps_url: string | null
+        yelp_url: string | null
+        tripadvisor_url: string | null
+        profile:
+          | {
+              is_paid: boolean | null
+              trial_started_at: string | null
+              subscription_period_end: string | null
+              subscription_canceled_at: string | null
+              subscription_past_due: boolean | null
+            }
+          | Array<{
+              is_paid: boolean | null
+              trial_started_at: string | null
+              subscription_period_end: string | null
+              subscription_canceled_at: string | null
+              subscription_past_due: boolean | null
+            }>
+          | null
+      }
+      const profile = Array.isArray(p.profile) ? p.profile[0] ?? null : p.profile
+      return { ...p, profile }
+    })
+    .filter((row) => {
+      const access = hasAccess(row.profile)
+      if (!access.ok) {
+        // Silent skip — expected for expired/abandoned accounts. Log count in summary.
+        return false
+      }
+      return true
+    })
+
+  const skipped = rawProfiles.length - profiles.length
+
+  if (profiles.length === 0) {
+    return NextResponse.json({
+      processed: 0,
+      totalNewReplies: 0,
+      skipped,
+      message: 'No active-access profiles to scrape',
+    })
   }
 
   let processed       = 0
@@ -148,6 +214,7 @@ export async function GET(request: NextRequest) {
     processed,
     totalNewReplies,
     total:  profiles.length,
+    skipped,
     autopilot,
     autopilotDigest,
     trialReminders,

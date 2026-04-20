@@ -461,7 +461,26 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
     try {
       const jsPDF = (await import('jspdf')).default
       const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
-      const month = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+      // Coverage label: prefer the actual data range so reports don't
+      // falsely headline a month with zero reviews (e.g. "April 2026" when
+      // the newest review is from March).
+      const datedReviewsAll = filteredReviews.filter((r) => r.review_datetime_utc)
+      const dateRangeLabel = (() => {
+        if (datedReviewsAll.length === 0) {
+          return new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+        }
+        const dates = datedReviewsAll.map((r) => new Date(r.review_datetime_utc)).sort((a, b) => a.getTime() - b.getTime())
+        const first = dates[0]
+        const last = dates[dates.length - 1]
+        const sameMonth = first.getFullYear() === last.getFullYear() && first.getMonth() === last.getMonth()
+        if (sameMonth) {
+          return last.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+        }
+        const firstLabel = first.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+        const lastLabel = last.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+        return `${firstLabel} – ${lastLabel}`
+      })()
+      const month = dateRangeLabel
       const generatedOn = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 
       // ── Design constants ────────────────────────────────────────────────────
@@ -580,15 +599,23 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       statBox(L,        boxTop + 26, bw, `${responseRate}%`,                     'Response Rate',    false)
       statBox(L + bw + 6, boxTop + 26, bw, String(approvedCount),                'Replies Approved', false)
 
-      // Critical alert badge
+      // Critical alert badge — red dot + message (jsPDF helvetica doesn't
+      // render unicode warning glyphs cleanly, so we draw our own dot).
       if (criticalUnanswered > 0) {
         const alertY = boxTop + 60
         doc.setFillColor(100, 20, 0)
         doc.roundedRect(L, alertY, W, 11, 2, 2, 'F')
+        doc.setFillColor(255, 160, 100)
+        doc.circle(L + 5, alertY + 5.6, 1.2, 'F')
         doc.setFontSize(9)
         doc.setFont('helvetica', 'bold')
         doc.setTextColor(255, 160, 100)
-        doc.text(`! ${criticalUnanswered} critical review${criticalUnanswered !== 1 ? 's' : ''} still need a reply`, L + 4, alertY + 7)
+        const verb = criticalUnanswered === 1 ? 'needs' : 'need'
+        doc.text(
+          `${criticalUnanswered} critical review${criticalUnanswered !== 1 ? 's' : ''} ${verb} a reply`,
+          L + 9,
+          alertY + 7,
+        )
       }
 
       // "What's inside" section in the lower half of the cover
@@ -601,11 +628,14 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
       doc.setTextColor(120, 120, 120)
       doc.text('WHAT\'S IN THIS REPORT', L, insideY + 8)
 
+      const hasAnyReplies = filteredReviews.some((r) => r.generated_reply)
       const insideItems = [
         'Performance Overview — rating distribution, monthly volume & reply coverage',
         ...(themes.praised.length || themes.complaints.length ? ['AI-Powered Insights — what customers love, complaints & growth opportunities'] : []),
         'Activity Patterns — busiest days and top keywords from your reviews',
-        'Notable Reviews — your highest and lowest rated reviews with your replies',
+        hasAnyReplies
+          ? 'Notable Reviews — your highest and lowest rated reviews with your replies'
+          : 'Notable Reviews — your highest and lowest rated reviews',
       ]
       insideItems.forEach((item, i) => {
         const iy = insideY + 17 + i * 9
@@ -871,7 +901,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
             doc.setFont('helvetica', 'normal')
             doc.setTextColor(...MID)
             doc.text(String(d.count), L + 20, y)
-            doc.text(`${d.avgRating}`, L + 50, y)
+            doc.text(d.avgRating ? d.avgRating.toFixed(1) : '–', L + 50, y)
             // Bar
             const fill = Math.round((d.count / maxC) * 70)
             doc.setFillColor(...RULE)

@@ -136,6 +136,7 @@ export default async function DashboardPage() {
       ownerName={restaurantProfile?.owner_name ?? 'there'}
       restaurantName={restaurantProfile?.business_name ?? ''}
       lastScrapedAt={restaurantProfile?.last_scraped_at ?? null}
+      yelpLastScrapedAt={(restaurantProfile as { yelp_last_scraped_at?: string | null } | null)?.yelp_last_scraped_at ?? null}
       userId={user.id}
       googleMapsUrl={restaurantProfile?.google_maps_url ?? null}
       yelpUrl={restaurantProfile?.yelp_url ?? null}

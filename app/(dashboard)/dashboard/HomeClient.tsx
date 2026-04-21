@@ -536,14 +536,27 @@ function HeroRow({
 // The third card is a sync trigger, not a link. Clicking it runs the scrape
 // in-place and shows a spinning refresh icon + "Syncing…" label while the
 // request is inflight — no navigation to Settings.
-function ActionStrip({ pendingCount, repliesSentCount, lastSyncAt, syncing, onSync }: {
+function ActionStrip({ pendingCount, repliesSentCount, lastSyncAt, googleLastSync, yelpLastSync, hasGoogle, hasYelp, syncing, onSync }: {
   pendingCount: number
   repliesSentCount: number
   lastSyncAt: string | null
+  googleLastSync: string | null
+  yelpLastSync: string | null
+  hasGoogle: boolean
+  hasYelp: boolean
   syncing: boolean
   onSync: () => void
 }) {
   const lastSyncLabel = lastSyncAt ? formatTimeAgo(lastSyncAt) : 'never'
+  // Per-platform breakdown shown when user has connected both platforms so they
+  // can see at a glance whether one is stale. Otherwise just show the single
+  // aggregate "Last sync" line.
+  const perPlatformLabel = (() => {
+    if (!(hasGoogle && hasYelp)) return null
+    const g = googleLastSync ? formatTimeAgo(googleLastSync) : 'never'
+    const y = yelpLastSync ? formatTimeAgo(yelpLastSync) : 'never'
+    return `Google ${g} · Yelp ${y}`
+  })()
 
   const linkCards = [
     { href: '/dashboard/reviews?tab=pending',  icon: <MessageSquare size={16} strokeWidth={1.5} />, label: 'PENDING REPLIES', value: pendingCount },
@@ -587,7 +600,7 @@ function ActionStrip({ pendingCount, repliesSentCount, lastSyncAt, syncing, onSy
             <div className="flex-1 min-w-0">
               <Eyebrow>{syncing ? 'SYNCING…' : 'SYNC NOW'}</Eyebrow>
               <div className="text-[13px] font-medium text-[#57534E] leading-tight mt-0.5 truncate">
-                {syncing ? 'Pulling new reviews' : `Last sync: ${lastSyncLabel}`}
+                {syncing ? 'Pulling new reviews' : (perPlatformLabel ?? `Last sync: ${lastSyncLabel}`)}
               </div>
             </div>
             <ArrowRight size={16} strokeWidth={1.5} className="text-[#A8A29E] group-hover:text-[#111] transition-colors flex-shrink-0" />
@@ -641,6 +654,7 @@ interface Props {
   ownerName: string
   restaurantName: string
   lastScrapedAt: string | null
+  yelpLastScrapedAt: string | null
   userId: string
   googleMapsUrl: string | null
   yelpUrl: string | null
@@ -796,6 +810,7 @@ export default function HomeClient({
   ownerName,
   restaurantName,
   lastScrapedAt,
+  yelpLastScrapedAt,
   userId,
   googleMapsUrl,
   yelpUrl,
@@ -918,30 +933,6 @@ export default function HomeClient({
   return (
     <div className="space-y-6 sm:space-y-8 pb-16">
 
-      {/* First-sync nudge — shown only when platforms connected but never synced */}
-      {hasAnyPlatform && !lastScrapedAt && (
-        <div className="animate-fade-up flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-5 py-3.5 rounded-xl bg-[#FEFCF8] border border-[#EDE6DC]">
-          <div className="flex items-center gap-3">
-            <svg className="w-4 h-4 text-[#57534E] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-            <div>
-              <p className="text-[13px] text-[#57534E]">
-                <span className="font-medium text-[#111111]">
-                  {[googleMapsUrl && 'Google Maps', yelpUrl && 'Yelp'].filter(Boolean).join(', ')}
-                </span>
-                {' '}connected — run your first sync to pull in reviews.
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={handleSync}
-            disabled={syncing}
-            className="text-[12px] font-medium text-[#111] hover:text-[#57534E] transition-colors whitespace-nowrap pl-7 sm:pl-0 disabled:opacity-50"
-          >
-            {syncing ? 'Syncing…' : 'Sync now →'}
-          </button>
-        </div>
-      )}
-
       {/* ── Autopilot discoverability — only show after first sync ─────────── */}
       {hasAnyPlatform && lastScrapedAt && !autopilotEnabled && <AutopilotNudge />}
 
@@ -965,6 +956,10 @@ export default function HomeClient({
           pendingCount={liveTotalPending}
           repliesSentCount={approvedThisMonth}
           lastSyncAt={displayLastSynced}
+          googleLastSync={lastScrapedAt}
+          yelpLastSync={yelpLastScrapedAt}
+          hasGoogle={!!googleMapsUrl}
+          hasYelp={!!yelpUrl}
           syncing={syncing}
           onSync={handleSync}
         />

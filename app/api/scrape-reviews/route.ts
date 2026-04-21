@@ -134,7 +134,7 @@ export async function POST(request: NextRequest) {
     const outscrapeRes = await fetch(
       `https://api.app.outscraper.com/maps/reviews-v3` +
         `?query=${encodeURIComponent(profile.google_maps_url)}` +
-        `&reviewsLimit=200` +
+        `&reviewsLimit=50` +
         `&sort=newest`,
       {
         headers: {

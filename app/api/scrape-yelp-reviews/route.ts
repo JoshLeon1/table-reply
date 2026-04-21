@@ -131,7 +131,7 @@ export async function POST(request: NextRequest) {
       const outscrapeRes = await fetch(
         `https://api.app.outscraper.com/yelp/reviews` +
           `?query=${encodeURIComponent(profile.yelp_url)}` +
-          `&reviewsLimit=200`,
+          `&reviewsLimit=50`,
         {
           headers: {
             'X-API-KEY': process.env.OUTSCRAPER_API_KEY!,

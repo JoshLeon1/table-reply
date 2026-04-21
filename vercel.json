@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/cron/daily-scrape",
-      "schedule": "0 8 * * *"
+      "schedule": "0 11 * * *"
     },
     {
       "path": "/api/digest",

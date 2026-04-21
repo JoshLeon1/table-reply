@@ -77,8 +77,8 @@ export default function LandingPage() {
       a: 'Yes. ReplyFi learns your tone from the replies you approve. By week two, most owners say they can\'t tell which replies they wrote and which ones the AI drafted.',
     },
     {
-      q: 'Do replies post to Google automatically?',
-      a: 'Yes — once you connect your Google Business Profile in Settings, approved replies post directly to Google with one click. No copying, no switching tabs. Yelp requires manual posting for now.',
+      q: 'How do replies get to Google?',
+      a: 'When you approve a reply, ReplyFi copies it to your clipboard and opens your Google reviews page in a new tab — one click to paste and you\'re done. Same flow for Yelp. (Fully automated posting is on the way once Google approves our Business Profile API access.)',
     },
     {
       q: 'Which review platforms are supported?',
@@ -103,15 +103,15 @@ export default function LandingPage() {
   ]
 
   const steps = [
-    { num: '1', title: 'Connect your listings once', desc: 'Link Google and Yelp in under 2 minutes. Connect Google Business Profile to enable direct posting.' },
+    { num: '1', title: 'Connect your listings once', desc: 'Add your Google and Yelp pages in under 2 minutes. We take it from there.' },
     { num: '2', title: 'Reviews appear automatically', desc: 'ReplyFi pulls in new reviews every day — no manual work.' },
-    { num: '3', title: 'Approve and it posts to Google', desc: 'Edit inline, hit approve, and ReplyFi posts your reply directly to Google. No copy-paste ever.' },
+    { num: '3', title: 'Approve, copy, paste', desc: 'Edit inline if you want, hit approve, and we copy your reply + open Google. One paste and it\'s live.' },
   ]
 
   const proFeatures = [
     'Unlimited AI replies',
     'Google + Yelp auto-sync',
-    'Direct Google reply posting — no copy-paste',
+    'One-click copy + open Google to paste',
     'Inline reply editing before approving',
     'Keyword alerts + staff mention tracking',
     'Autopilot mode for hands-free replies',
@@ -148,7 +148,7 @@ export default function LandingPage() {
               </h1>
 
               <p className="text-white/55 mb-8 animate-fade-up" style={{ fontSize: 'clamp(15px, 1.6vw, 17px)', lineHeight: '1.55', animationDelay: '260ms', maxWidth: '480px' }}>
-                AI drafts a personal reply to every review — approve once and it posts directly to Google. No copy-paste.
+                AI drafts a personal reply to every review. Approve, and we copy it + open Google for you — one paste and you&apos;re done.
               </p>
 
               {/* CTAs */}
@@ -215,7 +215,7 @@ export default function LandingPage() {
                       <div className="mt-2.5 ml-9 flex gap-1.5 flex-wrap">
                         <div className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-[10px] font-semibold">
                           <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>
-                          Posted to Google
+                          Copied & opened
                         </div>
                       </div>
                     </div>

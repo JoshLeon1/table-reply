@@ -257,6 +257,7 @@ export async function POST(request: NextRequest) {
         .from('business_profiles')
         .select('id, business_name')
         .eq('user_id', profile.id)
+        .eq('is_primary', true)
         .maybeSingle()
 
       if (restError || !restaurant) {
@@ -270,7 +271,7 @@ export async function POST(request: NextRequest) {
         .from('scraped_reviews')
         .select('id, reviewer_name, star_rating, review_text, generated_reply, reply_status')
         .eq('user_id', profile.id)
-        .gte('created_at', sevenDaysAgo)
+        .gte('review_datetime_utc', sevenDaysAgo)
         .order('star_rating', { ascending: false })
 
       if (reviewsError) {

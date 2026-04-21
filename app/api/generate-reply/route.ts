@@ -62,6 +62,7 @@ export async function POST(request: NextRequest) {
     .from('business_profiles')
     .select('*')
     .eq('user_id', user.id)
+    .eq('is_primary', true)
     .maybeSingle()
 
   if (!restaurantProfile) {

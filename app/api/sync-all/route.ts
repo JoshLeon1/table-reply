@@ -34,6 +34,7 @@ export async function POST(request: NextRequest) {
       .from('business_profiles')
       .select('id, google_maps_url, yelp_url')
       .eq('user_id', user.id)
+      .eq('is_primary', true)
       .maybeSingle()
 
     if (!profile) {

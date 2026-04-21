@@ -35,8 +35,9 @@ export async function GET() {
   // Get the business profile — need location + type to find real nearby competitors
   const { data: profile } = await supabase
     .from('business_profiles')
-    .select('business_name, business_type, google_place_id, latitude, longitude, google_maps_url')
+    .select('id, business_name, business_type, google_place_id, latitude, longitude, google_maps_url')
     .eq('user_id', user.id)
+    .eq('is_primary', true)
     .maybeSingle()
 
   if (!profile) return NextResponse.json({ results: [] })
@@ -81,7 +82,7 @@ export async function GET() {
               longitude: lng,
               ...(ownPlaceId ? { google_place_id: ownPlaceId } : {}),
             })
-            .eq('user_id', user.id)
+            .eq('id', profile.id)
         }
       }
     } catch {

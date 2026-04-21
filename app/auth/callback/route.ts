@@ -58,6 +58,7 @@ export async function GET(request: Request) {
         .from('business_profiles')
         .select('id')
         .eq('user_id', data.user.id)
+        .eq('is_primary', true)
         .maybeSingle()
 
       if (!profile) {

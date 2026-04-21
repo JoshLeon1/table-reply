@@ -31,15 +31,22 @@ export default async function SettingsPage() {
     profileQuery = profileQuery.eq('is_primary', true)
   }
 
-  const [{ data: profile }, { data: restaurantProfile }, { data: keywordAlerts }, { data: gbpToken }, { data: allLocations }] = await Promise.all([
+  const [{ data: profile }, { data: restaurantProfile }, { data: keywordAlerts }, { data: allLocations }] = await Promise.all([
     supabase.from('profiles').select('*').eq('id', user.id).maybeSingle(),
     profileQuery.maybeSingle(),
     supabase.from('keyword_alerts').select('id, keyword, alert_type, user_id, created_at').eq('user_id', user.id).order('created_at', { ascending: true }),
-    supabaseAdmin.from('google_business_tokens').select('location_name').eq('user_id', user.id).maybeSingle(),
     supabase.from('business_profiles').select('id, business_name, location_label, is_primary, last_scraped_at, google_maps_url, yelp_url').eq('user_id', user.id).order('is_primary', { ascending: false }),
   ])
 
   if (!restaurantProfile) redirect('/onboarding')
+
+  // Fetch GBP token scoped to the active location (after we know its ID)
+  const { data: gbpToken } = await supabaseAdmin
+    .from('google_business_tokens')
+    .select('location_name')
+    .eq('user_id', user.id)
+    .eq('business_profile_id', restaurantProfile.id)
+    .maybeSingle()
 
   const trialStartedAt = profile?.trial_started_at ? new Date(profile.trial_started_at) : null
   const trialEndDate = trialStartedAt ? new Date(trialStartedAt.getTime() + 7 * 24 * 60 * 60 * 1000) : null

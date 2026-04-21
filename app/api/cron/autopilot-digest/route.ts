@@ -4,6 +4,7 @@ export const maxDuration = 60
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { FROM_DIGEST, REPLY_TO_SUPPORT, buildUnsubscribeHeaders, escapeHtml, getResend } from '@/lib/email/client'
+import { hasActiveAccess } from '@/lib/subscription'
 import type { AutopilotRules } from '@/types'
 
 // ---------------------------------------------------------------------------
@@ -154,9 +155,11 @@ export async function GET(request: NextRequest) {
   )
 
   // ── 1. Find users with autopilot.enabled AND autopilot.dailyDigest ──────────
+  // Only primary profiles to avoid duplicates for multi-location users
   const { data: profiles, error: profilesErr } = await supabase
     .from('business_profiles')
     .select('id, user_id, business_name, reply_preferences')
+    .eq('is_primary', true)
     .filter('reply_preferences->autopilot->>enabled', 'eq', 'true')
     .filter('reply_preferences->autopilot->>dailyDigest', 'eq', 'true')
 
@@ -192,6 +195,10 @@ export async function GET(request: NextRequest) {
     try {
       const userEmail = emailMap.get(profile.user_id)
       if (!userEmail) { skipped++; continue }
+
+      // Skip churned / expired-trial users
+      const hasAccess = await hasActiveAccess(supabase, profile.user_id)
+      if (!hasAccess) { skipped++; continue }
 
       // Fetch reviews processed by autopilot in the last 24h
       const { data: rows, error: rowsErr } = await supabase

@@ -81,6 +81,7 @@ export async function GET(request: NextRequest) {
     .from('business_profiles')
     .select('user_id, business_name, google_maps_url, yelp_url')
     .in('user_id', userIds)
+    .eq('is_primary', true)
 
   const bizByUserId = new Map(
     (bizProfiles ?? []).map(b => [b.user_id, b])

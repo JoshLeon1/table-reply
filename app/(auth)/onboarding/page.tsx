@@ -118,6 +118,7 @@ export default function OnboardingPage() {
         .from('business_profiles')
         .select('id')
         .eq('user_id', user.id)
+        .eq('is_primary', true)
         .maybeSingle()
       if (profile) { router.replace('/dashboard'); return }
 

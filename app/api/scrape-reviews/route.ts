@@ -85,6 +85,7 @@ export async function POST(request: NextRequest) {
       .from('business_profiles')
       .select('id')
       .eq('user_id', userId)
+      .eq('is_primary', true)
       .maybeSingle()
 
     if (!rp) {

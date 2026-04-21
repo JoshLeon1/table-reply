@@ -16,6 +16,7 @@ export async function PATCH(request: NextRequest) {
       .from('business_profiles')
       .update({ reply_preferences: replyPreferences })
       .eq('user_id', user.id)
+      .eq('is_primary', true)
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   }
 

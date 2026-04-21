@@ -197,6 +197,22 @@ export async function POST(request: NextRequest) {
         reviews = []
       }
       console.log('[scrape-yelp] Reviews returned=%d; sample-result-shape=%s', reviews.length, JSON.stringify(result).slice(0, 600))
+
+      // Limit to last 30 days. Yelp uses `datetime_utc`; fall back to
+      // `review_datetime_utc`. Keep rows without a parseable date so we don't
+      // silently drop data if the field shape changes.
+      const THIRTY_D_MS = 30 * 24 * 60 * 60 * 1000
+      const cutoffMs = Date.now() - THIRTY_D_MS
+      const before = reviews.length
+      reviews = reviews.filter((r) => {
+        const iso = r.datetime_utc ?? r.review_datetime_utc
+        if (!iso) return true
+        // Yelp returns MM/DD/YYYY HH:MM:SS, which Date can parse.
+        const t = new Date(iso).getTime()
+        if (!Number.isFinite(t)) return true
+        return t >= cutoffMs
+      })
+      console.log('[scrape-yelp] After 30-day filter: %d of %d reviews kept', reviews.length, before)
     } catch (err) {
       console.error('[scrape-yelp] Outscraper error:', err)
       return NextResponse.json(

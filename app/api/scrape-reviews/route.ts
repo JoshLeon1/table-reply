@@ -227,6 +227,21 @@ export async function POST(request: NextRequest) {
     }
 
     if (process.env.NODE_ENV === 'development') console.log('[scrape-reviews] Reviews returned from Outscraper:', reviews.length)
+
+    // Limit to last 30 days — we don't want to backfill years of history on
+    // every sync. Filter by review timestamp; keep rows without a timestamp
+    // so we don't silently drop data if the field is missing.
+    const THIRTY_D_MS = 30 * 24 * 60 * 60 * 1000
+    const cutoffMs = Date.now() - THIRTY_D_MS
+    const before = reviews.length
+    reviews = reviews.filter((r) => {
+      const iso = r.review_datetime_utc
+      if (!iso) return true
+      const t = new Date(iso).getTime()
+      if (!Number.isFinite(t)) return true
+      return t >= cutoffMs
+    })
+    console.log('[scrape-reviews] After 30-day filter: %d of %d reviews kept', reviews.length, before)
   } catch (err) {
     console.error('[scrape-reviews] Outscraper error:', err)
     return NextResponse.json(

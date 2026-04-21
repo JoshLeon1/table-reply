@@ -194,6 +194,19 @@ export async function POST(request: NextRequest) {
         reviews = []
       }
       console.log('[scrape-tripadvisor] Reviews returned=%d; sample-result-shape=%s', reviews.length, JSON.stringify(result).slice(0, 600))
+
+      // Limit to last 30 days.
+      const THIRTY_D_MS = 30 * 24 * 60 * 60 * 1000
+      const cutoffMs = Date.now() - THIRTY_D_MS
+      const before = reviews.length
+      reviews = reviews.filter((r) => {
+        const iso = r.datetime_utc ?? r.review_datetime_utc
+        if (!iso) return true
+        const t = new Date(iso).getTime()
+        if (!Number.isFinite(t)) return true
+        return t >= cutoffMs
+      })
+      console.log('[scrape-tripadvisor] After 30-day filter: %d of %d reviews kept', reviews.length, before)
     } catch (err) {
       console.error('[scrape-tripadvisor] Outscraper error:', err)
       return NextResponse.json(

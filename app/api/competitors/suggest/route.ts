@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { hasActiveAccess } from '@/lib/subscription'
+import { resolveActiveOrPrimaryLocationId } from '@/lib/locations/active'
 
 // Map business_type → natural search term for nearby search
 function businessTypeToSearchTerm(type: string): string {
@@ -32,13 +33,17 @@ export async function GET() {
   const allowed = await hasActiveAccess(supabaseAdmin, user.id)
   if (!allowed) return NextResponse.json({ error: 'Subscription required' }, { status: 402 })
 
-  // Get the business profile — need location + type to find real nearby competitors
-  const { data: profile } = await supabase
-    .from('business_profiles')
-    .select('id, business_name, business_type, google_place_id, latitude, longitude, google_maps_url')
-    .eq('user_id', user.id)
-    .eq('is_primary', true)
-    .maybeSingle()
+  // Get the currently-viewed business profile — competitors must be nearby
+  // the location the user is actually looking at, not always the primary.
+  const activeId = await resolveActiveOrPrimaryLocationId(supabaseAdmin, user.id)
+  const { data: profile } = activeId
+    ? await supabase
+        .from('business_profiles')
+        .select('id, business_name, business_type, google_place_id, latitude, longitude, google_maps_url')
+        .eq('user_id', user.id)
+        .eq('id', activeId)
+        .maybeSingle()
+    : { data: null }
 
   if (!profile) return NextResponse.json({ results: [] })
 

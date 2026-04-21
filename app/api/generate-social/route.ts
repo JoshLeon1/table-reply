@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { callClaude } from '@/lib/anthropic'
 import { hasActiveAccess } from '@/lib/subscription'
+import { resolveActiveOrPrimaryLocationId } from '@/lib/locations/active'
 
 export async function POST(request: NextRequest) {
   const supabase = createClient()
@@ -42,12 +43,17 @@ export async function POST(request: NextRequest) {
 
   // If caller didn't supply business details, fetch them from the DB
   if (!restaurantName) {
-    const { data: rp } = await supabase
-      .from('business_profiles')
-      .select('business_name, business_type, vibe')
-      .eq('user_id', user.id)
-      .eq('is_primary', true)
-      .maybeSingle()
+    // Match the currently-viewed location so social copy reflects the right
+    // business identity for multi-location users.
+    const activeId = await resolveActiveOrPrimaryLocationId(supabaseAdmin, user.id)
+    const { data: rp } = activeId
+      ? await supabase
+          .from('business_profiles')
+          .select('business_name, business_type, vibe')
+          .eq('user_id', user.id)
+          .eq('id', activeId)
+          .maybeSingle()
+      : { data: null }
     if (rp) {
       restaurantName = restaurantName || rp.business_name
       cuisineType    = cuisineType    || rp.business_type

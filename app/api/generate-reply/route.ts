@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { generateReviewReply } from '@/lib/anthropic'
 import { hasActiveAccess } from '@/lib/subscription'
+import { resolveActiveOrPrimaryLocationId } from '@/lib/locations/active'
 
 export async function POST(request: NextRequest) {
   const supabase = createClient()
@@ -58,12 +59,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid platform' }, { status: 400 })
   }
 
-  const { data: restaurantProfile } = await supabase
-    .from('business_profiles')
-    .select('*')
-    .eq('user_id', user.id)
-    .eq('is_primary', true)
-    .maybeSingle()
+  // Use the currently-viewed location so voice/tone/owner_name match the
+  // review the user is replying to. Falls back to primary if no active
+  // cookie is set.
+  const activeId = await resolveActiveOrPrimaryLocationId(supabaseAdmin, user.id)
+  const { data: restaurantProfile } = activeId
+    ? await supabase
+        .from('business_profiles')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('id', activeId)
+        .maybeSingle()
+    : { data: null }
 
   if (!restaurantProfile) {
     return NextResponse.json({ error: 'Business profile not found' }, { status: 400 })

@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { getActiveLocationId } from '@/lib/locations/active'
 import CopyButton from '@/components/CopyButton'
 
 export default async function TemplatesPage() {
@@ -10,12 +11,28 @@ export default async function TemplatesPage() {
 
   if (!user) redirect('/login')
 
-  const { data: restaurantProfile } = await supabase
-    .from('business_profiles')
-    .select('business_name, google_maps_url')
-    .eq('user_id', user.id)
-    .eq('is_primary', true)
-    .maybeSingle()
+  // Prefer the currently-viewed location so the review link in templates
+  // points at whichever location the user is actually thinking about.
+  const activeLocationId = getActiveLocationId()
+  let restaurantProfile: { business_name: string | null; google_maps_url: string | null } | null = null
+  if (activeLocationId) {
+    const { data } = await supabase
+      .from('business_profiles')
+      .select('business_name, google_maps_url')
+      .eq('user_id', user.id)
+      .eq('id', activeLocationId)
+      .maybeSingle()
+    restaurantProfile = data
+  }
+  if (!restaurantProfile) {
+    const { data } = await supabase
+      .from('business_profiles')
+      .select('business_name, google_maps_url')
+      .eq('user_id', user.id)
+      .eq('is_primary', true)
+      .maybeSingle()
+    restaurantProfile = data
+  }
 
   if (!restaurantProfile) redirect('/onboarding')
 

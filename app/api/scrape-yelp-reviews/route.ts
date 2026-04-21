@@ -9,6 +9,7 @@ import { createClient as createServerClient } from '@/lib/supabase/server'
 import { callClaude } from '@/lib/anthropic'
 import { FROM_ALERTS, REPLY_TO_SUPPORT, buildUnsubscribeHeaders, escapeHtml, getResend, isEmailOptedIn } from '@/lib/email/client'
 import { hasActiveAccess } from '@/lib/subscription'
+import { resolveActiveOrPrimaryLocationId } from '@/lib/locations/active'
 
 function escapeRegExp(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
@@ -74,15 +75,10 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'Subscription required' }, { status: 402 })
       }
 
-      const { data: rp } = await supabaseAdmin
-        .from('business_profiles')
-        .select('id')
-        .eq('user_id', userId)
-        .eq('is_primary', true)
-        .maybeSingle()
-
-      if (!rp) return NextResponse.json({ error: 'Business profile not found' }, { status: 404 })
-      restaurantProfileId = rp.id
+      // Respect the currently-viewed location — see scrape-reviews for why.
+      const resolvedId = await resolveActiveOrPrimaryLocationId(supabaseAdmin, userId)
+      if (!resolvedId) return NextResponse.json({ error: 'Business profile not found' }, { status: 404 })
+      restaurantProfileId = resolvedId
     }
 
     // ── Fetch business profile ──────────────────────────────────────────
@@ -244,6 +240,7 @@ export async function POST(request: NextRequest) {
         .from('scraped_reviews')
         .select('review_id')
         .eq('user_id', userId)
+        .eq('business_profile_id', restaurantProfileId)
         .in('review_id', incomingIds)
       for (const row of existingRows ?? []) existingIds.add(row.review_id)
     }

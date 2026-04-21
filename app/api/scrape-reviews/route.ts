@@ -11,6 +11,7 @@ import { callClaude } from '@/lib/anthropic'
 import { FROM_ALERTS, REPLY_TO_SUPPORT, buildUnsubscribeHeaders, escapeHtml, getResend, isEmailOptedIn } from '@/lib/email/client'
 import { hasActiveAccess } from '@/lib/subscription'
 import { matchAndStoreGbpReviewNames } from '@/lib/gbp/match-reviews'
+import { resolveActiveOrPrimaryLocationId } from '@/lib/locations/active'
 
 function escapeRegExp(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
@@ -81,18 +82,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Subscription required' }, { status: 402 })
     }
 
-    const { data: rp } = await supabaseAdmin
-      .from('business_profiles')
-      .select('id')
-      .eq('user_id', userId)
-      .eq('is_primary', true)
-      .maybeSingle()
-
-    if (!rp) {
+    // Respect the location the user is currently viewing (active_location_id
+    // cookie). Fall back to primary if the cookie is missing/stale. Without
+    // this, clicking "Sync now" from a non-primary location silently syncs
+    // the primary — which is confusing and writes reviews to the wrong row.
+    const resolvedId = await resolveActiveOrPrimaryLocationId(supabaseAdmin, userId)
+    if (!resolvedId) {
       return NextResponse.json({ error: 'Business profile not found' }, { status: 404 })
     }
-
-    restaurantProfileId = rp.id
+    restaurantProfileId = resolvedId
   }
 
   // ── Fetch business profile ───────────────────────────────────────────
@@ -292,10 +290,16 @@ export async function POST(request: NextRequest) {
   const incomingIds = reviews.map(r => r.review_id).filter(Boolean)
   const existingIds = new Set<string>()
   if (incomingIds.length > 0) {
+    // Scope dedupe to this location — without the business_profile_id filter,
+    // a multi-location user re-scraping a second location would skip reviews
+    // that share a review_id with another of their locations (rare but real
+    // for chain businesses), and re-adding a deleted location would dedupe
+    // against ghost rows that were already deleted by cascade.
     const { data: existingRows } = await supabaseAdmin
       .from('scraped_reviews')
       .select('review_id')
       .eq('user_id', userId)
+      .eq('business_profile_id', restaurantProfileId)
       .in('review_id', incomingIds)
     for (const row of existingRows ?? []) existingIds.add(row.review_id)
   }

@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { createClient as createServerClient } from '@/lib/supabase/server'
 import { hasActiveAccess } from '@/lib/subscription'
+import { resolveActiveOrPrimaryLocationId } from '@/lib/locations/active'
 
 /**
  * POST /api/sync-all
@@ -29,12 +30,16 @@ export async function POST(request: NextRequest) {
     const allowed = await hasActiveAccess(supabaseAdmin, user.id)
     if (!allowed) return NextResponse.json({ error: 'Subscription required' }, { status: 402 })
 
-    // ── Fetch profile ──────────────────────────────────────────────────────
+    // ── Fetch profile (prefer active location, fallback to primary) ────────
+    const resolvedId = await resolveActiveOrPrimaryLocationId(supabaseAdmin, user.id)
+    if (!resolvedId) {
+      return NextResponse.json({ error: 'Business profile not found' }, { status: 404 })
+    }
     const { data: profile } = await supabaseAdmin
       .from('business_profiles')
       .select('id, google_maps_url, yelp_url')
       .eq('user_id', user.id)
-      .eq('is_primary', true)
+      .eq('id', resolvedId)
       .maybeSingle()
 
     if (!profile) {

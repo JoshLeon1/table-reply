@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import GrowClient from './GrowClient'
+import { getActiveLocationId } from '@/lib/locations/active'
 import type { BusinessProfile, CompetitorProfile } from '@/types'
 
 export default async function GrowPage() {
@@ -18,12 +19,30 @@ export default async function GrowPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: profile } = await supabaseAdmin
-    .from('business_profiles')
-    .select('*')
-    .eq('user_id', user.id)
-    .eq('is_primary', true)
-    .maybeSingle()
+  // Prefer the currently-viewed location; fall back to primary if the
+  // active cookie is unset or stale. Matches the pattern used by
+  // reviews/analytics/settings so every per-location page agrees on
+  // which row is "in focus".
+  const activeLocationId = getActiveLocationId()
+  let profile: { id: string; business_name: string; [k: string]: unknown } | null = null
+  if (activeLocationId) {
+    const { data } = await supabaseAdmin
+      .from('business_profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('id', activeLocationId)
+      .maybeSingle()
+    profile = data
+  }
+  if (!profile) {
+    const { data } = await supabaseAdmin
+      .from('business_profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('is_primary', true)
+      .maybeSingle()
+    profile = data
+  }
 
   if (!profile) redirect('/settings')
 
@@ -63,7 +82,7 @@ export default async function GrowPage() {
   return (
     <Suspense fallback={<div className="p-8 text-center text-sm text-[#A09A94]">Loading…</div>}>
       <GrowClient
-        restaurantProfile={profile as BusinessProfile}
+        restaurantProfile={profile as unknown as BusinessProfile}
         reviews={reviews ?? []}
         competitors={(competitors ?? []) as CompetitorProfile[]}
         userAvgRating={userAvgRating}

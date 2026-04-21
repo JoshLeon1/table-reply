@@ -118,11 +118,14 @@ export async function POST(request: NextRequest) {
 
     try {
       if (process.env.NODE_ENV === 'development') console.log('[scrape-yelp] Submitting Outscraper request…')
+      // NOTE: enable prod logging temporarily — users reporting zero Yelp
+      // reviews. Log the URL + Outscraper response shape to diagnose.
+      console.log('[scrape-yelp] Starting sync for user=%s yelp_url=%s', userId, profile.yelp_url)
       const outscrapeRes = await fetch(
         `https://api.app.outscraper.com/yelp/reviews` +
           `?query=${encodeURIComponent(profile.yelp_url)}` +
-          `&reviewsLimit=20` +
-          `&sort=newest`,
+          `&reviewsLimit=200` +
+          `&sort=yelp_sort_recent`,
         {
           headers: {
             'X-API-KEY': process.env.OUTSCRAPER_API_KEY!,
@@ -145,7 +148,7 @@ export async function POST(request: NextRequest) {
       }
 
       let result = await outscrapeRes.json()
-      if (process.env.NODE_ENV === 'development') console.log('[scrape-yelp] Initial status:', result.status)
+      console.log('[scrape-yelp] Initial status=%s, keys=%s', result.status, Object.keys(result ?? {}).join(','))
 
       // ── Poll if async ─────────────────────────────────────────────────
       if (result.status === 'Pending') {
@@ -179,7 +182,7 @@ export async function POST(request: NextRequest) {
         console.warn('[scrape-yelp] reviews_data not an array — defaulting to []')
         reviews = []
       }
-      if (process.env.NODE_ENV === 'development') console.log('[scrape-yelp] Reviews returned:', reviews.length)
+      console.log('[scrape-yelp] Reviews returned=%d; sample-result-shape=%s', reviews.length, JSON.stringify(result).slice(0, 600))
     } catch (err) {
       console.error('[scrape-yelp] Outscraper error:', err)
       return NextResponse.json(

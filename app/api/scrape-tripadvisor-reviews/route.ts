@@ -118,11 +118,13 @@ export async function POST(request: NextRequest) {
 
     try {
       if (process.env.NODE_ENV === 'development') console.log('[scrape-tripadvisor] Submitting Outscraper request…')
+      // NOTE: enable prod logging temporarily — users reporting zero TA
+      // reviews. Log URL + Outscraper response shape to diagnose.
+      console.log('[scrape-tripadvisor] Starting sync for user=%s ta_url=%s', userId, profile.tripadvisor_url)
       const outscrapeRes = await fetch(
         `https://api.app.outscraper.com/tripadvisor/reviews` +
           `?query=${encodeURIComponent(profile.tripadvisor_url)}` +
-          `&reviewsLimit=20` +
-          `&sort=newest`,
+          `&reviewsLimit=200`,
         {
           headers: {
             'X-API-KEY': process.env.OUTSCRAPER_API_KEY!,
@@ -145,7 +147,7 @@ export async function POST(request: NextRequest) {
       }
 
       let result = await outscrapeRes.json()
-      if (process.env.NODE_ENV === 'development') console.log('[scrape-tripadvisor] Initial status:', result.status)
+      console.log('[scrape-tripadvisor] Initial status=%s, keys=%s', result.status, Object.keys(result ?? {}).join(','))
 
       // ── Poll if async ─────────────────────────────────────────────────
       if (result.status === 'Pending') {
@@ -178,7 +180,7 @@ export async function POST(request: NextRequest) {
         console.warn('[scrape-tripadvisor] reviews_data not an array — defaulting to []')
         reviews = []
       }
-      if (process.env.NODE_ENV === 'development') console.log('[scrape-tripadvisor] Reviews returned:', reviews.length)
+      console.log('[scrape-tripadvisor] Reviews returned=%d; sample-result-shape=%s', reviews.length, JSON.stringify(result).slice(0, 600))
     } catch (err) {
       console.error('[scrape-tripadvisor] Outscraper error:', err)
       return NextResponse.json(

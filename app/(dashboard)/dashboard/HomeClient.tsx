@@ -525,22 +525,21 @@ function GeneratorBody({ review, setReview, platform, setPlatform, starRating, s
 }
 
 // ── HeroRow — 30-day rating KPI + volume KPI ─────────────────────────────────
-function HeroRow({ reviews }: { reviews: ScrapedReview[] }) {
-  const now = Date.now()
-  const THIRTY_D = 30 * 24 * 60 * 60 * 1000
-  const recent = reviews.filter(r => now - new Date(r.review_datetime_utc).getTime() < THIRTY_D)
-  const previous = reviews.filter(r => {
-    const age = now - new Date(r.review_datetime_utc).getTime()
-    return age >= THIRTY_D && age < THIRTY_D * 2
-  })
-
-  const avg = (arr: ScrapedReview[]) =>
-    arr.length ? arr.reduce((s, r) => s + (r.star_rating ?? 0), 0) / arr.length : 0
-
-  const recentAvg = avg(recent)
-  const prevAvg = avg(previous)
-  const ratingDelta = Number((recentAvg - prevAvg).toFixed(1))
-  const volumeDelta = recent.length - previous.length
+function HeroRow({
+  recentCount,
+  recentAvg,
+  previousCount,
+  previousAvg,
+}: {
+  recentCount: number
+  recentAvg: number
+  previousCount: number
+  previousAvg: number
+}) {
+  const ratingDelta = Number((recentAvg - previousAvg).toFixed(1))
+  const volumeDelta = recentCount - previousCount
+  const recent = { length: recentCount }
+  const previous = { length: previousCount }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -660,6 +659,8 @@ interface Props {
   hasGeneratedReply: boolean
   reviewsThisMonth: number
   reviewsLastMonth: number
+  ratingThisMonthAvg: number
+  ratingLastMonthAvg: number
   avgRating: number
   totalReviews: number
   approvedThisMonth: number
@@ -814,6 +815,8 @@ export default function HomeClient({
   hasGeneratedReply,
   reviewsThisMonth,
   reviewsLastMonth,
+  ratingThisMonthAvg,
+  ratingLastMonthAvg,
   avgRating,
   totalReviews,
   approvedThisMonth,
@@ -834,6 +837,12 @@ export default function HomeClient({
   const [manualMode, setManualMode] = useState(false)
   const [modeHydrated, setModeHydrated] = useState(false)
   const [pendingList, setPendingList] = useState<ScrapedReview[]>(initialPendingReviews)
+  // pendingCount from server is the TRUE total of rows with reply_status='pending'.
+  // pendingList is just the top-3 preview. We track actionedInSession so the
+  // displayed badge decrements immediately when the user approves/dismisses
+  // without waiting for a router.refresh to reconcile.
+  const [actionedInSession, setActionedInSession] = useState(0)
+  const liveTotalPending = Math.max(0, pendingCount - actionedInSession)
   const [displayLastSynced, setDisplayLastSynced] = useState<string | null>(lastScrapedAt)
 
   const router = useRouter()
@@ -857,7 +866,10 @@ export default function HomeClient({
     try { localStorage.removeItem(LS_MANUAL) } catch { /* ignore */ }
   }
 
-  const handlePendingAction = (id: string) => setPendingList(prev => prev.filter(r => r.id !== id))
+  const handlePendingAction = (id: string) => {
+    setPendingList(prev => prev.filter(r => r.id !== id))
+    setActionedInSession(n => n + 1)
+  }
 
   const handleSync = async () => {
     setSyncing(true); setSyncMsg(null)
@@ -956,10 +968,15 @@ export default function HomeClient({
           <p className="text-[13px] text-[#57534E] mt-1.5" style={{ letterSpacing: '-0.006em' }}>Here&apos;s how your reputation is trending.</p>
         </div>
 
-        <HeroRow reviews={allReviews} />
+        <HeroRow
+          recentCount={reviewsThisMonth}
+          recentAvg={ratingThisMonthAvg}
+          previousCount={reviewsLastMonth}
+          previousAvg={ratingLastMonthAvg}
+        />
         <ActionStrip
-          pendingCount={pendingList.length}
-          repliesSentCount={recentApproved.length}
+          pendingCount={liveTotalPending}
+          repliesSentCount={approvedThisMonth}
           lastSyncAt={displayLastSynced}
         />
         <RecentReviewsList reviews={allReviews} />

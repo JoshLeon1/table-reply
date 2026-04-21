@@ -1307,9 +1307,9 @@ function PostReminderToast() {
       key={state.id}
       role="status"
       aria-live="polite"
-      className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[calc(100vw-32px)] sm:w-[360px] sm:max-w-md animate-slide-up"
+      className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[calc(100vw-32px)] sm:w-[360px] sm:max-w-md"
     >
-      <div className="bg-[#111111] text-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.35)] border border-white/[0.08] p-4 flex items-start gap-3">
+      <div className="bg-[#111111] text-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.35)] border border-white/[0.08] p-4 flex items-start gap-3 animate-slide-up">
         <div className="w-8 h-8 rounded-full bg-[#E05A28]/15 border border-[#E05A28]/30 flex items-center justify-center flex-shrink-0">
           <svg className="w-4 h-4 text-[#E05A28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>

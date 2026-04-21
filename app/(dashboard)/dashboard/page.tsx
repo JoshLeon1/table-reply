@@ -4,6 +4,7 @@ export const metadata = { title: 'Home — ReplyFi' }
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import HomeClient from './HomeClient'
+import LocationsOverview from './LocationsOverview'
 
 export default async function DashboardPage() {
   const supabase = createClient()
@@ -13,16 +14,34 @@ export default async function DashboardPage() {
 
   if (!user) redirect('/login')
 
-  // Quick check for restaurant profile first. Use maybeSingle so a
-  // brand-new user with no business_profiles row hits the explicit null
-  // branch below instead of an unhandled "0 rows" throw from .single().
-  const { data: restaurantProfileCheck } = await supabase
+  // Fetch all locations for this user
+  const { data: allLocations } = await supabase
     .from('business_profiles')
-    .select('id')
+    .select('id, business_name, location_label, last_scraped_at, is_primary')
     .eq('user_id', user.id)
-    .maybeSingle()
+    .order('is_primary', { ascending: false })
 
-  if (!restaurantProfileCheck) redirect('/onboarding')
+  if (!allLocations || allLocations.length === 0) redirect('/onboarding')
+
+  // Multi-location: show aggregate overview
+  if (allLocations.length > 1) {
+    const { data: ownerProfile } = await supabase
+      .from('profiles')
+      .select('full_name')
+      .eq('id', user.id)
+      .maybeSingle()
+
+    return (
+      <LocationsOverview
+        locations={allLocations as { id: string; business_name: string; location_label: string | null; last_scraped_at: string | null; is_primary: boolean | null }[]}
+        userId={user.id}
+        ownerName={(ownerProfile as { full_name?: string | null } | null)?.full_name ?? ''}
+      />
+    )
+  }
+
+  // Single location — continue with existing flow
+  const restaurantProfileCheck = allLocations[0]
 
   const now = new Date()
   // Rolling 30-day windows based on when the review was POSTED
@@ -46,18 +65,18 @@ export default async function DashboardPage() {
     { count: voiceApprovedCount },
   ] = await Promise.all([
     supabase.from('profiles').select('*').eq('id', user.id).maybeSingle(),
-    supabase.from('business_profiles').select('*').eq('user_id', user.id).maybeSingle(),
+    supabase.from('business_profiles').select('*').eq('id', restaurantProfileCheck.id).maybeSingle(),
     // Full review set for accurate 30-day stats. Small payload (2 cols) so OK
     // to pull everything; we need it to match what Reviews/Analytics show.
-    supabase.from('scraped_reviews').select('star_rating, review_datetime_utc, reply_status').eq('user_id', user.id),
-    supabase.from('scraped_reviews').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('reply_status', 'pending'),
-    supabase.from('scraped_reviews').select('*').eq('user_id', user.id).in('reply_status', ['pending', 'approved']).order('review_datetime_utc', { ascending: false }).limit(6),
+    supabase.from('scraped_reviews').select('star_rating, review_datetime_utc, reply_status').eq('user_id', user.id).eq('business_profile_id', restaurantProfileCheck.id),
+    supabase.from('scraped_reviews').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('business_profile_id', restaurantProfileCheck.id).eq('reply_status', 'pending'),
+    supabase.from('scraped_reviews').select('*').eq('user_id', user.id).eq('business_profile_id', restaurantProfileCheck.id).in('reply_status', ['pending', 'approved']).order('review_datetime_utc', { ascending: false }).limit(6),
     supabase.from('business_analytics').select('themes, last_analyzed_at').eq('user_id', user.id).maybeSingle(),
-    supabase.from('scraped_reviews').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('reply_status', 'approved'),
+    supabase.from('scraped_reviews').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('business_profile_id', restaurantProfileCheck.id).eq('reply_status', 'approved'),
     // Voice DNA: total replies generated for this user (training corpus size)
-    supabase.from('scraped_reviews').select('id', { count: 'exact', head: true }).eq('user_id', user.id).not('generated_reply', 'is', null),
+    supabase.from('scraped_reviews').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('business_profile_id', restaurantProfileCheck.id).not('generated_reply', 'is', null),
     // Voice DNA: approvals against generated replies (match rate numerator)
-    supabase.from('scraped_reviews').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('reply_status', 'approved').not('generated_reply', 'is', null),
+    supabase.from('scraped_reviews').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('business_profile_id', restaurantProfileCheck.id).eq('reply_status', 'approved').not('generated_reply', 'is', null),
   ])
 
   // ── Derive 30-day windows from the full review set ────────────────────────
@@ -90,6 +109,7 @@ export default async function DashboardPage() {
     .from('scraped_reviews')
     .select('id', { count: 'exact', head: true })
     .eq('user_id', user.id)
+    .eq('business_profile_id', restaurantProfileCheck.id)
     .not('generated_reply', 'is', null)
     .gte('review_datetime_utc', thirtyDaysAgo)
   const voiceTrainedThisMonth = voiceTrainedThisMonthCount ?? 0

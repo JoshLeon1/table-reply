@@ -57,11 +57,15 @@ export async function middleware(request: NextRequest) {
     }
 
     // Logged-in user on a protected dashboard route → check if they completed onboarding
+    // IMPORTANT: filter by is_primary. Multi-location users have multiple business_profiles
+    // rows; .maybeSingle() without this filter returns PGRST116 (multiple rows) and
+    // profile=null, which bounces the user back to /onboarding in an infinite loop.
     if (isProtected && user) {
       const { data: profile } = await supabase
         .from('business_profiles')
         .select('id')
         .eq('user_id', user.id)
+        .eq('is_primary', true)
         .maybeSingle()
 
       if (!profile) {
@@ -78,6 +82,7 @@ export async function middleware(request: NextRequest) {
         .from('business_profiles')
         .select('id')
         .eq('user_id', user.id)
+        .eq('is_primary', true)
         .maybeSingle()
 
       if (profile) {

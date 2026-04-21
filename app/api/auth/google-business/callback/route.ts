@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl
 
   const code = searchParams.get('code')
-  const userId = searchParams.get('state')
+  const rawState = searchParams.get('state')
   const error = searchParams.get('error')
 
   if (error) {
@@ -23,9 +23,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${appUrl}/settings?tab=integrations&gbp=error`)
   }
 
-  if (!code || !userId) {
+  if (!code || !rawState) {
     return NextResponse.redirect(`${appUrl}/settings?tab=integrations&gbp=error`)
   }
+
+  // state is either "userId" or "userId:locationId"
+  const [userId, locationId] = rawState.split(':')
 
   const clientId = process.env.GOOGLE_BUSINESS_CLIENT_ID
   const clientSecret = process.env.GOOGLE_BUSINESS_CLIENT_SECRET
@@ -62,26 +65,28 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${appUrl}/settings?tab=integrations&gbp=error`)
   }
 
-  // Look up the user's primary business profile ID
-  const supabaseAdmin = createServiceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  )
-  const { data: bp } = await supabaseAdmin
-    .from('business_profiles')
-    .select('id')
-    .eq('user_id', userId)
-    .eq('is_primary', true)
-    .maybeSingle()
-
-  const businessProfileId: string | null = bp?.id ?? null
+  // Resolve businessProfileId: use locationId from state, or fall back to user's primary profile
+  let businessProfileId = locationId
+  if (!businessProfileId) {
+    const supabase = createServiceClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    )
+    const { data: primary } = await supabase
+      .from('business_profiles')
+      .select('id')
+      .eq('user_id', userId)
+      .eq('is_primary', true)
+      .maybeSingle()
+    businessProfileId = primary?.id
+  }
 
   if (!businessProfileId) {
-    console.error('[gbp-callback] No primary business profile found for user', userId)
+    console.error('[gbp-callback] Could not resolve businessProfileId')
     return NextResponse.redirect(`${appUrl}/settings?tab=integrations&gbp=error`)
   }
 
-  // Store tokens (without account/location first so we can call the API)
+  // Store tokens
   await saveGbpToken({
     userId,
     businessProfileId,

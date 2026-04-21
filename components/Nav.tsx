@@ -131,7 +131,11 @@ export default function Nav() {
       window.removeEventListener('focus', onFocus)
       window.removeEventListener('reviewsUpdated', onReviewsUpdated)
     }
-  }, [supabase])
+    // supabase intentionally omitted: createClient() returns a new object
+    // every render, which turned this into an infinite re-render loop.
+    // The client is stateless (just env vars), so capturing it once is safe.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => { setMobileOpen(false) }, [pathname])
 

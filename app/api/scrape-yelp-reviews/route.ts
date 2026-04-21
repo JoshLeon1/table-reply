@@ -163,8 +163,11 @@ export async function POST(request: NextRequest) {
         const pollUrl = `https://api.app.outscraper.com/requests/${requestId}`
         if (process.env.NODE_ENV === 'development') console.log('[scrape-yelp] Async job — polling:', pollUrl)
 
+        // Cap at 10 polls × 5s = 50s to stay inside the 60s Vercel function
+        // limit. Previously 20 polls could exceed that and silently time out
+        // mid-sync, leaving yelp_last_scraped_at stale.
         let attempts = 0
-        while (result.status === 'Pending' && attempts < 20) {
+        while (result.status === 'Pending' && attempts < 10) {
           await new Promise((r) => setTimeout(r, 5000))
           const pollRes = await fetch(pollUrl, {
             headers: { 'X-API-KEY': process.env.OUTSCRAPER_API_KEY! },

@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { generateReviewReply } from '@/lib/anthropic'
 import { decide } from '@/lib/autopilot/rules'
+import { hasAccess } from '@/lib/subscription/access'
 import type { AutopilotRules, ReplyPreferences } from '@/types'
 
 // ---------------------------------------------------------------------------
@@ -40,9 +41,17 @@ export async function GET(request: NextRequest) {
   )
 
   // ── 1. Find all business profiles whose user has autopilot enabled ──────────
-  const { data: profiles, error: profilesErr } = await supabase
+  // Join to profiles so we can filter out expired-trial / canceled / past-due
+  // users. Without this, we'd burn Anthropic + Outscraper quota auto-drafting
+  // replies for accounts that already churned.
+  const { data: rawProfiles, error: profilesErr } = await supabase
     .from('business_profiles')
-    .select('id, user_id, business_name, business_type, vibe, voice_style, description, owner_name, reply_preferences')
+    .select(`
+      id, user_id, business_name, business_type, vibe, voice_style, description, owner_name, reply_preferences,
+      profile:profiles!restaurant_profiles_user_id_fkey (
+        is_paid, trial_started_at, subscription_period_end, subscription_canceled_at, subscription_past_due
+      )
+    `)
     .filter('reply_preferences->autopilot->>enabled', 'eq', 'true')
 
   if (profilesErr) {
@@ -50,8 +59,45 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to fetch profiles' }, { status: 500 })
   }
 
-  if (!profiles || profiles.length === 0) {
+  if (!rawProfiles || rawProfiles.length === 0) {
     return NextResponse.json({ processed: 0, autoApproved: 0, drafted: 0, escalated: 0, skipped: 0, errors: 0 })
+  }
+
+  // Same normalize-and-filter pattern as /api/cron/daily-scrape: Supabase's
+  // embed returns the joined row as either an object or a single-element array
+  // depending on FK inference.
+  const profiles = rawProfiles
+    .map((row) => {
+      const r = row as unknown as {
+        profile:
+          | {
+              is_paid: boolean | null
+              trial_started_at: string | null
+              subscription_period_end: string | null
+              subscription_canceled_at: string | null
+              subscription_past_due: boolean | null
+            }
+          | Array<{
+              is_paid: boolean | null
+              trial_started_at: string | null
+              subscription_period_end: string | null
+              subscription_canceled_at: string | null
+              subscription_past_due: boolean | null
+            }>
+          | null
+      } & Record<string, unknown>
+      const profile = Array.isArray(r.profile) ? r.profile[0] ?? null : r.profile
+      return { ...row, profile }
+    })
+    .filter((row) => hasAccess(row.profile).ok)
+
+  const skippedInactive = rawProfiles.length - profiles.length
+  if (skippedInactive > 0) {
+    console.log('[autopilot-cron] Skipped %d inactive-access profiles', skippedInactive)
+  }
+
+  if (profiles.length === 0) {
+    return NextResponse.json({ processed: 0, autoApproved: 0, drafted: 0, escalated: 0, skipped: 0, errors: 0, skippedInactive })
   }
 
   const counters = { processed: 0, autoApproved: 0, drafted: 0, escalated: 0, skipped: 0, errors: 0 }

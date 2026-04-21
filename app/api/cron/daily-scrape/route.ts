@@ -154,47 +154,29 @@ export async function GET(request: NextRequest) {
     })
   )
 
-  // After all scrapes complete, run Autopilot processor + daily digest
-  // (chained here instead of as their own cron entries to stay under
-  // Vercel Hobby's 2-cron limit).
-  let autopilot: unknown = null
-  let autopilotDigest: unknown = null
-  try {
-    const apRes = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/cron/autopilot`, {
-      method: 'GET',
-      headers: { 'x-cron-secret': process.env.CRON_SECRET! },
-    })
-    autopilot = await apRes.json().catch(() => ({ error: 'invalid json' }))
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err)
-    console.error('[daily-scrape] autopilot chain failed:', msg)
-    errors.push(`autopilot: ${msg}`)
+  // After all scrapes complete, fan out to Autopilot processor, digest email,
+  // and trial reminders. These are independent — run them in parallel so the
+  // cron doesn't blow past Vercel's 60s limit when any one of them is slow.
+  // (Chained here rather than as separate cron entries to stay under Vercel
+  // Hobby's 2-cron limit.)
+  const subCronHeaders = { 'x-cron-secret': process.env.CRON_SECRET! }
+  const runSubCron = async (label: string, path: string) => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}${path}`, { method: 'GET', headers: subCronHeaders })
+      return await res.json().catch(() => ({ error: 'invalid json' }))
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err)
+      console.error(`[daily-scrape] ${label} chain failed:`, msg)
+      errors.push(`${label}: ${msg}`)
+      return null
+    }
   }
 
-  try {
-    const digestRes = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/cron/autopilot-digest`, {
-      method: 'GET',
-      headers: { 'x-cron-secret': process.env.CRON_SECRET! },
-    })
-    autopilotDigest = await digestRes.json().catch(() => ({ error: 'invalid json' }))
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err)
-    console.error('[daily-scrape] autopilot-digest chain failed:', msg)
-    errors.push(`autopilot-digest: ${msg}`)
-  }
-
-  let trialReminders: unknown = null
-  try {
-    const trRes = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/cron/trial-reminders`, {
-      method: 'GET',
-      headers: { 'x-cron-secret': process.env.CRON_SECRET! },
-    })
-    trialReminders = await trRes.json().catch(() => ({ error: 'invalid json' }))
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err)
-    console.error('[daily-scrape] trial-reminders chain failed:', msg)
-    errors.push(`trial-reminders: ${msg}`)
-  }
+  const [autopilot, autopilotDigest, trialReminders] = await Promise.all([
+    runSubCron('autopilot', '/api/cron/autopilot'),
+    runSubCron('autopilot-digest', '/api/cron/autopilot-digest'),
+    runSubCron('trial-reminders', '/api/cron/trial-reminders'),
+  ])
 
   return NextResponse.json({
     processed,

@@ -315,7 +315,7 @@ export default function LandingPage() {
           >
             <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A8A29E] mb-3">How It Works</p>
             <h2 className="text-[#111111]" style={{ fontSize: 'clamp(28px, 4vw, 44px)', lineHeight: 1.05, letterSpacing: '-0.025em', fontWeight: 500 }}>
-              Set up once. <span className="text-[#A8A29E]">Replies ready every morning.</span>
+              Set up once. Replies ready every morning.
             </h2>
           </div>
 
@@ -351,7 +351,7 @@ export default function LandingPage() {
             className={`text-[#111111] mb-3 text-center transition-all duration-700 ${pricingAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
             style={{ fontSize: 'clamp(28px, 4vw, 46px)', lineHeight: 1.05, letterSpacing: '-0.025em', fontWeight: 500 }}
           >
-            Simple pricing. <span className="text-[#A8A29E]">No surprises.</span>
+            Simple pricing. No surprises.
           </h2>
 
           {/* Toggle */}
@@ -411,7 +411,7 @@ export default function LandingPage() {
           <div className={`mb-10 text-center transition-all duration-700 ${faqAnim.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
             <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A8A29E] mb-3">FAQ</p>
             <h2 className="text-[#111111]" style={{ fontSize: 'clamp(28px, 4vw, 44px)', lineHeight: 1.05, letterSpacing: '-0.025em', fontWeight: 500 }}>
-              Questions, <span className="text-[#A8A29E]">answered.</span>
+              Questions, answered.
             </h2>
           </div>
 
@@ -459,7 +459,7 @@ export default function LandingPage() {
             {/* Left — text */}
             <div className="text-center sm:text-left">
               <h2 className="text-white mb-2" style={{ fontSize: 'clamp(24px, 3vw, 32px)', lineHeight: 1.12, letterSpacing: '-0.025em', fontWeight: 500 }}>
-                Start replying to every review <span className="text-white/55">today.</span>
+                Start replying to every review today.
               </h2>
               <p className="text-white/65 text-[13px]">7-day free trial, no card required.</p>
             </div>

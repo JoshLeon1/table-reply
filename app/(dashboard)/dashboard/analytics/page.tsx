@@ -19,19 +19,26 @@ export default async function AnalyticsPage() {
 
   const activeLocationId = getActiveLocationId()
 
-  let profileQuery = supabaseAdmin
-    .from('business_profiles')
-    .select('*')
-    .eq('user_id', user.id)
-
+  let profile: { id: string; business_name: string; [k: string]: unknown } | null = null
   if (activeLocationId) {
-    profileQuery = profileQuery.eq('id', activeLocationId)
-  } else {
-    profileQuery = profileQuery.eq('is_primary', true)
+    const { data } = await supabaseAdmin
+      .from('business_profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('id', activeLocationId)
+      .maybeSingle()
+    profile = data
   }
-
-  const { data: profile } = await profileQuery.maybeSingle()
-  if (!profile) redirect('/settings')
+  if (!profile) {
+    const { data } = await supabaseAdmin
+      .from('business_profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('is_primary', true)
+      .maybeSingle()
+    profile = data
+  }
+  if (!profile) redirect('/onboarding')
 
   const { data: reviews } = await supabaseAdmin
     .from('scraped_reviews')

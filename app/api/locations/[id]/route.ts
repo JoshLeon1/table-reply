@@ -63,8 +63,10 @@ export async function DELETE(
     try {
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
       const sub = await stripe.subscriptions.retrieve(profile.stripe_subscription_id)
+      // Skip quantity updates on canceled/ended subs — Stripe will 400.
+      const updatable = sub.status === 'active' || sub.status === 'trialing' || sub.status === 'past_due'
       const item = sub.items.data[0]
-      if (item) {
+      if (updatable && item) {
         const newQty = Math.max(1, (item.quantity ?? 1) - 1)
         await stripe.subscriptions.update(profile.stripe_subscription_id, {
           items: [{ id: item.id, quantity: newQty }],
@@ -76,5 +78,13 @@ export async function DELETE(
     }
   }
 
-  return NextResponse.json({ ok: true })
+  const response = NextResponse.json({ ok: true })
+  // Clear the active-location cookie if it pointed at the just-deleted row.
+  // Without this, every page that reads getActiveLocationId() would filter
+  // to a non-existent profile and bounce the user to /onboarding.
+  const activeCookie = request.cookies.get('active_location_id')?.value
+  if (activeCookie === params.id) {
+    response.cookies.set('active_location_id', '', { path: '/', maxAge: 0 })
+  }
+  return response
 }

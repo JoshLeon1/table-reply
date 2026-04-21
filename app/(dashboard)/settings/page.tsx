@@ -20,23 +20,33 @@ export default async function SettingsPage() {
 
   const activeLocationId = getActiveLocationId()
 
-  let profileQuery = supabase
-    .from('business_profiles')
-    .select('*')
-    .eq('user_id', user.id)
-
-  if (activeLocationId) {
-    profileQuery = profileQuery.eq('id', activeLocationId)
-  } else {
-    profileQuery = profileQuery.eq('is_primary', true)
-  }
-
-  const [{ data: profile }, { data: restaurantProfile }, { data: keywordAlerts }, { data: allLocations }] = await Promise.all([
+  const [{ data: profile }, { data: keywordAlerts }, { data: allLocations }] = await Promise.all([
     supabase.from('profiles').select('*').eq('id', user.id).maybeSingle(),
-    profileQuery.maybeSingle(),
     supabase.from('keyword_alerts').select('id, keyword, alert_type, user_id, created_at').eq('user_id', user.id).order('created_at', { ascending: true }),
     supabase.from('business_profiles').select('id, business_name, location_label, is_primary, last_scraped_at, google_maps_url, yelp_url').eq('user_id', user.id).order('is_primary', { ascending: false }),
   ])
+
+  // Resolve the active location, falling back to primary if the cookie is
+  // stale (e.g. the previously-selected location was deleted).
+  let restaurantProfile: { id: string; business_name: string; reply_preferences?: unknown; [k: string]: unknown } | null = null
+  if (activeLocationId) {
+    const { data } = await supabase
+      .from('business_profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('id', activeLocationId)
+      .maybeSingle()
+    restaurantProfile = data
+  }
+  if (!restaurantProfile) {
+    const { data } = await supabase
+      .from('business_profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('is_primary', true)
+      .maybeSingle()
+    restaurantProfile = data
+  }
 
   if (!restaurantProfile) redirect('/onboarding')
 
@@ -74,7 +84,7 @@ export default async function SettingsPage() {
       <SettingsPageClient
         userId={user.id}
         userEmail={user.email ?? ''}
-        restaurantProfile={restaurantProfile}
+        restaurantProfile={restaurantProfile as unknown as import('@/types').BusinessProfile}
         keywordAlerts={keywordAlerts ?? []}
         replyPreferences={replyPreferences}
         emailNotifications={emailNotifications}

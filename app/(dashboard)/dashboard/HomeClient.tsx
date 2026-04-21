@@ -100,6 +100,7 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
         .from('business_profiles')
         .update(updates)
         .eq('user_id', user.id)
+        .eq('is_primary', true)
 
       if (dbErr) throw new Error(dbErr.message)
 

@@ -69,8 +69,12 @@ export async function POST(request: NextRequest) {
     try {
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
       const sub = await stripe.subscriptions.retrieve(profile.stripe_subscription_id)
+      // Only update live subscriptions. Canceled/incomplete_expired subs
+      // reject `items.update` with 400, and we don't want to re-activate
+      // a canceled sub just because the user added a location.
+      const updatable = sub.status === 'active' || sub.status === 'trialing' || sub.status === 'past_due'
       const item = sub.items.data[0]
-      if (item) {
+      if (updatable && item) {
         await stripe.subscriptions.update(profile.stripe_subscription_id, {
           items: [{ id: item.id, quantity: (item.quantity ?? 1) + 1 }],
           proration_behavior: 'create_prorations',

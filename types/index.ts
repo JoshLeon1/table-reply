@@ -80,6 +80,9 @@ export interface ScrapedReview {
   autopilot_action?: string | null
   autopilot_processed_at?: string | null
   autopilot_posted_at?: string | null
+  // GBP direct posting
+  google_review_name?: string | null
+  gbp_posted_at?: string | null
 }
 
 export interface KeywordAlert {

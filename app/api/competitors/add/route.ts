@@ -40,14 +40,26 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json().catch(() => ({}))
-  const urls: string[] = Array.isArray(body?.urls) ? body.urls : []
 
-  if (!urls.length) {
+  // Support both {items: [{url, name}]} and legacy {urls: [...]}
+  const items: Array<{ url: string; name?: string }> = []
+  if (Array.isArray(body?.items)) {
+    for (const item of body.items) {
+      if (typeof item === 'string') items.push({ url: item })
+      else if (item?.url) items.push({ url: item.url, name: item.name ?? undefined })
+    }
+  } else if (Array.isArray(body?.urls)) {
+    for (const url of body.urls) {
+      if (typeof url === 'string') items.push({ url })
+    }
+  }
+
+  if (!items.length) {
     return NextResponse.json({ error: 'No URLs provided.' }, { status: 400 })
   }
 
   // Validate all URLs
-  for (const url of urls) {
+  for (const { url } of items) {
     if (!isGoogleMapsUrl(url)) {
       return NextResponse.json(
         { error: `Invalid URL: "${url}". Must be a Google Maps link.` },
@@ -66,7 +78,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Database error.' }, { status: 500 })
   }
 
-  const totalAfter = (existing?.length ?? 0) + urls.length
+  const totalAfter = (existing?.length ?? 0) + items.length
   if (totalAfter > 3) {
     return NextResponse.json(
       { error: `You can track a maximum of 3 competitors. You currently have ${existing?.length ?? 0}.` },
@@ -78,8 +90,8 @@ export async function POST(request: NextRequest) {
 
   const insertedProfiles = []
 
-  for (const url of urls) {
-    const extractedName = extractNameFromUrl(url)
+  for (const { url, name: providedName } of items) {
+    const extractedName = providedName ?? extractNameFromUrl(url)
 
     // Insert with extracted name first
     const { data: inserted, error: insertError } = await supabaseAdmin
@@ -118,10 +130,11 @@ export async function POST(request: NextRequest) {
 
     let profile = inserted
 
-    // Optionally enrich with Outscraper
+    // Optionally enrich with Outscraper — use business name for lookup, not the URL
     if (outscraperKey) {
       try {
-        const query = encodeURIComponent(url)
+        const lookupName = inserted.name ?? extractedName ?? ''
+        const query = encodeURIComponent(lookupName || url)
         const outscraperRes = await fetch(
           `https://api.app.outscraper.com/maps/search-v3?query=${query}&limit=1`,
           {

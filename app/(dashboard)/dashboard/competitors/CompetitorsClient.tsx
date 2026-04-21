@@ -57,7 +57,7 @@ function StarRating({ rating }: { rating: number | null }) {
 
 // ─── Setup Flow ────────────────────────────────────────────────────────────────
 
-type SuggestedPlace = { placeId: string; name: string; address: string; rating?: number; mapsUrl: string }
+type SuggestedPlace = { placeId: string; name: string; address: string; rating?: number; reviewCount?: number; mapsUrl: string }
 
 function SetupFlow({ restaurantName }: { restaurantName: string }) {
   const router = useRouter()
@@ -65,34 +65,71 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [suggestions, setSuggestions] = useState<SuggestedPlace[]>([])
+  const [dismissed, setDismissed] = useState<Set<string>>(new Set())
   const [suggesting, setSuggesting] = useState(false)
   const [suggestError, setSuggestError] = useState<string | null>(null)
+  const [showManual, setShowManual] = useState(false)
+
+  const activeSuggestions = suggestions.filter(s => !dismissed.has(s.placeId))
+
   async function handleFindCompetitors() {
     if (suggesting) return
     setSuggesting(true)
     setSuggestError(null)
     setSuggestions([])
+    setDismissed(new Set())
+    setError(null)
     try {
       const res = await fetch('/api/competitors/suggest')
       const data = await res.json()
       if (data.apiError) {
         setSuggestError(data.apiError)
+        setShowManual(true)
         return
       }
       const found: SuggestedPlace[] = data.results ?? []
+      if (!found.length) {
+        setSuggestError('No nearby competitors found. Try entering URLs manually.')
+        setShowManual(true)
+        return
+      }
       setSuggestions(found)
-      // Pre-fill the URL inputs
-      const nextUrls = ['', '', '']
-      found.slice(0, 3).forEach((s, i) => { nextUrls[i] = s.mapsUrl })
-      setUrls(nextUrls)
     } catch {
       setSuggestError('Could not find competitors. Enter URLs manually.')
+      setShowManual(true)
     } finally {
       setSuggesting(false)
     }
   }
 
-  async function handleSubmit() {
+  async function handleAddSuggestions() {
+    const selected = activeSuggestions.slice(0, 3)
+    if (!selected.length) {
+      setError('No competitors selected.')
+      return
+    }
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/competitors/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: selected.map(s => ({ url: s.mapsUrl, name: s.name })) }),
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        setError(data.error ?? 'Failed to add competitors.')
+        return
+      }
+      router.refresh()
+    } catch {
+      setError('Something went wrong. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function handleSubmitManual() {
     const nonEmpty = urls.filter((u) => u.trim())
     if (!nonEmpty.length) {
       setError('Enter at least one Google Maps URL.')
@@ -104,7 +141,7 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
       const res = await fetch('/api/competitors/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ urls: nonEmpty }),
+        body: JSON.stringify({ items: nonEmpty.map(url => ({ url })) }),
       })
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
@@ -132,93 +169,136 @@ function SetupFlow({ restaurantName }: { restaurantName: string }) {
           <p className="text-[13px] text-[#57534E]">Monitor nearby businesses to see how you compare</p>
         </div>
 
-        {/* Auto-find button */}
-        <button
-          onClick={handleFindCompetitors}
-          disabled={suggesting}
-          className="w-full flex items-center justify-center gap-2 mb-5 h-11 rounded-xl bg-[#E05A28]/10 border border-[#E05A28]/25 text-[#E05A28] text-[13px] font-semibold hover:bg-[#E05A28]/15 active:bg-[#E05A28]/20 transition-all disabled:opacity-50"
-        >
-          {suggesting ? (
-            <><svg className="animate-spin w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/></svg>Finding nearby competitors…</>
-          ) : (
-            <><svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>Find my competitors automatically</>
-          )}
-        </button>
+        {/* ── Auto-find section ─────────────────────────────────── */}
+        {activeSuggestions.length === 0 && (
+          <button
+            onClick={handleFindCompetitors}
+            disabled={suggesting}
+            className="w-full flex items-center justify-center gap-2 mb-4 h-11 rounded-xl bg-[#E05A28]/10 border border-[#E05A28]/25 text-[#E05A28] text-[13px] font-semibold hover:bg-[#E05A28]/15 active:bg-[#E05A28]/20 transition-all disabled:opacity-50"
+          >
+            {suggesting ? (
+              <><svg className="animate-spin w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/></svg>Finding nearby competitors…</>
+            ) : (
+              <><svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>Find my competitors automatically</>
+            )}
+          </button>
+        )}
 
         {suggestError && (
-          <div className="flex items-start gap-2 text-[12px] text-[#E0A82E] bg-[#FEF0E8] border border-amber-200 rounded-xl px-3.5 py-2.5 mb-4">
+          <div className="flex items-start gap-2 text-[12px] text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-3.5 py-2.5 mb-4">
             <svg className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
             {suggestError}
           </div>
         )}
 
-        {suggestions.length > 0 && (
-          <div className="mb-4 p-4 bg-[#0B8A5B] border border-[#C9E4D3] rounded-xl">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.10em] text-[#0B8A5B] mb-3">Found {suggestions.length} nearby — review below</p>
-            <div className="space-y-2">
-              {suggestions.map((s, i) => (
-                <div key={s.placeId} className="flex items-center gap-2 text-[13px]">
-                  <span className="text-[#0B8A5B] font-bold w-4 flex-shrink-0">{i + 1}.</span>
-                  <span className="font-medium text-[#111111] flex-1 truncate">{s.name}</span>
-                  {s.rating && <span className="text-[#E0A82E] text-[12px] flex-shrink-0 tnum">{s.rating.toFixed(1)}★</span>}
-                  <button
-                    onClick={() => {
-                      const next = [...urls]
-                      next[i] = ''
-                      setUrls(next)
-                      setSuggestions(prev => prev.filter((_, j) => j !== i))
-                    }}
-                    className="ml-2 text-[#A8A29E] hover:text-[#B84A1A] transition text-[11px] flex-shrink-0"
-                  >
-                    Remove
-                  </button>
+        {/* ── Found suggestions ─────────────────────────────────── */}
+        {activeSuggestions.length > 0 && (
+          <div className="mb-5 rounded-xl border border-emerald-200 bg-emerald-50 overflow-hidden">
+            <div className="px-4 py-3 border-b border-emerald-200 flex items-center justify-between">
+              <p className="text-[12px] font-semibold text-emerald-700">Found {activeSuggestions.length} nearby competitor{activeSuggestions.length !== 1 ? 's' : ''}</p>
+              <button
+                onClick={() => { setSuggestions([]); setDismissed(new Set()) }}
+                className="text-[11px] text-emerald-600 hover:text-emerald-800 transition"
+              >
+                Clear
+              </button>
+            </div>
+            <div className="divide-y divide-emerald-100">
+              {activeSuggestions.map((s) => (
+                <div key={s.placeId} className="flex items-center gap-3 px-4 py-3">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-semibold text-[#111111] truncate">{s.name}</p>
+                    <p className="text-[11px] text-[#A8A29E] truncate mt-0.5">{s.address}</p>
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    {s.rating != null && (
+                      <span className="text-[12px] text-[#E0A82E] font-semibold tnum">{s.rating.toFixed(1)}★</span>
+                    )}
+                    {s.reviewCount != null && (
+                      <span className="text-[11px] text-[#A8A29E] tnum">{s.reviewCount.toLocaleString()} reviews</span>
+                    )}
+                    <button
+                      onClick={() => setDismissed(prev => new Set([...prev, s.placeId]))}
+                      className="text-[#A8A29E] hover:text-[#B84A1A] transition ml-1"
+                      title="Remove"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
-          </div>
-        )}
 
-        <div className="relative flex items-center gap-3 mb-5">
-          <div className="flex-1 h-px bg-[#E4DED8]" />
-          <span className="text-[11px] text-[#A8A29E] font-medium whitespace-nowrap">or enter Google Maps URLs manually</span>
-          <div className="flex-1 h-px bg-[#E4DED8]" />
-        </div>
+            {error && (
+              <div className="px-4 pb-3 text-[12px] text-[#B84A1A]">{error}</div>
+            )}
 
-        <div className="space-y-3 mb-6">
-          {[0, 1, 2].map((i) => (
-            <div key={i}>
-              <label className="block text-[11px] font-semibold uppercase tracking-[0.10em] text-[#A8A29E] mb-1.5">
-                Competitor {i + 1}
-              </label>
-              <input
-                type="url"
-                value={urls[i]}
-                onChange={(e) => {
-                  const next = [...urls]
-                  next[i] = e.target.value
-                  setUrls(next)
-                }}
-                placeholder="https://google.com/maps/place/business-name..."
-                className="w-full px-3.5 py-2.5 rounded-xl border border-[#EDE6DC] text-[13px] text-[#111111] placeholder:text-[#C4BEB8] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] bg-[#F3EEE4] focus:bg-white transition-all"
-              />
+            <div className="px-4 py-3 border-t border-emerald-200 flex items-center gap-2">
+              <button
+                onClick={handleAddSuggestions}
+                disabled={loading}
+                className="flex-1 h-10 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-[13px] font-semibold transition-all disabled:opacity-50 shadow-[0_1px_3px_rgba(224,90,40,0.25)]"
+              >
+                {loading ? 'Adding…' : `Add ${activeSuggestions.length > 3 ? 3 : activeSuggestions.length} competitor${activeSuggestions.length !== 1 ? 's' : ''} →`}
+              </button>
+              <button
+                onClick={() => setShowManual(v => !v)}
+                className="h-10 px-3 rounded-xl border border-[#EDE6DC] text-[12px] font-medium text-[#57534E] hover:bg-[#F3F0EC] transition-all"
+              >
+                Manual
+              </button>
             </div>
-          ))}
-        </div>
-
-        {error && (
-          <div className="flex items-center gap-2 text-[12px] text-[#B84A1A] mb-4">
-            <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            {error}
           </div>
         )}
 
-        <button
-          onClick={handleSubmit}
-          disabled={loading}
-          className="w-full h-11 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.97] text-white text-[13px] font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_1px_3px_rgba(224,90,40,0.25)]"
-        >
-          {loading ? 'Adding competitors…' : 'Add competitors →'}
-        </button>
+        {/* ── Manual URL entry ──────────────────────────────────── */}
+        {(showManual || activeSuggestions.length === 0) && (
+          <>
+            <div className="relative flex items-center gap-3 mb-5">
+              <div className="flex-1 h-px bg-[#E4DED8]" />
+              <span className="text-[11px] text-[#A8A29E] font-medium whitespace-nowrap">
+                {activeSuggestions.length > 0 ? 'or enter manually' : 'enter Google Maps URLs'}
+              </span>
+              <div className="flex-1 h-px bg-[#E4DED8]" />
+            </div>
+
+            <div className="space-y-3 mb-6">
+              {[0, 1, 2].map((i) => (
+                <div key={i}>
+                  <label className="block text-[11px] font-semibold uppercase tracking-[0.10em] text-[#A8A29E] mb-1.5">
+                    Competitor {i + 1}
+                  </label>
+                  <input
+                    type="url"
+                    value={urls[i]}
+                    onChange={(e) => {
+                      const next = [...urls]
+                      next[i] = e.target.value
+                      setUrls(next)
+                    }}
+                    placeholder="https://google.com/maps/place/business-name..."
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#EDE6DC] text-[13px] text-[#111111] placeholder:text-[#C4BEB8] focus:outline-none focus:ring-2 focus:ring-[#E05A28]/20 focus:border-[#E05A28] bg-[#F3EEE4] focus:bg-white transition-all"
+                  />
+                </div>
+              ))}
+            </div>
+
+            {error && activeSuggestions.length === 0 && (
+              <div className="flex items-center gap-2 text-[12px] text-[#B84A1A] mb-4">
+                <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                {error}
+              </div>
+            )}
+
+            <button
+              onClick={handleSubmitManual}
+              disabled={loading}
+              className="w-full h-11 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] active:scale-[0.97] text-white text-[13px] font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_1px_3px_rgba(224,90,40,0.25)]"
+            >
+              {loading ? 'Adding competitors…' : 'Add competitors →'}
+            </button>
+          </>
+        )}
       </div>
     </div>
   )

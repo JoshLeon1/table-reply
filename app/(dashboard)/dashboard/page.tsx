@@ -39,8 +39,7 @@ export default async function DashboardPage() {
     { data: restaurantProfile },
     { data: allReviews },
     { count: pendingCount },
-    { data: pendingReviews },
-    { data: recentApproved },
+    { data: recentReviews },
     { data: analyticsCache },
     { count: approvedAllTime },
     { count: voiceTrainedCount },
@@ -52,8 +51,7 @@ export default async function DashboardPage() {
     // to pull everything; we need it to match what Reviews/Analytics show.
     supabase.from('scraped_reviews').select('star_rating, review_datetime_utc, reply_status').eq('user_id', user.id),
     supabase.from('scraped_reviews').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('reply_status', 'pending'),
-    supabase.from('scraped_reviews').select('*').eq('user_id', user.id).eq('reply_status', 'pending').order('review_datetime_utc', { ascending: false }).limit(3),
-    supabase.from('scraped_reviews').select('*').eq('user_id', user.id).eq('reply_status', 'approved').order('scraped_at', { ascending: false }).limit(5),
+    supabase.from('scraped_reviews').select('*').eq('user_id', user.id).in('reply_status', ['pending', 'approved']).order('review_datetime_utc', { ascending: false }).limit(6),
     supabase.from('business_analytics').select('themes, last_analyzed_at').eq('user_id', user.id).maybeSingle(),
     supabase.from('scraped_reviews').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('reply_status', 'approved'),
     // Voice DNA: total replies generated for this user (training corpus size)
@@ -151,8 +149,7 @@ export default async function DashboardPage() {
       approvedLastMonth={approvedLastMonth ?? 0}
       responseRate={responseRate}
       pendingCount={pendingCount ?? 0}
-      pendingReviews={pendingReviews ?? []}
-      recentApproved={recentApproved ?? []}
+      recentReviews={recentReviews ?? []}
       themes={themes}
       hasAnalytics={hasAnalytics}
       voiceTrained={voiceTrained}

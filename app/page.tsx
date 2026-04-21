@@ -77,8 +77,8 @@ export default function LandingPage() {
       a: 'Yes. ReplyFi learns your tone from the replies you approve. By week two, most owners say they can\'t tell which replies they wrote and which ones the AI drafted.',
     },
     {
-      q: 'Do replies auto-post, or do I approve each one?',
-      a: 'You approve every reply. ReplyFi drafts them overnight, you review them in the morning, and copy-paste to the platform. Nothing goes public without your click.',
+      q: 'Do replies post to Google automatically?',
+      a: 'Yes — once you connect your Google Business Profile in Settings, approved replies post directly to Google with one click. No copying, no switching tabs. Yelp requires manual posting for now.',
     },
     {
       q: 'Which review platforms are supported?',
@@ -103,16 +103,18 @@ export default function LandingPage() {
   ]
 
   const steps = [
-    { num: '1', title: 'Connect your listings once', desc: 'Link Google and Yelp in under 2 minutes.' },
+    { num: '1', title: 'Connect your listings once', desc: 'Link Google and Yelp in under 2 minutes. Connect Google Business Profile to enable direct posting.' },
     { num: '2', title: 'Reviews appear automatically', desc: 'ReplyFi pulls in new reviews every day — no manual work.' },
-    { num: '3', title: 'Approve and post in seconds', desc: 'Edit inline, approve, then copy-paste on the platform.' },
+    { num: '3', title: 'Approve and it posts to Google', desc: 'Edit inline, hit approve, and ReplyFi posts your reply directly to Google. No copy-paste ever.' },
   ]
 
   const proFeatures = [
     'Unlimited AI replies',
     'Google + Yelp auto-sync',
+    'Direct Google reply posting — no copy-paste',
     'Inline reply editing before approving',
     'Keyword alerts + staff mention tracking',
+    'Autopilot mode for hands-free replies',
     'Cancel anytime',
   ]
 
@@ -146,7 +148,7 @@ export default function LandingPage() {
               </h1>
 
               <p className="text-white/55 mb-8 animate-fade-up" style={{ fontSize: 'clamp(15px, 1.6vw, 17px)', lineHeight: '1.55', animationDelay: '260ms', maxWidth: '480px' }}>
-                AI drafts a personal reply to every review — approve, copy, and post in 30 seconds.
+                AI drafts a personal reply to every review — approve once and it posts directly to Google. No copy-paste.
               </p>
 
               {/* CTAs */}
@@ -210,12 +212,11 @@ export default function LandingPage() {
                         <p className="text-[9px] font-bold uppercase tracking-wider text-[#E05A28] mb-1">Your reply</p>
                         <p className="text-white/65 text-[11px] leading-relaxed">Thank you so much, Sarah! Our team loves hearing this. We look forward to seeing you again! 🙏</p>
                       </div>
-                      <div className="mt-2.5 ml-9 flex gap-1.5">
-                        <div className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#E05A28] text-white text-[10px] font-semibold">
+                      <div className="mt-2.5 ml-9 flex gap-1.5 flex-wrap">
+                        <div className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-[10px] font-semibold">
                           <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>
-                          Approve Reply
+                          Posted to Google
                         </div>
-                        <div className="px-2.5 py-1.5 rounded-lg border border-white/10 text-white/30 text-[10px]">Dismiss</div>
                       </div>
                     </div>
 

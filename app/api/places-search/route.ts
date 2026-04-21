@@ -63,8 +63,8 @@ export async function GET(request: NextRequest) {
       .map(p => {
         const name = p.displayName?.text ?? ''
         const address = p.formattedAddress ?? ''
-        const query = address ? `${name} ${address}` : name
-        const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}&query_place_id=${p.id}`
+        // Use place_id URL format — Outscraper's reviews API recognises this reliably
+        const mapsUrl = `https://www.google.com/maps/place/?q=place_id:${p.id}`
         return {
           placeId: p.id,
           name,

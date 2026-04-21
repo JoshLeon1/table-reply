@@ -91,17 +91,18 @@ export async function GET() {
 
   // ── Step 2: search for same-type businesses nearby ─────────────────────────
   try {
-    const body: Record<string, unknown> = {
+    const searchBody: Record<string, unknown> = {
       textQuery: searchTerm,
-      maxResultCount: 10,
+      maxResultCount: 20, // fetch more so we can filter and sort
     }
 
-    // If we have coordinates, bias results to a 2 km circle around the business
+    // Use locationRestriction (hard boundary at 5 km) when we have coordinates,
+    // otherwise fall back to a bias so we still get results without location
     if (lat != null && lng != null) {
-      body.locationBias = {
+      searchBody.locationRestriction = {
         circle: {
           center: { latitude: lat, longitude: lng },
-          radius: 2000, // metres
+          radius: 5000, // 5 km
         },
       }
     }
@@ -113,7 +114,7 @@ export async function GET() {
         'X-Goog-Api-Key': apiKey,
         'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.rating,places.userRatingCount',
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(searchBody),
     })
 
     const data = await res.json()
@@ -135,8 +136,12 @@ export async function GET() {
         if (ownPlaceId && p.id === ownPlaceId) return false
         const n = p.displayName?.text ?? ''
         if (n.toLowerCase() === businessName.toLowerCase()) return false
+        // Only include businesses that have at least a few reviews (legitimate competitors)
+        if ((p.userRatingCount ?? 0) < 3) return false
         return true
       })
+      // Sort by review count descending — most-reviewed = most established competitors
+      .sort((a, b) => (b.userRatingCount ?? 0) - (a.userRatingCount ?? 0))
       .slice(0, 5)
       .map(p => ({
         placeId: p.id,
@@ -144,7 +149,7 @@ export async function GET() {
         address: p.formattedAddress ?? '',
         rating: p.rating,
         reviewCount: p.userRatingCount,
-        mapsUrl: `https://www.google.com/maps/place/?q=place_id:${p.id}`,
+        mapsUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((p.displayName?.text ?? '') + ' ' + (p.formattedAddress ?? ''))}&query_place_id=${p.id}`,
       }))
       .filter(p => p.name)
 

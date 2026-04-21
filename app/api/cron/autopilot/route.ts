@@ -6,6 +6,8 @@ import { createClient } from '@supabase/supabase-js'
 import { generateReviewReply } from '@/lib/anthropic'
 import { decide } from '@/lib/autopilot/rules'
 import { hasAccess } from '@/lib/subscription/access'
+import { postGbpReply } from '@/lib/gbp/post-reply'
+import { getGbpToken } from '@/lib/gbp/client'
 import type { AutopilotRules, ReplyPreferences } from '@/types'
 
 // ---------------------------------------------------------------------------
@@ -114,7 +116,7 @@ export async function GET(request: NextRequest) {
     // ── 2. Fetch unhandled pending reviews for this profile ──────────────────
     const { data: reviews, error: reviewsErr } = await supabase
       .from('scraped_reviews')
-      .select('id, user_id, star_rating, review_text, source')
+      .select('id, user_id, star_rating, review_text, source, google_review_name')
       .eq('business_profile_id', profile.id)
       .eq('autopilot_handled', false)
       .eq('reply_status', 'pending')
@@ -193,8 +195,26 @@ export async function GET(request: NextRequest) {
           console.error(`[autopilot-cron] Failed to save reply for review ${review.id}:`, updateErr)
           counters.errors++
         } else {
-          if (decision.action === 'auto_approved') counters.autoApproved++
-          else counters.drafted++
+          if (decision.action === 'auto_approved') {
+            counters.autoApproved++
+            // Post to GBP if review has a matched resource name
+            if (review.source === 'google' && review.google_review_name) {
+              const token = await getGbpToken(review.user_id)
+              if (token) {
+                const gbp = await postGbpReply(review.user_id, review.google_review_name, generatedReply)
+                if (gbp.ok) {
+                  await supabase
+                    .from('scraped_reviews')
+                    .update({ gbp_posted_at: new Date().toISOString() })
+                    .eq('id', review.id)
+                } else {
+                  console.warn(`[autopilot-cron] GBP post failed for review ${review.id}:`, gbp.error)
+                }
+              }
+            }
+          } else {
+            counters.drafted++
+          }
           counters.processed++
         }
       } catch (err) {

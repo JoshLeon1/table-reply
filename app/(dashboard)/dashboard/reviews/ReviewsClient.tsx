@@ -542,6 +542,15 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
                 <><svg className="w-3.5 h-3.5 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>Copy Reply</>
               )}
             </button>
+            {/* GBP posted badge */}
+            {review.gbp_posted_at && (
+              <span className="flex items-center gap-1.5 px-3.5 min-h-[44px] text-[13px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl">
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/>
+                </svg>
+                Posted to Google
+              </span>
+            )}
             {/* Platform deep link */}
             {platformUrl && (
               <a
@@ -1188,10 +1197,18 @@ export default function ReviewsClient({ profile, initialReviews, userId }: Props
       setTimeout(() => setCopiedId((prev) => (prev === id ? null : prev)), 2000)
     }
     setReviews((prev) => prev.map((r) => r.id === id ? { ...r, reply_status: 'approved' as const } : r))
-    const { error } = await supabase.from('scraped_reviews').update({ reply_status: 'approved' }).eq('id', id).eq('user_id', userId)
-    if (error) {
-      // Revert optimistic update on failure
+    const res = await fetch('/api/reviews/approve', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reviewId: id }),
+    })
+    if (!res.ok) {
       setReviews((prev) => prev.map((r) => r.id === id ? { ...r, reply_status: 'pending' as const } : r))
+    } else {
+      const json = await res.json().catch(() => ({}))
+      if (json.gbpPosted) {
+        setReviews((prev) => prev.map((r) => r.id === id ? { ...r, gbp_posted_at: new Date().toISOString() } : r))
+      }
     }
     window.dispatchEvent(new CustomEvent('reviewsUpdated'))
   }

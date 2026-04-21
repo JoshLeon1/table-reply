@@ -10,6 +10,7 @@ import { createClient as createServerClient } from '@/lib/supabase/server'
 import { callClaude } from '@/lib/anthropic'
 import { FROM_ALERTS, REPLY_TO_SUPPORT, buildUnsubscribeHeaders, escapeHtml, getResend, isEmailOptedIn } from '@/lib/email/client'
 import { hasActiveAccess } from '@/lib/subscription'
+import { matchAndStoreGbpReviewNames } from '@/lib/gbp/match-reviews'
 
 function escapeRegExp(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
@@ -258,6 +259,7 @@ export async function POST(request: NextRequest) {
   // ── Process reviews ────────────────────────────────────────────────────
   let newReviewsCount = 0
   const totalProcessed = reviews.length
+  const newReviewDbIds: string[] = []
 
   const systemPrompt =
     `You are a reply assistant for ${profile.business_name}, ` +
@@ -444,18 +446,28 @@ export async function POST(request: NextRequest) {
     }
 
     // Try full insert (includes new columns); fall back to base if columns not yet migrated
-    const { error: fullInsertErr } = await supabaseAdmin.from('scraped_reviews').insert({
-      ...baseInsert,
-      alert_triggered: alertTriggered,
-      staff_mentions:  staffMentions.length > 0 ? staffMentions : null,
-      language:        detectedLanguage !== 'English' ? detectedLanguage : null,
-    })
+    const { data: fullInserted, error: fullInsertErr } = await supabaseAdmin
+      .from('scraped_reviews')
+      .insert({
+        ...baseInsert,
+        alert_triggered: alertTriggered,
+        staff_mentions:  staffMentions.length > 0 ? staffMentions : null,
+        language:        detectedLanguage !== 'English' ? detectedLanguage : null,
+      })
+      .select('id')
+      .maybeSingle()
 
     let insertErr = fullInsertErr
+    let insertedId: string | null = fullInserted?.id ?? null
     if (fullInsertErr) {
       if (process.env.NODE_ENV === 'development') console.warn(`[scrape-reviews] ↳ Full insert failed (${fullInsertErr.message}) — trying base insert without new columns…`)
-      const { error: baseInsertErr } = await supabaseAdmin.from('scraped_reviews').insert(baseInsert)
+      const { data: baseInserted, error: baseInsertErr } = await supabaseAdmin
+        .from('scraped_reviews')
+        .insert(baseInsert)
+        .select('id')
+        .maybeSingle()
       insertErr = baseInsertErr
+      insertedId = baseInserted?.id ?? null
     }
 
     if (insertErr) {
@@ -463,12 +475,20 @@ export async function POST(request: NextRequest) {
     } else {
       if (process.env.NODE_ENV === 'development') console.log(`[scrape-reviews] ↳ Inserted successfully`)
       newReviewsCount++
+      if (insertedId) newReviewDbIds.push(insertedId)
     }
   }
 
   if (process.env.NODE_ENV === 'development') console.log(
     `[scrape-reviews] Done — total: ${reviews.length}, new: ${newReviewsCount}, skipped (existing): ${skippedExisting}`
   )
+
+  // ── Match new reviews to GBP resource names ───────────────────────────
+  if (newReviewDbIds.length > 0) {
+    await matchAndStoreGbpReviewNames(supabaseAdmin, userId, newReviewDbIds).catch((err) =>
+      console.error('[scrape-reviews] GBP match error (non-fatal):', err)
+    )
+  }
 
   // ── Update last_scraped_at ─────────────────────────────────────────────
   await supabaseAdmin

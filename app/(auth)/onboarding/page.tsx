@@ -1,8 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+
+type PlaceResult = { placeId: string; name: string; address: string; rating?: number; mapsUrl: string }
 
 const BUSINESS_TYPE_OPTIONS = ['Restaurant', 'Dental Practice', 'Hair Salon', 'Med Spa', 'Auto Repair', 'Law Firm', 'Home Services', 'Retail', 'Other']
 
@@ -95,6 +97,14 @@ export default function OnboardingPage() {
   const [googleUrl, setGoogleUrl] = useState('')
   const [yelpUrl, setYelpUrl] = useState('')
 
+  // Google search autocomplete
+  const [googleQuery, setGoogleQuery] = useState('')
+  const [googleResults, setGoogleResults] = useState<PlaceResult[]>([])
+  const [googleSearching, setGoogleSearching] = useState(false)
+  const [showGoogleDrop, setShowGoogleDrop] = useState(false)
+  const [selectedGoogle, setSelectedGoogle] = useState<{ name: string; address: string } | null>(null)
+  const googleDropRef = useRef<HTMLDivElement>(null)
+
   // Step 4 — training
   const [voiceTrainingText, setVoiceTrainingText] = useState('')
 
@@ -125,6 +135,10 @@ export default function OnboardingPage() {
           setGoogleUrl(draft.googleUrl ?? '')
           setYelpUrl(draft.yelpUrl ?? '')
           setVoiceTrainingText(draft.voiceTrainingText ?? '')
+          // If a google URL was saved, show a generic "saved" chip so the user can see it
+          if (draft.googleUrl) {
+            setSelectedGoogle({ name: 'Saved listing', address: draft.googleUrl.slice(0, 60) + '…' })
+          }
         }
       } catch {
         // Ignore parse errors
@@ -148,6 +162,56 @@ export default function OnboardingPage() {
       // Ignore storage errors
     }
   }, [checking, step, businessName, businessType, ownerName, vibe, replyTone, googleUrl, yelpUrl, voiceTrainingText])
+
+  // Pre-populate Google search when entering step 3
+  useEffect(() => {
+    if (step === 3 && !selectedGoogle && !googleUrl && businessName) {
+      setGoogleQuery(businessName)
+    }
+  }, [step]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Debounced Google Places search
+  useEffect(() => {
+    if (googleQuery.length < 2) {
+      setGoogleResults([])
+      setShowGoogleDrop(false)
+      return
+    }
+    const t = setTimeout(async () => {
+      setGoogleSearching(true)
+      try {
+        const res = await fetch(`/api/places-search?query=${encodeURIComponent(googleQuery)}`)
+        const data = await res.json()
+        const results: PlaceResult[] = data.results ?? []
+        setGoogleResults(results)
+        setShowGoogleDrop(results.length > 0)
+      } catch {
+        setGoogleResults([])
+      } finally {
+        setGoogleSearching(false)
+      }
+    }, 350)
+    return () => clearTimeout(t)
+  }, [googleQuery])
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function onClickOutside(e: MouseEvent) {
+      if (googleDropRef.current && !googleDropRef.current.contains(e.target as Node)) {
+        setShowGoogleDrop(false)
+      }
+    }
+    document.addEventListener('mousedown', onClickOutside)
+    return () => document.removeEventListener('mousedown', onClickOutside)
+  }, [])
+
+  function selectGooglePlace(place: PlaceResult) {
+    setGoogleUrl(place.mapsUrl)
+    setSelectedGoogle({ name: place.name, address: place.address })
+    setShowGoogleDrop(false)
+    setGoogleResults([])
+    setError('')
+  }
 
   const handleStep1 = (e: React.FormEvent) => {
     e.preventDefault()
@@ -421,7 +485,7 @@ export default function OnboardingPage() {
             <>
               <h2 className="text-[18px] font-bold text-[#111] tracking-[-0.02em] mb-1">Connect Your Platforms</h2>
               <p className="text-[13px] text-[#A8A29E] mb-5">
-                Paste your listing URLs — ReplyFi syncs your reviews daily from each one.
+                Search your business name — we&apos;ll find your listing. After setup, connect Google Business Profile in Settings to post replies directly to Google.
               </p>
 
               <form onSubmit={(e) => { e.preventDefault(); handleStep3() }}>
@@ -432,19 +496,63 @@ export default function OnboardingPage() {
                   <div className="flex items-center gap-2">
                     <GoogleIcon />
                     <span className="text-[13px] font-semibold text-[#111]">Google Maps</span>
-                    <span className="text-[10px] font-bold text-blue-600 bg-blue-50 border border-blue-200 px-1.5 py-0.5 rounded-full leading-none">Recommended</span>
+                    <span className="text-[10px] font-bold text-blue-600 bg-blue-50 border border-blue-200 px-1.5 py-0.5 rounded-full leading-none">Recommended · Direct posting available</span>
                   </div>
-                  <input
-                    type="url"
-                    value={googleUrl}
-                    onChange={(e) => { setGoogleUrl(e.target.value); setError('') }}
-                    placeholder="https://maps.google.com/place/Your-Business/..."
-                    maxLength={500}
-                    className={inputClass}
-                  />
-                  <p className="text-xs text-[#A8A29E] leading-relaxed">
-                    Open maps.google.com, search your business, then copy the URL from your browser address bar.
-                  </p>
+
+                  {selectedGoogle ? (
+                    <div className="flex items-center justify-between gap-2 p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl">
+                      <div className="min-w-0">
+                        <p className="text-[13px] font-semibold text-[#111] truncate">{selectedGoogle.name}</p>
+                        <p className="text-[11px] text-[#A8A29E] truncate">{selectedGoogle.address}</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => { setSelectedGoogle(null); setGoogleUrl(''); setGoogleQuery(businessName); setError('') }}
+                        className="flex-shrink-0 text-[11px] text-[#A8A29E] hover:text-[#E05A28] transition font-medium"
+                      >
+                        Change
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="relative" ref={googleDropRef}>
+                      <div className="relative">
+                        <input
+                          type="text"
+                          value={googleQuery}
+                          onChange={(e) => { setGoogleQuery(e.target.value); setGoogleUrl(''); setError('') }}
+                          onFocus={() => { if (googleResults.length > 0) setShowGoogleDrop(true) }}
+                          placeholder="Search your business by name…"
+                          maxLength={200}
+                          className={inputClass}
+                          autoComplete="off"
+                        />
+                        {googleSearching && (
+                          <svg className="animate-spin absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#A8A29E]" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                          </svg>
+                        )}
+                      </div>
+                      {showGoogleDrop && googleResults.length > 0 && (
+                        <div className="absolute z-20 w-full mt-1 bg-white border border-[#E4DED8] rounded-xl shadow-lg overflow-hidden">
+                          {googleResults.map((r) => (
+                            <button
+                              key={r.placeId}
+                              type="button"
+                              className="w-full text-left px-3.5 py-2.5 hover:bg-[#F8F6F3] border-b border-[#F0EDE9] last:border-0 transition-colors"
+                              onMouseDown={(e) => { e.preventDefault(); selectGooglePlace(r) }}
+                            >
+                              <div className="flex items-baseline justify-between gap-2">
+                                <p className="text-[13px] font-medium text-[#111] truncate">{r.name}</p>
+                                {r.rating && <span className="text-[11px] text-[#E0A82E] flex-shrink-0">{r.rating.toFixed(1)}★</span>}
+                              </div>
+                              <p className="text-[11px] text-[#A8A29E] truncate mt-0.5">{r.address}</p>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 {/* Yelp — optional */}
@@ -462,6 +570,17 @@ export default function OnboardingPage() {
                     maxLength={500}
                     className={inputClass}
                   />
+                  <p className="text-xs text-[#A8A29E] leading-relaxed">
+                    <a
+                      href={`https://www.yelp.com/search?find_desc=${encodeURIComponent(businessName)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#E05A28] hover:underline font-medium"
+                    >
+                      Find your listing on Yelp →
+                    </a>
+                    {' '}then paste the URL here.
+                  </p>
                 </div>
 
               </div>

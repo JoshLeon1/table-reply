@@ -59,6 +59,7 @@ export interface Database {
           welcome_email_sent_at: string | null
           trial_reminder_3d_sent_at: string | null
           trial_reminder_1d_sent_at: string | null
+          activation_email_sent_at: string | null
           created_at: string | null
           updated_at: string | null
         }
@@ -85,6 +86,7 @@ export interface Database {
         Relationships: []
       }
       business_profiles: LooseTable
+      google_business_tokens: LooseTable
       scraped_reviews: LooseTable
       business_analytics: LooseTable
       competitor_profiles: LooseTable

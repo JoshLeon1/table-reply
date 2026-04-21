@@ -193,10 +193,11 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  const [autopilot, autopilotDigest, trialReminders] = await Promise.all([
+  const [autopilot, autopilotDigest, trialReminders, activationEmail] = await Promise.all([
     runSubCron('autopilot', '/api/cron/autopilot'),
     runSubCron('autopilot-digest', '/api/cron/autopilot-digest'),
     runSubCron('trial-reminders', '/api/cron/trial-reminders'),
+    runSubCron('activation-email', '/api/cron/activation-email'),
   ])
 
   return NextResponse.json({
@@ -207,6 +208,7 @@ export async function GET(request: NextRequest) {
     autopilot,
     autopilotDigest,
     trialReminders,
+    activationEmail,
     errors: errors.length > 0 ? errors : undefined,
   })
 }

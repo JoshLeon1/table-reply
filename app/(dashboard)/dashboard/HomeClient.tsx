@@ -58,116 +58,6 @@ function SectionLabel({ children, badge }: { children: React.ReactNode; badge?: 
   )
 }
 
-// ── Pending review card ───────────────────────────────────────────────────────
-function PendingCard({ review, userId, onAction, animDelay = 0 }: { review: ScrapedReview; userId: string; onAction: (id: string, a: 'approved' | 'dismissed') => void; animDelay?: number }) {
-  const supabase = createClient()
-  const router = useRouter()
-  const [expanded, setExpanded] = useState(false)
-  const [actioning, setActioning] = useState(false)
-  const [copied, setCopied] = useState(false)
-
-  const handleApprove = async () => {
-    if (!review.generated_reply) return
-    setActioning(true)
-    try {
-      await navigator.clipboard.writeText(review.generated_reply).catch(() => {})
-      setCopied(true)
-      const { error } = await supabase.from('scraped_reviews').update({ reply_status: 'approved' }).eq('id', review.id).eq('user_id', userId)
-      if (!error) {
-        window.dispatchEvent(new CustomEvent('reviewsUpdated'))
-        router.refresh()
-        setTimeout(() => onAction(review.id, 'approved'), 1400)
-      }
-    } finally { setActioning(false) }
-  }
-
-  const handleDismiss = async () => {
-    setActioning(true)
-    try {
-      const { error } = await supabase.from('scraped_reviews').update({ reply_status: 'dismissed' }).eq('id', review.id).eq('user_id', userId)
-      if (!error) {
-        window.dispatchEvent(new CustomEvent('reviewsUpdated'))
-        router.refresh()
-        onAction(review.id, 'dismissed')
-      }
-    } finally { setActioning(false) }
-  }
-
-  const initials = review.reviewer_name.split(' ').map((w: string) => w[0]).join('').toUpperCase().slice(0, 2)
-  const isNeg = review.star_rating <= 2
-  const isNeu = review.star_rating === 3
-  const avatarBg = 'bg-[#F3F0EC]'
-  const avatarText = 'text-[#57534E]'
-
-  const noText = !review.review_text?.trim()
-
-  if (noText) {
-    return (
-      <div className="animate-fade-up flex items-center gap-3 px-4 py-2.5 bg-[#FEFCF8] rounded-xl border border-[#EDE6DC] transition-all duration-150 opacity-60 hover:opacity-80" style={{ animationDelay: `${animDelay}ms` }}>
-        <div className={`w-7 h-7 rounded-full ${avatarBg} border border-[#EDE6DC] flex items-center justify-center text-[10px] font-medium ${avatarText} flex-shrink-0`}>{initials}</div>
-        <div className="flex items-center gap-1.5 min-w-0">
-          <span className="text-[12px] font-medium text-[#57534E] truncate max-w-[100px]">{review.reviewer_name}</span>
-          <PlatformBadge source={review.source} />
-          <Stars rating={review.star_rating} size="sm" />
-        </div>
-        <span className="text-[11px] text-[#C4BEB8] flex-shrink-0 hidden sm:block">{review.review_datetime_utc ? formatTimeAgo(review.review_datetime_utc) : ''}</span>
-        <span className="text-[10px] text-[#C4BEB8] italic flex-1 hidden sm:block">No written review</span>
-        <button onClick={handleDismiss} disabled={actioning} className="flex-shrink-0 text-[11px] text-[#C4BEB8] hover:text-[#A8A29E] transition-colors disabled:opacity-40">
-          Dismiss
-        </button>
-      </div>
-    )
-  }
-
-  return (
-    <div className="animate-fade-up bg-[#FEFCF8] rounded-xl border border-[#EDE6DC] overflow-hidden transition-all duration-200" style={{ animationDelay: `${animDelay}ms` }}>
-      <div className="px-4 pt-4 pb-3">
-        <div className="flex items-start gap-3">
-          <div className={`w-9 h-9 rounded-full ${avatarBg} border border-[#EDE6DC] flex items-center justify-center text-[11px] font-medium ${avatarText} flex-shrink-0 mt-0.5`}>{initials}</div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between gap-2 mb-1.5">
-              <div className="flex items-center gap-1.5 flex-wrap min-w-0">
-                <span className="text-[13px] font-medium text-[#111111] truncate leading-none">{review.reviewer_name}</span>
-                <PlatformBadge source={review.source} />
-                {review.alert_triggered && <span className="inline-flex items-center gap-1 text-[10px] font-medium text-[#B84A1A] bg-[#FEF0E8] border border-[#FCDCCA] rounded-md px-1.5 py-0.5 leading-none"><svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd"/></svg>Alert</span>}
-              </div>
-              <span className="text-[11px] text-[#C4BEB8] flex-shrink-0 tabular-nums leading-none">{review.review_datetime_utc ? formatTimeAgo(review.review_datetime_utc) : ''}</span>
-            </div>
-            <Stars rating={review.star_rating} size="sm" />
-          </div>
-        </div>
-        <p className="text-[13px] text-[#57534E] leading-relaxed mt-3 pl-10 sm:pl-12 line-clamp-3">{review.review_text || <span className="italic text-[#C4BEB8]">No review text</span>}</p>
-      </div>
-
-      {review.generated_reply && (
-        <div className="px-4 pb-3 border-t border-[#EDE9E4]">
-          <button onClick={() => setExpanded(v => !v)} className="flex items-center gap-1.5 mt-3 text-[12px] font-medium text-[#A8A29E] hover:text-[#E05A28] transition-colors duration-150">
-            <svg className={`w-3 h-3 transition-transform duration-200 ${expanded ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7"/></svg>
-            {expanded ? 'Hide AI draft' : 'Preview AI draft'}
-          </button>
-          {expanded && (
-            <div className="mt-2.5 bg-[#FEFCF8] rounded-xl px-4 py-3.5 border border-[#EDE6DC] animate-fade-up">
-              <div className="flex items-center gap-1.5 mb-2">
-                <div className="w-4 h-4 rounded-md bg-[#F3F0EC] flex items-center justify-center">
-                  <svg className="w-2.5 h-2.5 text-[#57534E]" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd"/></svg>
-                </div>
-                <span className="text-[11px] font-medium text-[#57534E]">AI reply</span>
-              </div>
-              <p className="text-[12px] text-[#57534E] leading-relaxed">{review.generated_reply}</p>
-            </div>
-          )}
-        </div>
-      )}
-
-      <div className="flex items-center gap-2 px-4 pb-4 pt-1">
-        <button onClick={handleApprove} disabled={actioning || !review.generated_reply} className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-white text-[12px] font-medium disabled:opacity-40 transition-all duration-200 active:scale-[0.97] ${copied ? 'bg-[#0B8A5B] hover:bg-[#077A51]' : 'bg-[#E05A28] hover:bg-[#C94E21]'}`}>
-          {copied ? <><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>Copied</> : <><svg className="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Copy &amp; Approve</>}
-        </button>
-        <button onClick={handleDismiss} disabled={actioning} className="px-3 py-2 rounded-xl text-[12px] font-medium text-[#A8A29E] hover:text-[#57534E] hover:bg-[#F3F0EC] disabled:opacity-40 transition-all duration-150">Dismiss</button>
-      </div>
-    </div>
-  )
-}
 
 // ── Setup panel — shown when no platforms connected ───────────────────────────
 const LS_MANUAL = 'tr_manual_mode'
@@ -611,40 +501,71 @@ function ActionStrip({ pendingCount, repliesSentCount, lastSyncAt, googleLastSyn
   )
 }
 
-// ── RecentReviewsList — dense list of 5 most recent reviews ──────────────────
+// ── RecentReviewsList — rich list of recent reviews with status ───────────────
 function RecentReviewsList({ reviews }: { reviews: ScrapedReview[] }) {
-  const recent = reviews.slice(0, 5)
-  if (recent.length === 0) return null
+  if (reviews.length === 0) return null
 
   return (
-    <section className="mb-2">
-      <div className="flex items-center justify-between mb-4">
+    <section>
+      <div className="flex items-center justify-between mb-3">
         <h2 className="text-[15px] text-[#111]" style={{ fontWeight: 600, letterSpacing: '-0.01em' }}>Recent reviews</h2>
-        <Link href="/dashboard/reviews" className="text-[12px] text-[#57534E] hover:text-[#111]">View all →</Link>
+        <Link href="/dashboard/reviews" className="inline-flex items-center gap-1 text-[12px] font-medium text-[#57534E] hover:text-[#111] transition-colors">
+          View all
+          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
+        </Link>
       </div>
-      <div className="divide-y divide-[#EDE6DC]">
-        {recent.map((r) => (
-          <div key={r.id} className="py-3.5">
-            <div className="flex items-start sm:items-center gap-3 flex-col sm:flex-row">
-              <div className="flex items-center gap-3 flex-1 min-w-0 w-full">
-                <div className="w-8 h-8 rounded-full bg-[#F0EDE8] text-[#57534E] flex items-center justify-center text-[12px] font-medium flex-shrink-0">
-                  {(r.reviewer_name ?? 'A').charAt(0).toUpperCase()}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[13px] font-medium text-[#111] truncate">{r.reviewer_name ?? 'Anonymous'}</span>
-                    <Stars rating={r.star_rating ?? 0} size="sm" />
-                  </div>
-                  <p className="text-[13px] text-[#57534E] truncate mt-0.5">{r.review_text}</p>
-                </div>
+      <div className="bg-[#FEFCF8] border border-[#EDE6DC] rounded-xl divide-y divide-[#EDE6DC] overflow-hidden">
+        {reviews.map((r) => {
+          const isPending = r.reply_status === 'pending'
+          const isApproved = r.reply_status === 'approved'
+          const initial = (r.reviewer_name ?? 'A').charAt(0).toUpperCase()
+          return (
+            <div key={r.id} className="flex items-center gap-3 px-4 py-3.5 hover:bg-[#F9F6F1] transition-colors duration-150">
+              <div className="w-8 h-8 rounded-full bg-[#F0EDE8] text-[#57534E] flex items-center justify-center text-[12px] font-medium flex-shrink-0 leading-none">
+                {initial}
               </div>
-              <span className="text-[11px] text-[#A8A29E] tnum self-end sm:self-auto flex-shrink-0">
-                {formatTimeAgo(r.review_datetime_utc)}
-              </span>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className="text-[13px] font-medium text-[#111] truncate leading-none">{r.reviewer_name ?? 'Anonymous'}</span>
+                  <PlatformBadge source={r.source} />
+                  <Stars rating={r.star_rating ?? 0} size="sm" />
+                </div>
+                <p className="text-[12px] text-[#57534E] truncate leading-snug">
+                  {r.review_text?.trim() || <span className="italic text-[#C4BEB8]">No written review</span>}
+                </p>
+              </div>
+              <div className="flex flex-col items-end gap-1.5 flex-shrink-0 ml-2">
+                <span className="text-[11px] text-[#A8A29E] tabular-nums whitespace-nowrap">
+                  {r.review_datetime_utc ? formatTimeAgo(r.review_datetime_utc) : ''}
+                </span>
+                {isPending && (
+                  <span className="inline-flex items-center gap-1 text-[10px] font-medium text-[#C47A1A] bg-[#FEF8EE] border border-[#F8E0B0] rounded-full px-1.5 py-0.5 leading-none whitespace-nowrap">
+                    <span className="w-1 h-1 rounded-full bg-[#C47A1A]" />
+                    Pending
+                  </span>
+                )}
+                {isApproved && (
+                  <span className="inline-flex items-center gap-1 text-[10px] font-medium text-[#0B7A52] bg-[#EDFAF3] border border-[#B8E8D2] rounded-full px-1.5 py-0.5 leading-none whitespace-nowrap">
+                    <span className="w-1 h-1 rounded-full bg-[#0B7A52]" />
+                    Replied
+                  </span>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
+      {reviews.some(r => r.reply_status === 'pending') && (
+        <div className="mt-3 text-center">
+          <Link
+            href="/dashboard/reviews?tab=pending"
+            className="inline-flex items-center gap-1.5 text-[12px] font-medium text-[#E05A28] hover:text-[#C94E21] transition-colors"
+          >
+            Review &amp; approve pending replies
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
+          </Link>
+        </div>
+      )}
     </section>
   )
 }
@@ -669,8 +590,7 @@ interface Props {
   approvedLastMonth: number
   responseRate: number
   pendingCount: number
-  pendingReviews: ScrapedReview[]
-  recentApproved: ScrapedReview[]
+  recentReviews: ScrapedReview[]
   themes: { praised: string[]; complaints: string[]; opportunities: string[] } | null
   hasAnalytics: boolean
   voiceTrained: number
@@ -825,8 +745,7 @@ export default function HomeClient({
   approvedLastMonth,
   responseRate,
   pendingCount,
-  pendingReviews: initialPendingReviews,
-  recentApproved,
+  recentReviews,
   themes,
   hasAnalytics,
   voiceTrained,
@@ -838,13 +757,6 @@ export default function HomeClient({
 
   const [manualMode, setManualMode] = useState(false)
   const [modeHydrated, setModeHydrated] = useState(false)
-  const [pendingList, setPendingList] = useState<ScrapedReview[]>(initialPendingReviews)
-  // pendingCount from server is the TRUE total of rows with reply_status='pending'.
-  // pendingList is just the top-3 preview. We track actionedInSession so the
-  // displayed badge decrements immediately when the user approves/dismisses
-  // without waiting for a router.refresh to reconcile.
-  const [actionedInSession, setActionedInSession] = useState(0)
-  const liveTotalPending = Math.max(0, pendingCount - actionedInSession)
   const [displayLastSynced, setDisplayLastSynced] = useState<string | null>(lastScrapedAt)
 
   const router = useRouter()
@@ -866,11 +778,6 @@ export default function HomeClient({
   const exitManual = () => {
     setManualMode(false)
     try { localStorage.removeItem(LS_MANUAL) } catch { /* ignore */ }
-  }
-
-  const handlePendingAction = (id: string) => {
-    setPendingList(prev => prev.filter(r => r.id !== id))
-    setActionedInSession(n => n + 1)
   }
 
   const handleSync = async () => {
@@ -928,45 +835,44 @@ export default function HomeClient({
   }
 
   // ── State C: Has at least one platform — full dashboard ──────────────────────
-  const allReviews = [...pendingList, ...recentApproved]
-
   return (
-    <div className="space-y-6 sm:space-y-8 pb-16">
+    <div className="space-y-5 sm:space-y-7 pb-16">
 
       {/* ── Autopilot discoverability — only show after first sync ─────────── */}
-      {hasAnyPlatform && lastScrapedAt && !autopilotEnabled && <AutopilotNudge />}
+      {lastScrapedAt && !autopilotEnabled && <AutopilotNudge />}
 
-      {/* ── New hero layout ────────────────────────────────────────────────── */}
-      <div className="space-y-6">
-        {/* Page title */}
-        <div className="pt-8 pb-2">
-          <h1 className="text-[22px] sm:text-[24px] text-[#111] leading-[1.15]" style={{ fontWeight: 600, letterSpacing: '-0.022em' }}>
-            Welcome back{ownerName ? `, ${ownerName}` : ''}.
-          </h1>
-          <p className="text-[13px] text-[#57534E] mt-1.5" style={{ letterSpacing: '-0.006em' }}>Here&apos;s how your reputation is trending.</p>
-        </div>
-
-        <HeroRow
-          recentCount={reviewsThisMonth}
-          recentAvg={ratingThisMonthAvg}
-          previousCount={reviewsLastMonth}
-          previousAvg={ratingLastMonthAvg}
-        />
-        <ActionStrip
-          pendingCount={liveTotalPending}
-          repliesSentCount={approvedThisMonth}
-          lastSyncAt={displayLastSynced}
-          googleLastSync={lastScrapedAt}
-          yelpLastSync={yelpLastScrapedAt}
-          hasGoogle={!!googleMapsUrl}
-          hasYelp={!!yelpUrl}
-          syncing={syncing}
-          onSync={handleSync}
-        />
-        <RecentReviewsList reviews={allReviews} />
+      {/* ── Page header ────────────────────────────────────────────────────── */}
+      <div className="pt-6 sm:pt-8">
+        <h1 className="text-[22px] sm:text-[26px] text-[#111] leading-[1.15]" style={{ fontWeight: 600, letterSpacing: '-0.022em' }}>
+          Welcome back{ownerName ? `, ${ownerName}` : ''}.
+        </h1>
+        <p className="text-[13px] text-[#57534E] mt-1.5" style={{ letterSpacing: '-0.006em' }}>
+          Here&apos;s how your reputation is trending.
+        </p>
       </div>
 
-      {/* ── Sync status message ────────────────────────────────────────────── */}
+      {/* ── KPI cards ──────────────────────────────────────────────────────── */}
+      <HeroRow
+        recentCount={reviewsThisMonth}
+        recentAvg={ratingThisMonthAvg}
+        previousCount={reviewsLastMonth}
+        previousAvg={ratingLastMonthAvg}
+      />
+
+      {/* ── Quick-action strip ─────────────────────────────────────────────── */}
+      <ActionStrip
+        pendingCount={pendingCount}
+        repliesSentCount={approvedThisMonth}
+        lastSyncAt={displayLastSynced}
+        googleLastSync={lastScrapedAt}
+        yelpLastSync={yelpLastScrapedAt}
+        hasGoogle={!!googleMapsUrl}
+        hasYelp={!!yelpUrl}
+        syncing={syncing}
+        onSync={handleSync}
+      />
+
+      {/* ── Sync status toast ──────────────────────────────────────────────── */}
       {syncMsg && (
         <div className="flex items-center justify-between gap-3 px-4 sm:px-5 py-3 rounded-xl bg-[#FEFCF8] border border-[#EDE6DC]">
           <span className={`text-[12px] font-medium ${syncMsg.type === 'success' ? 'text-[#0B8A5B]' : 'text-[#B84A1A]'}`}>
@@ -974,118 +880,56 @@ export default function HomeClient({
           </span>
           <button onClick={handleSync} disabled={syncing} className="group flex items-center gap-1.5 text-[12px] font-medium text-[#A8A29E] hover:text-[#57534E] disabled:opacity-40 transition-colors duration-150">
             <svg className={`w-3 h-3 transition-transform duration-700 ${syncing ? 'animate-spin' : 'group-hover:rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-            {syncing ? 'Syncing…' : 'Sync reviews'}
+            {syncing ? 'Syncing…' : 'Sync again'}
           </button>
         </div>
       )}
 
-      {/* ── Reviews + Activity ─────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        {/* Pending reviews */}
-        <div className="lg:col-span-3">
-          <SectionLabel badge={pendingList.length > 0 ? <span className="inline-flex items-center justify-center min-w-[20px] h-[18px] px-1.5 rounded-full bg-[#F3F0EC] border border-[#EDE6DC] text-[10px] text-[#57534E] tabular-nums">{pendingList.length}</span> : undefined}>
-            Pending replies
-          </SectionLabel>
-          {pendingList.length === 0 ? (
-            <div className="flex items-center gap-4 py-5 animate-fade-up">
-              <div className="flex-shrink-0">
-                <span className="w-2 h-2 rounded-full bg-[#0B8A5B] inline-block" />
-              </div>
-              <div>
-                <p className="text-[13px] font-medium text-[#111]">All caught up</p>
-                <p className="text-[12px] text-[#57534E] mt-0.5">New reviews appear here after each sync.</p>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {pendingList.map((review, i) => <PendingCard key={review.id} review={review} userId={userId} onAction={handlePendingAction} animDelay={i * 60} />)}
-              {pendingList.length > 3 && (
-                <Link href="/dashboard/reviews" className="inline-flex items-center gap-1.5 text-[13px] font-medium text-[#57534E] hover:text-[#111] transition-colors pt-1 group">
-                  View all {pendingList.length} pending
-                  <svg className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform duration-150" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
-                </Link>
-              )}
-            </div>
-          )}
-        </div>
+      {/* ── Recent reviews ─────────────────────────────────────────────────── */}
+      <RecentReviewsList reviews={recentReviews} />
 
-        {/* Recent activity */}
-        <div className="lg:col-span-2">
-          <div className="animate-fade-up" style={{ animationDelay: '120ms' }}>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-[15px] text-[#111]" style={{ fontWeight: 600, letterSpacing: '-0.01em' }}>Recent activity</h2>
-            </div>
-            {recentApproved.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-10 px-4 text-center">
-                <div className="w-10 h-10 rounded-xl bg-[#F3F0EC] flex items-center justify-center mb-3"><svg className="text-[#C4BEB8]" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ width: 18, height: 18 }}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg></div>
-                <p className="text-[12px] font-medium text-[#A8A29E]">No approved replies yet</p>
-                <p className="text-[11px] text-[#C4BEB8] mt-0.5">Approved reviews will show here</p>
-              </div>
-            ) : (
-              <div className="divide-y divide-[#EDE6DC]">
-                {recentApproved.map(review => (
-                  <div key={review.id} className="flex items-center gap-3 py-3 hover:bg-[#F3EEE4] transition-colors duration-150 -mx-1 px-1 rounded-lg">
-                    <div className="w-8 h-8 rounded-full bg-[#F3F0EC] flex items-center justify-center text-[11px] font-medium text-[#A8A29E] flex-shrink-0">{review.reviewer_name.charAt(0).toUpperCase()}</div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5 mb-0.5">
-                        <span className="text-[12px] font-medium text-[#111111] truncate">{review.reviewer_name}</span>
-                        <PlatformBadge source={review.source} />
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[#E0A82E] text-[10px]">{'★'.repeat(review.star_rating)}</span>
-                        <span className="text-[10px] text-[#C4BEB8] tnum">{formatTimeAgo(review.review_datetime_utc ?? review.created_at)}</span>
-                      </div>
-                    </div>
-                    <div className="w-2 h-2 rounded-full bg-[#0B8A5B] flex-shrink-0" />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* ── Voice DNA — moat surface ─────────────────────────────────────── */}
+      {/* ── Voice DNA ──────────────────────────────────────────────────────── */}
       <VoiceDNA
         trained={voiceTrained}
         matchRate={voiceMatchRate}
         thisMonth={voiceTrainedThisMonth}
       />
 
-      {/* ── Manual generator (secondary, collapsed by default) ────────────── */}
-      <ManualGenerator prominent={false} />
-
       {/* ── At a glance ────────────────────────────────────────────────────── */}
-      <div className="animate-fade-up" style={{ animationDelay: '220ms' }}>
+      <div className="animate-fade-up" style={{ animationDelay: '180ms' }}>
         <SectionLabel>At a glance</SectionLabel>
         {!hasAnalytics ? (
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4">
             <div>
               <p className="text-[14px] font-medium text-[#111111]">Get insights from your reviews</p>
               <p className="text-[13px] text-[#57534E] mt-1 leading-snug">Discover what customers love, what needs work, and your top growth opportunity.</p>
             </div>
             <Link href="/dashboard/analytics" className="flex-shrink-0 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] active:bg-[#B34419] text-white text-[13px] font-medium transition-all duration-150 active:scale-[0.97] w-full sm:w-auto">
-              Run analysis <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
+              Run analysis
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
             </Link>
           </div>
         ) : (
-          <div className="divide-y divide-[#EDE6DC]">
+          <div className="bg-[#FEFCF8] border border-[#EDE6DC] rounded-xl divide-y divide-[#EDE6DC] overflow-hidden">
             {([
               { label: 'Customers love', value: themes?.praised?.[0], fallback: 'Run analytics to see what resonates most.', dotColor: 'bg-[#0B8A5B]' },
               { label: 'Needs attention', value: themes?.complaints?.[0], fallback: 'No recurring complaints — great sign.', dotColor: 'bg-[#E05A28]' },
               { label: 'Top opportunity', value: themes?.opportunities?.[0], fallback: 'Run analytics to find your growth lever.', dotColor: 'bg-[#57534E]' },
             ] as const).map(({ label, value, fallback, dotColor }) => (
-              <div key={label} className="py-4">
-                <div className="flex items-center gap-2 mb-1.5">
-                  <span className={`w-2 h-2 rounded-full ${dotColor} flex-shrink-0`} />
-                  <p className="text-[11px] font-medium uppercase tracking-[0.1em] text-[#A8A29E]">{label}</p>
+              <div key={label} className="flex items-start gap-3 px-4 py-4">
+                <span className={`w-2 h-2 rounded-full ${dotColor} flex-shrink-0 mt-[5px]`} />
+                <div>
+                  <p className="text-[10px] font-medium uppercase tracking-[0.1em] text-[#A8A29E] mb-1">{label}</p>
+                  <p className={`text-[13px] leading-snug ${value ? 'font-medium text-[#111]' : 'text-[#C4BEB8] italic'}`}>{value ?? fallback}</p>
                 </div>
-                <p className={`text-[13px] leading-snug pl-4 ${value ? 'font-medium text-[#111]' : 'text-[#C4BEB8] italic'}`}>{value ?? fallback}</p>
               </div>
             ))}
           </div>
         )}
       </div>
+
+      {/* ── Manual generator (collapsed by default) ────────────────────────── */}
+      <ManualGenerator prominent={false} />
     </div>
   )
 }

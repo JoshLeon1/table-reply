@@ -82,7 +82,7 @@ export default function LandingPage() {
     },
     {
       q: 'Which review platforms are supported?',
-      a: 'Google, Yelp, and TripAdvisor today. We pull in new reviews daily and draft replies for all of them in one inbox.',
+      a: 'Google and Yelp today. We pull in new reviews daily and draft replies for all of them in one inbox.',
     },
     {
       q: 'What about bad or unfair reviews?',
@@ -103,14 +103,14 @@ export default function LandingPage() {
   ]
 
   const steps = [
-    { num: '1', title: 'Connect your listings once', desc: 'Link Google, Yelp, and TripAdvisor in under 2 minutes.' },
+    { num: '1', title: 'Connect your listings once', desc: 'Link Google and Yelp in under 2 minutes.' },
     { num: '2', title: 'Reviews appear automatically', desc: 'ReplyFi pulls in new reviews every day — no manual work.' },
     { num: '3', title: 'Approve and post in seconds', desc: 'Edit inline, approve, then copy-paste on the platform.' },
   ]
 
   const proFeatures = [
     'Unlimited AI replies',
-    'Google + Yelp + TripAdvisor auto-sync',
+    'Google + Yelp auto-sync',
     'Inline reply editing before approving',
     'Keyword alerts + staff mention tracking',
     'Cancel anytime',

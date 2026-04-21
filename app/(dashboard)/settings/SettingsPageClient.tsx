@@ -5,7 +5,6 @@ import { useSearchParams } from 'next/navigation'
 import BusinessProfileForm from '@/components/BusinessProfileForm'
 import GoogleConnectSection from '@/components/GoogleConnectSection'
 import YelpConnectSection from '@/components/YelpConnectSection'
-import TripAdvisorConnectSection from '@/components/TripAdvisorConnectSection'
 import KeywordAlertsManager from '@/components/KeywordAlertsManager'
 import ManageBillingButton from './ManageBillingButton'
 import BillingButtons from './BillingButtons'
@@ -302,21 +301,6 @@ export default function SettingsPageClient({
         </div>
       </Card>
 
-      {/* TripAdvisor */}
-      <Card padding="none" className="overflow-hidden">
-        <SectionHead
-          title="TripAdvisor"
-          sub="Sync TripAdvisor reviews automatically every day."
-        />
-        <div className="px-5 sm:px-6 py-4 sm:py-5">
-          <TripAdvisorConnectSection
-            userId={userId}
-            restaurantProfileId={restaurantProfile.id}
-            currentTripAdvisorUrl={restaurantProfile.tripadvisor_url ?? null}
-            tripAdvisorLastScrapedAt={restaurantProfile.tripadvisor_last_scraped_at ?? null}
-          />
-        </div>
-      </Card>
     </div>
   )
 

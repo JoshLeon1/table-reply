@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
   const apiKey = process.env.OUTSCRAPER_API_KEY
   if (!apiKey) {
     return NextResponse.json(
-      { error: 'OUTSCRAPER_API_KEY not configured', yelpUrl: null, tripAdvisorUrl: null },
+      { error: 'OUTSCRAPER_API_KEY not configured', yelpUrl: null },
       { status: 200 }
     )
   }
@@ -63,7 +63,6 @@ export async function POST(request: NextRequest) {
   const locationSuffix = location ? ` "${location}"` : ''
 
   const yelpQuery = `"${businessName}"${locationSuffix} site:yelp.com/biz`
-  const taQuery = `"${businessName}"${locationSuffix} site:tripadvisor.com`
 
   async function searchGoogle(query: string): Promise<Array<{ link?: string; url?: string }>> {
     const url = `https://api.app.outscraper.com/google-search-v3?query=${encodeURIComponent(query)}&limit=5`
@@ -90,23 +89,18 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const [yelpResults, taResults] = await Promise.allSettled([
+    const [yelpResults] = await Promise.allSettled([
       searchGoogle(yelpQuery),
-      searchGoogle(taQuery),
     ])
 
     const yelpUrl = yelpResults.status === 'fulfilled'
       ? extractMatchingUrl(yelpResults.value, 'yelp.com/biz')
       : null
 
-    const tripAdvisorUrl = taResults.status === 'fulfilled'
-      ? extractMatchingUrl(taResults.value, 'tripadvisor.com')
-      : null
-
-    return NextResponse.json({ yelpUrl, tripAdvisorUrl })
+    return NextResponse.json({ yelpUrl })
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'Unknown error'
     console.error('[find-business-urls] Error:', msg)
-    return NextResponse.json({ error: msg, yelpUrl: null, tripAdvisorUrl: null }, { status: 200 })
+    return NextResponse.json({ error: msg, yelpUrl: null }, { status: 200 })
   }
 }

@@ -72,7 +72,6 @@ interface OnboardingDraft {
   replyTone: string
   googleUrl: string
   yelpUrl: string
-  taUrl: string
   voiceTrainingText: string
 }
 
@@ -95,7 +94,6 @@ export default function OnboardingPage() {
   // Step 3 — platforms
   const [googleUrl, setGoogleUrl] = useState('')
   const [yelpUrl, setYelpUrl] = useState('')
-  const [taUrl, setTaUrl] = useState('')
 
   // Step 4 — training
   const [voiceTrainingText, setVoiceTrainingText] = useState('')
@@ -126,7 +124,6 @@ export default function OnboardingPage() {
           setReplyTone(draft.replyTone ?? '')
           setGoogleUrl(draft.googleUrl ?? '')
           setYelpUrl(draft.yelpUrl ?? '')
-          setTaUrl(draft.taUrl ?? '')
           setVoiceTrainingText(draft.voiceTrainingText ?? '')
         }
       } catch {
@@ -144,13 +141,13 @@ export default function OnboardingPage() {
     try {
       const draft: OnboardingDraft = {
         step, businessName, businessType, ownerName,
-        vibe, replyTone, googleUrl, yelpUrl, taUrl, voiceTrainingText,
+        vibe, replyTone, googleUrl, yelpUrl, voiceTrainingText,
       }
       localStorage.setItem(DRAFT_KEY, JSON.stringify(draft))
     } catch {
       // Ignore storage errors
     }
-  }, [checking, step, businessName, businessType, ownerName, vibe, replyTone, googleUrl, yelpUrl, taUrl, voiceTrainingText])
+  }, [checking, step, businessName, businessType, ownerName, vibe, replyTone, googleUrl, yelpUrl, voiceTrainingText])
 
   const handleStep1 = (e: React.FormEvent) => {
     e.preventDefault()
@@ -183,10 +180,6 @@ export default function OnboardingPage() {
       setError("That Yelp URL doesn't look right. It should be a yelp.com link.")
       return
     }
-    if (taUrl.trim() && !taUrl.includes('tripadvisor.com')) {
-      setError("That TripAdvisor URL doesn't look right.")
-      return
-    }
     setStep(4)
   }
 
@@ -210,7 +203,6 @@ export default function OnboardingPage() {
           description: skip ? '' : (voiceTrainingText.trim() || ''),
           ...(googleUrl.trim() && { google_maps_url: googleUrl.trim() }),
           ...(yelpUrl.trim() && { yelp_url: yelpUrl.trim() }),
-          ...(taUrl.trim() && { tripadvisor_url: taUrl.trim() }),
         },
         { onConflict: 'user_id' }
       )
@@ -236,7 +228,7 @@ export default function OnboardingPage() {
       }
 
       // Kick off first sync if any platform was connected
-      if (googleUrl.trim() || yelpUrl.trim() || taUrl.trim()) {
+      if (googleUrl.trim() || yelpUrl.trim()) {
         fetch('/api/sync-all', { method: 'POST', headers: { 'Content-Type': 'application/json' } }).catch(() => {})
       }
 
@@ -467,23 +459,6 @@ export default function OnboardingPage() {
                     value={yelpUrl}
                     onChange={(e) => { setYelpUrl(e.target.value); setError('') }}
                     placeholder="https://yelp.com/biz/your-business-city"
-                    maxLength={500}
-                    className={inputClass}
-                  />
-                </div>
-
-                {/* TripAdvisor — optional */}
-                <div className="rounded-xl border border-[#E4DED8] bg-[#FAFAF8] p-4 space-y-2.5">
-                  <div className="flex items-center gap-2">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#34E0A1"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 2c4.418 0 8 3.582 8 8s-3.582 8-8 8-8-3.582-8-8 3.582-8 8-8zm0 2a6 6 0 100 12A6 6 0 0012 6zm0 2a4 4 0 110 8 4 4 0 010-8zm0 2a2 2 0 100 4 2 2 0 000-4zM7 8.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3zm10 0a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/></svg>
-                    <span className="text-[13px] font-semibold text-[#111]">TripAdvisor</span>
-                    <span className="text-[10px] font-medium text-[#A8A29E] bg-[#F3F0EC] border border-[#E4DED8] px-1.5 py-0.5 rounded-full leading-none">Optional</span>
-                  </div>
-                  <input
-                    type="url"
-                    value={taUrl}
-                    onChange={(e) => { setTaUrl(e.target.value); setError('') }}
-                    placeholder="https://tripadvisor.com/Restaurant_Review-..."
                     maxLength={500}
                     className={inputClass}
                   />

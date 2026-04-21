@@ -44,8 +44,6 @@ export interface BusinessProfile {
   last_scraped_at: string | null
   yelp_url: string | null
   yelp_last_scraped_at: string | null
-  tripadvisor_url: string | null
-  tripadvisor_last_scraped_at: string | null
   review_request_messages?: { sms: string; email: string; receipt: string; tablecard: string } | null
   reply_language?: string | null
   reply_preferences?: ReplyPreferences | null
@@ -76,7 +74,7 @@ export interface ScrapedReview {
   alert_triggered?: boolean
   staff_mentions?: string[] | null
   language?: string | null
-  source?: 'google' | 'yelp' | 'tripadvisor' | null
+  source?: 'google' | 'yelp' | null
   // Autopilot fields
   autopilot_handled?: boolean
   autopilot_action?: string | null

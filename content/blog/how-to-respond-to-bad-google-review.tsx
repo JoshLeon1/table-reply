@@ -219,7 +219,7 @@ export default function Post() {
       <h2>Can you automate this?</h2>
 
       <p>
-        Yes, and this is what ReplyFi does. We sync your reviews from Google, Yelp, and TripAdvisor, and draft a reply
+        Yes, and this is what ReplyFi does. We sync your reviews from Google and Yelp, and draft a reply
         for every single one — in your restaurant&apos;s actual voice, not a generic AI tone. You review, edit if you
         want, approve. Most owners go from &quot;reviews are a weekly chore I avoid&quot; to &quot;done in 5 minutes a
         day.&quot;

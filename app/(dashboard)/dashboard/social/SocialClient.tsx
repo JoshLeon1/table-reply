@@ -440,7 +440,6 @@ function getAvatarColor(name: string): string {
 
 function sourceBadge(source?: string | null) {
   if (source === 'yelp') return <span className="text-[10px] font-bold text-[#B84A1A] bg-[#FEF0E8] border border-[#FCDCCA] rounded-md px-1.5 py-0.5 leading-none">YELP</span>
-  if (source === 'tripadvisor') return <span className="text-[10px] font-bold text-[#0B8A5B] bg-[#0B8A5B] border border-[#C9E4D3] rounded-md px-1.5 py-0.5 leading-none">TA</span>
   return <span className="text-[10px] font-bold text-[#57534E] bg-[#EDE6DC] border border-[#EDE6DC] rounded-md px-1.5 py-0.5 leading-none">G</span>
 }
 

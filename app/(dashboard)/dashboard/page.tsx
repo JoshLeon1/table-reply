@@ -139,7 +139,6 @@ export default async function DashboardPage() {
       userId={user.id}
       googleMapsUrl={restaurantProfile?.google_maps_url ?? null}
       yelpUrl={restaurantProfile?.yelp_url ?? null}
-      tripadvisorUrl={restaurantProfile?.tripadvisor_url ?? null}
       hasGeneratedReply={(approvedAllTime ?? 0) > 0}
       reviewsThisMonth={reviewsThisMonth ?? 0}
       reviewsLastMonth={reviewsLastMonth ?? 0}

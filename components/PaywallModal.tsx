@@ -122,7 +122,7 @@ export default function PaywallModal({ onClose }: PaywallModalProps) {
             {[
               'Unlimited AI-powered review replies',
               'Business-specific voice and tone',
-              'Google, Yelp & TripAdvisor',
+              'Google & Yelp',
               'Social post generator',
               'Review request templates',
             ].map((feature) => (

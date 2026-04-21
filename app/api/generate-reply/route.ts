@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
   if (typeof starRating !== 'number' || starRating < 1 || starRating > 5) {
     return NextResponse.json({ error: 'Invalid star rating' }, { status: 400 })
   }
-  const VALID_PLATFORMS = ['google', 'yelp', 'tripadvisor']
+  const VALID_PLATFORMS = ['google', 'yelp']
   if (platform && !VALID_PLATFORMS.includes(platform.toLowerCase())) {
     return NextResponse.json({ error: 'Invalid platform' }, { status: 400 })
   }

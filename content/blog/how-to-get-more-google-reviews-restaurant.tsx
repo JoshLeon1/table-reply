@@ -154,8 +154,8 @@ export default function Post() {
       </p>
 
       <p>
-        (This is literally what ReplyFi does — drafts a reply to every review you have across Google, Yelp, and
-        TripAdvisor so you can knock out the backlog in one sitting.{' '}
+        (This is literally what ReplyFi does — drafts a reply to every review you have across Google and Yelp
+        so you can knock out the backlog in one sitting.{' '}
         <Link href="/signup">Try free for 7 days</Link>.)
       </p>
 

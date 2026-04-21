@@ -100,10 +100,6 @@ alter table restaurant_profiles add column if not exists last_scraped_at timesta
 alter table restaurant_profiles add column if not exists yelp_url text;
 alter table restaurant_profiles add column if not exists yelp_last_scraped_at timestamp with time zone;
 
--- Add TripAdvisor sync columns
-alter table restaurant_profiles add column if not exists tripadvisor_url text;
-alter table restaurant_profiles add column if not exists tripadvisor_last_scraped_at timestamp with time zone;
-
 -- Scraped reviews table (populated by Outscraper cron)
 create table if not exists scraped_reviews (
   id uuid default uuid_generate_v4() primary key,

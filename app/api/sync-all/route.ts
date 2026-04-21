@@ -8,7 +8,7 @@ import { hasActiveAccess } from '@/lib/subscription'
 /**
  * POST /api/sync-all
  *
- * Syncs all connected platforms (Google Maps, Yelp, TripAdvisor) for the
+ * Syncs all connected platforms (Google Maps, Yelp) for the
  * authenticated user in parallel. Returns a combined newReviews count.
  */
 export async function POST(request: NextRequest) {
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     // ── Fetch profile ──────────────────────────────────────────────────────
     const { data: profile } = await supabaseAdmin
       .from('business_profiles')
-      .select('id, google_maps_url, yelp_url, tripadvisor_url')
+      .select('id, google_maps_url, yelp_url')
       .eq('user_id', user.id)
       .maybeSingle()
 
@@ -40,10 +40,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Business profile not found' }, { status: 404 })
     }
 
-    const { google_maps_url, yelp_url, tripadvisor_url } = profile
+    const { google_maps_url, yelp_url } = profile
 
-    if (!google_maps_url && !yelp_url && !tripadvisor_url) {
-      return NextResponse.json({ error: 'No review platforms connected. Go to Settings to connect Google Maps, Yelp, or TripAdvisor.' }, { status: 400 })
+    if (!google_maps_url && !yelp_url) {
+      return NextResponse.json({ error: 'No review platforms connected. Go to Settings to connect Google Maps or Yelp.' }, { status: 400 })
     }
 
     if (!process.env.NEXT_PUBLIC_APP_URL) {
@@ -56,7 +56,6 @@ export async function POST(request: NextRequest) {
     const tasks: Array<{ platform: string; endpoint: string }> = []
     if (google_maps_url)  tasks.push({ platform: 'Google Maps',  endpoint: `${baseUrl}/api/scrape-reviews` })
     if (yelp_url)         tasks.push({ platform: 'Yelp',         endpoint: `${baseUrl}/api/scrape-yelp-reviews` })
-    if (tripadvisor_url)  tasks.push({ platform: 'TripAdvisor',  endpoint: `${baseUrl}/api/scrape-tripadvisor-reviews` })
 
     if (!process.env.CRON_SECRET) {
       return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 })

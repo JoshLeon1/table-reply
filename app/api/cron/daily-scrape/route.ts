@@ -36,7 +36,6 @@ export async function GET(request: NextRequest) {
       user_id,
       google_maps_url,
       yelp_url,
-      tripadvisor_url,
       profile:profiles!restaurant_profiles_user_id_fkey (
         is_paid,
         trial_started_at,
@@ -64,7 +63,6 @@ export async function GET(request: NextRequest) {
         user_id: string
         google_maps_url: string | null
         yelp_url: string | null
-        tripadvisor_url: string | null
         profile:
           | {
               is_paid: boolean | null
@@ -148,18 +146,6 @@ export async function GET(request: NextRequest) {
               const msg = err instanceof Error ? err.message : String(err)
               console.error(`[daily-scrape] Yelp failed for profile ${profile.id}:`, msg)
               errors.push(`Yelp ${profile.id}: ${msg}`)
-            })
-        )
-      }
-
-      if (profile.tripadvisor_url) {
-        tasks.push(
-          scrape('TripAdvisor', '/api/scrape-tripadvisor-reviews', profile.id, profile.user_id)
-            .then((n) => { totalNewReplies += n; processed++ })
-            .catch((err) => {
-              const msg = err instanceof Error ? err.message : String(err)
-              console.error(`[daily-scrape] TripAdvisor failed for profile ${profile.id}:`, msg)
-              errors.push(`TripAdvisor ${profile.id}: ${msg}`)
             })
         )
       }

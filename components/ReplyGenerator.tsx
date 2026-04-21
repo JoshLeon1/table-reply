@@ -19,7 +19,7 @@ interface ReplyGeneratorProps {
   restaurantProfile?: BusinessProfileSnippet | null
 }
 
-const platforms = ['Google', 'Yelp', 'TripAdvisor', 'OpenTable', 'Facebook', 'Other']
+const platforms = ['Google', 'Yelp', 'OpenTable', 'Facebook', 'Other']
 
 type Tone = 'warmer' | 'more-professional' | 'more-concise'
 

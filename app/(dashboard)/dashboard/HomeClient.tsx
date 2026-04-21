@@ -48,22 +48,6 @@ function YelpLogo({ size = 22 }: { size?: number }) {
   )
 }
 
-function TripAdvisorLogo({ size = 22 }: { size?: number }) {
-  // Stylized owl-eyes shape (TA's iconic two circles)
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <circle cx="7.5" cy="13" r="4" fill="#34E0A1"/>
-      <circle cx="16.5" cy="13" r="4" fill="#34E0A1"/>
-      <circle cx="7.5" cy="13" r="2" fill="#fff"/>
-      <circle cx="16.5" cy="13" r="2" fill="#fff"/>
-      <circle cx="7.5" cy="13" r="1" fill="#111"/>
-      <circle cx="16.5" cy="13" r="1" fill="#111"/>
-      <path d="M4 10.5C5.5 8 8.5 7 12 7s6.5 1 8 3.5" stroke="#34E0A1" strokeWidth="1.5" strokeLinecap="round"/>
-    </svg>
-  )
-}
-
-
 function SectionLabel({ children, badge }: { children: React.ReactNode; badge?: React.ReactNode }) {
   return (
     <div className="flex items-center gap-2.5 mb-4">
@@ -191,7 +175,6 @@ const LS_MANUAL = 'tr_manual_mode'
 function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: string; onEnterManual: () => void; onConnected: () => void }) {
   const [googleUrl, setGoogleUrl] = useState('')
   const [yelpUrl, setYelpUrl] = useState('')
-  const [taUrl, setTaUrl] = useState('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
@@ -199,9 +182,8 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
     setError('')
     const gTrimmed = googleUrl.trim()
     const yTrimmed = yelpUrl.trim()
-    const tTrimmed = taUrl.trim()
 
-    if (!gTrimmed && !yTrimmed && !tTrimmed) {
+    if (!gTrimmed && !yTrimmed) {
       setError('Add at least one platform URL to continue.')
       return
     }
@@ -211,10 +193,6 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
     }
     if (yTrimmed && !/yelp\.(com|to)/i.test(yTrimmed)) {
       setError("That Yelp URL doesn't look right. It should be a yelp.com link.")
-      return
-    }
-    if (tTrimmed && !tTrimmed.includes('tripadvisor.com')) {
-      setError("That TripAdvisor URL doesn't look right. It should be a tripadvisor.com page.")
       return
     }
 
@@ -227,7 +205,6 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
       const updates: Record<string, string> = {}
       if (gTrimmed) updates.google_maps_url = gTrimmed
       if (yTrimmed) updates.yelp_url = yTrimmed
-      if (tTrimmed) updates.tripadvisor_url = tTrimmed
 
       const { error: dbErr } = await supabase
         .from('business_profiles')
@@ -298,21 +275,6 @@ function SetupPanel({ ownerName, onEnterManual, onConnected }: { ownerName: stri
           />
         </div>
 
-        {/* TripAdvisor */}
-        <div className="bg-[#FEFCF8] rounded-xl border border-[#EDE6DC] p-4">
-          <div className="flex items-center gap-2.5 mb-3">
-            <TripAdvisorLogo size={20} />
-            <span className="text-[13px] font-medium text-[#111]">TripAdvisor</span>
-            <span className="text-[10px] font-medium text-[#A8A29E] bg-[#F8F6F3] border border-[#EDE6DC] px-2 py-0.5 rounded-full uppercase tracking-wide ml-auto">Optional</span>
-          </div>
-          <input
-            type="url"
-            value={taUrl}
-            onChange={e => setTaUrl(e.target.value)}
-            placeholder="https://www.tripadvisor.com/Restaurant_Review-..."
-            className="w-full h-10 px-3.5 rounded-xl bg-[#F8F6F3] border border-[#EDE6DC] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10 transition-all"
-          />
-        </div>
       </div>
 
       {/* Error */}
@@ -361,7 +323,7 @@ function ConnectNudge({ onExitManual }: { onExitManual: () => void }) {
       <div className="flex items-center gap-3">
         <svg className="w-4 h-4 text-[#57534E] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
         <p className="text-[13px] text-[#57534E]">
-          <span className="font-medium text-[#111111]">Auto-sync is off.</span> Connect Google, Yelp, or TripAdvisor to unlock automatic reviews and analytics.
+          <span className="font-medium text-[#111111]">Auto-sync is off.</span> Connect Google or Yelp to unlock automatic reviews and analytics.
         </p>
       </div>
       <div className="flex items-center gap-3 flex-shrink-0 pl-7 sm:pl-0">
@@ -380,7 +342,6 @@ function ConnectNudge({ onExitManual }: { onExitManual: () => void }) {
 const MANUAL_PLATFORMS = [
   { value: 'Google', label: 'Google' },
   { value: 'Yelp', label: 'Yelp' },
-  { value: 'TripAdvisor', label: 'TripAdvisor' },
 ]
 
 function ManualGenerator({ prominent = false }: { prominent?: boolean }) {
@@ -683,7 +644,6 @@ interface Props {
   userId: string
   googleMapsUrl: string | null
   yelpUrl: string | null
-  tripadvisorUrl: string | null
   hasGeneratedReply: boolean
   reviewsThisMonth: number
   reviewsLastMonth: number
@@ -839,7 +799,6 @@ export default function HomeClient({
   userId,
   googleMapsUrl,
   yelpUrl,
-  tripadvisorUrl,
   hasGeneratedReply,
   reviewsThisMonth,
   reviewsLastMonth,
@@ -860,7 +819,7 @@ export default function HomeClient({
   voiceTrainedThisMonth,
   autopilotEnabled,
 }: Props) {
-  const hasAnyPlatform = !!(googleMapsUrl || yelpUrl || tripadvisorUrl)
+  const hasAnyPlatform = !!(googleMapsUrl || yelpUrl)
 
   const [manualMode, setManualMode] = useState(false)
   const [modeHydrated, setModeHydrated] = useState(false)
@@ -910,7 +869,7 @@ export default function HomeClient({
       if (data.errors?.length > 0) {
         if (!data.newReviews) {
           // All platforms failed — strip the platform prefix for a cleaner message
-          const msg = (data.errors[0] as string).replace(/^(Google Maps|Yelp|TripAdvisor): /, '')
+          const msg = (data.errors[0] as string).replace(/^(Google Maps|Yelp): /, '')
           throw new Error(msg)
         }
         // Partial success — some platforms failed
@@ -967,7 +926,7 @@ export default function HomeClient({
             <div>
               <p className="text-[13px] text-[#57534E]">
                 <span className="font-medium text-[#111111]">
-                  {[googleMapsUrl && 'Google Maps', yelpUrl && 'Yelp', tripadvisorUrl && 'TripAdvisor'].filter(Boolean).join(', ')}
+                  {[googleMapsUrl && 'Google Maps', yelpUrl && 'Yelp'].filter(Boolean).join(', ')}
                 </span>
                 {' '}connected — run your first sync to pull in reviews.
               </p>

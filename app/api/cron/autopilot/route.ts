@@ -115,8 +115,7 @@ export async function GET(request: NextRequest) {
 
         // auto_approved or draft_only — generate reply
         const platformLabel =
-          review.source === 'yelp' ? 'Yelp' :
-          review.source === 'tripadvisor' ? 'TripAdvisor' : 'Google'
+          review.source === 'yelp' ? 'Yelp' : 'Google'
 
         const generatedReply = await generateReviewReply({
           businessName:  profile.business_name ?? '',

@@ -63,8 +63,6 @@ export async function generateReviewReply(params: GenerateReviewReplyParams): Pr
 
   const platformContext = platform === 'Yelp'
     ? 'This is a Yelp review — Yelp audiences value authenticity and directness.'
-    : platform === 'TripAdvisor'
-    ? 'This is a TripAdvisor review — TripAdvisor audiences are often travelers, so warmth and a welcoming tone matter.'
     : 'This is a Google Maps review — keep the reply professional and discoverable.'
 
   const systemPrompt = `You are a reply assistant for ${businessName}, a ${vibe} ${businessType} business. The owner's name is ${ownerName}. Write in this voice: ${voiceStyle}.${toneInstruction} About the business: ${description}. Platform: ${platformContext}

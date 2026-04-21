@@ -29,7 +29,6 @@ export async function GET() {
 
   const platformLabel = (source: string | null | undefined): string => {
     if (source === 'yelp') return 'Yelp'
-    if (source === 'tripadvisor') return 'TripAdvisor'
     return 'Google'
   }
 

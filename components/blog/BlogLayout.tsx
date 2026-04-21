@@ -54,7 +54,7 @@ export default function BlogLayout({ meta, children }: Props) {
               <Link href="/signup" className="underline font-semibold hover:text-[#C94E21] transition-colors">
                 ReplyFi drafts personalized replies in your voice
               </Link>{' '}
-              across Google, Yelp &amp; TripAdvisor. Free 7-day trial, no credit card.
+              across Google &amp; Yelp. Free 7-day trial, no credit card.
             </p>
           </div>
 
@@ -69,7 +69,7 @@ export default function BlogLayout({ meta, children }: Props) {
               Stop writing replies at 11pm.
             </h2>
             <p className="mt-2 text-[14px] text-[#57534E] leading-relaxed">
-              ReplyFi syncs your Google, Yelp and TripAdvisor reviews and drafts a personalized reply
+              ReplyFi syncs your Google and Yelp reviews and drafts a personalized reply
               for each one — in your business&apos;s voice. You approve and post in one tap.
             </p>
             <div className="mt-5 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">

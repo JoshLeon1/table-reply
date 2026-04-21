@@ -104,7 +104,7 @@ function SetupPanel({ profile, onSaved }: { profile: BusinessProfile; onSaved: (
       </div>
       <h1 className="text-[22px] text-[#111111] leading-[1.15] mb-2" style={{ fontWeight: 600, letterSpacing: '-0.022em' }}>Put Your Review Replies on Autopilot</h1>
       <p className="text-[13px] text-[#57534E]/80 max-w-[280px] sm:max-w-sm mb-8 leading-relaxed">
-        Connect Google Maps, Yelp, or TripAdvisor and ReplyFi will sync new reviews every morning, generate personalized replies, and queue them for your approval.
+        Connect Google Maps or Yelp and ReplyFi will sync new reviews every morning, generate personalized replies, and queue them for your approval.
       </p>
       <div className="w-full sm:max-w-lg text-left space-y-3">
         <label className="block text-[13px] font-medium text-[#111111]">Google Maps URL</label>
@@ -135,7 +135,7 @@ function SetupPanel({ profile, onSaved }: { profile: BusinessProfile; onSaved: (
         </button>
         <p className="text-[12px] text-[#A8A29E] text-center pt-1">
           Also connect{' '}
-          <a href="/settings" className="text-[#57534E] hover:text-[#E05A28] underline underline-offset-2 transition-colors">Yelp &amp; TripAdvisor in Settings →</a>
+          <a href="/settings" className="text-[#57534E] hover:text-[#E05A28] underline underline-offset-2 transition-colors">Yelp in Settings →</a>
         </p>
       </div>
       <details className="mt-8 text-left w-full sm:max-w-lg group">
@@ -191,7 +191,7 @@ const REVIEW_TRUNCATE_LENGTH = 200
 function buildPlatformDeepLink(
   source: string | null | undefined,
   reviewId: string,
-  profileUrls: { google?: string | null; yelp?: string | null; tripadvisor?: string | null } | undefined
+  profileUrls: { google?: string | null; yelp?: string | null } | undefined
 ): string | null {
   if (source === 'yelp') {
     // Yelp's ?hrid= param scrolls directly to the specific review
@@ -199,10 +199,6 @@ function buildPlatformDeepLink(
     const rawId = reviewId.startsWith('yelp-') ? reviewId.slice(5) : reviewId
     const base = profileUrls.yelp.split('?')[0]
     return `${base}?hrid=${encodeURIComponent(rawId)}`
-  }
-  if (source === 'tripadvisor') {
-    // No public deep link to individual TA reviews — link to listing
-    return profileUrls?.tripadvisor ?? null
   }
   // Google: link to Google Business Profile review inbox — this is where owners
   // actually respond, not the public Maps listing.
@@ -214,7 +210,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
   onApprove: (id: string) => Promise<void>
   onDismiss: (id: string) => void
   onRestore?: (id: string) => void
-  profileUrls?: { google?: string | null; yelp?: string | null; tripadvisor?: string | null }
+  profileUrls?: { google?: string | null; yelp?: string | null }
   isCopied?: boolean
 }) {
   const supabase = createClient()
@@ -240,7 +236,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
         body: JSON.stringify({
           reviewText: review.review_text,
           starRating: review.star_rating,
-          platform: review.source === 'yelp' ? 'Yelp' : review.source === 'tripadvisor' ? 'TripAdvisor' : 'Google',
+          platform: review.source === 'yelp' ? 'Yelp' : 'Google',
         }),
       })
       const data = await res.json()
@@ -269,7 +265,7 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
     // so popup blockers don't kill it. Fire-and-forget.
     if (platformUrl) {
       try { window.open(platformUrl, '_blank', 'noopener,noreferrer') } catch { /* noop */ }
-      // For platforms without per-review deep-links (Google, TripAdvisor), show
+      // For platforms without per-review deep-links (Google), show
       // a toast so the user knows which review to scroll for in the new tab.
       if (review.source !== 'yelp') {
         window.dispatchEvent(new CustomEvent('replyfi:post-reminder', {
@@ -309,12 +305,10 @@ function ReviewCard({ review: initialReview, onApprove, onDismiss, onRestore, pr
     setSavingEdit(false)
   }
 
-  const platformLabel = review.source === 'yelp' ? 'Yelp' : review.source === 'tripadvisor' ? 'TripAdvisor' : 'Google'
+  const platformLabel = review.source === 'yelp' ? 'Yelp' : 'Google'
   const platformUrl = buildPlatformDeepLink(review.source, review.review_id, profileUrls)
   const platformHint = review.source === 'yelp'
     ? 'Opens this review on Yelp'
-    : review.source === 'tripadvisor'
-    ? 'Opens your TripAdvisor listing'
     : 'Opens your Google Business Profile inbox'
 
   const handleDismiss = () => {
@@ -899,7 +893,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
               <ul className="divide-y divide-[#EDE9E4]">
                 {filtered.map((r, i) => (
                   <li key={r.id} className={i < 5 ? `animate-fade-up stagger-${i + 1}` : ''}>
-                    <ReviewCard review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }} isCopied={copiedId === r.id}/>
+                    <ReviewCard review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url }} isCopied={copiedId === r.id}/>
                   </li>
                 ))}
               </ul>
@@ -1041,7 +1035,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
                     <ul className="divide-y divide-[#EDE9E4]">
                       {filtered.map((r) => (
                         <li key={r.id}>
-                          <ReviewCard review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }}/>
+                          <ReviewCard review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url }}/>
                         </li>
                       ))}
                     </ul>
@@ -1072,7 +1066,7 @@ function ConnectedPanel({ profile, reviews, onApprove, onDismiss, onRestore, onS
               <ul className="divide-y divide-[#EDE9E4]">
                 {filtered.map((r) => (
                   <li key={r.id}>
-                    <ReviewCard review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url, tripadvisor: profile.tripadvisor_url }}/>
+                    <ReviewCard review={r} onApprove={onApprove} onDismiss={onDismiss} onRestore={onRestore} profileUrls={{ google: profile.google_maps_url, yelp: profile.yelp_url }}/>
                   </li>
                 ))}
               </ul>
@@ -1125,7 +1119,7 @@ export default function ReviewsClient({ profile, initialReviews, userId }: Props
   const [scrapeError, setScrapeError] = useState('')
   const [copiedId, setCopiedId]     = useState<string | null>(null)
   // Use the most recent sync time across all connected platforms
-  const mostRecentSync = [profile.last_scraped_at, profile.yelp_last_scraped_at, profile.tripadvisor_last_scraped_at]
+  const mostRecentSync = [profile.last_scraped_at, profile.yelp_last_scraped_at]
     .filter(Boolean).sort().pop() ?? null
   const [lastScrapedAt, setLastScrapedAt] = useState(mostRecentSync)
   const supabase = createClient()
@@ -1226,7 +1220,7 @@ export default function ReviewsClient({ profile, initialReviews, userId }: Props
     }
   }
 
-  const hasAnyPlatform = !!(mapsUrl || profile.yelp_url || profile.tripadvisor_url)
+  const hasAnyPlatform = !!(mapsUrl || profile.yelp_url)
 
   return (
     <>
@@ -1254,7 +1248,7 @@ export default function ReviewsClient({ profile, initialReviews, userId }: Props
 
 // ── Post-reminder toast ───────────────────────────────────────────────────────
 // Shown after "Copy & Approve" on platforms without per-review deep links
-// (Google, TripAdvisor). Helps users know which review to scroll for in the
+// (Google). Helps users know which review to scroll for in the
 // platform tab that just opened.
 function PostReminderToast() {
   const [state, setState] = useState<null | {

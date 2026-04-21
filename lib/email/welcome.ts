@@ -36,7 +36,7 @@ export async function sendWelcomeEmail(input: WelcomeEmailInput) {
     </p>
 
     <ol style="font-size:14px;line-height:1.7;color:#444;margin:0 0 22px;padding-left:20px;">
-      <li style="margin-bottom:6px;"><strong>We watch your reviews</strong> — Google, Yelp, TripAdvisor — every single day.</li>
+      <li style="margin-bottom:6px;"><strong>We watch your reviews</strong> — Google and Yelp — every single day.</li>
       <li style="margin-bottom:6px;"><strong>We draft a reply</strong> in your tone for each new review the moment it lands.</li>
       <li style="margin-bottom:6px;"><strong>You approve or edit</strong> — or flip on Autopilot and we handle the low-risk ones for you.</li>
     </ol>

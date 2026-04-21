@@ -229,7 +229,7 @@ export default function Post() {
 
       <p>
         <Link href="/signup">ReplyFi drafts replies like these automatically</Link>, in your restaurant&apos;s voice —
-        across Google, Yelp, and TripAdvisor. You edit if you want, approve, post. Free for 7 days, no credit card.
+        across Google and Yelp. You edit if you want, approve, post. Free for 7 days, no credit card.
       </p>
 
       <h2>Related reading</h2>

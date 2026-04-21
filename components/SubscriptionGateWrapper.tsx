@@ -124,7 +124,7 @@ function ExpiredPaywall() {
             {/* Value props */}
             <div className="space-y-2.5 mb-7 text-left">
               {[
-                'Auto-sync Google, Yelp & TripAdvisor reviews',
+                'Auto-sync Google & Yelp reviews',
                 'AI-drafted replies ready in seconds',
                 'Competitor tracking & keyword alerts',
                 'Review analytics & theme insights',

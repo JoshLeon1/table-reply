@@ -481,36 +481,6 @@ export default function GetMoreReviewsClient({ restaurantProfile }: Props) {
           lastScrapedAt={restaurantProfile.yelp_last_scraped_at}
         />
 
-        {/* TripAdvisor */}
-        <PlatformCard
-          logo={
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-[#34E0A1]/10 border border-[#34E0A1]/20">
-              <span className="text-[#34E0A1] font-black text-[11px] leading-none">TA</span>
-            </div>
-          }
-          name="TripAdvisor"
-          description="Pull in TripAdvisor reviews daily. AI replies are generated and queued for your approval."
-          placeholder="https://www.tripadvisor.com/Restaurant_Review-g..."
-          validate={(url) => {
-            if (!url) return 'Please enter your TripAdvisor URL.'
-            if (!url.includes('tripadvisor.com')) return 'URL must be a TripAdvisor business page.'
-            return null
-          }}
-          hint={
-            <>
-              <span className="font-medium text-[#57534E]">How to find it:</span> Search your business on{' '}
-              <a href="https://www.tripadvisor.com" target="_blank" rel="noopener noreferrer" className="text-[#E05A28] underline underline-offset-2">tripadvisor.com</a>
-              , open your page, copy the URL.
-              Format: <span className="font-mono text-[11px] text-[#57534E] bg-[#F3F0EC] px-1.5 py-0.5 rounded">tripadvisor.com/Restaurant_Review-g...-your-business.html</span>
-            </>
-          }
-          apiRoute="/api/scrape-tripadvisor-reviews"
-          dbColumn="tripadvisor_url"
-          profileId={restaurantProfile.id}
-          userId={restaurantProfile.user_id}
-          currentUrl={restaurantProfile.tripadvisor_url}
-          lastScrapedAt={restaurantProfile.tripadvisor_last_scraped_at}
-        />
       </div>
 
       {/* ── Section 2: Review Request Messages ──────────────────────────────── */}

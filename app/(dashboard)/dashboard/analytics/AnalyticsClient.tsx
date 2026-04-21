@@ -167,7 +167,7 @@ function EmptyState({ restaurantName }: { restaurantName: string }) {
       </div>
       <h2 className="text-lg font-semibold text-[#111111] mb-2">No data yet</h2>
       <p className="text-[13px] text-[#57534E] max-w-sm leading-relaxed mb-6">
-        Connect Google Maps, Yelp, or TripAdvisor and sync reviews to see analytics for {restaurantName}.
+        Connect Google Maps or Yelp and sync reviews to see analytics for {restaurantName}.
       </p>
       <a href="/dashboard/reviews" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#F3F0EC] hover:bg-[#E9E5E0] border border-[#EDE6DC] text-[#111111] text-[13px] font-medium transition-all">
         Connect a Platform →

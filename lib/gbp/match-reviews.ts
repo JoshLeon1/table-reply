@@ -1,13 +1,9 @@
 // lib/gbp/match-reviews.ts
-// After Outscraper inserts new reviews, this matches them to Google Business
-// Profile review resource names via reviewer name + date proximity (±2 days).
-// Stores the matched resource name in scraped_reviews.google_review_name.
-
 import { SupabaseClient } from '@supabase/supabase-js'
 import { gbpFetch, getGbpToken } from './client'
 
 interface GbpReview {
-  name: string // e.g. "accounts/123/locations/456/reviews/abc"
+  name: string
   reviewer: { displayName: string }
   createTime: string
 }
@@ -27,22 +23,19 @@ function normalize(name: string) {
 export async function matchAndStoreGbpReviewNames(
   supabase: SupabaseClient,
   userId: string,
-  newReviewDbIds: string[], // scraped_reviews.id values just inserted
+  businessProfileId: string,
+  newReviewDbIds: string[],
 ) {
   if (newReviewDbIds.length === 0) return
 
-  const token = await getGbpToken(userId)
+  const token = await getGbpToken(userId, businessProfileId)
   if (!token?.account_name || !token?.location_name) return
 
   const locationName = token.location_name
 
-  // Fetch up to 200 recent GBP reviews (one page is usually enough)
   let gbpReviews: GbpReview[] = []
   try {
-    const res = await gbpFetch(
-      userId,
-      `/${locationName}/reviews?pageSize=200`,
-    )
+    const res = await gbpFetch(userId, `/${locationName}/reviews?pageSize=200`, {}, businessProfileId)
     if (!res.ok) {
       console.error('[gbp-match] Failed to fetch GBP reviews:', res.status, await res.text())
       return
@@ -56,7 +49,6 @@ export async function matchAndStoreGbpReviewNames(
 
   if (gbpReviews.length === 0) return
 
-  // Fetch the scraped reviews we need to match
   const { data: scraped } = await supabase
     .from('scraped_reviews')
     .select('id, reviewer_name, review_datetime_utc')
@@ -65,7 +57,6 @@ export async function matchAndStoreGbpReviewNames(
 
   if (!scraped || scraped.length === 0) return
 
-  // Build a quick lookup of GBP reviews by normalized reviewer name
   const gbpByName = new Map<string, GbpReview[]>()
   for (const r of gbpReviews) {
     const key = normalize(r.reviewer?.displayName ?? '')
@@ -78,19 +69,12 @@ export async function matchAndStoreGbpReviewNames(
     const candidates = gbpByName.get(key) ?? []
     if (candidates.length === 0) continue
 
-    const scrapeTime = row.review_datetime_utc
-      ? new Date(row.review_datetime_utc).getTime()
-      : null
+    const scrapeTime = row.review_datetime_utc ? new Date(row.review_datetime_utc).getTime() : null
 
     let matched: GbpReview | null = null
     if (scrapeTime !== null) {
-      matched =
-        candidates.find((c) => {
-          const gbpTime = new Date(c.createTime).getTime()
-          return Math.abs(gbpTime - scrapeTime) <= TWO_DAYS_MS
-        }) ?? null
+      matched = candidates.find((c) => Math.abs(new Date(c.createTime).getTime() - scrapeTime) <= TWO_DAYS_MS) ?? null
     } else {
-      // No timestamp — use the only candidate if unambiguous
       matched = candidates.length === 1 ? candidates[0] : null
     }
 

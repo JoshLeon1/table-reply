@@ -1,24 +1,22 @@
 // lib/gbp/post-reply.ts
-// Posts an owner reply to a Google Business Profile review.
-// Returns { ok: true } on success, { ok: false, error } on failure.
-
 import { gbpFetch, getGbpToken } from './client'
 
 export async function postGbpReply(
   userId: string,
+  businessProfileId: string,
   googleReviewName: string,
   replyText: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  const token = await getGbpToken(userId)
+  const token = await getGbpToken(userId, businessProfileId)
   if (!token) {
-    return { ok: false, error: 'No GBP token — user has not connected Google Business Profile' }
+    return { ok: false, error: 'No GBP token — user has not connected Google Business Profile for this location' }
   }
 
   try {
     const res = await gbpFetch(userId, `/${googleReviewName}/reply`, {
       method: 'PUT',
       body: JSON.stringify({ comment: replyText }),
-    })
+    }, businessProfileId)
 
     if (res.ok) return { ok: true }
 

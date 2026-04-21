@@ -5,6 +5,7 @@ export const dynamic = 'force-dynamic'
 // account/location, then stores everything in google_business_tokens.
 
 import { NextRequest, NextResponse } from 'next/server'
+import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { saveGbpToken, resolveAccountAndLocation } from '@/lib/gbp/client'
 
 const TOKEN_URL = 'https://oauth2.googleapis.com/token'
@@ -61,9 +62,29 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${appUrl}/settings?tab=integrations&gbp=error`)
   }
 
+  // Look up the user's primary business profile ID
+  const supabaseAdmin = createServiceClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  )
+  const { data: bp } = await supabaseAdmin
+    .from('business_profiles')
+    .select('id')
+    .eq('user_id', userId)
+    .eq('is_primary', true)
+    .maybeSingle()
+
+  const businessProfileId: string | null = bp?.id ?? null
+
+  if (!businessProfileId) {
+    console.error('[gbp-callback] No primary business profile found for user', userId)
+    return NextResponse.redirect(`${appUrl}/settings?tab=integrations&gbp=error`)
+  }
+
   // Store tokens (without account/location first so we can call the API)
   await saveGbpToken({
     userId,
+    businessProfileId,
     accessToken: tokens.access_token,
     refreshToken: tokens.refresh_token,
     expiresIn: tokens.expires_in ?? 3600,
@@ -72,10 +93,11 @@ export async function GET(request: NextRequest) {
   })
 
   // Resolve account + first location, update row
-  const resolved = await resolveAccountAndLocation(userId)
+  const resolved = await resolveAccountAndLocation(userId, businessProfileId)
   if (resolved) {
     await saveGbpToken({
       userId,
+      businessProfileId,
       accessToken: tokens.access_token,
       refreshToken: tokens.refresh_token,
       expiresIn: tokens.expires_in ?? 3600,

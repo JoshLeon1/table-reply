@@ -116,7 +116,7 @@ export async function GET(request: NextRequest) {
     // ── 2. Fetch unhandled pending reviews for this profile ──────────────────
     const { data: reviews, error: reviewsErr } = await supabase
       .from('scraped_reviews')
-      .select('id, user_id, star_rating, review_text, source, google_review_name')
+      .select('id, user_id, business_profile_id, star_rating, review_text, source, google_review_name')
       .eq('business_profile_id', profile.id)
       .eq('autopilot_handled', false)
       .eq('reply_status', 'pending')
@@ -199,9 +199,9 @@ export async function GET(request: NextRequest) {
             counters.autoApproved++
             // Post to GBP if review has a matched resource name
             if (review.source === 'google' && review.google_review_name) {
-              const token = await getGbpToken(review.user_id)
+              const token = await getGbpToken(review.user_id, review.business_profile_id ?? undefined)
               if (token) {
-                const gbp = await postGbpReply(review.user_id, review.google_review_name, generatedReply)
+                const gbp = await postGbpReply(review.user_id, review.business_profile_id ?? '', review.google_review_name, generatedReply)
                 if (gbp.ok) {
                   await supabase
                     .from('scraped_reviews')

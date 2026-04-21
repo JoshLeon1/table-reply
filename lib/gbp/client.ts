@@ -1,7 +1,4 @@
 // lib/gbp/client.ts
-// Google Business Profile API client.
-// Handles token storage/refresh and wraps the mybusiness v4 REST API.
-
 import { createClient } from '@supabase/supabase-js'
 
 const GBP_BASE = 'https://mybusiness.googleapis.com/v4'
@@ -9,6 +6,7 @@ const TOKEN_URL = 'https://oauth2.googleapis.com/token'
 
 export interface GbpToken {
   user_id: string
+  business_profile_id: string | null
   access_token: string
   refresh_token: string
   expires_at: string
@@ -23,13 +21,18 @@ function adminClient() {
   )
 }
 
-export async function getGbpToken(userId: string): Promise<GbpToken | null> {
+export async function getGbpToken(userId: string, businessProfileId?: string): Promise<GbpToken | null> {
   const supabase = adminClient()
-  const { data } = await supabase
+  let query = supabase
     .from('google_business_tokens')
     .select('*')
     .eq('user_id', userId)
-    .maybeSingle()
+
+  if (businessProfileId) {
+    query = query.eq('business_profile_id', businessProfileId)
+  }
+
+  const { data } = await query.maybeSingle()
   return data ?? null
 }
 
@@ -54,6 +57,7 @@ async function refreshAccessToken(token: GbpToken): Promise<GbpToken> {
   const expiresAt = new Date(Date.now() + json.expires_in * 1000).toISOString()
 
   const supabase = adminClient()
+  // Update ALL rows for this user — the credential is shared across locations
   await supabase
     .from('google_business_tokens')
     .update({
@@ -66,12 +70,11 @@ async function refreshAccessToken(token: GbpToken): Promise<GbpToken> {
   return { ...token, access_token: json.access_token, expires_at: expiresAt }
 }
 
-async function getValidToken(userId: string): Promise<GbpToken> {
-  const token = await getGbpToken(userId)
+async function getValidToken(userId: string, businessProfileId?: string): Promise<GbpToken> {
+  const token = await getGbpToken(userId, businessProfileId)
   if (!token) throw new Error('No GBP token for user')
 
   const expiresAt = new Date(token.expires_at).getTime()
-  // Refresh if expires within 2 minutes
   if (Date.now() >= expiresAt - 120_000) {
     return refreshAccessToken(token)
   }
@@ -82,8 +85,9 @@ export async function gbpFetch(
   userId: string,
   path: string,
   options: RequestInit = {},
+  businessProfileId?: string,
 ): Promise<Response> {
-  const token = await getValidToken(userId)
+  const token = await getValidToken(userId, businessProfileId)
   return fetch(`${GBP_BASE}${path}`, {
     ...options,
     headers: {
@@ -96,6 +100,7 @@ export async function gbpFetch(
 
 export async function saveGbpToken(params: {
   userId: string
+  businessProfileId: string
   accessToken: string
   refreshToken: string
   expiresIn: number
@@ -107,6 +112,7 @@ export async function saveGbpToken(params: {
   await supabase.from('google_business_tokens').upsert(
     {
       user_id: params.userId,
+      business_profile_id: params.businessProfileId,
       access_token: params.accessToken,
       refresh_token: params.refreshToken,
       expires_at: expiresAt,
@@ -114,22 +120,24 @@ export async function saveGbpToken(params: {
       location_name: params.locationName,
       updated_at: new Date().toISOString(),
     },
-    { onConflict: 'user_id' },
+    { onConflict: 'user_id,business_profile_id' },
   )
 }
 
-export async function deleteGbpToken(userId: string) {
+export async function deleteGbpToken(userId: string, businessProfileId?: string) {
   const supabase = adminClient()
-  await supabase.from('google_business_tokens').delete().eq('user_id', userId)
+  let query = supabase.from('google_business_tokens').delete().eq('user_id', userId)
+  if (businessProfileId) {
+    query = query.eq('business_profile_id', businessProfileId)
+  }
+  await query
 }
 
-// Fetch all accounts for the authenticated user and resolve their first location.
-// Returns { accountName, locationName } or null if none found.
 export async function resolveAccountAndLocation(
   userId: string,
+  businessProfileId?: string,
 ): Promise<{ accountName: string; locationName: string } | null> {
-  // List accounts
-  const accRes = await gbpFetch(userId, '/accounts')
+  const accRes = await gbpFetch(userId, '/accounts', {}, businessProfileId)
   if (!accRes.ok) {
     console.error('[gbp] Failed to list accounts:', await accRes.text())
     return null
@@ -139,9 +147,7 @@ export async function resolveAccountAndLocation(
   if (accounts.length === 0) return null
 
   const accountName = accounts[0].name
-
-  // List locations under first account
-  const locRes = await gbpFetch(userId, `/${accountName}/locations?pageSize=1`)
+  const locRes = await gbpFetch(userId, `/${accountName}/locations?pageSize=1`, {}, businessProfileId)
   if (!locRes.ok) {
     console.error('[gbp] Failed to list locations:', await locRes.text())
     return null

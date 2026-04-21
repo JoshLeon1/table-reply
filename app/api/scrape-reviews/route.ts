@@ -485,7 +485,7 @@ export async function POST(request: NextRequest) {
 
   // ── Match new reviews to GBP resource names ───────────────────────────
   if (newReviewDbIds.length > 0) {
-    await matchAndStoreGbpReviewNames(supabaseAdmin, userId, newReviewDbIds).catch((err) =>
+    await matchAndStoreGbpReviewNames(supabaseAdmin, userId, restaurantProfileId, newReviewDbIds).catch((err) =>
       console.error('[scrape-reviews] GBP match error (non-fatal):', err)
     )
   }

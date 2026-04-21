@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
   // Fetch the review to get google_review_name and generated_reply
   const { data: review, error: fetchErr } = await supabaseAdmin
     .from('scraped_reviews')
-    .select('id, user_id, google_review_name, generated_reply, source')
+    .select('id, user_id, business_profile_id, google_review_name, generated_reply, source')
     .eq('id', reviewId)
     .eq('user_id', user.id)
     .maybeSingle()
@@ -59,9 +59,9 @@ export async function POST(request: NextRequest) {
   let gbpError: string | undefined
 
   if (review.source === 'google' && review.google_review_name) {
-    const token = await getGbpToken(user.id)
+    const token = await getGbpToken(user.id, review.business_profile_id ?? undefined)
     if (token) {
-      const result = await postGbpReply(user.id, review.google_review_name, reply)
+      const result = await postGbpReply(user.id, review.business_profile_id ?? '', review.google_review_name, reply)
       if (result.ok) {
         gbpPosted = true
         await supabaseAdmin

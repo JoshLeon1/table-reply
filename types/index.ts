@@ -47,6 +47,8 @@ export interface BusinessProfile {
   review_request_messages?: { sms: string; email: string; receipt: string; tablecard: string } | null
   reply_language?: string | null
   reply_preferences?: ReplyPreferences | null
+  location_label?: string | null
+  is_primary?: boolean | null
 }
 
 export interface Reply {

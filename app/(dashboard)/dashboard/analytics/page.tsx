@@ -4,6 +4,7 @@ export const metadata = { title: 'Analytics — ReplyFi' }
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
+import { getActiveLocationId } from '@/lib/locations/active'
 import AnalyticsClient from './AnalyticsClient'
 import type { ScrapedReview } from '@/types'
 
@@ -16,20 +17,27 @@ export default async function AnalyticsPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: profile } = await supabaseAdmin
+  const activeLocationId = getActiveLocationId()
+
+  let profileQuery = supabaseAdmin
     .from('business_profiles')
     .select('*')
     .eq('user_id', user.id)
-    .maybeSingle()
 
+  if (activeLocationId) {
+    profileQuery = profileQuery.eq('id', activeLocationId)
+  } else {
+    profileQuery = profileQuery.eq('is_primary', true)
+  }
+
+  const { data: profile } = await profileQuery.maybeSingle()
   if (!profile) redirect('/settings')
 
-  // Include skipped reviews (no reply text) — they still have star ratings
-  // that count toward averages, trends, and volume metrics.
   const { data: reviews } = await supabaseAdmin
     .from('scraped_reviews')
     .select('*')
     .eq('user_id', user.id)
+    .eq('business_profile_id', profile.id)
     .order('review_datetime_utc', { ascending: false })
 
   return (

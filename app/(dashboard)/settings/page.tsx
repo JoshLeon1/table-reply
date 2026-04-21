@@ -4,6 +4,7 @@ export const metadata = { title: 'Settings — ReplyFi' }
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
+import { getActiveLocationId } from '@/lib/locations/active'
 import SettingsPageClient from './SettingsPageClient'
 
 export default async function SettingsPage() {
@@ -17,11 +18,25 @@ export default async function SettingsPage() {
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
   )
 
-  const [{ data: profile }, { data: restaurantProfile }, { data: keywordAlerts }, { data: gbpToken }] = await Promise.all([
+  const activeLocationId = getActiveLocationId()
+
+  let profileQuery = supabase
+    .from('business_profiles')
+    .select('*')
+    .eq('user_id', user.id)
+
+  if (activeLocationId) {
+    profileQuery = profileQuery.eq('id', activeLocationId)
+  } else {
+    profileQuery = profileQuery.eq('is_primary', true)
+  }
+
+  const [{ data: profile }, { data: restaurantProfile }, { data: keywordAlerts }, { data: gbpToken }, { data: allLocations }] = await Promise.all([
     supabase.from('profiles').select('*').eq('id', user.id).maybeSingle(),
-    supabase.from('business_profiles').select('*').eq('user_id', user.id).maybeSingle(),
+    profileQuery.maybeSingle(),
     supabase.from('keyword_alerts').select('id, keyword, alert_type, user_id, created_at').eq('user_id', user.id).order('created_at', { ascending: true }),
     supabaseAdmin.from('google_business_tokens').select('location_name').eq('user_id', user.id).maybeSingle(),
+    supabase.from('business_profiles').select('id, business_name, location_label, is_primary, last_scraped_at, google_maps_url, yelp_url').eq('user_id', user.id).order('is_primary', { ascending: false }),
   ])
 
   if (!restaurantProfile) redirect('/onboarding')
@@ -62,6 +77,8 @@ export default async function SettingsPage() {
         autopilotRules={savedAutopilot as import('@/types').AutopilotRules | null ?? null}
         gbpConnected={!!gbpToken}
         gbpLocationName={gbpToken?.location_name ?? null}
+        allLocations={allLocations ?? []}
+        activeLocationId={activeLocationId ?? restaurantProfile?.id ?? ''}
       />
     </div>
   )

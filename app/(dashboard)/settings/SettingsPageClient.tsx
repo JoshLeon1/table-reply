@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { useSearchParams } from 'next/navigation'
 import BusinessProfileForm from '@/components/BusinessProfileForm'
 import GoogleConnectSection from '@/components/GoogleConnectSection'
@@ -46,6 +47,16 @@ interface Props {
   autopilotRules?: AutopilotRules | null
   gbpConnected?: boolean
   gbpLocationName?: string | null
+  allLocations: Array<{
+    id: string
+    business_name: string
+    location_label: string | null
+    is_primary: boolean | null
+    last_scraped_at: string | null
+    google_maps_url: string | null
+    yelp_url: string | null
+  }>
+  activeLocationId: string
 }
 
 // ─── Section header ───────────────────────────────────────────────────────────
@@ -107,6 +118,16 @@ const TABS = [
       </svg>
     ),
   },
+  {
+    id: 'locations',
+    label: 'Locations',
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+    ),
+  },
 ] as const
 
 type TabId = typeof TABS[number]['id']
@@ -126,12 +147,14 @@ export default function SettingsPageClient({
   autopilotRules: initialAutopilotRules,
   gbpConnected = false,
   gbpLocationName = null,
+  allLocations,
+  activeLocationId,
 }: Props) {
   // If arriving from the trial banner / paywall "Upgrade now" link, open Account tab directly
   const searchParams = useSearchParams()
   const tabParam = searchParams.get('tab')
   const [activeTab, setActiveTab] = useState<TabId>(
-    tabParam === 'account' ? 'account' : tabParam === 'autopilot' ? 'autopilot' : tabParam === 'replies' ? 'replies' : tabParam === 'integrations' ? 'integrations' : 'profile'
+    tabParam === 'account' ? 'account' : tabParam === 'autopilot' ? 'autopilot' : tabParam === 'replies' ? 'replies' : tabParam === 'integrations' ? 'integrations' : tabParam === 'locations' ? 'locations' : 'profile'
   )
 
   // Reply prefs state
@@ -723,6 +746,13 @@ export default function SettingsPageClient({
     replies: renderReplies(),
     autopilot: renderAutopilot(),
     account: renderAccount(),
+    locations: (
+      <LocationsTab
+        locations={allLocations}
+        activeLocationId={activeLocationId}
+        userId={userId}
+      />
+    ),
   }
 
   return (
@@ -755,6 +785,173 @@ export default function SettingsPageClient({
 
       {/* Tab content */}
       <div>{content[activeTab]}</div>
+    </div>
+  )
+}
+
+// ─── Locations tab ────────────────────────────────────────────────────────────
+
+function LocationsTab({
+  locations,
+  activeLocationId,
+  userId,
+}: {
+  locations: Array<{
+    id: string
+    business_name: string
+    location_label: string | null
+    is_primary: boolean | null
+    last_scraped_at: string | null
+    google_maps_url: string | null
+    yelp_url: string | null
+  }>
+  activeLocationId: string
+  userId: string
+}) {
+  const router = useRouter()
+  const [adding, setAdding] = useState(false)
+  const [showAddForm, setShowAddForm] = useState(false)
+  const [newLabel, setNewLabel] = useState('')
+  const [newGoogleUrl, setNewGoogleUrl] = useState('')
+  const [newYelpUrl, setNewYelpUrl] = useState('')
+  const [addError, setAddError] = useState('')
+  const [removingId, setRemovingId] = useState<string | null>(null)
+
+  // userId is reserved for future per-location GBP connect flow
+  void userId
+
+  const handleAdd = async () => {
+    setAddError('')
+    if (!newLabel.trim()) { setAddError('Location name is required.'); return }
+    setAdding(true)
+    try {
+      const res = await fetch('/api/locations/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          locationLabel: newLabel.trim(),
+          googleMapsUrl: newGoogleUrl.trim() || null,
+          yelpUrl: newYelpUrl.trim() || null,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error ?? 'Failed to add location')
+      setShowAddForm(false)
+      setNewLabel(''); setNewGoogleUrl(''); setNewYelpUrl('')
+      router.refresh()
+    } catch (err) {
+      setAddError(err instanceof Error ? err.message : 'Something went wrong.')
+    } finally { setAdding(false) }
+  }
+
+  const handleRemove = async (locationId: string) => {
+    if (!confirm('Remove this location? All reviews for it will be permanently deleted.')) return
+    setRemovingId(locationId)
+    try {
+      const res = await fetch(`/api/locations/${locationId}`, { method: 'DELETE' })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error ?? 'Failed to remove location')
+      router.refresh()
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Something went wrong.')
+    } finally { setRemovingId(null) }
+  }
+
+  return (
+    <div className="space-y-5">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-[15px] font-semibold text-[#111]">Locations</h2>
+          <p className="text-[13px] text-[#57534E] mt-0.5">Each location has its own review feed and sync.</p>
+        </div>
+        <button
+          onClick={() => setShowAddForm(v => !v)}
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] text-white text-[12px] font-medium transition-colors"
+        >
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/></svg>
+          Add location
+        </button>
+      </div>
+
+      {showAddForm && (
+        <div className="bg-[#FEFCF8] border border-[#EDE6DC] rounded-xl p-4 space-y-3">
+          <h3 className="text-[13px] font-semibold text-[#111]">New location</h3>
+          <div className="space-y-2">
+            <input
+              type="text"
+              value={newLabel}
+              onChange={e => setNewLabel(e.target.value)}
+              placeholder="Location name (e.g. Downtown)"
+              className="w-full h-10 px-3.5 rounded-xl bg-[#F8F6F3] border border-[#EDE6DC] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10"
+            />
+            <input
+              type="url"
+              value={newGoogleUrl}
+              onChange={e => setNewGoogleUrl(e.target.value)}
+              placeholder="Google Maps URL (optional)"
+              className="w-full h-10 px-3.5 rounded-xl bg-[#F8F6F3] border border-[#EDE6DC] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10"
+            />
+            <input
+              type="url"
+              value={newYelpUrl}
+              onChange={e => setNewYelpUrl(e.target.value)}
+              placeholder="Yelp URL (optional)"
+              className="w-full h-10 px-3.5 rounded-xl bg-[#F8F6F3] border border-[#EDE6DC] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10"
+            />
+          </div>
+          {addError && <p className="text-[12px] text-[#B84A1A]">{addError}</p>}
+          <div className="flex gap-2">
+            <button
+              onClick={handleAdd}
+              disabled={adding}
+              className="px-4 py-2 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] text-white text-[12px] font-medium disabled:opacity-50 transition-colors"
+            >
+              {adding ? 'Adding…' : 'Add location'}
+            </button>
+            <button
+              onClick={() => setShowAddForm(false)}
+              className="px-4 py-2 rounded-xl bg-[#F3F0EC] text-[#57534E] text-[12px] font-medium hover:bg-[#EDE9E4] transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div className="space-y-3">
+        {locations.map(loc => (
+          <div key={loc.id} className="flex items-center gap-3 bg-[#FEFCF8] border border-[#EDE6DC] rounded-xl px-4 py-3.5">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-[13px] font-medium text-[#111] truncate">
+                  {loc.location_label ?? loc.business_name}
+                </span>
+                {loc.is_primary && (
+                  <span className="text-[10px] font-medium text-[#57534E] bg-[#F3F0EC] border border-[#EDE6DC] rounded-full px-2 py-0.5">Primary</span>
+                )}
+                {loc.id === activeLocationId && (
+                  <span className="text-[10px] font-medium text-[#E05A28] bg-[#FEF6EF] border border-[#F4DCC4] rounded-full px-2 py-0.5">Active</span>
+                )}
+              </div>
+              <p className="text-[11px] text-[#A8A29E] mt-0.5">
+                {loc.google_maps_url ? 'Google' : ''}
+                {loc.google_maps_url && loc.yelp_url ? ' · ' : ''}
+                {loc.yelp_url ? 'Yelp' : ''}
+                {!loc.google_maps_url && !loc.yelp_url ? 'No platforms connected' : ''}
+              </p>
+            </div>
+            {!loc.is_primary && (
+              <button
+                onClick={() => handleRemove(loc.id)}
+                disabled={removingId === loc.id}
+                className="text-[12px] text-[#A8A29E] hover:text-[#B84A1A] transition-colors disabled:opacity-40 flex-shrink-0"
+              >
+                {removingId === loc.id ? 'Removing…' : 'Remove'}
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

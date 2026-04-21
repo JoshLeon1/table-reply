@@ -70,7 +70,10 @@ export async function middleware(request: NextRequest) {
     }
 
     // Logged-in user already has a profile and tries to go to onboarding → send to dashboard
-    if (isOnboarding && user) {
+    // EXCEPT for /onboarding/demo — that's a post-profile step. Bouncing it back
+    // to /dashboard causes an infinite redirect loop with the dashboard page,
+    // which itself redirects to /onboarding/demo when has_seen_demo is false.
+    if (isOnboarding && user && pathname !== '/onboarding/demo') {
       const { data: profile } = await supabase
         .from('business_profiles')
         .select('id')

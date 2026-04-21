@@ -154,12 +154,14 @@ export async function GET(request: NextRequest) {
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 
-  // ── 1. Find users with autopilot.enabled AND autopilot.dailyDigest ──────────
-  // Only primary profiles to avoid duplicates for multi-location users
-  const { data: profiles, error: profilesErr } = await supabase
+  // ── 1. Find ANY location with autopilot.enabled + dailyDigest ──────────────
+  // Previously filtered to is_primary=true, which silently dropped digest
+  // emails for multi-location users whose digest was enabled on a secondary
+  // location. Group by user_id so each user gets exactly one email that
+  // aggregates autopilot activity across ALL of their locations.
+  const { data: digestProfiles, error: profilesErr } = await supabase
     .from('business_profiles')
-    .select('id, user_id, business_name, reply_preferences')
-    .eq('is_primary', true)
+    .select('id, user_id, business_name, is_primary, reply_preferences')
     .filter('reply_preferences->autopilot->>enabled', 'eq', 'true')
     .filter('reply_preferences->autopilot->>dailyDigest', 'eq', 'true')
 
@@ -168,8 +170,30 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to fetch profiles' }, { status: 500 })
   }
 
-  if (!profiles || profiles.length === 0) {
+  if (!digestProfiles || digestProfiles.length === 0) {
     return NextResponse.json({ sent: 0, skipped: 0 })
+  }
+
+  // Collect every user who opted in on at least one location.
+  const optedInUserIds = Array.from(new Set(digestProfiles.map((p) => p.user_id)))
+
+  // For each user, fetch ALL of their locations so the digest covers every
+  // autopilot action regardless of which location produced it.
+  const { data: allLocations, error: allErr } = await supabase
+    .from('business_profiles')
+    .select('id, user_id, business_name, is_primary')
+    .in('user_id', optedInUserIds)
+
+  if (allErr) {
+    console.error('[autopilot-digest] Failed to fetch all locations:', allErr)
+    return NextResponse.json({ error: 'Failed to fetch locations' }, { status: 500 })
+  }
+
+  const locationsByUser = new Map<string, Array<{ id: string; user_id: string; business_name: string; is_primary: boolean | null }>>()
+  for (const loc of allLocations ?? []) {
+    const list = locationsByUser.get(loc.user_id) ?? []
+    list.push(loc)
+    locationsByUser.set(loc.user_id, list)
   }
 
   // ── 2. Batch-fetch auth users for email addresses ───────────────────────────
@@ -191,32 +215,35 @@ export async function GET(request: NextRequest) {
   let sent = 0
   let skipped = 0
 
-  for (const profile of profiles) {
+  for (const userId of optedInUserIds) {
     try {
-      const userEmail = emailMap.get(profile.user_id)
+      const userEmail = emailMap.get(userId)
       if (!userEmail) { skipped++; continue }
 
       // Skip churned / expired-trial users
-      const hasAccess = await hasActiveAccess(supabase, profile.user_id)
+      const hasAccess = await hasActiveAccess(supabase, userId)
       if (!hasAccess) { skipped++; continue }
 
-      // Fetch reviews processed by autopilot in the last 24h
+      const userLocations = locationsByUser.get(userId) ?? []
+      if (userLocations.length === 0) { skipped++; continue }
+      const locationIds = userLocations.map((l) => l.id)
+
+      // Fetch autopilot activity across ALL of this user's locations
       const { data: rows, error: rowsErr } = await supabase
         .from('scraped_reviews')
         .select('autopilot_action')
-        .eq('business_profile_id', profile.id)
+        .in('business_profile_id', locationIds)
         .eq('autopilot_handled', true)
         .gte('autopilot_processed_at', since24h)
 
       if (rowsErr) {
-        console.error(`[autopilot-digest] Error fetching reviews for profile ${profile.id}:`, rowsErr)
+        console.error(`[autopilot-digest] Error fetching reviews for user ${userId}:`, rowsErr)
         skipped++
         continue
       }
 
       if (!rows || rows.length === 0) { skipped++; continue }
 
-      // Tally by action
       const counts: DigestCounts = {
         auto_approved: 0,
         draft_only: 0,
@@ -230,9 +257,22 @@ export async function GET(request: NextRequest) {
         if (a && a in counts) counts[a]++
       }
 
-      // Check if user has dailyDigest explicitly set (defensive — already filtered above)
-      const prefs = profile.reply_preferences as { autopilot?: AutopilotRules } | null
-      if (!prefs?.autopilot?.dailyDigest) { skipped++; continue }
+      // Defensive: confirm at least one of this user's digest-opted-in
+      // profiles still has dailyDigest set (protects against race with a
+      // settings-save that ran between the two SELECTs above).
+      const userDigestProfiles = digestProfiles.filter((p) => p.user_id === userId)
+      const stillOptedIn = userDigestProfiles.some((p) => {
+        const prefs = p.reply_preferences as { autopilot?: AutopilotRules } | null
+        return prefs?.autopilot?.dailyDigest === true
+      })
+      if (!stillOptedIn) { skipped++; continue }
+
+      // Use the primary location's name as the digest label; fall back to
+      // the first location if no primary is marked (shouldn't happen).
+      const primary = userLocations.find((l) => l.is_primary) ?? userLocations[0]
+      const businessLabel = userLocations.length > 1
+        ? `${primary.business_name} + ${userLocations.length - 1} more`
+        : primary.business_name
 
       const subject = `Autopilot processed ${counts.total} ${counts.total === 1 ? 'reply' : 'replies'} overnight`
 
@@ -242,20 +282,20 @@ export async function GET(request: NextRequest) {
         replyTo: REPLY_TO_SUPPORT,
         subject,
         headers: buildUnsubscribeHeaders(),
-        html: buildDigestHtml({ businessName: profile.business_name, counts }),
+        html: buildDigestHtml({ businessName: businessLabel, counts }),
       })
 
       if (sendErr) {
-        console.error(`[autopilot-digest] Resend error for user ${profile.user_id}:`, sendErr)
+        console.error(`[autopilot-digest] Resend error for user ${userId}:`, sendErr)
         skipped++
         continue
       }
 
-      console.log(`[autopilot-digest] Sent to ${userEmail} — ${counts.total} processed`)
+      console.log(`[autopilot-digest] Sent to ${userEmail} — ${counts.total} processed across ${userLocations.length} location(s)`)
       sent++
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err)
-      console.error(`[autopilot-digest] Unexpected error for profile ${profile.id}:`, msg)
+      console.error(`[autopilot-digest] Unexpected error for user ${userId}:`, msg)
       skipped++
     }
   }

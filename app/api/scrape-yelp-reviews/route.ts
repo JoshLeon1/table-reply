@@ -124,11 +124,14 @@ export async function POST(request: NextRequest) {
       // NOTE: enable prod logging temporarily — users reporting zero Yelp
       // reviews. Log the URL + Outscraper response shape to diagnose.
       console.log('[scrape-yelp] Starting sync for user=%s yelp_url=%s', userId, profile.yelp_url)
+      // NOTE: do not send a `sort` param. Outscraper's Yelp endpoint returns
+      // zero reviews when `sort=yelp_sort_recent` is present (verified against
+      // Cabo Bob's Austin: sort present → 0 reviews, sort absent → 100). We
+      // filter to the last 30 days client-side after parsing.
       const outscrapeRes = await fetch(
         `https://api.app.outscraper.com/yelp/reviews` +
           `?query=${encodeURIComponent(profile.yelp_url)}` +
-          `&reviewsLimit=200` +
-          `&sort=yelp_sort_recent`,
+          `&reviewsLimit=200`,
         {
           headers: {
             'X-API-KEY': process.env.OUTSCRAPER_API_KEY!,

@@ -58,10 +58,10 @@ export async function POST(request: NextRequest) {
   let gbpPosted = false
   let gbpError: string | undefined
 
-  if (review.source === 'google' && review.google_review_name) {
-    const token = await getGbpToken(user.id, review.business_profile_id ?? undefined)
+  if (review.source === 'google' && review.google_review_name && review.business_profile_id) {
+    const token = await getGbpToken(user.id, review.business_profile_id)
     if (token) {
-      const result = await postGbpReply(user.id, review.business_profile_id ?? '', review.google_review_name, reply)
+      const result = await postGbpReply(user.id, review.business_profile_id, review.google_review_name, reply)
       if (result.ok) {
         gbpPosted = true
         await supabaseAdmin

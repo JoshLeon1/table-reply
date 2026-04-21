@@ -23,6 +23,9 @@ export async function GET(request: NextRequest) {
   const appUrl = (process.env.NEXT_PUBLIC_APP_URL ?? '').replace(/\/$/, '')
   const redirectUri = `${appUrl}/api/auth/google-business/callback`
 
+  const locationId = request.nextUrl.searchParams.get('locationId')
+  const state = locationId ? `${user.id}:${locationId}` : user.id
+
   const params = new URLSearchParams({
     client_id: clientId,
     redirect_uri: redirectUri,
@@ -30,7 +33,7 @@ export async function GET(request: NextRequest) {
     scope: SCOPE,
     access_type: 'offline',
     prompt: 'consent',
-    state: user.id,
+    state,
   })
 
   return NextResponse.redirect(

@@ -199,9 +199,9 @@ export async function GET(request: NextRequest) {
             counters.autoApproved++
             // Post to GBP if review has a matched resource name
             if (review.source === 'google' && review.google_review_name) {
-              const token = await getGbpToken(review.user_id, review.business_profile_id ?? undefined)
+              const token = await getGbpToken(profile.user_id, profile.id)
               if (token) {
-                const gbp = await postGbpReply(review.user_id, review.business_profile_id ?? '', review.google_review_name, generatedReply)
+                const gbp = await postGbpReply(profile.user_id, profile.id, review.google_review_name, generatedReply)
                 if (gbp.ok) {
                   await supabase
                     .from('scraped_reviews')

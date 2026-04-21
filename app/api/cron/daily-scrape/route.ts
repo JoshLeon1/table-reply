@@ -1,4 +1,10 @@
 export const dynamic = 'force-dynamic'
+// Pro plan allows up to 300s for cron functions. Daily-scrape is the
+// orchestrator that fans out to scrape-reviews/scrape-yelp-reviews (each
+// runs in its own 60s function) — at high user counts, orchestrating
+// 100+ profiles needs more than 60s even with concurrency control.
+// Hobby will silently cap this at 60s, which is fine for low user counts.
+export const maxDuration = 300
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
@@ -121,37 +127,52 @@ export async function GET(request: NextRequest) {
     throw new Error(err.error ?? res.statusText ?? `HTTP ${res.status}`)
   }
 
-  // Process all profiles in parallel (up to all at once — each scrape is network-bound)
-  await Promise.allSettled(
-    profiles.map(async (profile) => {
-      const tasks: Promise<void>[] = []
+  // Scale-safe fanout: process profiles in concurrency-limited waves rather
+  // than firing everything at once. At N=500 users, unbounded parallelism
+  // would trigger Outscraper 429s, hit Vercel concurrency caps, and stress
+  // Anthropic rate limits. A pool of ~10 in flight keeps load predictable
+  // while still finishing a typical daily run well inside maxDuration.
+  const PROFILE_CONCURRENCY = 10
 
-      if (profile.google_maps_url) {
-        tasks.push(
-          scrape('Google', '/api/scrape-reviews', profile.id, profile.user_id)
-            .then((n) => { totalNewReplies += n; processed++ })
-            .catch((err) => {
-              const msg = err instanceof Error ? err.message : String(err)
-              console.error(`[daily-scrape] Google failed for profile ${profile.id}:`, msg)
-              errors.push(`Google ${profile.id}: ${msg}`)
-            })
-        )
-      }
+  const processProfile = async (profile: typeof profiles[number]) => {
+    const tasks: Promise<void>[] = []
+    if (profile.google_maps_url) {
+      tasks.push(
+        scrape('Google', '/api/scrape-reviews', profile.id, profile.user_id)
+          .then((n) => { totalNewReplies += n; processed++ })
+          .catch((err) => {
+            const msg = err instanceof Error ? err.message : String(err)
+            console.error(`[daily-scrape] Google failed for profile ${profile.id}:`, msg)
+            errors.push(`Google ${profile.id}: ${msg}`)
+          })
+      )
+    }
+    if (profile.yelp_url) {
+      tasks.push(
+        scrape('Yelp', '/api/scrape-yelp-reviews', profile.id, profile.user_id)
+          .then((n) => { totalNewReplies += n; processed++ })
+          .catch((err) => {
+            const msg = err instanceof Error ? err.message : String(err)
+            console.error(`[daily-scrape] Yelp failed for profile ${profile.id}:`, msg)
+            errors.push(`Yelp ${profile.id}: ${msg}`)
+          })
+      )
+    }
+    await Promise.allSettled(tasks)
+  }
 
-      if (profile.yelp_url) {
-        tasks.push(
-          scrape('Yelp', '/api/scrape-yelp-reviews', profile.id, profile.user_id)
-            .then((n) => { totalNewReplies += n; processed++ })
-            .catch((err) => {
-              const msg = err instanceof Error ? err.message : String(err)
-              console.error(`[daily-scrape] Yelp failed for profile ${profile.id}:`, msg)
-              errors.push(`Yelp ${profile.id}: ${msg}`)
-            })
-        )
-      }
-
-      await Promise.allSettled(tasks)
-    })
+  // Cheap worker-pool pattern: PROFILE_CONCURRENCY workers pull off a shared
+  // queue index until exhausted. No external dep needed.
+  let cursor = 0
+  const worker = async () => {
+    while (true) {
+      const i = cursor++
+      if (i >= profiles.length) return
+      await processProfile(profiles[i])
+    }
+  }
+  await Promise.all(
+    Array.from({ length: Math.min(PROFILE_CONCURRENCY, profiles.length) }, worker)
   )
 
   // After all scrapes complete, fan out to Autopilot processor, digest email,

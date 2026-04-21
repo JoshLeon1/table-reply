@@ -1,4 +1,8 @@
 export const dynamic = 'force-dynamic'
+// 60s is Vercel's hard limit on Pro; default on Hobby is 10s which will
+// silently truncate scrapes of users with many new reviews. Explicitly
+// opt-in so we get the full window.
+export const maxDuration = 60
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
@@ -360,32 +364,38 @@ export async function POST(request: NextRequest) {
         console.log(`[scrape-reviews] ↳ Alert triggered — keyword: "${matchedKeyword}"`)
       }
 
-      if (process.env.NODE_ENV === 'development') console.log(`[scrape-reviews] ↳ New review — generating reply…`)
+      if (process.env.NODE_ENV === 'development') console.log(`[scrape-reviews] ↳ New review — generating reply + extracting staff in parallel…`)
 
-      // ── Generate reply via Anthropic ────────────────────────────────────
-      try {
-        generatedReply = await callClaude({
+      // Reply-gen and staff-extraction are independent — fire in parallel.
+      // Sequentially these are the bulk of per-review latency (~2s + ~0.6s);
+      // in parallel the slower one dominates, saving ~0.6s per review (30s
+      // on a 50-review sync).
+      const [replyResult, staffResult] = await Promise.allSettled([
+        callClaude({
           maxTokens: 400,
           system: systemPrompt + languageInstruction,
           userMessage: `Write a response to this ${review_rating}-star review (${review_text.trim().split(/\s+/).length} words):\n\n"${review_text}"`,
-        })
-        if (process.env.NODE_ENV === 'development') console.log(`[scrape-reviews] ↳ Reply generated (${generatedReply.length} chars)`)
-      } catch (err) {
-        console.error(`[scrape-reviews] Anthropic error for review ${review_id}:`, err)
-        // Still insert the review, just with a null reply
-      }
-
-      // ── Feature 3: Extract staff mentions ───────────────────────────────
-      try {
-        const staffRaw = await callClaude({
+        }),
+        callClaude({
           maxTokens: 100,
           system: 'You extract names. Return ONLY a JSON array of first names, or [] if none.',
           userMessage: `Extract any staff member first names mentioned in this business review. Example output: ["Karen", "Mike"]\n\nReview: "${review_text.slice(0, 500)}"`,
-        })
-        const parsed = JSON.parse(staffRaw.trim())
-        if (Array.isArray(parsed)) staffMentions = parsed
-        if (staffMentions.length > 0 && process.env.NODE_ENV === 'development') console.log(`[scrape-reviews] ↳ Staff mentions: ${staffMentions.join(', ')}`)
-      } catch { /* silent fail */ }
+        }),
+      ])
+
+      if (replyResult.status === 'fulfilled') {
+        generatedReply = replyResult.value
+        if (process.env.NODE_ENV === 'development') console.log(`[scrape-reviews] ↳ Reply generated (${generatedReply.length} chars)`)
+      } else {
+        console.error(`[scrape-reviews] Anthropic reply-gen error for ${review_id}:`, replyResult.reason)
+      }
+      if (staffResult.status === 'fulfilled') {
+        try {
+          const parsed = JSON.parse(staffResult.value.trim())
+          if (Array.isArray(parsed)) staffMentions = parsed
+          if (staffMentions.length > 0 && process.env.NODE_ENV === 'development') console.log(`[scrape-reviews] ↳ Staff mentions: ${staffMentions.join(', ')}`)
+        } catch { /* non-JSON response, treat as none */ }
+      }
 
       // ── Feature 2: Send alert email if triggered ─────────────────────────
       if (alertTriggered && userEmail && resend && matchedKeyword && await isEmailOptedIn(supabaseAdmin, userId, 'keywordAlerts')) {

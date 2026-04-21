@@ -123,42 +123,65 @@ RULES:
 }
 
 // ── Generic helper used by all API routes ─────────────────────────────────────
+// Retries on 429 (rate limit) and 529 (overloaded) with exponential backoff.
+// Honors Retry-After header when present. Returns after `maxAttempts` failures.
+// This is important at scale — when 500 users sync at the same cron tick,
+// burst rate-limits are trivial to hit, and a single 429 shouldn't orphan a
+// review with generated_reply=null.
 export async function callClaude({
   model = 'claude-haiku-4-5',
   system,
   userMessage,
   maxTokens = 400,
+  maxAttempts = 4,
 }: {
   model?: string
   system: string
   userMessage: string
   maxTokens?: number
+  maxAttempts?: number
 }): Promise<string> {
   const apiKey = process.env.ANTHROPIC_API_KEY
   if (!apiKey) throw new Error('ANTHROPIC_API_KEY is not set')
 
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-    },
-    body: JSON.stringify({
-      model,
-      max_tokens: maxTokens,
-      system,
-      messages: [{ role: 'user', content: userMessage }],
-    }),
-  })
+  let lastErr: Error | null = null
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify({
+        model,
+        max_tokens: maxTokens,
+        system,
+        messages: [{ role: 'user', content: userMessage }],
+      }),
+    })
 
-  if (!res.ok) {
-    const errText = await res.text()
-    throw new Error(`Anthropic API error ${res.status}: ${errText}`)
+    if (res.ok) {
+      const data = await res.json()
+      const content = data.content?.[0]
+      if (!content || content.type !== 'text') throw new Error('Unexpected response from Anthropic')
+      return content.text
+    }
+
+    // Retry only on transient server-side errors
+    const retryable = res.status === 429 || res.status === 529 || res.status >= 500
+    const errText = await res.text().catch(() => '')
+    lastErr = new Error(`Anthropic API error ${res.status}: ${errText.slice(0, 200)}`)
+
+    if (!retryable || attempt === maxAttempts - 1) throw lastErr
+
+    // Respect Retry-After if present; otherwise exponential backoff w/ jitter.
+    const retryAfter = Number(res.headers.get('retry-after'))
+    const backoffMs = Number.isFinite(retryAfter) && retryAfter > 0
+      ? Math.min(retryAfter * 1000, 30_000)
+      : Math.min(1000 * 2 ** attempt + Math.random() * 250, 30_000)
+    await new Promise(r => setTimeout(r, backoffMs))
   }
 
-  const data = await res.json()
-  const content = data.content?.[0]
-  if (!content || content.type !== 'text') throw new Error('Unexpected response from Anthropic')
-  return content.text
+  throw lastErr ?? new Error('Anthropic call failed')
 }

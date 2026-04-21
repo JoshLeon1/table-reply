@@ -1,4 +1,7 @@
 export const dynamic = 'force-dynamic'
+// Match /api/scrape-reviews — explicit 60s so Hobby's 10s default doesn't
+// silently truncate syncs with many new reviews.
+export const maxDuration = 60
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
@@ -320,27 +323,33 @@ export async function POST(request: NextRequest) {
         matchedKeyword = allKeywords.find(kw => matchesKeyword(review_text ?? '', kw))
         alertTriggered = !!matchedKeyword
 
-        // Generate reply
-        try {
-          generatedReply = await callClaude({
+        // Reply-gen + staff-extraction are independent — run in parallel to
+        // cut per-review latency roughly in half. See /api/scrape-reviews for
+        // the same pattern.
+        const [replyResult, staffResult] = await Promise.allSettled([
+          callClaude({
             maxTokens: 400,
             system: systemPrompt + languageInstruction,
             userMessage: `Write a response to this ${review_rating}-star Yelp review (${review_text.trim().split(/\s+/).length} words):\n\n"${review_text}"`,
-          })
-        } catch (err) {
-          console.error(`[scrape-yelp] Anthropic error for review ${yelpReviewId}:`, err)
-        }
-
-        // Staff mentions
-        try {
-          const staffRaw = await callClaude({
+          }),
+          callClaude({
             maxTokens: 100,
             system: 'You extract names. Return ONLY a JSON array of first names, or [] if none.',
             userMessage: `Extract any staff member first names mentioned in this business review. Example output: ["Karen", "Mike"]\n\nReview: "${review_text.slice(0, 500)}"`,
-          })
-          const parsed = JSON.parse(staffRaw.trim())
-          if (Array.isArray(parsed)) staffMentions = parsed
-        } catch { /* silent */ }
+          }),
+        ])
+
+        if (replyResult.status === 'fulfilled') {
+          generatedReply = replyResult.value
+        } else {
+          console.error(`[scrape-yelp] Anthropic reply-gen error for ${yelpReviewId}:`, replyResult.reason)
+        }
+        if (staffResult.status === 'fulfilled') {
+          try {
+            const parsed = JSON.parse(staffResult.value.trim())
+            if (Array.isArray(parsed)) staffMentions = parsed
+          } catch { /* non-JSON, skip */ }
+        }
 
         // Send alert email (honor keyword-alerts opt-out)
         if (alertTriggered && userEmail && resend && matchedKeyword && await isEmailOptedIn(supabaseAdmin, userId, 'keywordAlerts')) {

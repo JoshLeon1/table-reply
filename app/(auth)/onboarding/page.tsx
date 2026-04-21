@@ -256,24 +256,44 @@ export default function OnboardingPage() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { router.replace('/login'); return }
 
-      const { error: upsertError } = await supabase.from('business_profiles').upsert(
-        {
-          user_id: user.id,
-          business_name: businessName.trim(),
-          business_type: businessType,
-          owner_name: ownerName.trim(),
-          vibe,
-          voice_style: replyTone,
-          description: skip ? '' : (voiceTrainingText.trim() || ''),
-          ...(googleUrl.trim() && { google_maps_url: googleUrl.trim() }),
-          ...(yelpUrl.trim() && { yelp_url: yelpUrl.trim() }),
-        },
-        { onConflict: 'user_id' }
-      )
+      // Check if a primary profile was partially saved (e.g. user refreshed mid-flow)
+      const { data: existingProfile } = await supabase
+        .from('business_profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('is_primary', true)
+        .maybeSingle()
 
-      if (upsertError) {
-        console.error('[ReplyFi] Onboarding upsert error:', upsertError)
-        setError(upsertError.message || 'Failed to save your profile. Please try again.')
+      const profileData = {
+        user_id: user.id,
+        business_name: businessName.trim(),
+        business_type: businessType,
+        owner_name: ownerName.trim(),
+        vibe,
+        voice_style: replyTone,
+        description: skip ? '' : (voiceTrainingText.trim() || ''),
+        is_primary: true,
+        ...(googleUrl.trim() && { google_maps_url: googleUrl.trim() }),
+        ...(yelpUrl.trim() && { yelp_url: yelpUrl.trim() }),
+      }
+
+      let profileError: { message?: string } | null = null
+      if (existingProfile?.id) {
+        const { error } = await supabase
+          .from('business_profiles')
+          .update(profileData)
+          .eq('id', existingProfile.id)
+        profileError = error
+      } else {
+        const { error } = await supabase
+          .from('business_profiles')
+          .insert(profileData)
+        profileError = error
+      }
+
+      if (profileError) {
+        console.error('[ReplyFi] Onboarding save error:', profileError)
+        setError(profileError.message || 'Failed to save your profile. Please try again.')
         setLoading(false)
         return
       }

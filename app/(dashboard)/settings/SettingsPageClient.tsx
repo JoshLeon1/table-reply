@@ -752,6 +752,7 @@ export default function SettingsPageClient({
         locations={allLocations}
         activeLocationId={activeLocationId}
         userId={userId}
+        isPaid={isPaid}
       />
     ),
   }
@@ -796,6 +797,7 @@ function LocationsTab({
   locations,
   activeLocationId,
   userId,
+  isPaid,
 }: {
   locations: Array<{
     id: string
@@ -808,6 +810,7 @@ function LocationsTab({
   }>
   activeLocationId: string
   userId: string
+  isPaid: boolean
 }) {
   const router = useRouter()
   const [adding, setAdding] = useState(false)
@@ -885,13 +888,23 @@ function LocationsTab({
           <p className="text-[13px] text-[#57534E] mt-0.5">Each location has its own review feed and sync.</p>
         </div>
         {!showAddForm && (
-          <button
-            onClick={() => setShowAddForm(true)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] text-white text-[12px] font-medium transition-colors"
-          >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/></svg>
-            Add location
-          </button>
+          isPaid ? (
+            <button
+              onClick={() => setShowAddForm(true)}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] text-white text-[12px] font-medium transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/></svg>
+              Add location
+            </button>
+          ) : (
+            <a
+              href="/settings?tab=account"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#F3F0EC] border border-[#E4DED8] text-[#57534E] text-[12px] font-medium hover:bg-[#EDE9E4] transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+              Upgrade to add locations
+            </a>
+          )
         )}
       </div>
 
@@ -900,7 +913,7 @@ function LocationsTab({
           <div className="flex items-start justify-between gap-2">
             <div>
               <h3 className="text-[13px] font-semibold text-[#111]">New location</h3>
-              <p className="text-[11px] text-[#A8A29E] mt-0.5">Each additional location is added to your monthly subscription at the same per-seat rate.</p>
+              <p className="text-[11px] text-[#A8A29E] mt-0.5">Each additional location adds one seat to your subscription — you'll be charged a prorated amount today.</p>
             </div>
           </div>
 

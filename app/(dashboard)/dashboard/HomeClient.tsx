@@ -566,7 +566,7 @@ function ActionStrip({ pendingCount, repliesSentCount, lastSyncAt, googleLastSyn
   return (
     <div className="flex gap-3 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory sm:snap-none pb-2 sm:pb-0">
       {linkCards.map((a) => (
-        <Link key={a.label} href={a.href} className="group flex-1 min-w-[240px] sm:min-w-0 snap-start">
+        <Link key={a.label} href={a.href} className="group flex-1 min-w-[200px] sm:min-w-0 snap-start">
           <Card variant="flat" padding="md" className="h-full hover:bg-[#F3EEE4] transition-colors">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-lg bg-[#FAF8F5] flex items-center justify-center text-[#57534E] flex-shrink-0">
@@ -590,7 +590,7 @@ function ActionStrip({ pendingCount, repliesSentCount, lastSyncAt, googleLastSyn
         onClick={onSync}
         disabled={syncing}
         aria-busy={syncing}
-        className="group flex-1 min-w-[240px] sm:min-w-0 snap-start text-left disabled:cursor-wait"
+        className="group flex-1 min-w-[200px] sm:min-w-0 snap-start text-left disabled:cursor-wait"
       >
         <Card variant="flat" padding="md" className={`h-full transition-colors ${syncing ? 'bg-[#F3EEE4]' : 'hover:bg-[#F3EEE4]'}`}>
           <div className="flex items-center gap-3">

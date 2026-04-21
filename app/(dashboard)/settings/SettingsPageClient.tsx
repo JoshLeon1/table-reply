@@ -648,13 +648,15 @@ export default function SettingsPageClient({
         <p className="text-[13px] text-[#57534E] mt-1">Manage your profile, integrations, and account.</p>
       </div>
 
-      {/* Tab bar */}
-      <div className="flex items-center gap-1 bg-[#F3F0EC] rounded-2xl p-1 border border-[#E4DED8] overflow-x-auto scrollbar-hide">
+      {/* Tab bar — wraps on mobile so all tabs (including Account / delete) stay
+          visible without horizontal scrolling. 5 tabs × ~100px didn't fit on
+          <400px screens and the Account tab was effectively hidden. */}
+      <div className="flex flex-wrap items-center gap-1 bg-[#F3F0EC] rounded-2xl p-1 border border-[#E4DED8]">
         {TABS.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-[13px] font-medium whitespace-nowrap transition-all flex-shrink-0 ${
+            className={`flex items-center gap-2 px-3 sm:px-3.5 py-2 rounded-xl text-[13px] font-medium whitespace-nowrap transition-all ${
               activeTab === tab.id
                 ? 'bg-white text-[#111111] shadow-sm border border-[#E4DED8]'
                 : 'text-[#A8A29E] hover:text-[#57534E]'

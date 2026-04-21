@@ -111,7 +111,7 @@ function ThemeSkeleton() {
 function SparkTooltip({ active, payload, label }: RechartsTooltipProps) {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-[#FEFCF8] rounded-xl border border-[#EDE6DC] shadow-card p-3 min-w-[140px]">
+    <div className="bg-[#FEFCF8] rounded-xl border border-[#EDE6DC] shadow-card p-3 min-w-[120px] sm:min-w-[140px]">
       <Eyebrow className="block mb-1">{label ?? ''}</Eyebrow>
       {payload?.map((entry) => (
         <div key={entry.name} className="flex items-baseline justify-between gap-3 text-[13px] tnum">
@@ -126,7 +126,7 @@ function SparkTooltip({ active, payload, label }: RechartsTooltipProps) {
 function LineTooltip({ active, payload, label }: RechartsTooltipProps) {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-[#FEFCF8] rounded-xl border border-[#EDE6DC] shadow-card p-3 min-w-[140px]">
+    <div className="bg-[#FEFCF8] rounded-xl border border-[#EDE6DC] shadow-card p-3 min-w-[120px] sm:min-w-[140px]">
       <Eyebrow className="block mb-1">{label ?? ''}</Eyebrow>
       {payload?.map((entry) => (
         <div key={entry.name} className="flex items-baseline justify-between gap-3 text-[13px] tnum">
@@ -143,7 +143,7 @@ function LineTooltip({ active, payload, label }: RechartsTooltipProps) {
 function BarChartTooltip({ active, payload, label }: RechartsTooltipProps) {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-[#FEFCF8] rounded-xl border border-[#EDE6DC] shadow-card p-3 min-w-[140px]">
+    <div className="bg-[#FEFCF8] rounded-xl border border-[#EDE6DC] shadow-card p-3 min-w-[120px] sm:min-w-[140px]">
       <Eyebrow className="block mb-1">{label ?? ''}</Eyebrow>
       {payload?.map((entry) => (
         <div key={entry.name} className="flex items-baseline justify-between gap-3 text-[13px] tnum">
@@ -1433,7 +1433,7 @@ export default function AnalyticsClient({ reviews, restaurantName, userId }: Pro
                 <Tooltip content={({ active, payload, label }: any) => {
                   if (!active || !payload?.length) return null
                   return (
-                    <div className="bg-[#FEFCF8] rounded-xl border border-[#EDE6DC] shadow-card p-3 min-w-[140px]">
+                    <div className="bg-[#FEFCF8] rounded-xl border border-[#EDE6DC] shadow-card p-3 min-w-[120px] sm:min-w-[140px]">
                       <Eyebrow className="block mb-1">{label ?? ''}</Eyebrow>
                       {payload.map((p: any) => (
                         <div key={p.dataKey} className="flex items-baseline justify-between gap-3 text-[13px] tnum">

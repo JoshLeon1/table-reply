@@ -279,6 +279,20 @@ export async function POST(request: NextRequest) {
 
   let skippedExisting = 0
 
+  // Batch the dedupe check: one SELECT returns every review_id this user
+  // already has that intersects with the current scrape, instead of N
+  // per-row round-trips. 50 reviews × ~50ms = 2.5s shaved off each sync.
+  const incomingIds = reviews.map(r => r.review_id).filter(Boolean)
+  const existingIds = new Set<string>()
+  if (incomingIds.length > 0) {
+    const { data: existingRows } = await supabaseAdmin
+      .from('scraped_reviews')
+      .select('review_id')
+      .eq('user_id', userId)
+      .in('review_id', incomingIds)
+    for (const row of existingRows ?? []) existingIds.add(row.review_id)
+  }
+
   for (const review of reviews) {
     const {
       review_id,
@@ -290,16 +304,8 @@ export async function POST(request: NextRequest) {
 
     if (process.env.NODE_ENV === 'development') console.log(`[scrape-reviews] Processing review ${review_id} — ${review_rating}★ by ${author_title}`)
 
-    // Skip if we've already stored this review
-    const { data: existing } = await supabaseAdmin
-      .from('scraped_reviews')
-      .select('id')
-      .eq('review_id', review_id)
-      .eq('user_id', userId)
-      .maybeSingle()
-
-    if (existing) {
-      if (process.env.NODE_ENV === 'development') console.log(`[scrape-reviews] ↳ Skipping — already in DB (id: ${existing.id})`)
+    if (existingIds.has(review_id)) {
+      if (process.env.NODE_ENV === 'development') console.log(`[scrape-reviews] ↳ Skipping — already in DB`)
       skippedExisting++
       continue
     }

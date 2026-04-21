@@ -228,6 +228,19 @@ export async function POST(request: NextRequest) {
     let newReviewsCount = 0
     let skippedExisting = 0
 
+    // Batch dedupe: one SELECT instead of one-per-review. See scrape-reviews
+    // route for the same pattern — saves ~50 roundtrips per sync.
+    const incomingIds = reviews.map(r => `yelp-${r.review_id}`).filter(Boolean)
+    const existingIds = new Set<string>()
+    if (incomingIds.length > 0) {
+      const { data: existingRows } = await supabaseAdmin
+        .from('scraped_reviews')
+        .select('review_id')
+        .eq('user_id', userId)
+        .in('review_id', incomingIds)
+      for (const row of existingRows ?? []) existingIds.add(row.review_id)
+    }
+
     const systemPrompt =
       `You are a reply assistant for ${profile.business_name}, ` +
       `a ${profile.vibe} ${profile.business_type} business. ` +
@@ -260,14 +273,7 @@ export async function POST(request: NextRequest) {
       const yelpReviewId = `yelp-${review_id}`
       if (process.env.NODE_ENV === 'development') console.log(`[scrape-yelp] Processing review ${yelpReviewId} — ${review_rating}★ by ${author_title}`)
 
-      const { data: existing } = await supabaseAdmin
-        .from('scraped_reviews')
-        .select('id')
-        .eq('review_id', yelpReviewId)
-        .eq('user_id', userId)
-        .maybeSingle()
-
-      if (existing) {
+      if (existingIds.has(yelpReviewId)) {
         skippedExisting++
         continue
       }

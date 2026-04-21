@@ -89,12 +89,12 @@ function LoginForm() {
           .from('business_profiles')
           .select('id')
           .eq('user_id', data.user.id)
+          .eq('is_primary', true)
           .maybeSingle()
-        if (!profile) { router.push('/onboarding'); router.refresh(); return }
+        if (!profile) { window.location.href = '/onboarding'; return }
       }
 
-      router.push(safeRedirect ?? '/dashboard')
-      router.refresh()
+      window.location.href = safeRedirect ?? '/dashboard'
     } catch (err) {
       console.error('[ReplyFi] Unexpected login error:', err)
       setError('Something went wrong. Please try again.')

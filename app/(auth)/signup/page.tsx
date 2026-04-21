@@ -37,6 +37,7 @@ function SignupForm() {
   const [googleLoading, setGoogleLoading] = useState(false)
   const [error, setError] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
+  const [accountExists, setAccountExists] = useState(false)
   const [resendCooldown, setResendCooldown] = useState(0)
   const [resendStatus, setResendStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
 
@@ -83,6 +84,7 @@ function SignupForm() {
     setLoading(true)
     setError('')
     setSuccessMessage('')
+    setAccountExists(false)
 
     try {
       const supabase = createClient()
@@ -115,6 +117,16 @@ function SignupForm() {
         router.push('/onboarding')
         router.refresh()
       } else {
+        // Supabase silently returns "success" when the email is already registered
+        // (email enumeration protection). The tell is data.user.identities being
+        // an empty array. Detect that case so the user gets a clear message
+        // instead of waiting for a confirmation email that will never arrive.
+        const identities = data.user?.identities
+        if (data.user && Array.isArray(identities) && identities.length === 0) {
+          setAccountExists(true)
+          setLoading(false)
+          return
+        }
         setSuccessMessage(`Check your inbox — we sent a confirmation link to ${email}.`)
         setLoading(false)
       }
@@ -162,7 +174,39 @@ function SignupForm() {
         </>
       }
     >
-      {successMessage ? (
+      {accountExists ? (
+        <div className="space-y-4">
+          <Notice variant="error">
+            An account with <strong>{email}</strong> already exists.
+          </Notice>
+          <div className="rounded-xl border border-border bg-white px-4 py-4 space-y-2">
+            <p className="text-[13px] text-text-1">What would you like to do?</p>
+            <Link
+              href={`/login?email=${encodeURIComponent(email)}`}
+              className="block w-full h-10 rounded-lg bg-[#E05A28] hover:bg-[#C94E21] text-white text-[13px] font-semibold transition-colors flex items-center justify-center"
+            >
+              Log in instead
+            </Link>
+            <Link
+              href={`/forgot-password?email=${encodeURIComponent(email)}`}
+              className="block w-full h-10 rounded-lg border border-border bg-white hover:bg-surface text-text-1 text-[13px] font-medium transition-all duration-150 flex items-center justify-center"
+            >
+              Reset password
+            </Link>
+            <button
+              type="button"
+              onClick={() => {
+                setAccountExists(false)
+                setEmail('')
+                setPassword('')
+              }}
+              className="w-full text-[12px] text-text-2 hover:text-text-1 transition-colors pt-1"
+            >
+              Use a different email
+            </button>
+          </div>
+        </div>
+      ) : successMessage ? (
         <div className="space-y-4">
           <Notice variant="success">{successMessage}</Notice>
 

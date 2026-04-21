@@ -319,11 +319,11 @@ export default function OnboardingPage() {
       // Clear draft on successful completion
       try { localStorage.removeItem(DRAFT_KEY) } catch { /* ignore */ }
 
-      router.push('/dashboard')
-      router.refresh()
+      // Navigate to dashboard — use hard redirect so the server re-checks session
+      window.location.href = '/dashboard'
     } catch (err) {
       console.error('[ReplyFi] Unexpected onboarding error:', err)
-      setError('Something went wrong. Please try again.')
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
       setLoading(false)
     }
   }

@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { LogoMark } from '@/components/Logo'
 import { useModal } from '@/lib/hooks/useModal'
+import LocationSwitcher from '@/components/LocationSwitcher'
 
 // Re-export from shared module for backward compatibility.
 export { LogoMark }
@@ -170,6 +171,9 @@ export default function Nav() {
               <span className="text-[14px] font-bold text-[#111111] tracking-[-0.025em]">ReplyFi</span>
             </Link>
 
+            {/* Location switcher */}
+            <LocationSwitcher />
+
             {/* Desktop links */}
             <div className="hidden lg:flex items-center gap-1">
               {links.map((link) => {
@@ -282,6 +286,9 @@ export default function Nav() {
                   </span>
                 </div>
               )}
+              <div className="px-4 pt-1 pb-2">
+                <LocationSwitcher />
+              </div>
               {links.map((link) => {
                 const active = pathname === link.href
                 return (

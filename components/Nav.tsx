@@ -114,6 +114,7 @@ export default function Nav() {
         .from('business_profiles')
         .select('owner_name, business_name')
         .eq('user_id', user.id)
+        .eq('is_primary', true)
         .maybeSingle()
 
       if (!cancelled && profile) {

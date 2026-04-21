@@ -14,6 +14,7 @@ export default async function OnboardingDemoPage() {
     .from('business_profiles')
     .select('business_type, business_name')
     .eq('user_id', user.id)
+    .eq('is_primary', true)
     .maybeSingle()
 
   if (!business) redirect('/onboarding')

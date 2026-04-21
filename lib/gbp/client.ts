@@ -29,11 +29,19 @@ export async function getGbpToken(userId: string, businessProfileId?: string): P
     .eq('user_id', userId)
 
   if (businessProfileId) {
+    // (user_id, business_profile_id) is unique — safe to maybeSingle()
     query = query.eq('business_profile_id', businessProfileId)
+    const { data } = await query.maybeSingle()
+    return data ?? null
   }
 
-  const { data } = await query.maybeSingle()
-  return data ?? null
+  // Fallback: no businessProfileId provided. Multi-location users may have
+  // multiple rows; .maybeSingle() returns PGRST116 here. Pick the most
+  // recently updated token deterministically.
+  const { data } = await query
+    .order('updated_at', { ascending: false })
+    .limit(1)
+  return data?.[0] ?? null
 }
 
 async function refreshAccessToken(token: GbpToken): Promise<GbpToken> {
@@ -57,8 +65,11 @@ async function refreshAccessToken(token: GbpToken): Promise<GbpToken> {
   const expiresAt = new Date(Date.now() + json.expires_in * 1000).toISOString()
 
   const supabase = adminClient()
-  // Update ALL rows for this user — the credential is shared across locations
-  await supabase
+  // Scope the update to this specific location's token row. Different
+  // business_profiles can be connected to DIFFERENT Google accounts with
+  // different refresh_tokens; updating all rows for the user would overwrite
+  // unrelated locations' access_tokens with one derived from a different grant.
+  let updateQuery = supabase
     .from('google_business_tokens')
     .update({
       access_token: json.access_token,
@@ -66,6 +77,12 @@ async function refreshAccessToken(token: GbpToken): Promise<GbpToken> {
       updated_at: new Date().toISOString(),
     })
     .eq('user_id', token.user_id)
+
+  if (token.business_profile_id) {
+    updateQuery = updateQuery.eq('business_profile_id', token.business_profile_id)
+  }
+
+  await updateQuery
 
   return { ...token, access_token: json.access_token, expires_at: expiresAt }
 }

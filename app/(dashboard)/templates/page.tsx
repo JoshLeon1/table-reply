@@ -14,6 +14,7 @@ export default async function TemplatesPage() {
     .from('business_profiles')
     .select('business_name, google_maps_url')
     .eq('user_id', user.id)
+    .eq('is_primary', true)
     .maybeSingle()
 
   if (!restaurantProfile) redirect('/onboarding')

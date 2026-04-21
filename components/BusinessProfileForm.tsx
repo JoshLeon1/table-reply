@@ -239,7 +239,7 @@ export default function BusinessProfileForm({
     } else {
       const { error: insertError } = await supabase
         .from('business_profiles')
-        .insert({ ...payload, user_id: userId })
+        .insert({ ...payload, user_id: userId, is_primary: true })
 
       if (insertError) {
         setError(insertError.message)

@@ -572,22 +572,26 @@ function HeroRow({
 }
 
 // ── ActionStrip — 3 quick-action flat cards ───────────────────────────────────
-function ActionStrip({ pendingCount, repliesSentCount, lastSyncAt }: {
+// The third card is a sync trigger, not a link. Clicking it runs the scrape
+// in-place and shows a spinning refresh icon + "Syncing…" label while the
+// request is inflight — no navigation to Settings.
+function ActionStrip({ pendingCount, repliesSentCount, lastSyncAt, syncing, onSync }: {
   pendingCount: number
   repliesSentCount: number
   lastSyncAt: string | null
+  syncing: boolean
+  onSync: () => void
 }) {
   const lastSyncLabel = lastSyncAt ? formatTimeAgo(lastSyncAt) : 'never'
 
-  const actions = [
-    { href: '/dashboard/reviews?tab=pending', icon: <MessageSquare size={16} strokeWidth={1.5} />, label: 'PENDING REPLIES', value: pendingCount },
-    { href: '/dashboard/reviews?tab=approved', icon: <CheckCircle2 size={16} strokeWidth={1.5} />, label: 'REPLIES SENT',    value: repliesSentCount },
-    { href: '/settings?tab=integrations',      icon: <RefreshCw size={16} strokeWidth={1.5} />,    label: 'LAST SYNC',      value: lastSyncLabel },
+  const linkCards = [
+    { href: '/dashboard/reviews?tab=pending',  icon: <MessageSquare size={16} strokeWidth={1.5} />, label: 'PENDING REPLIES', value: pendingCount },
+    { href: '/dashboard/reviews?tab=approved', icon: <CheckCircle2 size={16} strokeWidth={1.5} />,  label: 'REPLIES SENT',    value: repliesSentCount },
   ]
 
   return (
     <div className="flex gap-3 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory sm:snap-none pb-2 sm:pb-0">
-      {actions.map((a) => (
+      {linkCards.map((a) => (
         <Link key={a.label} href={a.href} className="group flex-1 min-w-[240px] sm:min-w-0 snap-start">
           <Card variant="flat" padding="md" className="h-full hover:bg-[#F3EEE4] transition-colors">
             <div className="flex items-center gap-3">
@@ -605,6 +609,30 @@ function ActionStrip({ pendingCount, repliesSentCount, lastSyncAt }: {
           </Card>
         </Link>
       ))}
+
+      {/* Sync Now — button, not link. Animates while in-flight. */}
+      <button
+        type="button"
+        onClick={onSync}
+        disabled={syncing}
+        aria-busy={syncing}
+        className="group flex-1 min-w-[240px] sm:min-w-0 snap-start text-left disabled:cursor-wait"
+      >
+        <Card variant="flat" padding="md" className={`h-full transition-colors ${syncing ? 'bg-[#F3EEE4]' : 'hover:bg-[#F3EEE4]'}`}>
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-[#FAF8F5] flex items-center justify-center text-[#57534E] flex-shrink-0">
+              <RefreshCw size={16} strokeWidth={1.5} className={syncing ? 'animate-spin' : ''} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <Eyebrow>{syncing ? 'SYNCING…' : 'SYNC NOW'}</Eyebrow>
+              <div className="text-[13px] font-medium text-[#57534E] leading-tight mt-0.5 truncate">
+                {syncing ? 'Pulling new reviews' : `Last sync: ${lastSyncLabel}`}
+              </div>
+            </div>
+            <ArrowRight size={16} strokeWidth={1.5} className="text-[#A8A29E] group-hover:text-[#111] transition-colors flex-shrink-0" />
+          </div>
+        </Card>
+      </button>
     </div>
   )
 }
@@ -978,6 +1006,8 @@ export default function HomeClient({
           pendingCount={liveTotalPending}
           repliesSentCount={approvedThisMonth}
           lastSyncAt={displayLastSynced}
+          syncing={syncing}
+          onSync={handleSync}
         />
         <RecentReviewsList reviews={allReviews} />
       </div>

@@ -11,6 +11,7 @@ import ManageBillingButton from './ManageBillingButton'
 import BillingButtons from './BillingButtons'
 import Toggle from '@/components/ui/Toggle'
 import { Card } from '@/components/ui/Card'
+import PlacesAutocomplete from '@/components/PlacesAutocomplete'
 import type { BusinessProfile, KeywordAlert, AutopilotRules } from '@/types'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -816,9 +817,25 @@ function LocationsTab({
   const [newYelpUrl, setNewYelpUrl] = useState('')
   const [addError, setAddError] = useState('')
   const [removingId, setRemovingId] = useState<string | null>(null)
+  const [selectedPlace, setSelectedPlace] = useState<{
+    placeId: string
+    name: string
+    address: string
+    mapsUrl: string
+    latitude: number | null
+    longitude: number | null
+  } | null>(null)
 
   // userId is reserved for future per-location GBP connect flow
   void userId
+
+  const resetForm = () => {
+    setNewLabel('')
+    setNewGoogleUrl('')
+    setNewYelpUrl('')
+    setSelectedPlace(null)
+    setAddError('')
+  }
 
   const handleAdd = async () => {
     setAddError('')
@@ -832,12 +849,15 @@ function LocationsTab({
           locationLabel: newLabel.trim(),
           googleMapsUrl: newGoogleUrl.trim() || null,
           yelpUrl: newYelpUrl.trim() || null,
+          placeId: selectedPlace?.placeId ?? null,
+          latitude: selectedPlace?.latitude ?? null,
+          longitude: selectedPlace?.longitude ?? null,
         }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? 'Failed to add location')
       setShowAddForm(false)
-      setNewLabel(''); setNewGoogleUrl(''); setNewYelpUrl('')
+      resetForm()
       router.refresh()
     } catch (err) {
       setAddError(err instanceof Error ? err.message : 'Something went wrong.')
@@ -864,33 +884,72 @@ function LocationsTab({
           <h2 className="text-[15px] font-semibold text-[#111]">Locations</h2>
           <p className="text-[13px] text-[#57534E] mt-0.5">Each location has its own review feed and sync.</p>
         </div>
-        <button
-          onClick={() => setShowAddForm(v => !v)}
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] text-white text-[12px] font-medium transition-colors"
-        >
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/></svg>
-          Add location
-        </button>
+        {!showAddForm && (
+          <button
+            onClick={() => setShowAddForm(true)}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#E05A28] hover:bg-[#C94E21] text-white text-[12px] font-medium transition-colors"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/></svg>
+            Add location
+          </button>
+        )}
       </div>
 
       {showAddForm && (
-        <div className="bg-[#FEFCF8] border border-[#EDE6DC] rounded-xl p-4 space-y-3">
-          <h3 className="text-[13px] font-semibold text-[#111]">New location</h3>
-          <div className="space-y-2">
-            <input
-              type="text"
-              value={newLabel}
-              onChange={e => setNewLabel(e.target.value)}
-              placeholder="Location name (e.g. Downtown)"
-              className="w-full h-10 px-3.5 rounded-xl bg-[#F8F6F3] border border-[#EDE6DC] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10"
-            />
-            <input
-              type="url"
-              value={newGoogleUrl}
-              onChange={e => setNewGoogleUrl(e.target.value)}
-              placeholder="Google Maps URL (optional)"
-              className="w-full h-10 px-3.5 rounded-xl bg-[#F8F6F3] border border-[#EDE6DC] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10"
-            />
+        <div className="bg-[#FEFCF8] border border-[#EDE6DC] rounded-xl p-4 space-y-4">
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <h3 className="text-[13px] font-semibold text-[#111]">New location</h3>
+              <p className="text-[11px] text-[#A8A29E] mt-0.5">Each additional location is added to your monthly subscription at the same per-seat rate.</p>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            {/* Places autocomplete */}
+            <div className="space-y-1">
+              <label className="text-[11px] font-medium text-[#57534E] uppercase tracking-wide">Location</label>
+              <PlacesAutocomplete
+                initialQuery=""
+                selected={selectedPlace}
+                onSelect={(place) => {
+                  setSelectedPlace(place)
+                  setNewLabel(place.name)
+                  setNewGoogleUrl(place.mapsUrl)
+                }}
+                onClear={() => {
+                  setSelectedPlace(null)
+                  setNewLabel('')
+                  setNewGoogleUrl('')
+                }}
+                placeholder="Search your location by name…"
+              />
+            </div>
+
+            {/* Manual name fallback — shown when no place selected */}
+            {!selectedPlace && (
+              <input
+                type="text"
+                value={newLabel}
+                onChange={e => setNewLabel(e.target.value)}
+                placeholder="Or type a location name (e.g. Downtown)"
+                className="w-full h-10 px-3.5 rounded-xl bg-[#F8F6F3] border border-[#EDE6DC] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10"
+              />
+            )}
+
+            {/* Yelp helper link */}
+            {selectedPlace && (
+              <a
+                href={`https://www.yelp.com/search?find_desc=${encodeURIComponent(selectedPlace.name)}&find_loc=${encodeURIComponent(selectedPlace.address)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-[11px] text-[#57534E] hover:text-[#E05A28] transition-colors"
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M21.111 18.226c-.141.969-2.119 3.483-3.029 3.847-.311.124-.611.094-.838-.09-.154-.12-.314-.365-2.447-3.827l-.633-1.046c-.2-.316-.16-.722.094-1.016a1.4 1.4 0 011.046-.477l.049.001c.025.001 3.793.337 4.001.356.406.037.68.221.802.534.093.237.083.512-.045.718zM9.535 14.947c-.157.557-.803 3.47-.868 4.044a.83.83 0 00.33.782c.21.155.501.195.83.115 1.028-.255 3.174-2.161 3.427-3.117a1.28 1.28 0 00-.156-1.017 1.304 1.304 0 00-.893-.578l-1.177-.188c-.405-.064-.794-.023-1.064.145a.887.887 0 00-.429.814zM21.245 12.55c-.189-.444-2.348-2.464-3.308-3.15a.852.852 0 00-.839-.084c-.296.136-.49.435-.528.806-.006.055-.314 3.813-.349 4.026-.07.411.065.726.38.893.228.122.516.124.786.005l1.076-.47c.375-.163 3.1-1.354 3.241-1.597a.826.826 0 00-.459-1.429zm-10.617-8.42C10.36 3.52 9.853.972 9.686.57 9.55.252 9.319.065 9.035.009c-.296-.058-.633.05-.913.299C7.27 1.074 6.144 4.057 6.178 5.045c.018.516.217.927.561 1.159.327.22.748.265 1.185.127l1.124-.343c.394-.12 2.785-.879 2.58-1.858zm-2.261 7.197c.28-.276.38-.676.27-1.073L8.14 9.047c-.108-.387-.392-2.74-.433-2.903-.085-.338-.302-.56-.6-.611a.848.848 0 00-.786.292C5.587 6.712 4.12 9.566 4.08 10.55c-.021.508.148.935.477 1.203.309.251.727.334 1.168.232l1.151-.265c.402-.092 1.972-.704 2.491-.393z"/></svg>
+                Find on Yelp →
+              </a>
+            )}
+
+            {/* Yelp URL */}
             <input
               type="url"
               value={newYelpUrl}
@@ -899,6 +958,7 @@ function LocationsTab({
               className="w-full h-10 px-3.5 rounded-xl bg-[#F8F6F3] border border-[#EDE6DC] text-[13px] text-[#111] placeholder:text-[#C4BEB8] focus:outline-none focus:border-[#E05A28]/50 focus:ring-2 focus:ring-[#E05A28]/10"
             />
           </div>
+
           {addError && <p className="text-[12px] text-[#B84A1A]">{addError}</p>}
           <div className="flex gap-2">
             <button
@@ -909,7 +969,7 @@ function LocationsTab({
               {adding ? 'Adding…' : 'Add location'}
             </button>
             <button
-              onClick={() => setShowAddForm(false)}
+              onClick={() => { setShowAddForm(false); resetForm() }}
               className="px-4 py-2 rounded-xl bg-[#F3F0EC] text-[#57534E] text-[12px] font-medium hover:bg-[#EDE9E4] transition-colors"
             >
               Cancel

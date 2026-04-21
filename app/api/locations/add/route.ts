@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { locationLabel, googleMapsUrl, yelpUrl } = await request.json().catch(() => ({}))
+  const { locationLabel, googleMapsUrl, yelpUrl, placeId, latitude, longitude } = await request.json().catch(() => ({}))
 
   const supabaseAdmin = createServiceClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -46,6 +46,9 @@ export async function POST(request: NextRequest) {
       is_primary: false,
       google_maps_url: googleMapsUrl ?? null,
       yelp_url: yelpUrl ?? null,
+      google_place_id: placeId ?? null,
+      latitude: latitude ?? null,
+      longitude: longitude ?? null,
     })
     .select('id')
     .single()

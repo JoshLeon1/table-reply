@@ -21,7 +21,8 @@ interface OutscraperTripAdvisorReview {
   author_title: string
   review_rating: number
   review_text: string
-  review_datetime_utc: string
+  datetime_utc?: string
+  review_datetime_utc?: string
 }
 
 export async function POST(request: NextRequest) {
@@ -175,9 +176,21 @@ export async function POST(request: NextRequest) {
         if (process.env.NODE_ENV === 'development') console.log('[scrape-tripadvisor] Completed after', attempts, 'poll(s)')
       }
 
-      reviews = result?.data?.[0]?.reviews_data ?? result?.[0]?.reviews_data ?? []
+      // Outscraper's TripAdvisor endpoint wraps results the same way Yelp
+      // does: { data: [[review, ...]] }. The inner array IS the list of
+      // reviews. Fall back to the legacy { data: [{ reviews_data: [...] }] }
+      // shape just in case.
+      const dataOuter = result?.data
+      let inner: unknown = Array.isArray(dataOuter) ? dataOuter[0] : null
+      if (Array.isArray(inner)) {
+        reviews = inner as OutscraperTripAdvisorReview[]
+      } else if (inner && typeof inner === 'object' && Array.isArray((inner as { reviews_data?: unknown[] }).reviews_data)) {
+        reviews = (inner as { reviews_data: OutscraperTripAdvisorReview[] }).reviews_data
+      } else {
+        reviews = []
+      }
       if (!Array.isArray(reviews)) {
-        console.warn('[scrape-tripadvisor] reviews_data not an array — defaulting to []')
+        console.warn('[scrape-tripadvisor] reviews parsing produced non-array — defaulting to []')
         reviews = []
       }
       console.log('[scrape-tripadvisor] Reviews returned=%d; sample-result-shape=%s', reviews.length, JSON.stringify(result).slice(0, 600))
@@ -216,7 +229,8 @@ export async function POST(request: NextRequest) {
       `Always end with — ${profile.owner_name}`
 
     for (const review of reviews) {
-      const { review_id, author_title, review_rating, review_text, review_datetime_utc } = review
+      const { review_id, author_title, review_rating, review_text } = review
+      const review_datetime_utc = review.datetime_utc ?? review.review_datetime_utc ?? null
 
       const taReviewId = `ta-${review_id}`
       if (process.env.NODE_ENV === 'development') console.log(`[scrape-tripadvisor] Processing ${taReviewId} — ${review_rating}★ by ${author_title}`)

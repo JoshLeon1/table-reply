@@ -16,12 +16,15 @@ function matchesKeyword(reviewText: string, keyword: string): boolean {
   return pattern.test(reviewText)
 }
 
+// Outscraper Yelp returns reviews with datetime_utc (not review_datetime_utc).
+// The rest of the field names match what we use internally.
 interface OutscraperYelpReview {
   review_id: string
   author_title: string
   review_rating: number
   review_text: string
-  review_datetime_utc: string
+  datetime_utc?: string
+  review_datetime_utc?: string
 }
 
 export async function POST(request: NextRequest) {
@@ -176,10 +179,21 @@ export async function POST(request: NextRequest) {
         if (process.env.NODE_ENV === 'development') console.log('[scrape-yelp] Job completed after', attempts, 'poll(s)')
       }
 
-      // Outscraper wraps: { data: [{ reviews_data: [...] }] }
-      reviews = result?.data?.[0]?.reviews_data ?? result?.[0]?.reviews_data ?? []
+      // Outscraper Yelp wraps: { data: [[review, review, ...]] } — the inner
+      // array IS the list of reviews. This differs from the Google Maps API
+      // which wraps as { data: [{ reviews_data: [...] }] }. Handle both shapes
+      // defensively in case Outscraper changes.
+      const dataOuter = result?.data
+      let inner: unknown = Array.isArray(dataOuter) ? dataOuter[0] : null
+      if (Array.isArray(inner)) {
+        reviews = inner as OutscraperYelpReview[]
+      } else if (inner && typeof inner === 'object' && Array.isArray((inner as { reviews_data?: unknown[] }).reviews_data)) {
+        reviews = (inner as { reviews_data: OutscraperYelpReview[] }).reviews_data
+      } else {
+        reviews = []
+      }
       if (!Array.isArray(reviews)) {
-        console.warn('[scrape-yelp] reviews_data not an array — defaulting to []')
+        console.warn('[scrape-yelp] reviews parsing produced non-array — defaulting to []')
         reviews = []
       }
       console.log('[scrape-yelp] Reviews returned=%d; sample-result-shape=%s', reviews.length, JSON.stringify(result).slice(0, 600))
@@ -218,7 +232,10 @@ export async function POST(request: NextRequest) {
       `Always end with — ${profile.owner_name}`
 
     for (const review of reviews) {
-      const { review_id, author_title, review_rating, review_text, review_datetime_utc } = review
+      const { review_id, author_title, review_rating, review_text } = review
+      // Outscraper Yelp uses `datetime_utc`; fall back to `review_datetime_utc`
+      // if the API ever starts returning that name instead.
+      const review_datetime_utc = review.datetime_utc ?? review.review_datetime_utc ?? null
 
       // Prefix yelp- to avoid collisions with Google review IDs
       const yelpReviewId = `yelp-${review_id}`

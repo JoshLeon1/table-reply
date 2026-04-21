@@ -257,7 +257,7 @@ export default function OnboardingPage() {
       if (!user) { router.replace('/login'); return }
 
       // Check if a primary profile was partially saved (e.g. user refreshed mid-flow)
-      const { data: existingProfile } = await supabase
+      const { data: existingBizProfile } = await supabase
         .from('business_profiles')
         .select('id')
         .eq('user_id', user.id)
@@ -278,11 +278,11 @@ export default function OnboardingPage() {
       }
 
       let profileError: { message?: string } | null = null
-      if (existingProfile?.id) {
+      if (existingBizProfile?.id) {
         const { error } = await supabase
           .from('business_profiles')
           .update(profileData)
-          .eq('id', existingProfile.id)
+          .eq('id', existingBizProfile.id)
         profileError = error
       } else {
         const { error } = await supabase

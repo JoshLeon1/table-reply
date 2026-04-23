@@ -644,10 +644,13 @@ function AutopilotQueueRow({ review, onPosted }: { review: ScrapedReview; onPost
   const [posted, setPosted] = useState(!!review.autopilot_posted_at)
 
   const handlePostToGoogle = async () => {
+    // Fire window.open synchronously BEFORE any await — Chrome/Safari only
+    // honor popups opened during the user-gesture tick. Putting this after
+    // await navigator.clipboard.writeText() triggers the popup blocker.
+    try { window.open('https://business.google.com/reviews', '_blank', 'noopener,noreferrer') } catch { /* noop */ }
     setPosting(true)
     try {
       await navigator.clipboard.writeText(review.generated_reply ?? '').catch(() => {})
-      // Mark posted via API
       await fetch(`/api/reviews/${review.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -655,7 +658,6 @@ function AutopilotQueueRow({ review, onPosted }: { review: ScrapedReview; onPost
       }).catch(() => {})
       setPosted(true)
       onPosted(review.id)
-      window.open('https://business.google.com/reviews', '_blank')
     } finally {
       setPosting(false)
     }

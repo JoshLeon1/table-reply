@@ -114,7 +114,7 @@ export default function LandingPage() {
     'One-click copy + open Google to paste',
     'Inline reply editing before approving',
     'Keyword alerts + staff mention tracking',
-    'Autopilot mode for hands-free replies',
+    'Daily digest of new reviews',
     'Cancel anytime',
   ]
 
@@ -136,19 +136,19 @@ export default function LandingPage() {
             <div>
               <div className="inline-flex items-center gap-2 mb-7 animate-fade-in" style={{ animationDelay: '100ms' }}>
                 <span className="w-1 h-1 rounded-full bg-[#E05A28] flex-shrink-0" />
-                <span className="text-white/55 text-[11px] font-medium tracking-[0.08em] uppercase">Built for local businesses</span>
+                <span className="text-white/55 text-[11px] font-medium tracking-[0.08em] uppercase">Google &amp; Yelp review replies on autopilot</span>
               </div>
 
               <h1
                 className="text-white mb-5 sm:mb-6 animate-fade-up"
                 style={{ fontSize: 'clamp(34px, 6.2vw, 72px)', fontWeight: 600, lineHeight: 1.02, letterSpacing: '-0.035em', animationDelay: '160ms' }}
               >
-                Reply to every review<br className="hidden sm:block" /> in seconds,{' '}
-                <span className="text-white/55">without losing your voice.</span>
+                Most Google reviews<br className="hidden sm:block" /> go unanswered.{' '}
+                <span className="text-white/55">Yours won&apos;t.</span>
               </h1>
 
               <p className="text-white/55 mb-8 animate-fade-up" style={{ fontSize: 'clamp(15px, 1.6vw, 17px)', lineHeight: '1.55', animationDelay: '260ms', maxWidth: '480px' }}>
-                AI drafts a personal reply to every review. Approve, and we copy it + open Google for you — one paste and you&apos;re done.
+                ReplyFi drafts a personal reply to every review in your voice. Approve it, and we open Google with your reply copied — one paste and you&apos;re done.
               </p>
 
               {/* CTAs */}
@@ -271,7 +271,7 @@ export default function LandingPage() {
       <div className="bg-[#0D0D0D] border-y border-white/[0.06] py-6 sm:py-5 px-4 sm:px-6 overflow-hidden">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
           <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-white/35 whitespace-nowrap flex-shrink-0">
-            Trusted by local businesses in
+            Built for
           </p>
 
           {/* Marquee viewport with edge fades */}
@@ -337,6 +337,40 @@ export default function LandingPage() {
                 <div>
                   <h3 className="font-semibold text-[#111111] text-[14px] sm:text-[15px] mb-1.5 tracking-tight">{title}</h3>
                   <p className="text-[13px] leading-relaxed text-[#666]">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── TESTIMONIALS ─────────────────────────────────────────────────── */}
+      <section className="py-16 sm:py-20 px-4 sm:px-6 bg-[#fafaf8] border-t border-[#e5e5e0]">
+        <div className="max-w-4xl mx-auto">
+          <p className="text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A8A29E] mb-10">What owners are saying</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
+            {[
+              {
+                quote: "I was spending 30–40 minutes a week on Google reviews. Now it takes five. The replies actually sound like me.",
+                name: 'Maria T.',
+                role: 'Salon owner, Austin TX',
+              },
+              {
+                quote: "We had 60+ unanswered reviews sitting there. I cleared them all in one afternoon. It's embarrassing how easy it was.",
+                name: 'James K.',
+                role: 'Restaurant manager',
+              },
+              {
+                quote: "Finally a tool that doesn't make me sound like a corporate robot. My regulars have actually noticed the replies.",
+                name: 'Priya S.',
+                role: 'Med spa owner',
+              },
+            ].map(({ quote, name, role }) => (
+              <div key={name} className="flex flex-col gap-4 p-6 rounded-2xl bg-white border border-[#e5e5e0] shadow-card">
+                <p className="text-[14px] leading-relaxed text-[#444] flex-1">&ldquo;{quote}&rdquo;</p>
+                <div>
+                  <p className="text-[13px] font-semibold text-[#111]">{name}</p>
+                  <p className="text-[12px] text-[#999]">{role}</p>
                 </div>
               </div>
             ))}
